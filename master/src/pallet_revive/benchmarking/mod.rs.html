@@ -1880,10 +1880,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1728" id="1728">1728</a>
 <a href="#1729" id="1729">1729</a>
 <a href="#1730" id="1730">1730</a>
-<a href="#1731" id="1731">1731</a>
-<a href="#1732" id="1732">1732</a>
-<a href="#1733" id="1733">1733</a>
-<a href="#1734" id="1734">1734</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2658,11 +2654,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="macro">assert_eq!</span>(
 			record.event,
-			<span class="kw">crate</span>::Event::ContractEmitted { contract: instance.address(), data }.into(),
-		);
-		<span class="macro">assert_eq!</span>(
-			record.topics.iter().map(|t| H256::from_slice(t.as_ref())).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
-			topics,
+			<span class="kw">crate</span>::Event::ContractEmitted { contract: instance.address(), data, topics }.into(),
 		);
 	}
 

@@ -4153,8 +4153,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#4001" id="4001">4001</a>
 <a href="#4002" id="4002">4002</a>
 <a href="#4003" id="4003">4003</a>
-<a href="#4004" id="4004">4004</a>
-<a href="#4005" id="4005">4005</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -5644,13 +5642,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>deposit_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, topics: Vec&lt;H256&gt;, data: Vec&lt;u8&gt;) {
-		Contracts::&lt;<span class="self">Self</span>::T&gt;::deposit_indexed_event(
+		Contracts::&lt;<span class="self">Self</span>::T&gt;::deposit_event(Event::ContractEmitted {
+			contract: T::AddressMapper::to_address(<span class="self">self</span>.account_id()),
+			data,
 			topics,
-			Event::ContractEmitted {
-				contract: T::AddressMapper::to_address(<span class="self">self</span>.account_id()),
-				data,
-			},
-		);
+		});
 	}
 
 	<span class="kw">fn </span>block_number(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; U256 {
