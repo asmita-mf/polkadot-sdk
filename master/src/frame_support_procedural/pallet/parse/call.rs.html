@@ -614,9 +614,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#462" id="462">462</a>
 <a href="#463" id="463">463</a>
 <a href="#464" id="464">464</a>
-<a href="#465" id="465">465</a>
-<a href="#466" id="466">466</a>
-<a href="#467" id="467">467</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -708,6 +705,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>cfg_attrs: Vec&lt;syn::Attribute&gt;,
 	<span class="doccomment">/// The optional `feeless_if` attribute on the `pallet::call`.
 	</span><span class="kw">pub </span>feeless_check: <span class="prelude-ty">Option</span>&lt;syn::ExprClosure&gt;,
+	<span class="doccomment">/// The return type of the call: `DispatchInfo` or `DispatchResultWithPostInfo`.
+	</span><span class="kw">pub </span>return_type: helper::CallReturnType,
 }
 
 <span class="doccomment">/// Attributes for functions in call impl block.
@@ -879,13 +878,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					},
 				}
 
-				<span class="kw">if let </span>syn::ReturnType::Type(<span class="kw">_</span>, type_) = <span class="kw-2">&amp;</span>method.sig.output {
-					helper::check_pallet_call_return_type(type_)<span class="question-mark">?</span>;
-				} <span class="kw">else </span>{
-					<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, require return type \
-						DispatchResultWithPostInfo"</span>;
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
-				}
+				<span class="kw">let </span>return_type = helper::check_pallet_call_return_type(<span class="kw-2">&amp;</span>method.sig)<span class="question-mark">?</span>;
 
 				<span class="kw">let </span>cfg_attrs: Vec&lt;syn::Attribute&gt; = helper::get_item_cfg_attrs(<span class="kw-2">&amp;</span>method.attrs);
 				<span class="kw">let </span><span class="kw-2">mut </span>call_idx_attrs = <span class="macro">vec!</span>[];
@@ -1066,6 +1059,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					attrs: method.attrs.clone(),
 					cfg_attrs,
 					feeless_check,
+					return_type,
 				});
 			} <span class="kw">else </span>{
 				<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, only method accepted"</span>;
