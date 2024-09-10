@@ -2427,6 +2427,36 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#2275" id="2275">2275</a>
 <a href="#2276" id="2276">2276</a>
 <a href="#2277" id="2277">2277</a>
+<a href="#2278" id="2278">2278</a>
+<a href="#2279" id="2279">2279</a>
+<a href="#2280" id="2280">2280</a>
+<a href="#2281" id="2281">2281</a>
+<a href="#2282" id="2282">2282</a>
+<a href="#2283" id="2283">2283</a>
+<a href="#2284" id="2284">2284</a>
+<a href="#2285" id="2285">2285</a>
+<a href="#2286" id="2286">2286</a>
+<a href="#2287" id="2287">2287</a>
+<a href="#2288" id="2288">2288</a>
+<a href="#2289" id="2289">2289</a>
+<a href="#2290" id="2290">2290</a>
+<a href="#2291" id="2291">2291</a>
+<a href="#2292" id="2292">2292</a>
+<a href="#2293" id="2293">2293</a>
+<a href="#2294" id="2294">2294</a>
+<a href="#2295" id="2295">2295</a>
+<a href="#2296" id="2296">2296</a>
+<a href="#2297" id="2297">2297</a>
+<a href="#2298" id="2298">2298</a>
+<a href="#2299" id="2299">2299</a>
+<a href="#2300" id="2300">2300</a>
+<a href="#2301" id="2301">2301</a>
+<a href="#2302" id="2302">2302</a>
+<a href="#2303" id="2303">2303</a>
+<a href="#2304" id="2304">2304</a>
+<a href="#2305" id="2305">2305</a>
+<a href="#2306" id="2306">2306</a>
+<a href="#2307" id="2307">2307</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2683,6 +2713,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// A set of hashes of blocks that are being downloaded or have been
 	/// downloaded and are queued for import.
 	</span>queue_blocks: HashSet&lt;B::Hash&gt;,
+	<span class="doccomment">/// A pending attempt to start the state sync.
+	///
+	/// The initiation of state sync may be deferred in cases where other conditions
+	/// are not yet met when the finalized block notification is received, such as
+	/// when `queue_blocks` is not empty or there are no peers. This field holds the
+	/// necessary information to attempt the state sync at a later point when
+	/// conditions are satisfied.
+	</span>pending_state_sync_attempt: <span class="prelude-ty">Option</span>&lt;(B::Hash, NumberFor&lt;B&gt;, bool)&gt;,
 	<span class="doccomment">/// Fork sync targets.
 	</span>fork_targets: HashMap&lt;B::Hash, ForkTarget&lt;B&gt;&gt;,
 	<span class="doccomment">/// A set of peers for which there might be potential block requests
@@ -2805,6 +2843,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			extra_justifications: ExtraRequests::new(<span class="string">"justification"</span>, metrics_registry),
 			mode,
 			queue_blocks: Default::default(),
+			pending_state_sync_attempt: <span class="prelude-val">None</span>,
 			fork_targets: Default::default(),
 			allowed_requests: Default::default(),
 			max_parallel_downloads,
@@ -2926,7 +2965,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						<span class="string">"💔 New peer {} with unknown genesis hash {} ({})."</span>,
 						peer_id, best_hash, best_number,
 					);
-					<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(peer_id, rep::GENESIS_MISMATCH))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(peer_id, rep::GENESIS_MISMATCH));
 				}
 
 				<span class="comment">// If there are more than `MAJOR_SYNC_BLOCKS` in the import queue then we have
@@ -2950,7 +2989,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							state: PeerSyncState::Available,
 						},
 					);
-					<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
+					<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
 				}
 
 				<span class="comment">// If we are at genesis, just start downloading.
@@ -3073,15 +3112,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">if </span><span class="self">self</span>.is_known(hash) {
 			<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"Refusing to sync known hash {hash:?}"</span>);
-			<span class="kw">return
-		</span>}
+			<span class="kw">return</span>;
+		}
 
 		<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"Downloading requested old fork {hash:?}"</span>);
 		<span class="kw">for </span>peer_id <span class="kw">in </span><span class="kw-2">&amp;</span>peers {
 			<span class="kw">if let </span><span class="prelude-val">Some</span>(peer) = <span class="self">self</span>.peers.get_mut(peer_id) {
 				<span class="kw">if let </span>PeerSyncState::AncestorSearch { .. } = peer.state {
-					<span class="kw">continue
-				</span>}
+					<span class="kw">continue</span>;
+				}
 
 				<span class="kw">if </span>number &gt; peer.best_number {
 					peer.best_number = number;
@@ -3177,14 +3216,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							blocks
 						} <span class="kw">else </span>{
 							<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"Unexpected gap block response from {peer_id}"</span>);
-							<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NO_BLOCK))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NO_BLOCK));
 						}
 					},
 					PeerSyncState::DownloadingStale(<span class="kw">_</span>) =&gt; {
 						peer.state = PeerSyncState::Available;
 						<span class="kw">if </span>blocks.is_empty() {
 							<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"Empty block response from {peer_id}"</span>);
-							<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NO_BLOCK))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NO_BLOCK));
 						}
 						validate_blocks::&lt;B&gt;(<span class="kw-2">&amp;</span>blocks, peer_id, <span class="prelude-val">Some</span>(request))<span class="question-mark">?</span>;
 						blocks
@@ -3225,14 +3264,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 									target: LOG_TARGET,
 									<span class="string">"Invalid response when searching for ancestor from {peer_id}"</span>,
 								);
-								<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::UNKNOWN_ANCESTOR))
+								<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::UNKNOWN_ANCESTOR));
 							},
 							(<span class="kw">_</span>, <span class="prelude-val">Err</span>(e)) =&gt; {
 								<span class="macro">info!</span>(
 									target: LOG_TARGET,
 									<span class="string">"❌ Error answering legitimate blockchain query: {e}"</span>,
 								);
-								<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::BLOCKCHAIN_READ_ERROR))
+								<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::BLOCKCHAIN_READ_ERROR));
 							},
 						};
 						<span class="kw">if </span>matching_hash.is_some() {
@@ -3266,7 +3305,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								target: LOG_TARGET,
 								<span class="string">"Ancestry search: genesis mismatch for peer {peer_id}"</span>,
 							);
-							<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::GENESIS_MISMATCH))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::GENESIS_MISMATCH));
 						}
 						<span class="kw">if let </span><span class="prelude-val">Some</span>((next_state, next_num)) =
 							handle_ancestor_search_state(state, <span class="kw-2">*</span>current, matching_hash.is_some())
@@ -3281,7 +3320,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								peer_id: <span class="kw-2">*</span>peer_id,
 								request,
 							});
-							<span class="kw">return </span><span class="prelude-val">Ok</span>(())
+							<span class="kw">return </span><span class="prelude-val">Ok</span>(());
 						} <span class="kw">else </span>{
 							<span class="comment">// Ancestry search is complete. Check if peer is on a stale fork unknown
 							// to us and add it to sync targets if necessary.
@@ -3321,7 +3360,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 									.insert(<span class="kw-2">*</span>peer_id);
 							}
 							peer.state = PeerSyncState::Available;
-							<span class="kw">return </span><span class="prelude-val">Ok</span>(())
+							<span class="kw">return </span><span class="prelude-val">Ok</span>(());
 						}
 					},
 					PeerSyncState::Available |
@@ -3354,7 +3393,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			}
 		} <span class="kw">else </span>{
 			<span class="comment">// We don't know of this peer, so we also did not request anything from it.
-			</span><span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NOT_REQUESTED))
+			</span><span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NOT_REQUESTED));
 		};
 
 		<span class="self">self</span>.validate_and_queue_blocks(new_blocks, gap);
@@ -3376,7 +3415,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				target: LOG_TARGET,
 				<span class="string">"💔 Called on_block_justification with a peer ID of an unknown peer"</span>,
 			);
-			<span class="kw">return </span><span class="prelude-val">Ok</span>(())
+			<span class="kw">return </span><span class="prelude-val">Ok</span>(());
 		};
 
 		<span class="self">self</span>.allowed_requests.add(<span class="kw-2">&amp;</span>peer_id);
@@ -3393,7 +3432,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						hash,
 						block.hash,
 					);
-					<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(peer_id, rep::BAD_JUSTIFICATION))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(peer_id, rep::BAD_JUSTIFICATION));
 				}
 
 				block
@@ -3419,7 +3458,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					number,
 					justifications,
 				});
-				<span class="kw">return </span><span class="prelude-val">Ok</span>(())
+				<span class="kw">return </span><span class="prelude-val">Ok</span>(());
 			}
 		}
 
@@ -3442,26 +3481,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		});
 
 		<span class="kw">if let </span>ChainSyncMode::LightState { skip_proofs, .. } = <span class="kw-2">&amp;</span><span class="self">self</span>.mode {
-			<span class="kw">if </span><span class="self">self</span>.state_sync.is_none() &amp;&amp; !<span class="self">self</span>.peers.is_empty() &amp;&amp; <span class="self">self</span>.queue_blocks.is_empty() {
-				<span class="comment">// Finalized a recent block.
-				</span><span class="kw">let </span><span class="kw-2">mut </span>heads: Vec&lt;<span class="kw">_</span>&gt; = <span class="self">self</span>.peers.values().map(|peer| peer.best_number).collect();
-				heads.sort();
-				<span class="kw">let </span>median = heads[heads.len() / <span class="number">2</span>];
-				<span class="kw">if </span>number + STATE_SYNC_FINALITY_THRESHOLD.saturated_into() &gt;= median {
-					<span class="kw">if let </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(header)) = <span class="self">self</span>.client.header(<span class="kw-2">*</span>hash) {
-						<span class="macro">log::debug!</span>(
-							target: LOG_TARGET,
-							<span class="string">"Starting state sync for #{number} ({hash})"</span>,
-						);
-						<span class="self">self</span>.state_sync = <span class="prelude-val">Some</span>(StateSync::new(
-							<span class="self">self</span>.client.clone(),
-							header,
-							<span class="prelude-val">None</span>,
-							<span class="prelude-val">None</span>,
-							<span class="kw-2">*</span>skip_proofs,
-						));
-						<span class="self">self</span>.allowed_requests.set_all();
-					}
+			<span class="kw">if </span><span class="self">self</span>.state_sync.is_none() {
+				<span class="kw">if </span>!<span class="self">self</span>.peers.is_empty() &amp;&amp; <span class="self">self</span>.queue_blocks.is_empty() {
+					<span class="self">self</span>.attempt_state_sync(<span class="kw-2">*</span>hash, number, <span class="kw-2">*</span>skip_proofs);
+				} <span class="kw">else </span>{
+					<span class="self">self</span>.pending_state_sync_attempt.replace((<span class="kw-2">*</span>hash, number, <span class="kw-2">*</span>skip_proofs));
 				}
 			}
 		}
@@ -3471,6 +3495,35 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				target: LOG_TARGET,
 				<span class="string">"💔 Error cleaning up pending extra justification data requests: {err}"</span>,
 			);
+		}
+	}
+
+	<span class="kw">fn </span>attempt_state_sync(
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		finalized_hash: B::Hash,
+		finalized_number: NumberFor&lt;B&gt;,
+		skip_proofs: bool,
+	) {
+		<span class="kw">let </span><span class="kw-2">mut </span>heads: Vec&lt;<span class="kw">_</span>&gt; = <span class="self">self</span>.peers.values().map(|peer| peer.best_number).collect();
+		heads.sort();
+		<span class="kw">let </span>median = heads[heads.len() / <span class="number">2</span>];
+		<span class="kw">if </span>finalized_number + STATE_SYNC_FINALITY_THRESHOLD.saturated_into() &gt;= median {
+			<span class="kw">if let </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(header)) = <span class="self">self</span>.client.header(finalized_hash) {
+				<span class="macro">log::debug!</span>(
+					target: LOG_TARGET,
+					<span class="string">"Starting state sync for #{finalized_number} ({finalized_hash})"</span>,
+				);
+				<span class="self">self</span>.state_sync =
+					<span class="prelude-val">Some</span>(StateSync::new(<span class="self">self</span>.client.clone(), header, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, skip_proofs));
+				<span class="self">self</span>.allowed_requests.set_all();
+			} <span class="kw">else </span>{
+				<span class="macro">log::error!</span>(
+					target: LOG_TARGET,
+					<span class="string">"Failed to start state sync: header for finalized block \
+					  #{finalized_number} ({finalized_hash}) is not available"</span>,
+				);
+				<span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
+			}
 		}
 	}
 
@@ -3496,13 +3549,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			peer
 		} <span class="kw">else </span>{
 			<span class="macro">error!</span>(target: LOG_TARGET, <span class="string">"💔 Called `on_validated_block_announce` with a bad peer ID {peer_id}"</span>);
-			<span class="kw">return </span><span class="prelude-val">Some</span>((hash, number))
+			<span class="kw">return </span><span class="prelude-val">Some</span>((hash, number));
 		};
 
 		<span class="kw">if let </span>PeerSyncState::AncestorSearch { .. } = peer.state {
 			<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"Peer {} is in the ancestor search state."</span>, peer_id);
-			<span class="kw">return </span><span class="prelude-val">None
-		</span>}
+			<span class="kw">return </span><span class="prelude-val">None</span>;
+		}
 
 		<span class="kw">let </span>peer_info = is_best.then(|| {
 			<span class="comment">// update their best block
@@ -3531,7 +3584,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">if let </span><span class="prelude-val">Some</span>(target) = <span class="self">self</span>.fork_targets.get_mut(<span class="kw-2">&amp;</span>hash) {
 				target.peers.insert(peer_id);
 			}
-			<span class="kw">return </span>peer_info
+			<span class="kw">return </span>peer_info;
 		}
 
 		<span class="kw">if </span>ancient_parent {
@@ -3542,7 +3595,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				hash,
 				announce.header,
 			);
-			<span class="kw">return </span>peer_info
+			<span class="kw">return </span>peer_info;
 		}
 
 		<span class="kw">if </span><span class="self">self</span>.status().state == SyncState::Idle {
@@ -3710,8 +3763,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			</span><span class="kw">for </span>(n, peer) <span class="kw">in </span><span class="self">self</span>.peers.iter_mut() {
 				<span class="kw">if let </span>PeerSyncState::AncestorSearch { .. } = peer.state {
 					<span class="comment">// Wait for ancestry search to complete first.
-					</span><span class="kw">continue
-				</span>}
+					</span><span class="kw">continue</span>;
+				}
 				<span class="kw">let </span>new_common_number =
 					<span class="kw">if </span>peer.best_number &gt;= number { number } <span class="kw">else </span>{ peer.best_number };
 				<span class="macro">trace!</span>(
@@ -3830,7 +3883,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// What is the status of the block corresponding to the given hash?
 	</span><span class="kw">fn </span>block_status(<span class="kw-2">&amp;</span><span class="self">self</span>, hash: <span class="kw-2">&amp;</span>B::Hash) -&gt; <span class="prelude-ty">Result</span>&lt;BlockStatus, ClientError&gt; {
 		<span class="kw">if </span><span class="self">self</span>.queue_blocks.contains(hash) {
-			<span class="kw">return </span><span class="prelude-val">Ok</span>(BlockStatus::Queued)
+			<span class="kw">return </span><span class="prelude-val">Ok</span>(BlockStatus::Queued);
 		}
 		<span class="self">self</span>.client.block_status(<span class="kw-2">*</span>hash)
 	}
@@ -3950,12 +4003,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Get block requests scheduled by sync to be sent out.
 	</span><span class="kw">fn </span>block_requests(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; Vec&lt;(PeerId, BlockRequest&lt;B&gt;)&gt; {
 		<span class="kw">if </span><span class="self">self</span>.allowed_requests.is_empty() || <span class="self">self</span>.state_sync.is_some() {
-			<span class="kw">return </span>Vec::new()
+			<span class="kw">return </span>Vec::new();
 		}
 
 		<span class="kw">if </span><span class="self">self</span>.queue_blocks.len() &gt; MAX_IMPORTING_BLOCKS {
 			<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"Too many blocks in the queue."</span>);
-			<span class="kw">return </span>Vec::new()
+			<span class="kw">return </span>Vec::new();
 		}
 		<span class="kw">let </span>is_major_syncing = <span class="self">self</span>.status().state.is_major_syncing();
 		<span class="kw">let </span>attrs = <span class="self">self</span>.required_block_attributes();
@@ -3979,8 +4032,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					!allowed_requests.contains(<span class="kw-2">&amp;</span>id) ||
 					!disconnected_peers.is_peer_available(<span class="kw-2">&amp;</span>id)
 				{
-					<span class="kw">return </span><span class="prelude-val">None
-				</span>}
+					<span class="kw">return </span><span class="prelude-val">None</span>;
+				}
 
 				<span class="comment">// If our best queued is more than `MAX_BLOCKS_TO_LOOK_BACKWARDS` blocks away from
 				// the common number, the peer best number is higher than our best queued and the
@@ -4077,18 +4130,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Get a state request scheduled by sync to be sent out (if any).
 	</span><span class="kw">fn </span>state_request(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(PeerId, OpaqueStateRequest)&gt; {
 		<span class="kw">if </span><span class="self">self</span>.allowed_requests.is_empty() {
-			<span class="kw">return </span><span class="prelude-val">None
-		</span>}
+			<span class="kw">return </span><span class="prelude-val">None</span>;
+		}
 		<span class="kw">if </span><span class="self">self</span>.state_sync.is_some() &amp;&amp;
 			<span class="self">self</span>.peers.iter().any(|(<span class="kw">_</span>, peer)| peer.state == PeerSyncState::DownloadingState)
 		{
 			<span class="comment">// Only one pending state request is allowed.
-			</span><span class="kw">return </span><span class="prelude-val">None
-		</span>}
+			</span><span class="kw">return </span><span class="prelude-val">None</span>;
+		}
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(sync) = <span class="kw-2">&amp;</span><span class="self">self</span>.state_sync {
 			<span class="kw">if </span>sync.is_complete() {
-				<span class="kw">return </span><span class="prelude-val">None
-			</span>}
+				<span class="kw">return </span><span class="prelude-val">None</span>;
+			}
 
 			<span class="kw">for </span>(id, peer) <span class="kw">in </span><span class="self">self</span>.peers.iter_mut() {
 				<span class="kw">if </span>peer.state.is_available() &amp;&amp;
@@ -4099,7 +4152,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					<span class="kw">let </span>request = sync.next_request();
 					<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"New StateRequest for {}: {:?}"</span>, id, request);
 					<span class="self">self</span>.allowed_requests.clear();
-					<span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">*</span>id, OpaqueStateRequest(Box::new(request))))
+					<span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">*</span>id, OpaqueStateRequest(Box::new(request))));
 				}
 			}
 		}
@@ -4138,7 +4191,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			sync.import(<span class="kw-2">*</span>response)
 		} <span class="kw">else </span>{
 			<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"Ignored obsolete state response from {peer_id}"</span>);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NOT_REQUESTED))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NOT_REQUESTED));
 		};
 
 		<span class="kw">match </span>import_result {
@@ -4194,16 +4247,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 		<span class="kw">for </span>(result, hash) <span class="kw">in </span>results {
 			<span class="kw">if </span>has_error {
-				<span class="kw">break
-			</span>}
+				<span class="kw">break</span>;
+			}
 
 			has_error |= result.is_err();
 
 			<span class="kw">match </span>result {
-				<span class="prelude-val">Ok</span>(BlockImportStatus::ImportedKnown(number, peer_id)) =&gt;
+				<span class="prelude-val">Ok</span>(BlockImportStatus::ImportedKnown(number, peer_id)) =&gt; {
 					<span class="kw">if let </span><span class="prelude-val">Some</span>(peer) = peer_id {
 						<span class="self">self</span>.update_peer_common_number(<span class="kw-2">&amp;</span>peer, number);
-					},
+					}
+				},
 				<span class="prelude-val">Ok</span>(BlockImportStatus::ImportedUnknown(number, aux, peer_id)) =&gt; {
 					<span class="kw">if </span>aux.clear_justification_requests {
 						<span class="macro">trace!</span>(
@@ -4311,6 +4365,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Get pending actions to perform.
 	</span><span class="attr">#[must_use]
 	</span><span class="kw">pub fn </span>actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = ChainSyncAction&lt;B&gt;&gt; {
+		<span class="kw">if </span>!<span class="self">self</span>.peers.is_empty() &amp;&amp; <span class="self">self</span>.queue_blocks.is_empty() {
+			<span class="kw">if let </span><span class="prelude-val">Some</span>((hash, number, skip_proofs)) = <span class="self">self</span>.pending_state_sync_attempt.take() {
+				<span class="self">self</span>.attempt_state_sync(hash, number, skip_proofs);
+			}
+		}
+
 		<span class="kw">let </span>block_requests = <span class="self">self
 			</span>.block_requests()
 			.into_iter()
@@ -4393,8 +4453,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">if </span>block_hash_match &amp;&amp; next_distance_to_tip == One::one() {
 				<span class="comment">// We found the ancestor in the first step so there is no need to execute binary
 				// search.
-				</span><span class="kw">return </span><span class="prelude-val">None
-			</span>}
+				</span><span class="kw">return </span><span class="prelude-val">None</span>;
+			}
 			<span class="kw">if </span>block_hash_match {
 				<span class="kw">let </span>left = curr_block_num;
 				<span class="kw">let </span>right = left + next_distance_to_tip / two;
@@ -4412,8 +4472,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		},
 		AncestorSearchState::BinarySearch(<span class="kw-2">mut </span>left, <span class="kw-2">mut </span>right) =&gt; {
 			<span class="kw">if </span>left &gt;= curr_block_num {
-				<span class="kw">return </span><span class="prelude-val">None
-			</span>}
+				<span class="kw">return </span><span class="prelude-val">None</span>;
+			}
 			<span class="kw">if </span>block_hash_match {
 				left = curr_block_num;
 			} <span class="kw">else </span>{
@@ -4443,8 +4503,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ) -&gt; <span class="prelude-ty">Option</span>&lt;(Range&lt;NumberFor&lt;B&gt;&gt;, BlockRequest&lt;B&gt;)&gt; {
 	<span class="kw">if </span>best_num &gt;= peer.best_number {
 		<span class="comment">// Will be downloaded as alternative fork instead.
-		</span><span class="kw">return </span><span class="prelude-val">None
-	</span>} <span class="kw">else if </span>peer.common_number &lt; finalized {
+		</span><span class="kw">return </span><span class="prelude-val">None</span>;
+	} <span class="kw">else if </span>peer.common_number &lt; finalized {
 		<span class="macro">trace!</span>(
 			target: LOG_TARGET,
 			<span class="string">"Requesting pre-finalized chain from {:?}, common={}, finalized={}, peer best={}, our best={}"</span>,
@@ -4532,8 +4592,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				hash,
 				r.number,
 			);
-			<span class="kw">return </span><span class="bool-val">false
-		</span>}
+			<span class="kw">return </span><span class="bool-val">false</span>;
+		}
 		<span class="kw">if </span>check_block(hash) != BlockStatus::Unknown {
 			<span class="macro">trace!</span>(
 				target: LOG_TARGET,
@@ -4541,8 +4601,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				hash,
 				r.number,
 			);
-			<span class="kw">return </span><span class="bool-val">false
-		</span>}
+			<span class="kw">return </span><span class="bool-val">false</span>;
+		}
 		<span class="bool-val">true
 	</span>});
 	<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = metrics {
@@ -4550,8 +4610,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 	<span class="kw">for </span>(hash, r) <span class="kw">in </span>fork_targets {
 		<span class="kw">if </span>!r.peers.contains(<span class="kw-2">&amp;</span>id) {
-			<span class="kw">continue
-		</span>}
+			<span class="kw">continue</span>;
+		}
 		<span class="comment">// Download the fork only if it is behind or not too far ahead our tip of the chain
 		// Otherwise it should be downloaded in full sync mode.
 		</span><span class="kw">if </span>r.number &lt;= best_num ||
@@ -4577,7 +4637,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					direction: Direction::Descending,
 					max: <span class="prelude-val">Some</span>(count),
 				},
-			))
+			));
 		} <span class="kw">else </span>{
 			<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"Fork too far in the future: {:?} (#{})"</span>, hash, r.number);
 		}
@@ -4596,7 +4656,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	T: HeaderMetadata&lt;Block, Error = sp_blockchain::Error&gt; + <span class="question-mark">?</span>Sized,
 {
 	<span class="kw">if </span>base == block {
-		<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+		<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
 	}
 
 	<span class="kw">let </span>ancestor = sp_blockchain::lowest_common_ancestor(client, <span class="kw-2">*</span>block, <span class="kw-2">*</span>base)<span class="question-mark">?</span>;
@@ -4623,7 +4683,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				blocks.len(),
 			);
 
-			<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NOT_REQUESTED))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NOT_REQUESTED));
 		}
 
 		<span class="kw">let </span>block_header =
@@ -4643,7 +4703,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				block_header,
 			);
 
-			<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NOT_REQUESTED))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::NOT_REQUESTED));
 		}
 
 		<span class="kw">if </span>request.fields.contains(BlockAttributes::HEADER) &amp;&amp;
@@ -4654,7 +4714,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="string">"Missing requested header for a block in response from {peer_id}."</span>,
 			);
 
-			<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::BAD_RESPONSE))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::BAD_RESPONSE));
 		}
 
 		<span class="kw">if </span>request.fields.contains(BlockAttributes::BODY) &amp;&amp; blocks.iter().any(|b| b.body.is_none())
@@ -4664,7 +4724,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="string">"Missing requested body for a block in response from {peer_id}."</span>,
 			);
 
-			<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::BAD_RESPONSE))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::BAD_RESPONSE));
 		}
 	}
 
@@ -4679,7 +4739,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					b.hash,
 					hash,
 				);
-				<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::BAD_BLOCK))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::BAD_BLOCK));
 			}
 		}
 		<span class="kw">if let </span>(<span class="prelude-val">Some</span>(header), <span class="prelude-val">Some</span>(body)) = (<span class="kw-2">&amp;</span>b.header, <span class="kw-2">&amp;</span>b.body) {
@@ -4697,7 +4757,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					expected,
 					got,
 				);
-				<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::BAD_BLOCK))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(BadPeer(<span class="kw-2">*</span>peer_id, rep::BAD_BLOCK));
 			}
 		}
 	}
