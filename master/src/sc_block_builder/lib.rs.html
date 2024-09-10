@@ -934,7 +934,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			header.extrinsics_root().clone(),
 			HashingFor::&lt;Block&gt;::ordered_trie_root(
 				<span class="self">self</span>.extrinsics.iter().map(Encode::encode).collect(),
-				sp_runtime::StateVersion::V0,
+				<span class="self">self</span>.api.version(<span class="self">self</span>.parent_hash)<span class="question-mark">?</span>.extrinsics_root_state_version(),
 			),
 		);
 

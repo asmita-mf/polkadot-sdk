@@ -2430,6 +2430,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#2278" id="2278">2278</a>
 <a href="#2279" id="2279">2279</a>
 <a href="#2280" id="2280">2280</a>
+<a href="#2281" id="2281">2281</a>
+<a href="#2282" id="2282">2282</a>
+<a href="#2283" id="2283">2283</a>
+<a href="#2284" id="2284">2284</a>
+<a href="#2285" id="2285">2285</a>
+<a href="#2286" id="2286">2286</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2607,6 +2613,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub use </span>extensions::check_mortality::CheckMortality <span class="kw">as </span>CheckEra;
 <span class="kw">pub use </span>frame_support::dispatch::RawOrigin;
 <span class="kw">use </span>frame_support::traits::{PostInherents, PostTransactions, PreInherents};
+<span class="kw">use </span>sp_core::storage::StateVersion;
 <span class="kw">pub use </span>weights::WeightInfo;
 
 <span class="kw">const </span>LOG_TARGET: <span class="kw-2">&amp;</span>str = <span class="string">"runtime::system"</span>;
@@ -2614,17 +2621,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Compute the trie root of a list of extrinsics.
 ///
 /// The merkle proof is using the same trie as runtime state with
-/// `state_version` 0.
-</span><span class="kw">pub fn </span>extrinsics_root&lt;H: Hash, E: codec::Encode&gt;(extrinsics: <span class="kw-2">&amp;</span>[E]) -&gt; H::Output {
-	extrinsics_data_root::&lt;H&gt;(extrinsics.iter().map(codec::Encode::encode).collect())
+/// `state_version` 0 or 1.
+</span><span class="kw">pub fn </span>extrinsics_root&lt;H: Hash, E: codec::Encode&gt;(
+	extrinsics: <span class="kw-2">&amp;</span>[E],
+	state_version: StateVersion,
+) -&gt; H::Output {
+	extrinsics_data_root::&lt;H&gt;(extrinsics.iter().map(codec::Encode::encode).collect(), state_version)
 }
 
 <span class="doccomment">/// Compute the trie root of a list of extrinsics.
 ///
 /// The merkle proof is using the same trie as runtime state with
-/// `state_version` 0.
-</span><span class="kw">pub fn </span>extrinsics_data_root&lt;H: Hash&gt;(xts: Vec&lt;Vec&lt;u8&gt;&gt;) -&gt; H::Output {
-	H::ordered_trie_root(xts, sp_core::storage::StateVersion::V0)
+/// `state_version` 0 or 1.
+</span><span class="kw">pub fn </span>extrinsics_data_root&lt;H: Hash&gt;(xts: Vec&lt;Vec&lt;u8&gt;&gt;, state_version: StateVersion) -&gt; H::Output {
+	H::ordered_trie_root(xts, state_version)
 }
 
 <span class="doccomment">/// An object to track the currently used extrinsic weight in a block.
@@ -4279,7 +4289,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>extrinsics = (<span class="number">0</span>..ExtrinsicCount::&lt;T&gt;::take().unwrap_or_default())
 			.map(ExtrinsicData::&lt;T&gt;::take)
 			.collect();
-		<span class="kw">let </span>extrinsics_root = extrinsics_data_root::&lt;T::Hashing&gt;(extrinsics);
+		<span class="kw">let </span>extrinsics_root_state_version = T::Version::get().extrinsics_root_state_version();
+		<span class="kw">let </span>extrinsics_root =
+			extrinsics_data_root::&lt;T::Hashing&gt;(extrinsics, extrinsics_root_state_version);
 
 		<span class="comment">// move block hash pruning window by one block
 		</span><span class="kw">let </span>block_hash_count = T::BlockHashCount::get();
