@@ -695,6 +695,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#543" id="543">543</a>
 <a href="#544" id="544">544</a>
 <a href="#545" id="545">545</a>
+<a href="#546" id="546">546</a>
+<a href="#547" id="547">547</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -733,7 +735,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>codec::DecodeAll;
 <span class="kw">use </span>futures::{channel::oneshot, stream::BoxStream};
 <span class="kw">use </span>libp2p::{identity::SigningError, kad::record::Key <span class="kw">as </span>KademliaKey};
-<span class="kw">use </span>litep2p::{crypto::ed25519::Keypair, types::multiaddr::Multiaddr <span class="kw">as </span>LiteP2pMultiaddr};
+<span class="kw">use </span>litep2p::{
+	addresses::PublicAddresses, crypto::ed25519::Keypair,
+	types::multiaddr::Multiaddr <span class="kw">as </span>LiteP2pMultiaddr,
+};
 <span class="kw">use </span>parking_lot::RwLock;
 
 <span class="kw">use </span>sc_network_common::{
@@ -893,7 +898,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span>listen_addresses: Arc&lt;RwLock&lt;HashSet&lt;LiteP2pMultiaddr&gt;&gt;&gt;,
 
 	<span class="doccomment">/// External addresses.
-	</span>external_addresses: Arc&lt;RwLock&lt;HashSet&lt;LiteP2pMultiaddr&gt;&gt;&gt;,
+	</span>external_addresses: PublicAddresses,
 }
 
 <span class="kw">impl </span>Litep2pNetworkService {
@@ -907,7 +912,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		block_announce_protocol: ProtocolName,
 		request_response_protocols: HashMap&lt;ProtocolName, TracingUnboundedSender&lt;OutboundRequest&gt;&gt;,
 		listen_addresses: Arc&lt;RwLock&lt;HashSet&lt;LiteP2pMultiaddr&gt;&gt;&gt;,
-		external_addresses: Arc&lt;RwLock&lt;HashSet&lt;LiteP2pMultiaddr&gt;&gt;&gt;,
+		external_addresses: PublicAddresses,
 	) -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{
 			local_peer_id,
@@ -1020,9 +1025,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				.collect(),
 			external_addresses: <span class="self">self
 				</span>.external_addresses
-				.read()
-				.iter()
-				.cloned()
+				.get_addresses()
+				.into_iter()
 				.map(|a| Multiaddr::from(a).into())
 				.collect(),
 			connected_peers: HashMap::new(),
@@ -1188,7 +1192,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">impl </span>NetworkStateInfo <span class="kw">for </span>Litep2pNetworkService {
 	<span class="kw">fn </span>external_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;Multiaddr&gt; {
-		<span class="self">self</span>.external_addresses.read().iter().cloned().map(Into::into).collect()
+		<span class="self">self</span>.external_addresses.get_addresses().into_iter().map(Into::into).collect()
 	}
 
 	<span class="kw">fn </span>listen_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;Multiaddr&gt; {

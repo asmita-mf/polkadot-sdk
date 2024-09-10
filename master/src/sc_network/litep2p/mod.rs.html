@@ -1219,6 +1219,38 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1067" id="1067">1067</a>
 <a href="#1068" id="1068">1068</a>
 <a href="#1069" id="1069">1069</a>
+<a href="#1070" id="1070">1070</a>
+<a href="#1071" id="1071">1071</a>
+<a href="#1072" id="1072">1072</a>
+<a href="#1073" id="1073">1073</a>
+<a href="#1074" id="1074">1074</a>
+<a href="#1075" id="1075">1075</a>
+<a href="#1076" id="1076">1076</a>
+<a href="#1077" id="1077">1077</a>
+<a href="#1078" id="1078">1078</a>
+<a href="#1079" id="1079">1079</a>
+<a href="#1080" id="1080">1080</a>
+<a href="#1081" id="1081">1081</a>
+<a href="#1082" id="1082">1082</a>
+<a href="#1083" id="1083">1083</a>
+<a href="#1084" id="1084">1084</a>
+<a href="#1085" id="1085">1085</a>
+<a href="#1086" id="1086">1086</a>
+<a href="#1087" id="1087">1087</a>
+<a href="#1088" id="1088">1088</a>
+<a href="#1089" id="1089">1089</a>
+<a href="#1090" id="1090">1090</a>
+<a href="#1091" id="1091">1091</a>
+<a href="#1092" id="1092">1092</a>
+<a href="#1093" id="1093">1093</a>
+<a href="#1094" id="1094">1094</a>
+<a href="#1095" id="1095">1095</a>
+<a href="#1096" id="1096">1096</a>
+<a href="#1097" id="1097">1097</a>
+<a href="#1098" id="1098">1098</a>
+<a href="#1099" id="1099">1099</a>
+<a href="#1100" id="1100">1100</a>
+<a href="#1101" id="1101">1101</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1275,6 +1307,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>litep2p::{
 	config::ConfigBuilder,
 	crypto::ed25519::Keypair,
+	error::{DialError, NegotiationError},
 	executor::Executor,
 	protocol::{
 		libp2p::{
@@ -1285,15 +1318,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	},
 	transport::{
 		tcp::config::Config <span class="kw">as </span>TcpTransportConfig,
-		websocket::config::Config <span class="kw">as </span>WebSocketTransportConfig, Endpoint,
+		websocket::config::Config <span class="kw">as </span>WebSocketTransportConfig, ConnectionLimitsConfig, Endpoint,
 	},
 	types::{
 		multiaddr::{Multiaddr, Protocol},
 		ConnectionId,
 	},
-	Error <span class="kw">as </span>Litep2pError, Litep2p, Litep2pEvent, ProtocolName <span class="kw">as </span>Litep2pProtocolName,
+	Litep2p, Litep2pEvent, ProtocolName <span class="kw">as </span>Litep2pProtocolName,
 };
-<span class="kw">use </span>parking_lot::RwLock;
 <span class="kw">use </span>prometheus_endpoint::Registry;
 
 <span class="kw">use </span>sc_client_api::BlockBackend;
@@ -1404,9 +1436,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="doccomment">/// Prometheus metrics.
 	</span>metrics: <span class="prelude-ty">Option</span>&lt;Metrics&gt;,
-
-	<span class="doccomment">/// External addresses.
-	</span>external_addresses: Arc&lt;RwLock&lt;HashSet&lt;Multiaddr&gt;&gt;&gt;,
 }
 
 <span class="kw">impl </span>Litep2pNetworkBackend {
@@ -1778,6 +1807,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.with_libp2p_ping(ping_config)
 			.with_libp2p_identify(identify_config)
 			.with_libp2p_kademlia(kademlia_config)
+			.with_connection_limits(ConnectionLimitsConfig::default().max_incoming_connections(
+				<span class="prelude-val">Some</span>(<span class="kw">crate</span>::MAX_CONNECTIONS_ESTABLISHED_INCOMING <span class="kw">as </span>usize),
+			))
 			.with_executor(executor);
 
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(config) = maybe_mdns_config {
@@ -1791,14 +1823,21 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>litep2p =
 			Litep2p::new(config_builder.build()).map_err(|error| Error::Litep2p(error))<span class="question-mark">?</span>;
 
-		<span class="kw">let </span>external_addresses: Arc&lt;RwLock&lt;HashSet&lt;Multiaddr&gt;&gt;&gt; = Arc::new(RwLock::new(
-			HashSet::from_iter(network_config.public_addresses.iter().cloned().map(Into::into)),
-		));
 		litep2p.listen_addresses().for_each(|address| {
 			<span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">"listening on: {address}"</span>);
 
 			listen_addresses.write().insert(address.clone());
 		});
+
+		<span class="kw">let </span>public_addresses = litep2p.public_addresses();
+		<span class="kw">for </span>address <span class="kw">in </span>network_config.public_addresses.iter() {
+			<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = public_addresses.add_address(address.clone().into()) {
+				<span class="macro">log::warn!</span>(
+					target: LOG_TARGET,
+					<span class="string">"failed to add public address {address:?}: {err:?}"</span>,
+				);
+			}
+		}
 
 		<span class="kw">let </span>network_service = Arc::new(Litep2pNetworkService::new(
 			local_peer_id,
@@ -1809,7 +1848,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			block_announce_protocol.clone(),
 			request_response_senders,
 			Arc::clone(<span class="kw-2">&amp;</span>listen_addresses),
-			Arc::clone(<span class="kw-2">&amp;</span>external_addresses),
+			public_addresses,
 		));
 
 		<span class="comment">// register rest of the metrics now that `Litep2p` has been created
@@ -1835,7 +1874,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			event_streams: out_events::OutChannels::new(<span class="prelude-val">None</span>)<span class="question-mark">?</span>,
 			peers: HashMap::new(),
 			litep2p,
-			external_addresses,
 		})
 	}
 
@@ -2138,10 +2176,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						<span class="self">self</span>.discovery.add_self_reported_address(peer, supported_protocols, listen_addresses).<span class="kw">await</span>;
 					}
 					<span class="prelude-val">Some</span>(DiscoveryEvent::ExternalAddressDiscovered { address }) =&gt; {
-						<span class="kw">let </span><span class="kw-2">mut </span>addresses = <span class="self">self</span>.external_addresses.write();
-
-						<span class="kw">if </span>addresses.insert(address.clone()) {
-							<span class="macro">log::info!</span>(target: LOG_TARGET, <span class="string">"🔍 Discovered new external address for our node: {address}"</span>);
+						<span class="kw">match </span><span class="self">self</span>.litep2p.public_addresses().add_address(address.clone().into()) {
+							<span class="prelude-val">Ok</span>(inserted) =&gt; <span class="kw">if </span>inserted {
+								<span class="macro">log::info!</span>(target: LOG_TARGET, <span class="string">"🔍 Discovered new external address for our node: {address}"</span>);
+							},
+							<span class="prelude-val">Err</span>(err) =&gt; {
+								<span class="macro">log::warn!</span>(
+									target: LOG_TARGET,
+									<span class="string">"🔍 Failed to add discovered external address {address:?}: {err:?}"</span>,
+								);
+							},
 						}
 					}
 					<span class="prelude-val">Some</span>(DiscoveryEvent::Ping { peer, rtt }) =&gt; {
@@ -2227,20 +2271,40 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						}
 					}
 					<span class="prelude-val">Some</span>(Litep2pEvent::DialFailure { address, error }) =&gt; {
-						<span class="macro">log::trace!</span>(
+						<span class="macro">log::debug!</span>(
 							target: LOG_TARGET,
 							<span class="string">"failed to dial peer at {address:?}: {error:?}"</span>,
 						);
 
-						<span class="kw">let </span>reason = <span class="kw">match </span>error {
-							Litep2pError::PeerIdMismatch(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"invalid-peer-id"</span>,
-							Litep2pError::Timeout | Litep2pError::TransportError(<span class="kw">_</span>) |
-							Litep2pError::IoError(<span class="kw">_</span>) | Litep2pError::WebSocket(<span class="kw">_</span>) =&gt; <span class="string">"transport-error"</span>,
-							<span class="kw">_ </span>=&gt; <span class="string">"other"</span>,
-						};
+						<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="kw-2">&amp;</span><span class="self">self</span>.metrics {
+							<span class="kw">let </span>reason = <span class="kw">match </span>error {
+								DialError::Timeout =&gt; <span class="string">"timeout"</span>,
+								DialError::AddressError(<span class="kw">_</span>) =&gt; <span class="string">"invalid-address"</span>,
+								DialError::DnsError(<span class="kw">_</span>) =&gt; <span class="string">"cannot-resolve-dns"</span>,
+								DialError::NegotiationError(error) =&gt; <span class="kw">match </span>error {
+									NegotiationError::Timeout =&gt; <span class="string">"timeout"</span>,
+									NegotiationError::PeerIdMissing =&gt; <span class="string">"missing-peer-id"</span>,
+									NegotiationError::StateMismatch =&gt; <span class="string">"state-mismatch"</span>,
+									NegotiationError::PeerIdMismatch(<span class="kw">_</span>,<span class="kw">_</span>) =&gt; <span class="string">"peer-id-missmatch"</span>,
+									NegotiationError::MultistreamSelectError(<span class="kw">_</span>) =&gt; <span class="string">"multistream-select-error"</span>,
+									NegotiationError::SnowError(<span class="kw">_</span>) =&gt; <span class="string">"noise-error"</span>,
+									NegotiationError::ParseError(<span class="kw">_</span>) =&gt; <span class="string">"parse-error"</span>,
+									NegotiationError::IoError(<span class="kw">_</span>) =&gt; <span class="string">"io-error"</span>,
+									NegotiationError::WebSocket(<span class="kw">_</span>) =&gt; <span class="string">"webscoket-error"</span>,
+								}
+							};
+
+							metrics.pending_connections_errors_total.with_label_values(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>reason]).inc();
+						}
+					}
+					<span class="prelude-val">Some</span>(Litep2pEvent::ListDialFailures { errors }) =&gt; {
+						<span class="macro">log::debug!</span>(
+							target: LOG_TARGET,
+							<span class="string">"failed to dial peer on multiple addresses {errors:?}"</span>,
+						);
 
 						<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="kw-2">&amp;</span><span class="self">self</span>.metrics {
-							metrics.pending_connections_errors_total.with_label_values(<span class="kw-2">&amp;</span>[reason]).inc();
+							metrics.pending_connections_errors_total.with_label_values(<span class="kw-2">&amp;</span>[<span class="string">"transport-errors"</span>]).inc();
 						}
 					}
 					<span class="kw">_ </span>=&gt; {}

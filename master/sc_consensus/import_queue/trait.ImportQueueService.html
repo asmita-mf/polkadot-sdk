@@ -153,7 +153,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
     // Required methods
     fn <a href="#tymethod.import_blocks" class="fn">import_blocks</a>(
         &amp;mut self,
-        origin: <a class="enum" href="../../sp_consensus/enum.BlockOrigin.html" title="enum sp_consensus::BlockOrigin">BlockOrigin</a>,
+        origin: BlockOrigin,
         blocks: <a class="struct" href="https://doc.rust-lang.org/1.77.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="struct.IncomingBlock.html" title="struct sc_consensus::import_queue::IncomingBlock">IncomingBlock</a>&lt;B&gt;&gt;
     );
 <span class="item-spacer"></span>    fn <a href="#tymethod.import_justifications" class="fn">import_justifications</a>(
@@ -165,7 +165,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
     );
 }</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Blocks import queue API.</p>
 <p>The <code>import_*</code> methods can be called in order to send elements for the import queue to verify.</p>
-</div></details><h2 id="required-methods" class="section-header">Required Methods<a href="#required-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="tymethod.import_blocks" class="method"><a class="src rightside" href="../../src/sc_consensus/import_queue.rs.html#112">source</a><h4 class="code-header">fn <a href="#tymethod.import_blocks" class="fn">import_blocks</a>(&amp;mut self, origin: <a class="enum" href="../../sp_consensus/enum.BlockOrigin.html" title="enum sp_consensus::BlockOrigin">BlockOrigin</a>, blocks: <a class="struct" href="https://doc.rust-lang.org/1.77.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="struct.IncomingBlock.html" title="struct sc_consensus::import_queue::IncomingBlock">IncomingBlock</a>&lt;B&gt;&gt;)</h4></section></summary><div class="docblock"><p>Import bunch of blocks, every next block must be an ancestor of the previous block in the
+</div></details><h2 id="required-methods" class="section-header">Required Methods<a href="#required-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="tymethod.import_blocks" class="method"><a class="src rightside" href="../../src/sc_consensus/import_queue.rs.html#112">source</a><h4 class="code-header">fn <a href="#tymethod.import_blocks" class="fn">import_blocks</a>(&amp;mut self, origin: BlockOrigin, blocks: <a class="struct" href="https://doc.rust-lang.org/1.77.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="struct.IncomingBlock.html" title="struct sc_consensus::import_queue::IncomingBlock">IncomingBlock</a>&lt;B&gt;&gt;)</h4></section></summary><div class="docblock"><p>Import bunch of blocks, every next block must be an ancestor of the previous block in the
 list.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="tymethod.import_justifications" class="method"><a class="src rightside" href="../../src/sc_consensus/import_queue.rs.html#115-121">source</a><h4 class="code-header">fn <a href="#tymethod.import_justifications" class="fn">import_justifications</a>(
     &amp;mut self,
