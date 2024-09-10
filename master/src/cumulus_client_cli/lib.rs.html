@@ -717,7 +717,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="prelude-val">Some</span>(<span class="string">'y'</span>) | <span class="prelude-val">Some</span>(<span class="string">'Y'</span>) =&gt; {},
 				<span class="kw">_ </span>=&gt; {
 					<span class="macro">println!</span>(<span class="string">"Aborted"</span>);
-					<span class="kw">return </span><span class="prelude-val">Ok</span>(())
+					<span class="kw">return </span><span class="prelude-val">Ok</span>(());
 				},
 			}
 		}
@@ -1053,19 +1053,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>rpc_max_request_size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; sc_cli::Result&lt;u32&gt; {
-		<span class="prelude-val">Ok</span>(<span class="self">self</span>.base.rpc_max_request_size)
+		<span class="self">self</span>.base.rpc_max_request_size()
 	}
 
 	<span class="kw">fn </span>rpc_max_response_size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; sc_cli::Result&lt;u32&gt; {
-		<span class="prelude-val">Ok</span>(<span class="self">self</span>.base.rpc_max_response_size)
+		<span class="self">self</span>.base.rpc_max_response_size()
 	}
 
 	<span class="kw">fn </span>rpc_max_subscriptions_per_connection(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; sc_cli::Result&lt;u32&gt; {
-		<span class="prelude-val">Ok</span>(<span class="self">self</span>.base.rpc_max_subscriptions_per_connection)
+		<span class="self">self</span>.base.rpc_max_subscriptions_per_connection()
 	}
 
 	<span class="kw">fn </span>rpc_buffer_capacity_per_connection(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; sc_cli::Result&lt;u32&gt; {
-		<span class="prelude-val">Ok</span>(<span class="self">self</span>.base.rpc_message_buffer_capacity_per_connection)
+		<span class="prelude-val">Ok</span>(<span class="self">self</span>.base.rpc_params.rpc_message_buffer_capacity_per_connection)
 	}
 
 	<span class="kw">fn </span>rpc_batch_config(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; sc_cli::Result&lt;RpcBatchRequestConfig&gt; {
