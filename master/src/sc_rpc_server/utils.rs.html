@@ -806,7 +806,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Get the `deny_unsafe` setting based on the address and the RPC methods exposed by the interface.
 </span><span class="kw">pub fn </span>deny_unsafe(addr: <span class="kw-2">&amp;</span>SocketAddr, methods: <span class="kw-2">&amp;</span>RpcMethods) -&gt; DenyUnsafe {
 	<span class="kw">match </span>(addr.ip().is_loopback(), methods) {
-		| (<span class="kw">_</span>, RpcMethods::Unsafe) | (<span class="bool-val">false</span>, RpcMethods::Auto) =&gt; DenyUnsafe::No,
+		(<span class="kw">_</span>, RpcMethods::Unsafe) | (<span class="bool-val">true</span>, RpcMethods::Auto) =&gt; DenyUnsafe::No,
 		<span class="kw">_ </span>=&gt; DenyUnsafe::Yes,
 	}
 }
