@@ -2311,6 +2311,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#2159" id="2159">2159</a>
 <a href="#2160" id="2160">2160</a>
 <a href="#2161" id="2161">2161</a>
+<a href="#2162" id="2162">2162</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -3340,7 +3341,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="kw">return </span><span class="prelude-val">Err</span>(Error::&lt;T&gt;::InsufficientBond.into())
 			}
 
-			frame_system::Pallet::&lt;T&gt;::inc_consumers(<span class="kw-2">&amp;</span>stash).map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::BadState)<span class="question-mark">?</span>;
+			<span class="comment">// Would fail if account has no provider.
+			</span>frame_system::Pallet::&lt;T&gt;::inc_consumers(<span class="kw-2">&amp;</span>stash)<span class="question-mark">?</span>;
 
 			<span class="kw">let </span>stash_balance = T::Currency::free_balance(<span class="kw-2">&amp;</span>stash);
 			<span class="kw">let </span>value = value.min(stash_balance);
