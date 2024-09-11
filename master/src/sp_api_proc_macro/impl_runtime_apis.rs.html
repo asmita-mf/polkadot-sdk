@@ -1587,7 +1587,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		v
 	} <span class="kw">else </span>{
 		<span class="comment">// nothing to do
-		</span><span class="kw">return </span>trait_
+		</span><span class="kw">return </span>trait_;
 	};
 
 	<span class="kw">let </span>trait_name = <span class="kw-2">&amp;mut </span>trait_
@@ -1878,7 +1878,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 			error.combine(Error::new(other_span, <span class="string">"First trait implementation."</span>));
 
-			<span class="kw">return </span><span class="prelude-val">Err</span>(error)
+			<span class="kw">return </span><span class="prelude-val">Err</span>(error);
 		}
 
 		<span class="kw">let </span>id: Path = <span class="macro">parse_quote!</span>( #path ID );
@@ -2008,7 +2008,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			err.combine(Error::new(attr_span, <span class="macro">format!</span>(<span class="string">"`{}` found here"</span>, API_VERSION_ATTRIBUTE)));
 		}
 
-		<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+		<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 	}
 
 	<span class="prelude-val">Ok</span>(cfg_api_version_attr
@@ -2045,7 +2045,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				Each runtime API can have only one version."</span>,
 				API_VERSION_ATTRIBUTE
 			),
-		))
+		));
 	}
 
 	<span class="comment">// Parse the runtime version if there exists one.

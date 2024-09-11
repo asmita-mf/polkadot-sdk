@@ -924,6 +924,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#772" id="772">772</a>
 <a href="#773" id="773">773</a>
 <a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1056,10 +1059,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			definitions.push(definition);
 			<span class="kw">if </span>!input.peek(<span class="macro">Token!</span>[,]) {
 				<span class="kw">if </span>!input.peek(token::Brace) {
-					<span class="kw">return </span><span class="prelude-val">Err</span>(input.error(<span class="string">"Expected `,` or `{`"</span>))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(input.error(<span class="string">"Expected `,` or `{`"</span>));
 				}
-				<span class="kw">break
-			</span>}
+				<span class="kw">break</span>;
+			}
 			input.parse::&lt;<span class="macro">Token!</span>[,]&gt;()<span class="question-mark">?</span>;
 		}
 		remove_kind(input, WhereKind::Block, <span class="kw-2">&amp;mut </span>definitions)<span class="question-mark">?</span>;
@@ -1070,7 +1073,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="string">"`{:?}` was declared above. Please use exactly one declaration for `{:?}`."</span>,
 				kind, kind
 			);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(<span class="kw-2">*</span>kind_span, msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(<span class="kw-2">*</span>kind_span, msg));
 		}
 		<span class="prelude-val">Ok</span>(<span class="self">Self </span>{ span: input.span() })
 	}
@@ -1099,7 +1102,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		} <span class="kw">else if </span>lookahead.peek(keyword::UncheckedExtrinsic) {
 			(input.parse::&lt;keyword::UncheckedExtrinsic&gt;()<span class="question-mark">?</span>.span(), WhereKind::UncheckedExtrinsic)
 		} <span class="kw">else </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(lookahead.error())
+			<span class="kw">return </span><span class="prelude-val">Err</span>(lookahead.error());
 		};
 
 		<span class="kw">let _</span>: <span class="macro">Token!</span>[=] = input.parse()<span class="question-mark">?</span>;
@@ -1196,7 +1199,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		{
 			<span class="kw">return </span><span class="prelude-val">Err</span>(input.error(
 				<span class="string">"Unexpected tokens, expected one of `::{`, `exclude_parts`, `use_parts`, `=`, `,`"</span>,
-			))
+			));
 		} <span class="kw">else </span>{
 			is_expanded.then_some(extra_parts)
 		};
@@ -1209,7 +1212,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let _</span>: keyword::use_parts = input.parse()<span class="question-mark">?</span>;
 			SpecifiedParts::Use(parse_pallet_parts_no_generic(input)<span class="question-mark">?</span>)
 		} <span class="kw">else if </span>!input.peek(<span class="macro">Token!</span>[=]) &amp;&amp; !input.peek(<span class="macro">Token!</span>[,]) &amp;&amp; !input.is_empty() {
-			<span class="kw">return </span><span class="prelude-val">Err</span>(input.error(<span class="string">"Unexpected tokens, expected one of `exclude_parts`, `=`, `,`"</span>))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(input.error(<span class="string">"Unexpected tokens, expected one of `exclude_parts`, `=`, `,`"</span>));
 		} <span class="kw">else </span>{
 			SpecifiedParts::All
 		};
@@ -1221,7 +1224,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>index = index.base10_parse::&lt;u8&gt;()<span class="question-mark">?</span>;
 			<span class="prelude-val">Some</span>(index)
 		} <span class="kw">else if </span>!input.peek(<span class="macro">Token!</span>[,]) &amp;&amp; !input.is_empty() {
-			<span class="kw">return </span><span class="prelude-val">Err</span>(input.error(<span class="string">"Unexpected tokens, expected one of `=`, `,`"</span>))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(input.error(<span class="string">"Unexpected tokens, expected one of `=`, `,`"</span>));
 		} <span class="kw">else </span>{
 			<span class="prelude-val">None
 		</span>};
@@ -1265,7 +1268,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>ident = input.call(Ident::parse_any)<span class="question-mark">?</span>;
 			res.inner.segments.push(ident.into());
 		} <span class="kw">else </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(lookahead.error())
+			<span class="kw">return </span><span class="prelude-val">Err</span>(lookahead.error());
 		}
 
 		<span class="kw">while </span>input.peek(<span class="macro">Token!</span>[::]) &amp;&amp; input.peek3(Ident) {
@@ -1296,7 +1299,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="string">"`{}` was already declared before. Please remove the duplicate declaration"</span>,
 				part.name(),
 			);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(part.keyword.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(part.keyword.span(), msg));
 		}
 	}
 
@@ -1431,7 +1434,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				keyword.name(),
 				valid_generics,
 			);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(keyword.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(keyword.span(), msg));
 		}
 
 		<span class="prelude-val">Ok</span>(<span class="self">Self </span>{ keyword, generics })
@@ -1492,7 +1495,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="string">"`{}` was already declared before. Please remove the duplicate declaration"</span>,
 				part.keyword.name(),
 			);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(part.keyword.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(part.keyword.span(), msg));
 		}
 	}
 
@@ -1518,6 +1521,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>cfg_pattern: Vec&lt;cfg_expr::Expression&gt;,
 	<span class="doccomment">/// The doc literals
 	</span><span class="kw">pub </span>docs: Vec&lt;syn::Expr&gt;,
+	<span class="doccomment">/// attributes
+	</span><span class="kw">pub </span>attrs: Vec&lt;syn::Attribute&gt;,
 }
 
 <span class="kw">impl </span>Pallet {
@@ -1576,7 +1581,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 /// incrementally from last explicit or 0.
 </span><span class="kw">fn </span>convert_pallets(pallets: Vec&lt;PalletDeclaration&gt;) -&gt; syn::Result&lt;PalletsConversion&gt; {
 	<span class="kw">if </span>pallets.iter().any(|pallet| pallet.pallet_parts.is_none()) {
-		<span class="kw">return </span><span class="prelude-val">Ok</span>(PalletsConversion::Implicit(pallets))
+		<span class="kw">return </span><span class="prelude-val">Ok</span>(PalletsConversion::Implicit(pallets));
 	}
 
 	<span class="kw">let </span><span class="kw-2">mut </span>indices = HashMap::new();
@@ -1604,7 +1609,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				);
 				<span class="kw">let </span><span class="kw-2">mut </span>err = syn::Error::new(used_pallet.span(), <span class="kw-2">&amp;</span>msg);
 				err.combine(syn::Error::new(pallet.name.span(), msg));
-				<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+				<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 			}
 
 			<span class="kw">if let </span><span class="prelude-val">Some</span>(used_pallet) = names.insert(pallet.name.clone(), pallet.name.span()) {
@@ -1612,7 +1617,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 				<span class="kw">let </span><span class="kw-2">mut </span>err = syn::Error::new(used_pallet, <span class="kw-2">&amp;</span>msg);
 				err.combine(syn::Error::new(pallet.name.span(), <span class="kw-2">&amp;</span>msg));
-				<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+				<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 			}
 
 			<span class="kw">let </span><span class="kw-2">mut </span>pallet_parts = pallet.pallet_parts.expect(<span class="string">"Checked above"</span>);
@@ -1638,7 +1643,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 									}
 								})
 							);
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(part.keyword.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(part.keyword.span(), msg));
 						}
 					},
 				SpecifiedParts::All =&gt; (),
@@ -1664,7 +1669,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					<span class="kw">if </span>attr.path().segments.first().map_or(<span class="bool-val">false</span>, |s| s.ident != <span class="string">"cfg"</span>) {
 						<span class="kw">let </span>msg = <span class="string">"Unsupported attribute, only #[cfg] is supported on pallet \
 						declarations in `construct_runtime`"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(attr.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(attr.span(), msg));
 					}
 
 					attr.parse_args_with(|input: syn::parse::ParseStream| {
@@ -1688,6 +1693,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				cfg_pattern,
 				pallet_parts,
 				docs: <span class="macro">vec!</span>[],
+				attrs: pallet.attrs.clone(),
 			})
 		})
 		.collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;&gt;()<span class="question-mark">?</span>;

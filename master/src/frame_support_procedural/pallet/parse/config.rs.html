@@ -756,6 +756,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#604" id="604">604</a>
 <a href="#605" id="605">605</a>
 <a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -836,6 +838,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>type_: syn::Type,
 	<span class="doccomment">/// The doc associated
 	</span><span class="kw">pub </span>doc: Vec&lt;syn::Expr&gt;,
+	<span class="doccomment">/// attributes
+	</span><span class="kw">pub </span>attrs: Vec&lt;syn::Attribute&gt;,
 }
 
 <span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>syn::TraitItemType&gt; <span class="kw">for </span>ConstMetadataDef {
@@ -858,22 +862,22 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.ok_or_else(|| err(trait_ty.span(), <span class="string">"`Get&lt;T&gt;` trait bound not found"</span>))<span class="question-mark">?</span>;
 
 		<span class="kw">let </span>syn::PathArguments::AngleBracketed(<span class="kw-2">ref </span>ab) = bound.arguments <span class="kw">else </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(err(bound.span(), <span class="string">"Expected trait generic args"</span>))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(err(bound.span(), <span class="string">"Expected trait generic args"</span>));
 		};
 
 		<span class="comment">// Only one type argument is expected.
 		</span><span class="kw">if </span>ab.args.len() != <span class="number">1 </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(err(bound.span(), <span class="string">"Expected a single type argument"</span>))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(err(bound.span(), <span class="string">"Expected a single type argument"</span>));
 		}
 
 		<span class="kw">let </span>syn::GenericArgument::Type(<span class="kw-2">ref </span>type_arg) = ab.args[<span class="number">0</span>] <span class="kw">else </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(err(ab.args[<span class="number">0</span>].span(), <span class="string">"Expected a type argument"</span>))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(err(ab.args[<span class="number">0</span>].span(), <span class="string">"Expected a type argument"</span>));
 		};
 
 		<span class="kw">let </span>type_ = syn::parse2::&lt;syn::Type&gt;(replace_self_by_t(type_arg.to_token_stream()))
 			.expect(<span class="string">"Internal error: replacing `Self` by `T` should result in valid type"</span>);
 
-		<span class="prelude-val">Ok</span>(<span class="self">Self </span>{ ident, type_, doc })
+		<span class="prelude-val">Ok</span>(<span class="self">Self </span>{ ident, type_, doc, attrs: trait_ty.attrs.clone() })
 	}
 }
 
@@ -978,7 +982,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>syn::TraitItem::Type(type_) = trait_item <span class="kw">else </span>{ <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>) };
 
 	<span class="kw">if </span>type_.ident != <span class="string">"RuntimeEvent" </span>{
-		<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+		<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
 	}
 
 	<span class="comment">// Check event has no generics
@@ -986,7 +990,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>msg =
 			<span class="string">"Invalid `type RuntimeEvent`, associated type `RuntimeEvent` is reserved and must have\
 					no generics nor where_clause"</span>;
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(trait_item.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(trait_item.span(), msg));
 	}
 
 	<span class="comment">// Check bound contains IsType and From
@@ -1000,7 +1004,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="string">"Invalid `type RuntimeEvent`, associated type `RuntimeEvent` is reserved and must \
 					bound: `IsType&lt;&lt;Self as frame_system::Config&gt;::RuntimeEvent&gt;`"
 				</span>.to_string();
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(type_.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(type_.span(), msg));
 	}
 
 	<span class="kw">let </span>from_event_bound = type_
@@ -1012,7 +1016,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>msg =
 			<span class="string">"Invalid `type RuntimeEvent`, associated type `RuntimeEvent` is reserved and must \
 				bound: `From&lt;Event&gt;` or `From&lt;Event&lt;Self&gt;&gt;` or `From&lt;Event&lt;Self, I&gt;&gt;`"</span>;
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(type_.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(type_.span(), msg));
 	};
 
 	<span class="kw">if </span>from_event_bound.is_generic &amp;&amp; (from_event_bound.has_instance != trait_has_instance) {
@@ -1020,7 +1024,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="string">"Invalid `type RuntimeEvent`, associated type `RuntimeEvent` bounds inconsistent \
 					`From&lt;Event..&gt;`. Config and generic Event must be both with instance or \
 					without instance"</span>;
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(type_.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(type_.span(), msg));
 	}
 
 	<span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
@@ -1032,8 +1036,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">fn </span>has_expected_system_config(path: syn::Path, frame_system: <span class="kw-2">&amp;</span>syn::Path) -&gt; bool {
 	<span class="comment">// Check if `frame_system` is actually 'frame_system'.
 	</span><span class="kw">if </span>path.segments.iter().all(|s| s.ident != <span class="string">"frame_system"</span>) {
-		<span class="kw">return </span><span class="bool-val">false
-	</span>}
+		<span class="kw">return </span><span class="bool-val">false</span>;
+	}
 
 	<span class="kw">let </span><span class="kw-2">mut </span>expected_system_config =
 		<span class="kw">match </span>(is_using_frame_crate(<span class="kw-2">&amp;</span>path), is_using_frame_crate(<span class="kw-2">&amp;</span>frame_system)) {
@@ -1087,12 +1091,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	) -&gt; syn::Result&lt;<span class="self">Self</span>&gt; {
 		<span class="kw">let </span>syn::Item::Trait(item) = item <span class="kw">else </span>{
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::config, expected trait definition"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), msg));
 		};
 
 		<span class="kw">if </span>!<span class="macro">matches!</span>(item.vis, syn::Visibility::Public(<span class="kw">_</span>)) {
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::config, trait must be public"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), msg));
 		}
 
 		syn::parse2::&lt;keyword::Config&gt;(item.ident.to_token_stream())<span class="question-mark">?</span>;
@@ -1107,7 +1111,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">if </span>item.generics.params.len() &gt; <span class="number">1 </span>{
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::config, expected no more than one generic"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.generics.params[<span class="number">2</span>].span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.generics.params[<span class="number">2</span>].span(), msg));
 		}
 
 		<span class="kw">let </span>has_instance = <span class="kw">if </span>item.generics.params.first().is_some() {
@@ -1149,7 +1153,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(
 								pallet_attr._bracket.span.join(),
 								<span class="string">"Duplicate #[pallet::constant] attribute not allowed."</span>,
-							))
+							));
 						}
 						already_constant = <span class="bool-val">true</span>;
 						consts_metadata.push(ConstMetadataDef::try_from(typ)<span class="question-mark">?</span>);
@@ -1165,13 +1169,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								pallet_attr._bracket.span.join(),
 								<span class="string">"`#[pallet:no_default]` can only be used if `#[pallet::config(with_default)]` \
 								has been specified"
-							</span>))
+							</span>));
 						}
 						<span class="kw">if </span>already_no_default {
 							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(
 								pallet_attr._bracket.span.join(),
 								<span class="string">"Duplicate #[pallet::no_default] attribute not allowed."</span>,
-							))
+							));
 						}
 
 						already_no_default = <span class="bool-val">true</span>;
@@ -1182,13 +1186,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								pallet_attr._bracket.span.join(),
 								<span class="string">"`#[pallet:no_default_bounds]` can only be used if `#[pallet::config(with_default)]` \
 								has been specified"
-							</span>))
+							</span>));
 						}
 						<span class="kw">if </span>already_no_default_bounds {
 							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(
 								pallet_attr._bracket.span.join(),
 								<span class="string">"Duplicate #[pallet::no_default_bounds] attribute not allowed."</span>,
-							))
+							));
 						}
 						already_no_default_bounds = <span class="bool-val">true</span>;
 					},
@@ -1230,7 +1234,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				frame_system.to_token_stream(),
 				found,
 			);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), msg));
 		}
 
 		<span class="prelude-val">Ok</span>(<span class="self">Self </span>{

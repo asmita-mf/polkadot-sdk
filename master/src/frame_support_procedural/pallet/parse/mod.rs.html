@@ -896,7 +896,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#744" id="744">744</a>
 <a href="#745" id="745">745</a>
 <a href="#746" id="746">746</a>
-<a href="#747" id="747">747</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -975,7 +974,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">pub fn </span>try_from(<span class="kw-2">mut </span>item: syn::ItemMod, dev_mode: bool) -&gt; syn::Result&lt;<span class="self">Self</span>&gt; {
 		<span class="kw">let </span>frame_system = generate_access_from_frame_or_crate(<span class="string">"frame-system"</span>)<span class="question-mark">?</span>;
 		<span class="kw">let </span>frame_support = generate_access_from_frame_or_crate(<span class="string">"frame-support"</span>)<span class="question-mark">?</span>;
-
 		<span class="kw">let </span>item_span = item.span();
 		<span class="kw">let </span>items = <span class="kw-2">&amp;mut </span>item
 			.content
@@ -1120,7 +1118,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				genesis_config.as_ref().map_or(<span class="string">"unused"</span>, |<span class="kw">_</span>| <span class="string">"used"</span>),
 				genesis_build.as_ref().map_or(<span class="string">"unused"</span>, |<span class="kw">_</span>| <span class="string">"used"</span>),
 			);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item_span, msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item_span, msg));
 		}
 
 		<span class="self">Self</span>::resolve_tasks(<span class="kw-2">&amp;</span>item_span, <span class="kw-2">&amp;mut </span>tasks, <span class="kw-2">&amp;mut </span>task_enum, items)<span class="question-mark">?</span>;
@@ -1183,7 +1181,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						tasks.item_impl.impl_token.span(),
 						<span class="string">"A `#[pallet::tasks_experimental]` attribute must be attached to your `Task` impl if the \
 						task enum has been omitted"</span>,
-					))
+					));
 				} <span class="kw">else </span>{
 				},
 			<span class="kw">_ </span>=&gt; (),
@@ -1212,8 +1210,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				// `task_enum`. We use a no-op instead of simply removing it from the vec
 				// so that any indices collected by `Def::try_from` remain accurate
 				</span><span class="kw-2">*</span>item = syn::Item::Verbatim(<span class="macro">quote::quote!</span>());
-				<span class="kw">break
-			</span>}
+				<span class="kw">break</span>;
+			}
 		}
 		<span class="kw-2">*</span>task_enum = result;
 		<span class="prelude-val">Ok</span>(())
@@ -1235,16 +1233,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>syn::Type::Path(target_path) = <span class="kw-2">&amp;*</span>item_impl.self_ty <span class="kw">else </span>{ <span class="kw">continue </span>};
 			<span class="kw">let </span>target_path = target_path.path.segments.iter().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 			<span class="kw">let </span>(<span class="prelude-val">Some</span>(target_ident), <span class="prelude-val">None</span>) = (target_path.get(<span class="number">0</span>), target_path.get(<span class="number">1</span>)) <span class="kw">else </span>{
-				<span class="kw">continue
-			</span>};
+				<span class="kw">continue</span>;
+			};
 			<span class="kw">let </span>matches_task_enum = <span class="kw">match </span>task_enum {
 				<span class="prelude-val">Some</span>(task_enum) =&gt; task_enum.item_enum.ident == target_ident.ident,
 				<span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
 			};
 			<span class="kw">if </span>trait_last_seg.ident == <span class="string">"Task" </span>&amp;&amp; matches_task_enum {
 				result = <span class="prelude-val">Some</span>(syn::parse2::&lt;tasks::TasksDef&gt;(item_impl.to_token_stream())<span class="question-mark">?</span>);
-				<span class="kw">break
-			</span>}
+				<span class="kw">break</span>;
+			}
 		}
 		<span class="kw-2">*</span>tasks = result;
 		<span class="prelude-val">Ok</span>(())
@@ -1306,8 +1304,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span><span class="kw-2">mut </span>errors = instances.into_iter().filter_map(|instances| {
 			<span class="kw">if </span>instances.has_instance == <span class="self">self</span>.config.has_instance {
-				<span class="kw">return </span><span class="prelude-val">None
-			</span>}
+				<span class="kw">return </span><span class="prelude-val">None</span>;
+			}
 			<span class="kw">let </span>msg = <span class="kw">if </span><span class="self">self</span>.config.has_instance {
 				<span class="string">"Invalid generic declaration, trait is defined with instance but generic use none"
 			</span>} <span class="kw">else </span>{
@@ -1638,7 +1636,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			content.parse::&lt;<span class="macro">syn::Token!</span>[=]&gt;().expect(<span class="string">"peeked"</span>);
 			content
 		} <span class="kw">else </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(lookahead.error())
+			<span class="kw">return </span><span class="prelude-val">Err</span>(lookahead.error());
 		};
 
 		<span class="prelude-val">Ok</span>(<span class="self">Self </span>{ typename: buffer.parse()<span class="question-mark">? </span>})

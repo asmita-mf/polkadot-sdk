@@ -525,7 +525,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>pallet_index = pallet_index_content.parse::&lt;syn::LitInt&gt;()<span class="question-mark">?</span>;
 			<span class="kw">if </span>!pallet_index.suffix().is_empty() {
 				<span class="kw">let </span>msg = <span class="string">"Number literal must not have a suffix"</span>;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(pallet_index.span(), msg))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(pallet_index.span(), msg));
 			}
 			<span class="prelude-val">Ok</span>(RuntimeAttr::PalletIndex(pallet_index.span(), pallet_index.base10_parse()<span class="question-mark">?</span>))
 		} <span class="kw">else if </span>lookahead.peek(keyword::disable_call) {
@@ -609,14 +609,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							<span class="prelude-val">Some</span>((index, item.clone()))
 						} <span class="kw">else </span>{
 							<span class="kw">let </span>msg = <span class="string">"Invalid runtime::pallet_index, expected type definition"</span>;
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(span, msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(span, msg));
 						};
 					},
 					RuntimeAttr::DisableCall(<span class="kw">_</span>) =&gt; disable_call = <span class="bool-val">true</span>,
 					RuntimeAttr::DisableUnsigned(<span class="kw">_</span>) =&gt; disable_unsigned = <span class="bool-val">true</span>,
 					attr =&gt; {
 						<span class="kw">let </span>msg = <span class="string">"Invalid duplicated attribute"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(attr.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(attr.span(), msg));
 					},
 				}
 			}
@@ -634,7 +634,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 							<span class="kw">let </span><span class="kw-2">mut </span>err = syn::Error::new(used_pallet, <span class="kw-2">&amp;</span>msg);
 							err.combine(syn::Error::new(pallet_decl.name.span(), <span class="kw-2">&amp;</span>msg));
-							<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+							<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 						}
 
 						pallet_decls.push(pallet_decl);
@@ -657,7 +657,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							);
 							<span class="kw">let </span><span class="kw-2">mut </span>err = syn::Error::new(used_pallet.span(), <span class="kw-2">&amp;</span>msg);
 							err.combine(syn::Error::new(pallet.name.span(), msg));
-							<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+							<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 						}
 
 						pallets.push(pallet);
@@ -667,7 +667,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			} <span class="kw">else </span>{
 				<span class="kw">if let </span>syn::Item::Type(item) = item {
 					<span class="kw">let </span>msg = <span class="string">"Missing pallet index for pallet declaration. Please add `#[runtime::pallet_index(...)]`"</span>;
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="kw-2">&amp;</span>msg))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="kw-2">&amp;</span>msg));
 				}
 			}
 		}

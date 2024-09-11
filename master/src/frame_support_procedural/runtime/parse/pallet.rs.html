@@ -338,6 +338,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#186" id="186">186</a>
 <a href="#187" id="187">187</a>
 <a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -389,7 +390,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
 					attr_span,
 					<span class="string">"Invalid pallet declaration, expected a path or a trait object"</span>,
-				))
+				));
 			};
 		}
 
@@ -431,6 +432,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			cfg_pattern,
 			pallet_parts,
 			docs,
+			attrs: item.attrs.clone(),
 		})
 	}
 }

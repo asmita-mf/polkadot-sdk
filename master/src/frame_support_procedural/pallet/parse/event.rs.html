@@ -291,6 +291,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#139" id="139">139</a>
 <a href="#140" id="140">140</a>
 <a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -336,6 +347,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>where_clause: <span class="prelude-ty">Option</span>&lt;syn::WhereClause&gt;,
 	<span class="doccomment">/// The span of the pallet::event attribute.
 	</span><span class="kw">pub </span>attr_span: proc_macro2::Span,
+	<span class="doccomment">/// event attributes
+	</span><span class="kw">pub </span>attrs: Vec&lt;syn::Attribute&gt;,
 }
 
 <span class="doccomment">/// Attribute for a pallet's Event.
@@ -399,7 +412,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		} <span class="kw">else </span>{
 			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="string">"Invalid pallet::event, expected enum item"</span>))
 		};
-
+		<span class="kw">let </span>attrs = item.attrs.clone();
 		<span class="kw">let </span>event_attrs: Vec&lt;PalletEventDepositAttr&gt; =
 			helper::take_item_pallet_attrs(<span class="kw-2">&amp;mut </span>item.attrs)<span class="question-mark">?</span>;
 		<span class="kw">let </span>attr_info = PalletEventAttrInfo::from_attrs(event_attrs)<span class="question-mark">?</span>;
@@ -429,7 +442,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>event = syn::parse2::&lt;keyword::Event&gt;(item.ident.to_token_stream())<span class="question-mark">?</span>;
 
-		<span class="prelude-val">Ok</span>(EventDef { attr_span, index, instances, deposit_event, event, gen_kind, where_clause })
+		<span class="prelude-val">Ok</span>(EventDef {
+			attr_span,
+			index,
+			instances,
+			deposit_event,
+			event,
+			gen_kind,
+			where_clause,
+			attrs,
+		})
 	}
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>

@@ -614,6 +614,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#462" id="462">462</a>
 <a href="#463" id="463">463</a>
 <a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -667,6 +669,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>docs: Vec&lt;syn::Expr&gt;,
 	<span class="doccomment">/// The optional `weight` attribute on the `pallet::call`.
 	</span><span class="kw">pub </span>inherited_call_weight: <span class="prelude-ty">Option</span>&lt;InheritedCallWeightAttr&gt;,
+	<span class="doccomment">/// attributes
+	</span><span class="kw">pub </span>attrs: Vec&lt;syn::Attribute&gt;,
 }
 
 <span class="doccomment">/// The weight of a call.
@@ -740,7 +744,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>index = call_index_content.parse::&lt;syn::LitInt&gt;()<span class="question-mark">?</span>;
 			<span class="kw">if </span>!index.suffix().is_empty() {
 				<span class="kw">let </span>msg = <span class="string">"Number literal must not have a suffix"</span>;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(index.span(), msg))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(index.span(), msg));
 			}
 			<span class="prelude-val">Ok</span>(FunctionAttr::CallIndex(index.base10_parse()<span class="question-mark">?</span>))
 		} <span class="kw">else if </span>lookahead.peek(keyword::feeless_if) {
@@ -816,9 +820,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			</span>} <span class="kw">else </span>{
 				<span class="string">"Invalid type: expected `OriginFor&lt;T&gt;` or `T::RuntimeOrigin`"
 			</span>};
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg));
 		},
-	}
+	};
 }
 
 <span class="kw">impl </span>CallDef {
@@ -832,9 +836,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>item_impl = <span class="kw">if let </span>syn::Item::Impl(item) = item {
 			item
 		} <span class="kw">else </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="string">"Invalid pallet::call, expected item impl"</span>))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="string">"Invalid pallet::call, expected item impl"</span>));
 		};
-
 		<span class="kw">let </span>instances = <span class="macro">vec!</span>[
 			helper::check_impl_gen(<span class="kw-2">&amp;</span>item_impl.generics, item_impl.impl_token.span())<span class="question-mark">?</span>,
 			helper::check_pallet_struct_usage(<span class="kw-2">&amp;</span>item_impl.self_ty)<span class="question-mark">?</span>,
@@ -843,7 +846,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">if let </span><span class="prelude-val">Some</span>((<span class="kw">_</span>, <span class="kw">_</span>, for_)) = item_impl.trait_ {
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, expected no trait ident as in \
 				`impl&lt;..&gt; Pallet&lt;..&gt; { .. }`"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(for_.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(for_.span(), msg));
 		}
 
 		<span class="kw">let </span><span class="kw-2">mut </span>methods = <span class="macro">vec!</span>[];
@@ -860,18 +863,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						<span class="kw">_ </span>=&gt; method.vis.span(),
 					};
 
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(span, msg))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(span, msg));
 				}
 
 				<span class="kw">match </span>method.sig.inputs.first() {
 					<span class="prelude-val">None </span>=&gt; {
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, must have at least origin arg"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg));
 					},
 					<span class="prelude-val">Some</span>(syn::FnArg::Receiver(<span class="kw">_</span>)) =&gt; {
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, first argument must be a typed argument, \
 							e.g. `origin: OriginFor&lt;T&gt;`"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg));
 					},
 					<span class="prelude-val">Some</span>(syn::FnArg::Typed(arg)) =&gt; {
 						check_dispatchable_first_arg_type(<span class="kw-2">&amp;</span>arg.ty, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
@@ -920,13 +923,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					},
 					<span class="kw">_ </span>=&gt; {
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, too many weight attributes given"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg));
 					},
 				};
 
 				<span class="kw">if </span>call_idx_attrs.len() &gt; <span class="number">1 </span>{
 					<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, too many call_index attributes given"</span>;
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg));
 				}
 				<span class="kw">let </span>call_index = call_idx_attrs.pop().map(|attr| <span class="kw">match </span>attr {
 					FunctionAttr::CallIndex(idx) =&gt; idx,
@@ -951,7 +954,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					);
 					<span class="kw">let </span><span class="kw-2">mut </span>err = syn::Error::new(used_fn.span(), <span class="kw-2">&amp;</span>msg);
 					err.combine(syn::Error::new(method.sig.ident.span(), msg));
-					<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+					<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 				}
 
 				<span class="kw">let </span><span class="kw-2">mut </span>args = <span class="macro">vec!</span>[];
@@ -967,14 +970,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 					<span class="kw">if </span>arg_attrs.len() &gt; <span class="number">1 </span>{
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, argument has too many attributes"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(arg.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(arg.span(), msg));
 					}
 
 					<span class="kw">let </span>arg_ident = <span class="kw">if let </span>syn::Pat::Ident(pat) = <span class="kw-2">&amp;*</span>arg.pat {
 						pat.ident.clone()
 					} <span class="kw">else </span>{
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, argument must be ident"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(arg.pat.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(arg.pat.span(), msg));
 					};
 
 					args.push((!arg_attrs.is_empty(), arg_ident, arg.ty.clone()));
@@ -984,7 +987,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 				<span class="kw">if </span>feeless_attrs.len() &gt; <span class="number">1 </span>{
 					<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, there can only be one feeless_if attribute"</span>;
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_attrs[<span class="number">1</span>].<span class="number">0</span>, msg))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_attrs[<span class="number">1</span>].<span class="number">0</span>, msg));
 				}
 				<span class="kw">let </span>feeless_check: <span class="prelude-ty">Option</span>&lt;ExprClosure&gt; =
 					feeless_attrs.pop().map(|(<span class="kw">_</span>, attr)| <span class="kw">match </span>attr {
@@ -996,13 +999,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					<span class="kw">if </span>feeless_check.inputs.len() != args.len() + <span class="number">1 </span>{
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure must have same \
 							number of arguments as the dispatchable function"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg));
 					}
 
 					<span class="kw">match </span>feeless_check.inputs.first() {
 						<span class="prelude-val">None </span>=&gt; {
 							<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure must have at least origin arg"</span>;
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg));
 						},
 						<span class="prelude-val">Some</span>(syn::Pat::Type(arg)) =&gt; {
 							check_dispatchable_first_arg_type(<span class="kw-2">&amp;</span>arg.ty, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
@@ -1010,7 +1013,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						<span class="kw">_ </span>=&gt; {
 							<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure first argument must be a typed argument, \
 								e.g. `origin: OriginFor&lt;T&gt;`"</span>;
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg));
 						},
 					}
 
@@ -1021,18 +1024,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 									pat.elem.clone()
 								} <span class="kw">else </span>{
 									<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure argument must be a reference"</span>;
-									<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg))
+									<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg));
 								}
 							} <span class="kw">else </span>{
 								<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure argument must be a type ascription pattern"</span>;
-								<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_arg.span(), msg))
+								<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_arg.span(), msg));
 							};
 
 						<span class="kw">if </span>feeless_arg_type != arg.<span class="number">2 </span>{
 							<span class="kw">let </span>msg =
 								<span class="string">"Invalid pallet::call, feeless_if closure argument must have \
 								a reference to the same type as the dispatchable function argument"</span>;
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_arg.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_arg.span(), msg));
 						}
 					}
 
@@ -1045,7 +1048,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					};
 					<span class="kw">if </span>!valid_return {
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure must return `bool`"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.output.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.output.span(), msg));
 					}
 				}
 
@@ -1063,7 +1066,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				});
 			} <span class="kw">else </span>{
 				<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, only method accepted"</span>;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), msg))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), msg));
 			}
 		}
 
@@ -1075,6 +1078,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			where_clause: item_impl.generics.where_clause.clone(),
 			docs: get_doc_literals(<span class="kw-2">&amp;</span>item_impl.attrs),
 			inherited_call_weight,
+			attrs: item_impl.attrs.clone(),
 		})
 	}
 }

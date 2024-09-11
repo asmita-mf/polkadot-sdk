@@ -1623,6 +1623,47 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1471" id="1471">1471</a>
 <a href="#1472" id="1472">1472</a>
 <a href="#1473" id="1473">1473</a>
+<a href="#1474" id="1474">1474</a>
+<a href="#1475" id="1475">1475</a>
+<a href="#1476" id="1476">1476</a>
+<a href="#1477" id="1477">1477</a>
+<a href="#1478" id="1478">1478</a>
+<a href="#1479" id="1479">1479</a>
+<a href="#1480" id="1480">1480</a>
+<a href="#1481" id="1481">1481</a>
+<a href="#1482" id="1482">1482</a>
+<a href="#1483" id="1483">1483</a>
+<a href="#1484" id="1484">1484</a>
+<a href="#1485" id="1485">1485</a>
+<a href="#1486" id="1486">1486</a>
+<a href="#1487" id="1487">1487</a>
+<a href="#1488" id="1488">1488</a>
+<a href="#1489" id="1489">1489</a>
+<a href="#1490" id="1490">1490</a>
+<a href="#1491" id="1491">1491</a>
+<a href="#1492" id="1492">1492</a>
+<a href="#1493" id="1493">1493</a>
+<a href="#1494" id="1494">1494</a>
+<a href="#1495" id="1495">1495</a>
+<a href="#1496" id="1496">1496</a>
+<a href="#1497" id="1497">1497</a>
+<a href="#1498" id="1498">1498</a>
+<a href="#1499" id="1499">1499</a>
+<a href="#1500" id="1500">1500</a>
+<a href="#1501" id="1501">1501</a>
+<a href="#1502" id="1502">1502</a>
+<a href="#1503" id="1503">1503</a>
+<a href="#1504" id="1504">1504</a>
+<a href="#1505" id="1505">1505</a>
+<a href="#1506" id="1506">1506</a>
+<a href="#1507" id="1507">1507</a>
+<a href="#1508" id="1508">1508</a>
+<a href="#1509" id="1509">1509</a>
+<a href="#1510" id="1510">1510</a>
+<a href="#1511" id="1511">1511</a>
+<a href="#1512" id="1512">1512</a>
+<a href="#1513" id="1513">1513</a>
+<a href="#1514" id="1514">1514</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2257,9 +2298,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	OnEmpty: Get&lt;QueryKind::Query&gt; + <span class="lifetime">'static</span>,
 	MaxValues: Get&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt;,
 {
-	<span class="kw">fn </span>build_metadata(docs: Vec&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;, entries: <span class="kw-2">&amp;mut </span>Vec&lt;StorageEntryMetadataIR&gt;) {
-		&lt;<span class="self">Self </span><span class="kw">as </span>MapWrapper&gt;::Map::build_metadata(docs, entries);
+	<span class="kw">fn </span>build_metadata(
+		deprecation_status: sp_metadata_ir::DeprecationStatusIR,
+		docs: Vec&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;,
+		entries: <span class="kw-2">&amp;mut </span>Vec&lt;StorageEntryMetadataIR&gt;,
+	) {
+		&lt;<span class="self">Self </span><span class="kw">as </span>MapWrapper&gt;::Map::build_metadata(deprecation_status.clone(), docs, entries);
 		CounterFor::&lt;Prefix&gt;::build_metadata(
+			deprecation_status,
 			<span class="macro">vec!</span>[<span class="kw-2">&amp;</span><span class="string">"Counter for the related counted storage map"</span>],
 			entries,
 		);
@@ -2484,8 +2530,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="macro">assert_eq!</span>(A::count(), <span class="number">2</span>);
 
 			<span class="kw">let </span><span class="kw-2">mut </span>entries = <span class="macro">vec!</span>[];
-			A::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
-			AValueQueryWithAnOnEmpty::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
+			A::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
+			AValueQueryWithAnOnEmpty::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
 			<span class="macro">assert_eq!</span>(
 				entries,
 				<span class="macro">vec!</span>[
@@ -2499,6 +2553,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -2510,6 +2565,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						} <span class="kw">else </span>{
 							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 						},
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -2521,6 +2577,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="number">98u32</span>.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -2532,6 +2589,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						} <span class="kw">else </span>{
 							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 						},
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 				]
 			);
@@ -2733,8 +2791,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="macro">assert_eq!</span>(A::count(), <span class="number">2</span>);
 
 			<span class="kw">let </span><span class="kw-2">mut </span>entries = <span class="macro">vec!</span>[];
-			A::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
-			AValueQueryWithAnOnEmpty::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
+			A::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
+			AValueQueryWithAnOnEmpty::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
 			<span class="macro">assert_eq!</span>(
 				entries,
 				<span class="macro">vec!</span>[
@@ -2751,6 +2817,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -2762,6 +2829,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						} <span class="kw">else </span>{
 							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 						},
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -2776,6 +2844,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="number">98u32</span>.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -2787,6 +2856,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						} <span class="kw">else </span>{
 							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 						},
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 				]
 			);
@@ -3019,8 +3089,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="macro">assert_eq!</span>(A::count(), <span class="number">2</span>);
 
 			<span class="kw">let </span><span class="kw-2">mut </span>entries = <span class="macro">vec!</span>[];
-			A::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
-			AValueQueryWithAnOnEmpty::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
+			A::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
+			AValueQueryWithAnOnEmpty::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
 			<span class="macro">assert_eq!</span>(
 				entries,
 				<span class="macro">vec!</span>[
@@ -3038,6 +3116,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -3049,6 +3128,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						} <span class="kw">else </span>{
 							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 						},
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -3064,6 +3144,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="number">98u32</span>.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -3075,6 +3156,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						} <span class="kw">else </span>{
 							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 						},
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 				]
 			);

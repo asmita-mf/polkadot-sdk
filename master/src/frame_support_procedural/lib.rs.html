@@ -1464,6 +1464,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1312" id="1312">1312</a>
 <a href="#1313" id="1313">1313</a>
 <a href="#1314" id="1314">1314</a>
+<a href="#1315" id="1315">1315</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1489,6 +1490,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">mod </span>benchmark;
 <span class="kw">mod </span>construct_runtime;
 <span class="kw">mod </span>crate_version;
+<span class="kw">mod </span>deprecation;
 <span class="kw">mod </span>derive_impl;
 <span class="kw">mod </span>dummy_part_checker;
 <span class="kw">mod </span>dynamic_params;
@@ -2278,7 +2280,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			`RuntimeTask`, `RuntimeOrigin`, `RuntimeParameters` or `PalletInfo`"</span>,
 		)
 		.to_compile_error()
-		.into()
+		.into();
 	}
 	tokens
 }
@@ -2687,7 +2689,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="string">"`#[import_section]` can only be applied to a valid pallet module"</span>,
 		)
 		.to_compile_error()
-		.into()
+		.into();
 	}
 
 	<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>content) = internal_mod.content {

@@ -2731,6 +2731,48 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#2579" id="2579">2579</a>
 <a href="#2580" id="2580">2580</a>
 <a href="#2581" id="2581">2581</a>
+<a href="#2582" id="2582">2582</a>
+<a href="#2583" id="2583">2583</a>
+<a href="#2584" id="2584">2584</a>
+<a href="#2585" id="2585">2585</a>
+<a href="#2586" id="2586">2586</a>
+<a href="#2587" id="2587">2587</a>
+<a href="#2588" id="2588">2588</a>
+<a href="#2589" id="2589">2589</a>
+<a href="#2590" id="2590">2590</a>
+<a href="#2591" id="2591">2591</a>
+<a href="#2592" id="2592">2592</a>
+<a href="#2593" id="2593">2593</a>
+<a href="#2594" id="2594">2594</a>
+<a href="#2595" id="2595">2595</a>
+<a href="#2596" id="2596">2596</a>
+<a href="#2597" id="2597">2597</a>
+<a href="#2598" id="2598">2598</a>
+<a href="#2599" id="2599">2599</a>
+<a href="#2600" id="2600">2600</a>
+<a href="#2601" id="2601">2601</a>
+<a href="#2602" id="2602">2602</a>
+<a href="#2603" id="2603">2603</a>
+<a href="#2604" id="2604">2604</a>
+<a href="#2605" id="2605">2605</a>
+<a href="#2606" id="2606">2606</a>
+<a href="#2607" id="2607">2607</a>
+<a href="#2608" id="2608">2608</a>
+<a href="#2609" id="2609">2609</a>
+<a href="#2610" id="2610">2610</a>
+<a href="#2611" id="2611">2611</a>
+<a href="#2612" id="2612">2612</a>
+<a href="#2613" id="2613">2613</a>
+<a href="#2614" id="2614">2614</a>
+<a href="#2615" id="2615">2615</a>
+<a href="#2616" id="2616">2616</a>
+<a href="#2617" id="2617">2617</a>
+<a href="#2618" id="2618">2618</a>
+<a href="#2619" id="2619">2619</a>
+<a href="#2620" id="2620">2620</a>
+<a href="#2621" id="2621">2621</a>
+<a href="#2622" id="2622">2622</a>
+<a href="#2623" id="2623">2623</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -3784,6 +3826,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 /// [`StorageInfoTrait`](frame_support::traits::StorageInfoTrait) for the pallet using the
 /// [`PartialStorageInfoTrait`](frame_support::traits::PartialStorageInfoTrait)
 /// implementation of storages.
+///
+/// ## Note on deprecation.
+///
+/// - Usage of `deprecated` attribute will propagate deprecation information to the pallet
+///   metadata.
+/// - For general usage examples of `deprecated` attribute please refer to &lt;https://doc.rust-lang.org/nightly/reference/attributes/diagnostics.html#the-deprecated-attribute&gt;
 </span><span class="kw">pub use </span>frame_support_procedural::pallet;
 
 <span class="doccomment">/// Contains macro stubs for all of the `pallet::` macros
@@ -4625,6 +4673,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	///
 	/// The macro also implements `From&lt;Error&lt;T&gt;&gt;` for `&amp;'static str` and `From&lt;Error&lt;T&gt;&gt;` for
 	/// `DispatchError`.
+	///
+	/// ## Note on deprecation of Errors
+	///
+	/// - Usage of `deprecated` attribute will propagate deprecation information to the pallet
+	///   metadata where the item was declared.
+	/// - For general usage examples of `deprecated` attribute please refer to &lt;https://doc.rust-lang.org/nightly/reference/attributes/diagnostics.html#the-deprecated-attribute&gt;
+	/// - It's possible to deprecated either certain variants inside the `Error` or the whole
+	///   `Error` itself. If both the `Error` and its variants are deprecated a compile error
+	///   will be returned.
 	</span><span class="kw">pub use </span>frame_support_procedural::error;
 
 	<span class="doccomment">/// Allows defining pallet events.
@@ -4666,6 +4723,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	/// Each field must implement [`Clone`], [`Eq`], [`PartialEq`], [`codec::Encode`],
 	/// [`codec::Decode`], and [`Debug`] (on std only). For ease of use, bound by the trait
 	/// `Member`, available in [`frame_support::pallet_prelude`].
+	///
+	/// ## Note on deprecation of Events
+	///
+	/// - Usage of `deprecated` attribute will propagate deprecation information to the pallet
+	///   metadata where the item was declared.
+	/// - For general usage examples of `deprecated` attribute please refer to &lt;https://doc.rust-lang.org/nightly/reference/attributes/diagnostics.html#the-deprecated-attribute&gt;
+	/// - It's possible to deprecated either certain variants inside the `Event` or the whole
+	///   `Event` itself. If both the `Event` and its variants are deprecated a compile error
+	///   will be returned.
 	</span><span class="kw">pub use </span>frame_support_procedural::event;
 
 	<span class="doccomment">/// Allows a pallet to declare a set of functions as a *dispatchable extrinsic*.
@@ -4786,6 +4852,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	/// 	pub trait Config: frame_system::Config {}
 	/// }
 	/// ```
+	///
+	/// ## Note on deprecation of Calls
+	///
+	/// - Usage of `deprecated` attribute will propagate deprecation information to the pallet
+	///   metadata where the item was declared.
+	/// - For general usage examples of `deprecated` attribute please refer to &lt;https://doc.rust-lang.org/nightly/reference/attributes/diagnostics.html#the-deprecated-attribute&gt;
 	</span><span class="kw">pub use </span>frame_support_procedural::call;
 
 	<span class="doccomment">/// Enforce the index of a variant in the generated `enum Call`.
@@ -4918,6 +4990,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	/// 	}
 	/// }
 	/// ```
+	///
+	/// ## Note on deprecation of constants
+	///
+	/// - Usage of `deprecated` attribute will propagate deprecation information to the pallet
+	///   metadata where the item was declared.
+	/// - For general usage examples of `deprecated` attribute please refer to &lt;https://doc.rust-lang.org/nightly/reference/attributes/diagnostics.html#the-deprecated-attribute&gt;
 	</span><span class="kw">pub use </span>frame_support_procedural::constant;
 
 	<span class="doccomment">/// Declares a type alias as a storage item.
@@ -5136,6 +5214,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	///     pub type Foo&lt;T&gt; = StorageValue&lt;_, u32, ValueQuery&gt;;
 	/// }
 	/// ```
+	///
+	/// ## Note on deprecation of storage items
+	///
+	/// - Usage of `deprecated` attribute will propagate deprecation information to the pallet
+	///   metadata where the storage item was declared.
+	/// - For general usage examples of `deprecated` attribute please refer to &lt;https://doc.rust-lang.org/nightly/reference/attributes/diagnostics.html#the-deprecated-attribute&gt;
 	</span><span class="kw">pub use </span>frame_support_procedural::storage;
 
 	<span class="kw">pub use </span>frame_support_procedural::{

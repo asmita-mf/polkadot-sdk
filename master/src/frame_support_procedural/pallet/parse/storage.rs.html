@@ -1097,6 +1097,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#945" id="945">945</a>
 <a href="#946" id="946">946</a>
 <a href="#947" id="947">947</a>
+<a href="#948" id="948">948</a>
+<a href="#949" id="949">949</a>
+<a href="#950" id="950">950</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1306,6 +1309,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>try_decode: bool,
 	<span class="doccomment">/// Whether or not a default hasher is allowed to replace `_`
 	</span><span class="kw">pub </span>use_default_hasher: bool,
+	<span class="doccomment">/// Attributes
+	</span><span class="kw">pub </span>attrs: Vec&lt;syn::Attribute&gt;,
 }
 
 <span class="doccomment">/// The parsed generic from the
@@ -1472,7 +1477,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, Duplicated named generic"</span>;
 			<span class="kw">let </span><span class="kw-2">mut </span>err = syn::Error::new(arg.ident.span(), msg);
 			err.combine(syn::Error::new(other.ident.span(), msg));
-			<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+			<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 		}
 		parsed.insert(arg.ident.to_string(), arg.clone());
 	}
@@ -1765,7 +1770,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				in order to expand metadata, found `{}`."</span>,
 				found,
 			);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(segment.ident.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(segment.ident.span(), msg));
 		},
 	};
 
@@ -1776,7 +1781,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">_ </span>=&gt; {
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, invalid number of generic generic arguments, \
 				expect more that 0 generic arguments."</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(segment.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(segment.span(), msg));
 		},
 	};
 
@@ -1823,7 +1828,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		typ
 	} <span class="kw">else </span>{
 		<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected type path"</span>;
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg));
 	};
 
 	<span class="kw">let </span>key_struct = typ.path.segments.last().ok_or_else(|| {
@@ -1832,14 +1837,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	})<span class="question-mark">?</span>;
 	<span class="kw">if </span>key_struct.ident != <span class="string">"Key" </span>&amp;&amp; key_struct.ident != <span class="string">"NMapKey" </span>{
 		<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected Key or NMapKey struct"</span>;
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(key_struct.ident.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(key_struct.ident.span(), msg));
 	}
 
 	<span class="kw">let </span>ty_params = <span class="kw">if let </span>syn::PathArguments::AngleBracketed(args) = <span class="kw-2">&amp;</span>key_struct.arguments {
 		args
 	} <span class="kw">else </span>{
 		<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected angle bracketed arguments"</span>;
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(key_struct.arguments.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(key_struct.arguments.span(), msg));
 	};
 
 	<span class="kw">if </span>ty_params.args.len() != <span class="number">2 </span>{
@@ -1848,14 +1853,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			for Key struct, expected 2 args, found {}"</span>,
 			ty_params.args.len()
 		);
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty_params.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty_params.span(), msg));
 	}
 
 	<span class="kw">let </span>key = <span class="kw">match </span><span class="kw-2">&amp;</span>ty_params.args[<span class="number">1</span>] {
 		syn::GenericArgument::Type(key_ty) =&gt; key_ty.clone(),
 		<span class="kw">_ </span>=&gt; {
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected type"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty_params.args[<span class="number">1</span>].span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty_params.args[<span class="number">1</span>].span(), msg));
 		},
 	};
 
@@ -1889,7 +1894,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>item = <span class="kw">if let </span>syn::Item::Type(item) = item {
 			item
 		} <span class="kw">else </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="string">"Invalid pallet::storage, expect item type."</span>))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="string">"Invalid pallet::storage, expect item type."</span>));
 		};
 
 		<span class="kw">let </span>attrs: Vec&lt;PalletStorageAttr&gt; = helper::take_item_pallet_attrs(<span class="kw-2">&amp;mut </span>item.attrs)<span class="question-mark">?</span>;
@@ -1909,12 +1914,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			typ
 		} <span class="kw">else </span>{
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected type path"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.ty.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.ty.span(), msg));
 		};
 
 		<span class="kw">if </span>typ.path.segments.len() != <span class="number">1 </span>{
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected type path with one segment"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.ty.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.ty.span(), msg));
 		}
 
 		<span class="kw">let </span>(named_generics, metadata, query_kind, use_default_hasher) =
@@ -1957,7 +1962,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								for ResultQuery, expected 1 type argument, found {}"</span>,
 								args.len(),
 							);
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(args.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(args.span(), msg));
 						}
 
 						args[<span class="number">0</span>].clone()
@@ -1968,7 +1973,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							expected angle-bracketed arguments, found `{}`"</span>,
 							args.to_token_stream().to_string()
 						);
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(args.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(args.span(), msg));
 					},
 				};
 
@@ -1984,7 +1989,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								segments, found {}"</span>,
 								err_variant.len(),
 							);
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(err_variant.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(err_variant.span(), msg));
 						}
 						<span class="kw">let </span><span class="kw-2">mut </span>error = err_variant.clone();
 						<span class="kw">let </span>err_variant = error
@@ -2020,7 +2025,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, cannot generate getter because QueryKind is not \
 				identifiable. QueryKind must be `OptionQuery`, `ResultQuery`, `ValueQuery`, or default \
 				one to be identifiable."</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(getter.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(getter.span(), msg));
 		}
 
 		<span class="prelude-val">Ok</span>(StorageDef {
@@ -2041,6 +2046,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			whitelisted,
 			try_decode,
 			use_default_hasher,
+			attrs: item.attrs.clone(),
 		})
 	}
 }

@@ -303,6 +303,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#151" id="151">151</a>
 <a href="#152" id="152">152</a>
 <a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -356,6 +359,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>doc: Vec&lt;syn::Expr&gt;,
 	<span class="doccomment">/// Optional MetaData Name
 	</span><span class="kw">pub </span>metadata_name: <span class="prelude-ty">Option</span>&lt;syn::Ident&gt;,
+	<span class="doccomment">/// Attributes
+	</span><span class="kw">pub </span>attrs: Vec&lt;syn::Attribute&gt;,
 }
 
 <span class="doccomment">/// Attributes for functions in extra_constants impl block.
@@ -387,7 +392,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(
 				item.span(),
 				<span class="string">"Invalid pallet::extra_constants, expected item impl"</span>,
-			))
+			));
 		};
 
 		<span class="kw">let </span>instances = <span class="macro">vec!</span>[
@@ -398,7 +403,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">if let </span><span class="prelude-val">Some</span>((<span class="kw">_</span>, <span class="kw">_</span>, for_)) = item.trait_ {
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, expected no trait ident as in \
 				`impl&lt;..&gt; Pallet&lt;..&gt; { .. }`"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(for_.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(for_.span(), msg));
 		}
 
 		<span class="kw">let </span><span class="kw-2">mut </span>extra_constants = <span class="macro">vec!</span>[];
@@ -407,28 +412,28 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				method
 			} <span class="kw">else </span>{
 				<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, only method accepted"</span>;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(impl_item.span(), msg))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(impl_item.span(), msg));
 			};
 
 			<span class="kw">if </span>!method.sig.inputs.is_empty() {
 				<span class="kw">let </span>msg = <span class="string">"Invalid pallet::extra_constants, method must have 0 args"</span>;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg));
 			}
 
 			<span class="kw">if </span>!method.sig.generics.params.is_empty() {
 				<span class="kw">let </span>msg = <span class="string">"Invalid pallet::extra_constants, method must have 0 generics"</span>;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.generics.params[<span class="number">0</span>].span(), msg))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.generics.params[<span class="number">0</span>].span(), msg));
 			}
 
 			<span class="kw">if </span>method.sig.generics.where_clause.is_some() {
 				<span class="kw">let </span>msg = <span class="string">"Invalid pallet::extra_constants, method must have no where clause"</span>;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.generics.where_clause.span(), msg))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.generics.where_clause.span(), msg));
 			}
 
 			<span class="kw">let </span>type_ = <span class="kw">match </span><span class="kw-2">&amp;</span>method.sig.output {
 				syn::ReturnType::Default =&gt; {
 					<span class="kw">let </span>msg = <span class="string">"Invalid pallet::extra_constants, method must have a return type"</span>;
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.span(), msg))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.span(), msg));
 				},
 				syn::ReturnType::Type(<span class="kw">_</span>, type_) =&gt; <span class="kw-2">*</span>type_.clone(),
 			};
@@ -440,7 +445,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">if </span>extra_constant_attrs.len() &gt; <span class="number">1 </span>{
 				<span class="kw">let </span>msg =
 					<span class="string">"Invalid attribute in pallet::constant_name, only one attribute is expected"</span>;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(extra_constant_attrs[<span class="number">1</span>].metadata_name.span(), msg))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(extra_constant_attrs[<span class="number">1</span>].metadata_name.span(), msg));
 			}
 
 			<span class="kw">let </span>metadata_name = extra_constant_attrs.pop().map(|attr| attr.metadata_name);
@@ -450,6 +455,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				type_,
 				doc: get_doc_literals(<span class="kw-2">&amp;</span>method.attrs),
 				metadata_name,
+				attrs: method.attrs.clone(),
 			});
 		}
 

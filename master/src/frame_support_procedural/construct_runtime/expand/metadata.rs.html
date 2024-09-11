@@ -408,6 +408,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#256" id="256">256</a>
 <a href="#257" id="257">257</a>
 <a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -456,7 +461,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>index = <span class="kw-2">&amp;</span>decl.index;
 			<span class="kw">let </span>storage = expand_pallet_metadata_storage(<span class="kw-2">&amp;</span>filtered_names, runtime, decl);
 			<span class="kw">let </span>calls = expand_pallet_metadata_calls(<span class="kw-2">&amp;</span>filtered_names, runtime, decl);
-			<span class="kw">let </span>event = expand_pallet_metadata_events(<span class="kw-2">&amp;</span>filtered_names, runtime, scrate, decl);
+			<span class="kw">let </span>event = expand_pallet_metadata_events(<span class="kw-2">&amp;</span>filtered_names, runtime, decl);
 			<span class="kw">let </span>constants = expand_pallet_metadata_constants(runtime, decl);
 			<span class="kw">let </span>errors = expand_pallet_metadata_errors(runtime, decl);
 			<span class="kw">let </span>docs = expand_pallet_metadata_docs(runtime, decl);
@@ -468,7 +473,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					#attr
 				}
 			});
-
+			<span class="kw">let </span>deprecation_info = expand_pallet_metadata_deprecation(runtime, decl);
 			<span class="macro">quote! </span>{
 				#attr
 				#scrate::__private::metadata_ir::PalletMetadataIR {
@@ -480,6 +485,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					constants: #constants,
 					error: #errors,
 					docs: #docs,
+					deprecation_info: #deprecation_info,
 				}
 			}
 		})
@@ -610,7 +616,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">fn </span>expand_pallet_metadata_events(
 	filtered_names: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str],
 	runtime: <span class="kw-2">&amp;</span>Ident,
-	scrate: <span class="kw-2">&amp;</span>TokenStream,
 	decl: <span class="kw-2">&amp;</span>Pallet,
 ) -&gt; TokenStream {
 	<span class="kw">if </span>filtered_names.contains(<span class="kw-2">&amp;</span><span class="string">"Event"</span>) {
@@ -630,14 +635,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="macro">quote! </span>{
 			<span class="prelude-val">Some</span>(
-				#scrate::__private::metadata_ir::PalletEventMetadataIR {
-					ty: #scrate::__private::scale_info::meta_type::&lt;#pallet_event&gt;()
-				}
+				#pallet_event::event_metadata::&lt;#pallet_event&gt;()
 			)
 		}
 	} <span class="kw">else </span>{
 		<span class="macro">quote!</span>(<span class="prelude-val">None</span>)
 	}
+}
+
+<span class="kw">fn </span>expand_pallet_metadata_deprecation(runtime: <span class="kw-2">&amp;</span>Ident, decl: <span class="kw-2">&amp;</span>Pallet) -&gt; TokenStream {
+	<span class="kw">let </span>path = <span class="kw-2">&amp;</span>decl.path;
+	<span class="kw">let </span>instance = decl.instance.as_ref().into_iter();
+
+	<span class="macro">quote! </span>{ #path::Pallet::&lt;#runtime #(, #path::#instance)<span class="kw-2">*</span>&gt;::deprecation_info() }
 }
 
 <span class="kw">fn </span>expand_pallet_metadata_constants(runtime: <span class="kw-2">&amp;</span>Ident, decl: <span class="kw-2">&amp;</span>Pallet) -&gt; TokenStream {

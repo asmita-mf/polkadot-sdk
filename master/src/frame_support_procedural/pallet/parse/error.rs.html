@@ -257,6 +257,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#105" id="105">105</a>
 <a href="#106" id="106">106</a>
 <a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -312,6 +314,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>error: keyword::Error,
 	<span class="doccomment">/// The span of the pallet::error attribute.
 	</span><span class="kw">pub </span>attr_span: proc_macro2::Span,
+	<span class="doccomment">/// Attributes
+	</span><span class="kw">pub </span>attrs: Vec&lt;syn::Attribute&gt;,
 }
 
 <span class="kw">impl </span>ErrorDef {
@@ -361,7 +365,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			})
 			.collect::&lt;<span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;()<span class="question-mark">?</span>;
 
-		<span class="prelude-val">Ok</span>(ErrorDef { attr_span, index, variants, instances, error })
+		<span class="prelude-val">Ok</span>(ErrorDef { attr_span, index, variants, instances, error, attrs: item.attrs.clone() })
 	}
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>

@@ -440,6 +440,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#288" id="288">288</a>
 <a href="#289" id="289">289</a>
 <a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -525,9 +536,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">impl</span>&lt;#type_impl_gen&gt; #pallet_ident&lt;#type_use_gen&gt; #config_where_clause {
 				<span class="attr">#[doc(hidden)]
 				</span><span class="kw">pub fn </span>error_metadata() -&gt; <span class="prelude-ty">Option</span>&lt;#frame_support::__private::metadata_ir::PalletErrorMetadataIR&gt; {
-					<span class="prelude-val">Some</span>(#frame_support::__private::metadata_ir::PalletErrorMetadataIR {
-						ty: #frame_support::__private::scale_info::meta_type::&lt;#error_ident&lt;#type_use_gen&gt;&gt;()
-					})
+					<span class="prelude-val">Some</span>(&lt;#error_ident&lt;#type_use_gen&gt;&gt;::error_metadata())
 				}
 			}
 		)
@@ -629,7 +638,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			}
 		}
 	];
-
+	<span class="kw">let </span>deprecation_status =
+		<span class="kw">match </span><span class="kw">crate</span>::deprecation::get_deprecation(<span class="kw-2">&amp;</span><span class="macro">quote::quote! </span>{#frame_support}, <span class="kw-2">&amp;</span>def.item.attrs)
+		{
+			<span class="prelude-val">Ok</span>(deprecation) =&gt; deprecation,
+			<span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span>e.into_compile_error(),
+		};
 	<span class="macro">quote::quote_spanned!</span>(def.pallet_struct.attr_span =&gt;
 		#pallet_error_metadata
 
@@ -728,6 +742,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		#storage_info
 		#whitelisted_storage_keys_impl
+
+		<span class="kw">impl</span>&lt;#type_use_gen&gt; #pallet_ident&lt;#type_use_gen&gt; {
+			<span class="attr">#[allow(dead_code)]
+			#[doc(hidden)]
+			</span><span class="kw">pub fn </span>deprecation_info() -&gt; #frame_support::__private::metadata_ir::DeprecationStatusIR {
+				#deprecation_status
+			}
+		}
 	)
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>

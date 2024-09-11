@@ -754,8 +754,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">loop </span>{
 			previous_key = <span class="self">Self</span>::translate_next(previous_key, <span class="kw-2">&amp;mut </span>f);
 			<span class="kw">if </span>previous_key.is_none() {
-				<span class="kw">break
-			</span>}
+				<span class="kw">break</span>;
+			}
 		}
 	}
 
@@ -776,7 +776,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					<span class="string">"Invalid translation: failed to decode old value for key"</span>,
 					array_bytes::bytes2hex(<span class="string">"0x"</span>, <span class="kw-2">&amp;</span>current_key)
 				);
-				<span class="kw">return </span><span class="prelude-val">Some</span>(current_key)
+				<span class="kw">return </span><span class="prelude-val">Some</span>(current_key);
 			},
 		};
 
@@ -788,7 +788,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					<span class="string">"Invalid translation: failed to decode key"</span>,
 					array_bytes::bytes2hex(<span class="string">"0x"</span>, <span class="kw-2">&amp;</span>current_key)
 				);
-				<span class="kw">return </span><span class="prelude-val">Some</span>(current_key)
+				<span class="kw">return </span><span class="prelude-val">Some</span>(current_key);
 			},
 		};
 

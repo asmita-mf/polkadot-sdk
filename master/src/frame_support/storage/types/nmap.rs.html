@@ -1467,6 +1467,41 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1315" id="1315">1315</a>
 <a href="#1316" id="1316">1316</a>
 <a href="#1317" id="1317">1317</a>
+<a href="#1318" id="1318">1318</a>
+<a href="#1319" id="1319">1319</a>
+<a href="#1320" id="1320">1320</a>
+<a href="#1321" id="1321">1321</a>
+<a href="#1322" id="1322">1322</a>
+<a href="#1323" id="1323">1323</a>
+<a href="#1324" id="1324">1324</a>
+<a href="#1325" id="1325">1325</a>
+<a href="#1326" id="1326">1326</a>
+<a href="#1327" id="1327">1327</a>
+<a href="#1328" id="1328">1328</a>
+<a href="#1329" id="1329">1329</a>
+<a href="#1330" id="1330">1330</a>
+<a href="#1331" id="1331">1331</a>
+<a href="#1332" id="1332">1332</a>
+<a href="#1333" id="1333">1333</a>
+<a href="#1334" id="1334">1334</a>
+<a href="#1335" id="1335">1335</a>
+<a href="#1336" id="1336">1336</a>
+<a href="#1337" id="1337">1337</a>
+<a href="#1338" id="1338">1338</a>
+<a href="#1339" id="1339">1339</a>
+<a href="#1340" id="1340">1340</a>
+<a href="#1341" id="1341">1341</a>
+<a href="#1342" id="1342">1342</a>
+<a href="#1343" id="1343">1343</a>
+<a href="#1344" id="1344">1344</a>
+<a href="#1345" id="1345">1345</a>
+<a href="#1346" id="1346">1346</a>
+<a href="#1347" id="1347">1347</a>
+<a href="#1348" id="1348">1348</a>
+<a href="#1349" id="1349">1349</a>
+<a href="#1350" id="1350">1350</a>
+<a href="#1351" id="1351">1351</a>
+<a href="#1352" id="1352">1352</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2052,7 +2087,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	OnEmpty: Get&lt;QueryKind::Query&gt; + <span class="lifetime">'static</span>,
 	MaxValues: Get&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt;,
 {
-	<span class="kw">fn </span>build_metadata(docs: Vec&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;, entries: <span class="kw-2">&amp;mut </span>Vec&lt;StorageEntryMetadataIR&gt;) {
+	<span class="kw">fn </span>build_metadata(
+		deprecation_status: sp_metadata_ir::DeprecationStatusIR,
+		docs: Vec&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;,
+		entries: <span class="kw-2">&amp;mut </span>Vec&lt;StorageEntryMetadataIR&gt;,
+	) {
 		<span class="kw">let </span>docs = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">"no-metadata-docs"</span>) { <span class="macro">vec!</span>[] } <span class="kw">else </span>{ docs };
 
 		<span class="kw">let </span>entry = StorageEntryMetadataIR {
@@ -2065,6 +2104,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			},
 			default: OnEmpty::get().encode(),
 			docs,
+			deprecation_info: deprecation_status,
 		};
 
 		entries.push(entry);
@@ -2289,8 +2329,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="macro">assert_eq!</span>(A::iter().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(), <span class="macro">vec!</span>[(<span class="number">4</span>, <span class="number">40</span>), (<span class="number">3</span>, <span class="number">30</span>)]);
 
 			<span class="kw">let </span><span class="kw-2">mut </span>entries = <span class="macro">vec!</span>[];
-			A::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
-			AValueQueryWithAnOnEmpty::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
+			A::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
+			AValueQueryWithAnOnEmpty::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
 			<span class="macro">assert_eq!</span>(
 				entries,
 				<span class="macro">vec!</span>[
@@ -2304,6 +2352,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -2315,6 +2364,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="number">98u32</span>.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					}
 				]
 			);
@@ -2489,8 +2539,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="macro">assert_eq!</span>(A::iter().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(), <span class="macro">vec!</span>[((<span class="number">4</span>, <span class="number">40</span>), <span class="number">1600</span>), ((<span class="number">3</span>, <span class="number">30</span>), <span class="number">900</span>)]);
 
 			<span class="kw">let </span><span class="kw-2">mut </span>entries = <span class="macro">vec!</span>[];
-			A::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
-			AValueQueryWithAnOnEmpty::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
+			A::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
+			AValueQueryWithAnOnEmpty::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
 			<span class="macro">assert_eq!</span>(
 				entries,
 				<span class="macro">vec!</span>[
@@ -2507,6 +2565,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -2521,6 +2580,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="number">98u32</span>.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					}
 				]
 			);
@@ -2730,8 +2790,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="macro">assert_eq!</span>(A::iter().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(), <span class="macro">vec!</span>[((<span class="number">4</span>, <span class="number">40</span>, <span class="number">400</span>), <span class="number">4</span>), ((<span class="number">3</span>, <span class="number">30</span>, <span class="number">300</span>), <span class="number">3</span>)]);
 
 			<span class="kw">let </span><span class="kw-2">mut </span>entries = <span class="macro">vec!</span>[];
-			A::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
-			AValueQueryWithAnOnEmpty::build_metadata(<span class="macro">vec!</span>[], <span class="kw-2">&amp;mut </span>entries);
+			A::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
+			AValueQueryWithAnOnEmpty::build_metadata(
+				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+				<span class="macro">vec!</span>[],
+				<span class="kw-2">&amp;mut </span>entries,
+			);
 			<span class="macro">assert_eq!</span>(
 				entries,
 				<span class="macro">vec!</span>[
@@ -2749,6 +2817,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					},
 					StorageEntryMetadataIR {
 						name: <span class="string">"Foo"</span>,
@@ -2764,6 +2833,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						},
 						default: <span class="number">98u32</span>.encode(),
 						docs: <span class="macro">vec!</span>[],
+						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
 					}
 				]
 			);

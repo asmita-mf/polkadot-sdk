@@ -422,6 +422,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#270" id="270">270</a>
 <a href="#271" id="271">271</a>
 <a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -518,8 +528,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">let </span>is_changed_in =
 			method.attrs.iter().any(|attr| attr.path().is_ident(CHANGED_IN_ATTRIBUTE));
 		<span class="kw">if </span>is_changed_in {
-			<span class="kw">continue
-		</span>}
+			<span class="kw">continue</span>;
+		}
 
 		<span class="kw">let </span><span class="kw-2">mut </span>inputs = Vec::new();
 		<span class="kw">let </span>signature = <span class="kw-2">&amp;</span>method.sig;
@@ -555,6 +565,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="comment">// Include the method metadata only if its `cfg` features are enabled.
 		</span><span class="kw">let </span>attrs = filter_cfg_attributes(<span class="kw-2">&amp;</span>method.attrs);
+		<span class="kw">let </span>deprecation = <span class="kw">match </span><span class="kw">crate</span>::utils::get_deprecation(<span class="kw-2">&amp;</span>crate_, <span class="kw-2">&amp;</span>method.attrs) {
+			<span class="prelude-val">Ok</span>(deprecation) =&gt; deprecation,
+			<span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span>e.into_compile_error(),
+		};
 		methods.push(<span class="macro">quote!</span>(
 			#( #attrs )*
 			#crate_::metadata_ir::RuntimeApiMethodMetadataIR {
@@ -562,6 +576,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				inputs: #<span class="macro">crate_::vec!</span>[ #( #inputs, )* ],
 				output: #output,
 				docs: #docs,
+				deprecation_info: #deprecation,
 			}
 		));
 	}
@@ -569,6 +584,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>trait_name_ident = <span class="kw-2">&amp;</span>decl.ident;
 	<span class="kw">let </span>trait_name = trait_name_ident.to_string();
 	<span class="kw">let </span>docs = collect_docs(<span class="kw-2">&amp;</span>decl.attrs, <span class="kw-2">&amp;</span>crate_);
+	<span class="kw">let </span>deprecation = <span class="kw">match </span><span class="kw">crate</span>::utils::get_deprecation(<span class="kw-2">&amp;</span>crate_, <span class="kw-2">&amp;</span>decl.attrs) {
+		<span class="prelude-val">Ok</span>(deprecation) =&gt; deprecation,
+		<span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span>e.into_compile_error(),
+	};
 	<span class="kw">let </span>attrs = filter_cfg_attributes(<span class="kw-2">&amp;</span>decl.attrs);
 	<span class="comment">// The trait generics where already extended with `Block: BlockT`.
 	</span><span class="kw">let </span><span class="kw-2">mut </span>generics = decl.generics.clone();
@@ -598,6 +617,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					name: #trait_name,
 					methods: #<span class="macro">crate_::vec!</span>[ #( #methods, )* ],
 					docs: #docs,
+					deprecation_info: #deprecation,
 				}
 			}
 		}
@@ -611,7 +631,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 /// exposed by `generate_decl_runtime_metadata`.
 </span><span class="kw">pub fn </span>generate_impl_runtime_metadata(impls: <span class="kw-2">&amp;</span>[ItemImpl]) -&gt; <span class="prelude-ty">Result</span>&lt;TokenStream2&gt; {
 	<span class="kw">if </span>impls.is_empty() {
-		<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="macro">quote!</span>())
+		<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="macro">quote!</span>());
 	}
 
 	<span class="kw">let </span>crate_ = generate_crate_access();
