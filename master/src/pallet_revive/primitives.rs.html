@@ -541,7 +541,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="doccomment">/// Output of a contract call or instantiation which ran to completion.
-</span><span class="attr">#[derive(Clone, PartialEq, Eq, Encode, Decode, RuntimeDebug, TypeInfo)]
+</span><span class="attr">#[derive(Clone, PartialEq, Eq, Encode, Decode, RuntimeDebug, TypeInfo, Default)]
 </span><span class="kw">pub struct </span>ExecReturnValue {
 	<span class="doccomment">/// Flags passed along by `seal_return`. Empty when `seal_return` was never called.
 	</span><span class="kw">pub </span>flags: ReturnFlags,

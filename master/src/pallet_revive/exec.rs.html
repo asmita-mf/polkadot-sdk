@@ -4153,6 +4153,101 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#4001" id="4001">4001</a>
 <a href="#4002" id="4002">4002</a>
 <a href="#4003" id="4003">4003</a>
+<a href="#4004" id="4004">4004</a>
+<a href="#4005" id="4005">4005</a>
+<a href="#4006" id="4006">4006</a>
+<a href="#4007" id="4007">4007</a>
+<a href="#4008" id="4008">4008</a>
+<a href="#4009" id="4009">4009</a>
+<a href="#4010" id="4010">4010</a>
+<a href="#4011" id="4011">4011</a>
+<a href="#4012" id="4012">4012</a>
+<a href="#4013" id="4013">4013</a>
+<a href="#4014" id="4014">4014</a>
+<a href="#4015" id="4015">4015</a>
+<a href="#4016" id="4016">4016</a>
+<a href="#4017" id="4017">4017</a>
+<a href="#4018" id="4018">4018</a>
+<a href="#4019" id="4019">4019</a>
+<a href="#4020" id="4020">4020</a>
+<a href="#4021" id="4021">4021</a>
+<a href="#4022" id="4022">4022</a>
+<a href="#4023" id="4023">4023</a>
+<a href="#4024" id="4024">4024</a>
+<a href="#4025" id="4025">4025</a>
+<a href="#4026" id="4026">4026</a>
+<a href="#4027" id="4027">4027</a>
+<a href="#4028" id="4028">4028</a>
+<a href="#4029" id="4029">4029</a>
+<a href="#4030" id="4030">4030</a>
+<a href="#4031" id="4031">4031</a>
+<a href="#4032" id="4032">4032</a>
+<a href="#4033" id="4033">4033</a>
+<a href="#4034" id="4034">4034</a>
+<a href="#4035" id="4035">4035</a>
+<a href="#4036" id="4036">4036</a>
+<a href="#4037" id="4037">4037</a>
+<a href="#4038" id="4038">4038</a>
+<a href="#4039" id="4039">4039</a>
+<a href="#4040" id="4040">4040</a>
+<a href="#4041" id="4041">4041</a>
+<a href="#4042" id="4042">4042</a>
+<a href="#4043" id="4043">4043</a>
+<a href="#4044" id="4044">4044</a>
+<a href="#4045" id="4045">4045</a>
+<a href="#4046" id="4046">4046</a>
+<a href="#4047" id="4047">4047</a>
+<a href="#4048" id="4048">4048</a>
+<a href="#4049" id="4049">4049</a>
+<a href="#4050" id="4050">4050</a>
+<a href="#4051" id="4051">4051</a>
+<a href="#4052" id="4052">4052</a>
+<a href="#4053" id="4053">4053</a>
+<a href="#4054" id="4054">4054</a>
+<a href="#4055" id="4055">4055</a>
+<a href="#4056" id="4056">4056</a>
+<a href="#4057" id="4057">4057</a>
+<a href="#4058" id="4058">4058</a>
+<a href="#4059" id="4059">4059</a>
+<a href="#4060" id="4060">4060</a>
+<a href="#4061" id="4061">4061</a>
+<a href="#4062" id="4062">4062</a>
+<a href="#4063" id="4063">4063</a>
+<a href="#4064" id="4064">4064</a>
+<a href="#4065" id="4065">4065</a>
+<a href="#4066" id="4066">4066</a>
+<a href="#4067" id="4067">4067</a>
+<a href="#4068" id="4068">4068</a>
+<a href="#4069" id="4069">4069</a>
+<a href="#4070" id="4070">4070</a>
+<a href="#4071" id="4071">4071</a>
+<a href="#4072" id="4072">4072</a>
+<a href="#4073" id="4073">4073</a>
+<a href="#4074" id="4074">4074</a>
+<a href="#4075" id="4075">4075</a>
+<a href="#4076" id="4076">4076</a>
+<a href="#4077" id="4077">4077</a>
+<a href="#4078" id="4078">4078</a>
+<a href="#4079" id="4079">4079</a>
+<a href="#4080" id="4080">4080</a>
+<a href="#4081" id="4081">4081</a>
+<a href="#4082" id="4082">4082</a>
+<a href="#4083" id="4083">4083</a>
+<a href="#4084" id="4084">4084</a>
+<a href="#4085" id="4085">4085</a>
+<a href="#4086" id="4086">4086</a>
+<a href="#4087" id="4087">4087</a>
+<a href="#4088" id="4088">4088</a>
+<a href="#4089" id="4089">4089</a>
+<a href="#4090" id="4090">4090</a>
+<a href="#4091" id="4091">4091</a>
+<a href="#4092" id="4092">4092</a>
+<a href="#4093" id="4093">4093</a>
+<a href="#4094" id="4094">4094</a>
+<a href="#4095" id="4095">4095</a>
+<a href="#4096" id="4096">4096</a>
+<a href="#4097" id="4097">4097</a>
+<a href="#4098" id="4098">4098</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -4218,6 +4313,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Type for variable sized storage key. Used for transparent hashing.
 </span><span class="kw">type </span>VarSizedKey = BoundedVec&lt;u8, ConstU32&lt;{ limits::STORAGE_KEY_BYTES }&gt;&gt;;
+
+<span class="kw">const </span>FRAME_ALWAYS_EXISTS_ON_INSTANTIATE: <span class="kw-2">&amp;</span>str = <span class="string">"The return value is only `None` if no contract exists at the specified address. This cannot happen on instantiate or delegate; qed"</span>;
 
 <span class="doccomment">/// Combined key type for both fixed and variable sized storage keys.
 </span><span class="kw">pub enum </span>Key {
@@ -4746,26 +4843,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span>Terminated,
 }
 
-<span class="kw">impl</span>&lt;T: Config&gt; CachedContract&lt;T&gt; {
-	<span class="doccomment">/// Return `Some(ContractInfo)` if the contract is in cached state. `None` otherwise.
-	</span><span class="kw">fn </span>into_contract(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ContractInfo&lt;T&gt;&gt; {
-		<span class="kw">if let </span>CachedContract::Cached(contract) = <span class="self">self </span>{
-			<span class="prelude-val">Some</span>(contract)
-		} <span class="kw">else </span>{
-			<span class="prelude-val">None
-		</span>}
-	}
-
-	<span class="doccomment">/// Return `Some(&amp;mut ContractInfo)` if the contract is in cached state. `None` otherwise.
-	</span><span class="kw">fn </span>as_contract(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>ContractInfo&lt;T&gt;&gt; {
-		<span class="kw">if let </span>CachedContract::Cached(contract) = <span class="self">self </span>{
-			<span class="prelude-val">Some</span>(contract)
-		} <span class="kw">else </span>{
-			<span class="prelude-val">None
-		</span>}
-	}
-}
-
 <span class="kw">impl</span>&lt;T: Config&gt; Frame&lt;T&gt; {
 	<span class="doccomment">/// Return the `contract_info` of the current contract.
 	</span><span class="kw">fn </span>contract_info(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>ContractInfo&lt;T&gt; {
@@ -4823,6 +4900,24 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="kw">impl</span>&lt;T: Config&gt; CachedContract&lt;T&gt; {
+	<span class="doccomment">/// Return `Some(ContractInfo)` if the contract is in cached state. `None` otherwise.
+	</span><span class="kw">fn </span>into_contract(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ContractInfo&lt;T&gt;&gt; {
+		<span class="kw">if let </span>CachedContract::Cached(contract) = <span class="self">self </span>{
+			<span class="prelude-val">Some</span>(contract)
+		} <span class="kw">else </span>{
+			<span class="prelude-val">None
+		</span>}
+	}
+
+	<span class="doccomment">/// Return `Some(&amp;mut ContractInfo)` if the contract is in cached state. `None` otherwise.
+	</span><span class="kw">fn </span>as_contract(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>ContractInfo&lt;T&gt;&gt; {
+		<span class="kw">if let </span>CachedContract::Cached(contract) = <span class="self">self </span>{
+			<span class="prelude-val">Some</span>(contract)
+		} <span class="kw">else </span>{
+			<span class="prelude-val">None
+		</span>}
+	}
+
 	<span class="doccomment">/// Load the `contract_info` from storage if necessary.
 	</span><span class="kw">fn </span>load(<span class="kw-2">&amp;mut </span><span class="self">self</span>, account_id: <span class="kw-2">&amp;</span>T::AccountId) {
 		<span class="kw">if let </span>CachedContract::Invalidated = <span class="self">self </span>{
@@ -4872,20 +4967,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		value: BalanceOf&lt;T&gt;,
 		input_data: Vec&lt;u8&gt;,
 		debug_message: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>DebugBuffer&gt;,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;ExecReturnValue, ExecError&gt; {
-		<span class="kw">let </span>(<span class="kw-2">mut </span>stack, executable) = <span class="self">Self</span>::new(
-			FrameArgs::Call {
-				dest: T::AddressMapper::to_account_id(<span class="kw-2">&amp;</span>dest),
-				cached_info: <span class="prelude-val">None</span>,
-				delegated_call: <span class="prelude-val">None</span>,
-			},
-			origin,
+	) -&gt; ExecResult {
+		<span class="kw">let </span>dest = T::AddressMapper::to_account_id(<span class="kw-2">&amp;</span>dest);
+		<span class="kw">if let </span><span class="prelude-val">Some</span>((<span class="kw-2">mut </span>stack, executable)) = <span class="self">Self</span>::new(
+			FrameArgs::Call { dest: dest.clone(), cached_info: <span class="prelude-val">None</span>, delegated_call: <span class="prelude-val">None </span>},
+			origin.clone(),
 			gas_meter,
 			storage_meter,
 			value,
 			debug_message,
-		)<span class="question-mark">?</span>;
-		stack.run(executable, input_data)
+		)<span class="question-mark">? </span>{
+			stack.run(executable, input_data)
+		} <span class="kw">else </span>{
+			<span class="self">Self</span>::transfer_no_contract(<span class="kw-2">&amp;</span>origin, <span class="kw-2">&amp;</span>dest, value)
+		}
 	}
 
 	<span class="doccomment">/// Create and run a new call stack by instantiating a new contract.
@@ -4920,7 +5015,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			storage_meter,
 			value,
 			debug_message,
-		)<span class="question-mark">?</span>;
+		)<span class="question-mark">?
+		</span>.expect(FRAME_ALWAYS_EXISTS_ON_INSTANTIATE);
 		<span class="kw">let </span>address = T::AddressMapper::to_address(<span class="kw-2">&amp;</span>stack.top_frame().account_id);
 		stack.run(executable, input_data).map(|ret| (address, ret))
 	}
@@ -4947,9 +5043,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			debug_message,
 		)
 		.unwrap()
+		.unwrap()
 	}
 
 	<span class="doccomment">/// Create a new call stack.
+	///
+	/// Returns `None` when calling a non existant contract. This is not an error case
+	/// since this will result in a value transfer.
 	</span><span class="kw">fn </span>new(
 		args: FrameArgs&lt;T, E&gt;,
 		origin: Origin&lt;T&gt;,
@@ -4957,8 +5057,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		storage_meter: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>storage::meter::Meter&lt;T&gt;,
 		value: BalanceOf&lt;T&gt;,
 		debug_message: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>DebugBuffer&gt;,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="self">Self</span>, E), ExecError&gt; {
-		<span class="kw">let </span>(first_frame, executable) = <span class="self">Self</span>::new_frame(
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;(<span class="self">Self</span>, E)&gt;, ExecError&gt; {
+		<span class="kw">let </span><span class="prelude-val">Some</span>((first_frame, executable)) = <span class="self">Self</span>::new_frame(
 			args,
 			value,
 			gas_meter,
@@ -4966,7 +5066,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			storage_meter,
 			BalanceOf::&lt;T&gt;::zero(),
 			<span class="bool-val">false</span>,
-		)<span class="question-mark">?</span>;
+		)<span class="question-mark">?
+		</span><span class="kw">else </span>{
+			<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
+		};
 
 		<span class="kw">let </span>stack = <span class="self">Self </span>{
 			origin,
@@ -4981,7 +5084,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			_phantom: Default::default(),
 		};
 
-		<span class="prelude-val">Ok</span>((stack, executable))
+		<span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>((stack, executable)))
 	}
 
 	<span class="doccomment">/// Construct a new frame.
@@ -4996,16 +5099,21 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		storage_meter: <span class="kw-2">&amp;mut </span>storage::meter::GenericMeter&lt;T, S&gt;,
 		deposit_limit: BalanceOf&lt;T&gt;,
 		read_only: bool,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;(Frame&lt;T&gt;, E), ExecError&gt; {
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;(Frame&lt;T&gt;, E)&gt;, ExecError&gt; {
 		<span class="kw">let </span>(account_id, contract_info, executable, delegate_caller, entry_point) = <span class="kw">match </span>frame_args
 		{
 			FrameArgs::Call { dest, cached_info, delegated_call } =&gt; {
 				<span class="kw">let </span>contract = <span class="kw">if let </span><span class="prelude-val">Some</span>(contract) = cached_info {
 					contract
 				} <span class="kw">else </span>{
-					&lt;ContractInfoOf&lt;T&gt;&gt;::get(T::AddressMapper::to_address(<span class="kw-2">&amp;</span>dest))
-						.ok_or(&lt;Error&lt;T&gt;&gt;::ContractNotFound)<span class="question-mark">?
-				</span>};
+					<span class="kw">if let </span><span class="prelude-val">Some</span>(contract) =
+						&lt;ContractInfoOf&lt;T&gt;&gt;::get(T::AddressMapper::to_address(<span class="kw-2">&amp;</span>dest))
+					{
+						contract
+					} <span class="kw">else </span>{
+						<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
+					}
+				};
 
 				<span class="kw">let </span>(executable, delegate_caller) =
 					<span class="kw">if let </span><span class="prelude-val">Some</span>(DelegatedCall { executable, caller }) = delegated_call {
@@ -5051,7 +5159,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			read_only,
 		};
 
-		<span class="prelude-val">Ok</span>((frame, executable))
+		<span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>((frame, executable)))
 	}
 
 	<span class="doccomment">/// Create a subsequent nested frame.
@@ -5062,7 +5170,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		gas_limit: Weight,
 		deposit_limit: BalanceOf&lt;T&gt;,
 		read_only: bool,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;E, ExecError&gt; {
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;E&gt;, ExecError&gt; {
 		<span class="kw">if </span><span class="self">self</span>.frames.len() <span class="kw">as </span>u32 == limits::CALL_STACK_DEPTH {
 			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::&lt;T&gt;::MaxCallDepthReached.into());
 		}
@@ -5084,7 +5192,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>frame = <span class="macro">top_frame_mut!</span>(<span class="self">self</span>);
 		<span class="kw">let </span>nested_gas = <span class="kw-2">&amp;mut </span>frame.nested_gas;
 		<span class="kw">let </span>nested_storage = <span class="kw-2">&amp;mut </span>frame.nested_storage;
-		<span class="kw">let </span>(frame, executable) = <span class="self">Self</span>::new_frame(
+		<span class="kw">if let </span><span class="prelude-val">Some</span>((frame, executable)) = <span class="self">Self</span>::new_frame(
 			frame_args,
 			value_transferred,
 			nested_gas,
@@ -5092,15 +5200,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			nested_storage,
 			deposit_limit,
 			read_only,
-		)<span class="question-mark">?</span>;
-		<span class="self">self</span>.frames.try_push(frame).map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::MaxCallDepthReached)<span class="question-mark">?</span>;
-		<span class="prelude-val">Ok</span>(executable)
+		)<span class="question-mark">? </span>{
+			<span class="self">self</span>.frames.try_push(frame).map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::MaxCallDepthReached)<span class="question-mark">?</span>;
+			<span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(executable))
+		} <span class="kw">else </span>{
+			<span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
+		}
 	}
 
 	<span class="doccomment">/// Run the current (top) frame.
 	///
 	/// This can be either a call or an instantiate.
-	</span><span class="kw">fn </span>run(<span class="kw-2">&amp;mut </span><span class="self">self</span>, executable: E, input_data: Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;ExecReturnValue, ExecError&gt; {
+	</span><span class="kw">fn </span>run(<span class="kw-2">&amp;mut </span><span class="self">self</span>, executable: E, input_data: Vec&lt;u8&gt;) -&gt; ExecResult {
 		<span class="kw">let </span>frame = <span class="self">self</span>.top_frame();
 		<span class="kw">let </span>entry_point = frame.entry_point;
 		<span class="kw">let </span>delegated_code_hash =
@@ -5109,13 +5220,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="self">self</span>.transient_storage.start_transaction();
 
 		<span class="kw">let </span>do_transaction = || {
+			<span class="kw">let </span>caller = <span class="self">self</span>.caller();
+			<span class="kw">let </span>frame = <span class="macro">top_frame_mut!</span>(<span class="self">self</span>);
+
 			<span class="comment">// We need to charge the storage deposit before the initial transfer so that
 			// it can create the account in case the initial transfer is &lt; ed.
 			</span><span class="kw">if </span>entry_point == ExportedFunction::Constructor {
 				<span class="comment">// Root origin can't be used to instantiate a contract, so it is safe to assume that
 				// if we reached this point the origin has an associated account.
 				</span><span class="kw">let </span>origin = <span class="kw-2">&amp;</span><span class="self">self</span>.origin.account_id()<span class="question-mark">?</span>;
-				<span class="kw">let </span>frame = <span class="macro">top_frame_mut!</span>(<span class="self">self</span>);
 				frame.nested_storage.charge_instantiate(
 					origin,
 					<span class="kw-2">&amp;</span>frame.account_id,
@@ -5124,11 +5237,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				)<span class="question-mark">?</span>;
 				<span class="comment">// Needs to be incremented before calling into the code so that it is visible
 				// in case of recursion.
-				</span>&lt;System&lt;T&gt;&gt;::inc_account_nonce(<span class="self">self</span>.caller().account_id()<span class="question-mark">?</span>);
+				</span>&lt;System&lt;T&gt;&gt;::inc_account_nonce(caller.account_id()<span class="question-mark">?</span>);
 			}
 
 			<span class="comment">// Every non delegate call or instantiate also optionally transfers the balance.
-			</span><span class="self">self</span>.initial_transfer()<span class="question-mark">?</span>;
+			// If it is a delegate call, then we've already transferred tokens in the
+			// last non-delegate frame.
+			</span><span class="kw">if </span>delegated_code_hash.is_none() {
+				<span class="self">Self</span>::transfer_from_origin(<span class="kw-2">&amp;</span>caller, <span class="kw-2">&amp;</span>frame.account_id, frame.value_transferred)<span class="question-mark">?</span>;
+			}
 
 			<span class="kw">let </span>contract_address = T::AddressMapper::to_address(<span class="kw-2">&amp;</span><span class="macro">top_frame!</span>(<span class="self">self</span>).account_id);
 
@@ -5321,40 +5438,40 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="doccomment">/// Transfer some funds from `from` to `to`.
-	</span><span class="kw">fn </span>transfer(
-		preservation: Preservation,
-		from: <span class="kw-2">&amp;</span>T::AccountId,
-		to: <span class="kw-2">&amp;</span>T::AccountId,
-		value: BalanceOf&lt;T&gt;,
-	) -&gt; DispatchResult {
-		<span class="kw">if </span>!value.is_zero() &amp;&amp; from != to {
-			T::Currency::transfer(from, to, value, preservation)
+	</span><span class="kw">fn </span>transfer(from: <span class="kw-2">&amp;</span>T::AccountId, to: <span class="kw-2">&amp;</span>T::AccountId, value: BalanceOf&lt;T&gt;) -&gt; DispatchResult {
+		<span class="comment">// this avoids events to be emitted for zero balance transfers
+		</span><span class="kw">if </span>!value.is_zero() {
+			T::Currency::transfer(from, to, value, Preservation::Preserve)
 				.map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::TransferFailed)<span class="question-mark">?</span>;
 		}
 		<span class="prelude-val">Ok</span>(())
 	}
 
-	<span class="comment">// The transfer as performed by a call or instantiate.
-	</span><span class="kw">fn </span>initial_transfer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; DispatchResult {
-		<span class="kw">let </span>frame = <span class="self">self</span>.top_frame();
-
-		<span class="comment">// If it is a delegate call, then we've already transferred tokens in the
-		// last non-delegate frame.
-		</span><span class="kw">if </span>frame.delegate_caller.is_some() {
-			<span class="kw">return </span><span class="prelude-val">Ok</span>(());
-		}
-
-		<span class="kw">let </span>value = frame.value_transferred;
-
-		<span class="comment">// Get the account id from the caller.
-		// If the caller is root there is no account to transfer from, and therefore we can't take
-		// any `value` other than 0.
-		</span><span class="kw">let </span>caller = <span class="kw">match </span><span class="self">self</span>.caller() {
+	<span class="doccomment">/// Same as `transfer` but `from` is an `Origin`.
+	</span><span class="kw">fn </span>transfer_from_origin(
+		from: <span class="kw-2">&amp;</span>Origin&lt;T&gt;,
+		to: <span class="kw-2">&amp;</span>T::AccountId,
+		value: BalanceOf&lt;T&gt;,
+	) -&gt; DispatchResult {
+		<span class="comment">// If the from address is root there is no account to transfer from, and therefore we can't
+		// take any `value` other than 0.
+		</span><span class="kw">let </span>from = <span class="kw">match </span>from {
 			Origin::Signed(caller) =&gt; caller,
 			Origin::Root <span class="kw">if </span>value.is_zero() =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(()),
 			Origin::Root =&gt; <span class="kw">return </span>DispatchError::RootNotAllowed.into(),
 		};
-		<span class="self">Self</span>::transfer(Preservation::Preserve, <span class="kw-2">&amp;</span>caller, <span class="kw-2">&amp;</span>frame.account_id, value)
+		<span class="self">Self</span>::transfer(from, to, value)
+	}
+
+	<span class="doccomment">/// Same as `transfer_from_origin` but creates an `ExecReturnValue` on success.
+	</span><span class="kw">fn </span>transfer_no_contract(
+		from: <span class="kw-2">&amp;</span>Origin&lt;T&gt;,
+		to: <span class="kw-2">&amp;</span>T::AccountId,
+		value: BalanceOf&lt;T&gt;,
+	) -&gt; ExecResult {
+		<span class="self">Self</span>::transfer_from_origin(from, to, value)
+			.map(|<span class="kw">_</span>| ExecReturnValue::default())
+			.map_err(Into::into)
 	}
 
 	<span class="doccomment">/// Reference to the current (top) frame.
@@ -5410,13 +5527,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		input_data: Vec&lt;u8&gt;,
 		allows_reentry: bool,
 		read_only: bool,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;ExecReturnValue, ExecError&gt; {
+	) -&gt; ExecResult {
 		<span class="comment">// Before pushing the new frame: Protect the caller contract against reentrancy attacks.
 		// It is important to do this before calling `allows_reentry` so that a direct recursion
 		// is caught by it.
 		</span><span class="self">self</span>.top_frame_mut().allows_reentry = allows_reentry;
 
 		<span class="kw">let </span>dest = T::AddressMapper::to_account_id(dest);
+		<span class="kw">let </span>value = value.try_into().map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::BalanceConversionFailed)<span class="question-mark">?</span>;
 
 		<span class="kw">let </span>try_call = || {
 			<span class="kw">if </span>!<span class="self">self</span>.allows_reentry(<span class="kw-2">&amp;</span>dest) {
@@ -5433,15 +5551,22 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					CachedContract::Cached(contract) =&gt; <span class="prelude-val">Some</span>(contract.clone()),
 					<span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
 				});
-			<span class="kw">let </span>executable = <span class="self">self</span>.push_frame(
-				FrameArgs::Call { dest, cached_info, delegated_call: <span class="prelude-val">None </span>},
-				value.try_into().map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::BalanceConversionFailed)<span class="question-mark">?</span>,
+			<span class="kw">if let </span><span class="prelude-val">Some</span>(executable) = <span class="self">self</span>.push_frame(
+				FrameArgs::Call { dest: dest.clone(), cached_info, delegated_call: <span class="prelude-val">None </span>},
+				value,
 				gas_limit,
 				deposit_limit.try_into().map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::BalanceConversionFailed)<span class="question-mark">?</span>,
 				<span class="comment">// Enable read-only access if requested; cannot disable it if already set.
 				</span>read_only || <span class="self">self</span>.is_read_only(),
-			)<span class="question-mark">?</span>;
-			<span class="self">self</span>.run(executable, input_data)
+			)<span class="question-mark">? </span>{
+				<span class="self">self</span>.run(executable, input_data)
+			} <span class="kw">else </span>{
+				<span class="self">Self</span>::transfer_no_contract(
+					<span class="kw-2">&amp;</span>Origin::from_account_id(<span class="self">self</span>.account_id().clone()),
+					<span class="kw-2">&amp;</span>dest,
+					value,
+				)
+			}
 		};
 
 		<span class="comment">// We need to make sure to reset `allows_reentry` even on failure.
@@ -5474,7 +5599,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			BalanceOf::&lt;T&gt;::zero(),
 			<span class="self">self</span>.is_read_only(),
 		)<span class="question-mark">?</span>;
-		<span class="self">self</span>.run(executable, input_data)
+		<span class="self">self</span>.run(executable.expect(FRAME_ALWAYS_EXISTS_ON_INSTANTIATE), input_data)
 	}
 
 	<span class="kw">fn </span>instantiate(
@@ -5501,7 +5626,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="self">self</span>.is_read_only(),
 		)<span class="question-mark">?</span>;
 		<span class="kw">let </span>address = T::AddressMapper::to_address(<span class="kw-2">&amp;</span><span class="self">self</span>.top_frame().account_id);
-		<span class="self">self</span>.run(executable, input_data).map(|ret| (address, ret))
+		<span class="self">self</span>.run(executable.expect(FRAME_ALWAYS_EXISTS_ON_INSTANTIATE), input_data)
+			.map(|ret| (address, ret))
 	}
 
 	<span class="kw">fn </span>terminate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, beneficiary: <span class="kw-2">&amp;</span>H160) -&gt; DispatchResult {
@@ -5534,7 +5660,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">fn </span>transfer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, to: <span class="kw-2">&amp;</span>H160, value: U256) -&gt; DispatchResult {
 		<span class="self">Self</span>::transfer(
-			Preservation::Preserve,
 			<span class="kw-2">&amp;</span><span class="self">self</span>.top_frame().account_id,
 			<span class="kw-2">&amp;</span>T::AddressMapper::to_account_id(to),
 			value.try_into().map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::BalanceConversionFailed)<span class="question-mark">?</span>,
@@ -6009,7 +6134,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			set_balance(<span class="kw-2">&amp;</span>ALICE, <span class="number">100</span>);
 			set_balance(<span class="kw-2">&amp;</span>BOB, <span class="number">0</span>);
 
-			MockStack::transfer(Preservation::Preserve, <span class="kw-2">&amp;</span>ALICE, <span class="kw-2">&amp;</span>BOB, <span class="number">55</span>).unwrap();
+			MockStack::transfer(<span class="kw-2">&amp;</span>ALICE, <span class="kw-2">&amp;</span>BOB, <span class="number">55</span>).unwrap();
 
 			<span class="macro">assert_eq!</span>(get_balance(<span class="kw-2">&amp;</span>ALICE), <span class="number">45</span>);
 			<span class="macro">assert_eq!</span>(get_balance(<span class="kw-2">&amp;</span>BOB), <span class="number">55</span>);
@@ -6129,7 +6254,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		ExtBuilder::default().build().execute_with(|| {
 			set_balance(<span class="kw-2">&amp;</span>origin, <span class="number">0</span>);
 
-			<span class="kw">let </span>result = MockStack::transfer(Preservation::Preserve, <span class="kw-2">&amp;</span>origin, <span class="kw-2">&amp;</span>dest, <span class="number">100</span>);
+			<span class="kw">let </span>result = MockStack::transfer(<span class="kw-2">&amp;</span>origin, <span class="kw-2">&amp;</span>dest, <span class="number">100</span>);
 
 			<span class="macro">assert_eq!</span>(result, <span class="prelude-val">Err</span>(Error::&lt;Test&gt;::TransferFailed.into()));
 			<span class="macro">assert_eq!</span>(get_balance(<span class="kw-2">&amp;</span>origin), <span class="number">0</span>);
@@ -7003,15 +7128,35 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="attr">#[test]
-	</span><span class="kw">fn </span>recursive_call_during_constructor_fails() {
+	</span><span class="kw">fn </span>recursive_call_during_constructor_is_balance_transfer() {
 		<span class="kw">let </span>code = MockLoader::insert(Constructor, |ctx, <span class="kw">_</span>| {
 			<span class="kw">let </span>account_id = ctx.ext.account_id().clone();
 			<span class="kw">let </span>addr = &lt;Test <span class="kw">as </span>Config&gt;::AddressMapper::to_address(<span class="kw-2">&amp;</span>account_id);
+			<span class="kw">let </span>balance = ctx.ext.balance();
 
-			<span class="macro">assert_matches!</span>(
-						   ctx.ext.call(Weight::zero(), U256::zero(), <span class="kw-2">&amp;</span>addr, U256::zero(), <span class="macro">vec!</span>[],
-			<span class="bool-val">true</span>, <span class="bool-val">false</span>), 				<span class="prelude-val">Err</span>(ExecError{error, ..}) <span class="kw">if </span>error == &lt;Error&lt;Test&gt;&gt;::ContractNotFound.into()
-					   );
+			<span class="comment">// Calling ourselves during the constructor will trigger a balance
+			// transfer since no contract exist yet.
+			</span><span class="macro">assert_ok!</span>(ctx.ext.call(
+				Weight::zero(),
+				U256::zero(),
+				<span class="kw-2">&amp;</span>addr,
+				(balance - <span class="number">1</span>).into(),
+				<span class="macro">vec!</span>[],
+				<span class="bool-val">true</span>,
+				<span class="bool-val">false
+			</span>));
+
+			<span class="comment">// Should also work with call data set as it is ignored when no
+			// contract is deployed.
+			</span><span class="macro">assert_ok!</span>(ctx.ext.call(
+				Weight::zero(),
+				U256::zero(),
+				<span class="kw-2">&amp;</span>addr,
+				<span class="number">1u32</span>.into(),
+				<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>],
+				<span class="bool-val">true</span>,
+				<span class="bool-val">false
+			</span>));
 			exec_success()
 		});
 
@@ -7034,12 +7179,57 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					executable,
 					<span class="kw-2">&amp;mut </span>gas_meter,
 					<span class="kw-2">&amp;mut </span>storage_meter,
-					min_balance,
+					<span class="number">10</span>,
 					<span class="macro">vec!</span>[],
 					<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>[<span class="number">0</span>; <span class="number">32</span>]),
 					<span class="prelude-val">None</span>,
 				);
 				<span class="macro">assert_matches!</span>(result, <span class="prelude-val">Ok</span>(<span class="kw">_</span>));
+			});
+	}
+
+	<span class="attr">#[test]
+	</span><span class="kw">fn </span>cannot_send_more_balance_than_available_to_self() {
+		<span class="kw">let </span>code_hash = MockLoader::insert(Call, |ctx, <span class="kw">_</span>| {
+			<span class="kw">let </span>account_id = ctx.ext.account_id().clone();
+			<span class="kw">let </span>addr = &lt;Test <span class="kw">as </span>Config&gt;::AddressMapper::to_address(<span class="kw-2">&amp;</span>account_id);
+			<span class="kw">let </span>balance = ctx.ext.balance();
+
+			<span class="macro">assert_err!</span>(
+				ctx.ext.call(
+					Weight::zero(),
+					U256::zero(),
+					<span class="kw-2">&amp;</span>addr,
+					(balance + <span class="number">1</span>).into(),
+					<span class="macro">vec!</span>[],
+					<span class="bool-val">true</span>,
+					<span class="bool-val">false
+				</span>),
+				&lt;Error&lt;Test&gt;&gt;::TransferFailed
+			);
+			exec_success()
+		});
+
+		ExtBuilder::default()
+			.with_code_hashes(MockLoader::code_hashes())
+			.build()
+			.execute_with(|| {
+				<span class="kw">let </span>min_balance = &lt;Test <span class="kw">as </span>Config&gt;::Currency::minimum_balance();
+				<span class="kw">let </span><span class="kw-2">mut </span>gas_meter = GasMeter::&lt;Test&gt;::new(GAS_LIMIT);
+				set_balance(<span class="kw-2">&amp;</span>ALICE, min_balance * <span class="number">10</span>);
+				place_contract(<span class="kw-2">&amp;</span>BOB, code_hash);
+				<span class="kw">let </span>origin = Origin::from_account_id(ALICE);
+				<span class="kw">let </span><span class="kw-2">mut </span>storage_meter = storage::meter::Meter::new(<span class="kw-2">&amp;</span>origin, <span class="number">0</span>, <span class="number">0</span>).unwrap();
+				MockStack::run_call(
+					origin,
+					BOB_ADDR,
+					<span class="kw-2">&amp;mut </span>gas_meter,
+					<span class="kw-2">&amp;mut </span>storage_meter,
+					<span class="number">0</span>,
+					<span class="macro">vec!</span>[],
+					<span class="prelude-val">None</span>,
+				)
+				.unwrap();
 			});
 	}
 

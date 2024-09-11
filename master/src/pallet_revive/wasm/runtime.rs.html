@@ -2103,7 +2103,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1951" id="1951">1951</a>
 <a href="#1952" id="1952">1952</a>
 <a href="#1953" id="1953">1953</a>
-<a href="#1954" id="1954">1954</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2687,8 +2686,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							<span class="prelude-val">None </span>=&gt; <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(Error::&lt;E::T&gt;::InvalidCallFlags.into())),
 							<span class="prelude-val">Some</span>(flags) =&gt; <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(ExecReturnValue { flags, data })),
 						},
-					<span class="prelude-val">Err</span>(TrapReason::Termination) =&gt;
-						<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(ExecReturnValue { flags: ReturnFlags::empty(), data: Vec::new() })),
+					<span class="prelude-val">Err</span>(TrapReason::Termination) =&gt; <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(Default::default())),
 					<span class="prelude-val">Err</span>(TrapReason::SupervisorError(error)) =&gt; <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(error.into())),
 				}
 			},
