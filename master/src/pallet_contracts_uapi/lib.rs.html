@@ -311,10 +311,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">mod </span>flags;
 <span class="kw">pub use </span>flags::<span class="kw-2">*</span>;
 
-<span class="attr">#[cfg(any(target_arch = <span class="string">"wasm32"</span>, target_arch = <span class="string">"riscv32"</span>))]
+<span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
 </span><span class="kw">mod </span>host;
 
-<span class="attr">#[cfg(any(target_arch = <span class="string">"wasm32"</span>, target_arch = <span class="string">"riscv32"</span>))]
+<span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
 </span><span class="kw">pub use </span>host::<span class="kw-2">*</span>;
 
 <span class="macro">macro_rules! </span>define_error_codes {

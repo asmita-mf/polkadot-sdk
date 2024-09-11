@@ -193,8 +193,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#41" id="41">41</a>
 <a href="#42" id="42">42</a>
 <a href="#43" id="43">43</a>
-<a href="#44" id="44">44</a>
-<a href="#45" id="45">45</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -236,8 +234,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">fn </span>out_dir_should_have_compiled_mocks() {
 		<span class="kw">let </span>out_dir: std::path::PathBuf = <span class="macro">env!</span>(<span class="string">"OUT_DIR"</span>).into();
 		<span class="macro">assert!</span>(out_dir.join(<span class="string">"dummy.wasm"</span>).exists());
-		<span class="attr">#[cfg(feature = <span class="string">"riscv"</span>)]
-		</span><span class="macro">assert!</span>(out_dir.join(<span class="string">"dummy.polkavm"</span>).exists());
 	}
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>
