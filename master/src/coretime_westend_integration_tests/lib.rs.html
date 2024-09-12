@@ -217,7 +217,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="comment">// Cumulus
 	</span><span class="kw">pub use </span>emulated_integration_tests_common::xcm_emulator::{
-		assert_expected_events, bx, TestExt,
+		assert_expected_events, bx, Chain, Parachain, TestExt,
 	};
 	<span class="kw">pub use </span>westend_system_emulated_network::{
 		coretime_westend_emulated_chain::{
@@ -226,7 +226,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		},
 		CoretimeWestendPara <span class="kw">as </span>CoretimeWestend,
 		CoretimeWestendParaReceiver <span class="kw">as </span>CoretimeWestendReceiver,
-		CoretimeWestendParaSender <span class="kw">as </span>CoretimeWestendSender,
+		CoretimeWestendParaSender <span class="kw">as </span>CoretimeWestendSender, WestendRelay <span class="kw">as </span>Westend,
 	};
 }
 
