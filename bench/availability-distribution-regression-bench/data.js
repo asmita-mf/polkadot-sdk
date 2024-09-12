@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1725358668060,
+  "lastUpdate": 1726165653320,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -24595,6 +24595,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "bitfield-distribution",
             "value": 0.022103433460000002,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "donal.murray@parity.io",
+            "name": "Dónal Murray",
+            "username": "seadanda"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "cd69f209b71c554f06d3061169ad00c5f1c170b2",
+          "message": "Add emulated tests for the Coretime Interface calls to ensure sufficient weights (#2704)\n\nAdd emulated test cases for the coretime chain.\n\nThis tests the calls sent across the `CoretimeInterface` and ensures the\nweights are sufficient.",
+          "timestamp": "2024-09-12T16:48:04Z",
+          "tree_id": "435d650a7fe94538110ae91cfb625d526af29fa9",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/cd69f209b71c554f06d3061169ad00c5f1c170b2"
+        },
+        "date": 1726165623698,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021390508606666674,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18098462047333339,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.009005644640000096,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016160547093333335,
             "unit": "seconds"
           }
         ]
