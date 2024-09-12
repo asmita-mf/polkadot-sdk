@@ -248,6 +248,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="item-spacer"></span>    fn <a href="#tymethod.xcm_execute" class="fn">xcm_execute</a>(msg_ptr: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>, msg_len: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>) -&gt; ReturnErrorCode;
 <span class="item-spacer"></span>    fn <a href="#tymethod.xcm_send" class="fn">xcm_send</a>(
         dest_ptr: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>,
+        dest_len: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>,
         msg_ptr: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>,
         msg_len: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>,
         output_ptr: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>
@@ -472,6 +473,7 @@ See [<code>pallet_revive_uapi::HostFn::execute_xcm</code>].</p>
 <p>This API is not standardized and only available for testing.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="tymethod.xcm_send" class="method"><a class="src rightside" href="../src/pallet_revive/wasm/runtime.rs.html#1131">source</a><h4 class="code-header">fn <a href="#tymethod.xcm_send" class="fn">xcm_send</a>(
     dest_ptr: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>,
+    dest_len: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>,
     msg_ptr: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>,
     msg_len: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>,
     output_ptr: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>

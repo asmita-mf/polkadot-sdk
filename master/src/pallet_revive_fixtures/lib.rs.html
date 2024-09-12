@@ -223,6 +223,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#71" id="71">71</a>
 <a href="#72" id="72">72</a>
 <a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -249,6 +250,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub fn </span>compile_module(fixture_name: <span class="kw-2">&amp;</span>str) -&gt; anyhow::Result&lt;(Vec&lt;u8&gt;, sp_core::H256)&gt; {
 	<span class="kw">let </span>out_dir: std::path::PathBuf = <span class="macro">env!</span>(<span class="string">"OUT_DIR"</span>).into();
 	<span class="kw">let </span>fixture_path = out_dir.join(<span class="macro">format!</span>(<span class="string">"{fixture_name}.polkavm"</span>));
+	<span class="macro">log::debug!</span>(<span class="string">"Loading fixture from {fixture_path:?}"</span>);
 	<span class="kw">let </span>binary = std::fs::read(fixture_path)<span class="question-mark">?</span>;
 	<span class="kw">let </span>code_hash = sp_io::hashing::keccak_256(<span class="kw-2">&amp;</span>binary);
 	<span class="prelude-val">Ok</span>((binary, sp_core::H256(code_hash)))

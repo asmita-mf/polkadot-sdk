@@ -2103,6 +2103,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1951" id="1951">1951</a>
 <a href="#1952" id="1952">1952</a>
 <a href="#1953" id="1953">1953</a>
+<a href="#1954" id="1954">1954</a>
+<a href="#1955" id="1955">1955</a>
+<a href="#1956" id="1956">1956</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -3895,6 +3898,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		memory: <span class="kw-2">&amp;mut </span>M,
 		dest_ptr: u32,
+		dest_len: u32,
 		msg_ptr: u32,
 		msg_len: u32,
 		output_ptr: u32,
@@ -3902,10 +3906,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">use </span>xcm::{VersionedLocation, VersionedXcm};
 		<span class="kw">use </span>xcm_builder::{SendController, SendControllerWeightInfo};
 
-		<span class="self">self</span>.charge_gas(RuntimeCosts::CopyFromContract(msg_len))<span class="question-mark">?</span>;
-		<span class="kw">let </span>dest: VersionedLocation = memory.read_as(dest_ptr)<span class="question-mark">?</span>;
+		<span class="self">self</span>.charge_gas(RuntimeCosts::CopyFromContract(dest_len))<span class="question-mark">?</span>;
+		<span class="kw">let </span>dest: VersionedLocation = memory.read_as_unbounded(dest_ptr, dest_len)<span class="question-mark">?</span>;
 
+		<span class="self">self</span>.charge_gas(RuntimeCosts::CopyFromContract(msg_len))<span class="question-mark">?</span>;
 		<span class="kw">let </span>message: VersionedXcm&lt;()&gt; = memory.read_as_unbounded(msg_ptr, msg_len)<span class="question-mark">?</span>;
+
 		<span class="kw">let </span>weight = &lt;&lt;E::T <span class="kw">as </span>Config&gt;::Xcm <span class="kw">as </span>SendController&lt;<span class="kw">_</span>&gt;&gt;::WeightInfo::send();
 		<span class="self">self</span>.charge_gas(RuntimeCosts::CallRuntime(weight))<span class="question-mark">?</span>;
 		<span class="kw">let </span>origin = <span class="kw">crate</span>::RawOrigin::Signed(<span class="self">self</span>.ext.account_id().clone()).into();
