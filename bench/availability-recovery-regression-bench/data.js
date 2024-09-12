@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1725358962450,
+  "lastUpdate": 1726165617082,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -19571,6 +19571,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 13.203043859733336,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "donal.murray@parity.io",
+            "name": "Dónal Murray",
+            "username": "seadanda"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "cd69f209b71c554f06d3061169ad00c5f1c170b2",
+          "message": "Add emulated tests for the Coretime Interface calls to ensure sufficient weights (#2704)\n\nAdd emulated test cases for the coretime chain.\n\nThis tests the calls sent across the `CoretimeInterface` and ensures the\nweights are sufficient.",
+          "timestamp": "2024-09-12T16:48:04Z",
+          "tree_id": "435d650a7fe94538110ae91cfb625d526af29fa9",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/cd69f209b71c554f06d3061169ad00c5f1c170b2"
+        },
+        "date": 1726165587620,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23563136129999998,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.779752030766668,
             "unit": "seconds"
           }
         ]
