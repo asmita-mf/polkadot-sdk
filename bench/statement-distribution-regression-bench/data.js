@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1725359269406,
+  "lastUpdate": 1726168286703,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -10247,6 +10247,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.04861467731999999,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "pgherveou@gmail.com",
+            "name": "PG Herveou",
+            "username": "pgherveou"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8d0aab812ebb70e39b0af893862ba204dc098860",
+          "message": "[pallet-revive] fix xcm tests (#5684)\n\nfix https://github.com/paritytech/polkadot-sdk/issues/5683",
+          "timestamp": "2024-09-12T17:26:59Z",
+          "tree_id": "86e7f17a0823f89470e038f93dc5a5a018f03a3e",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/8d0aab812ebb70e39b0af893862ba204dc098860"
+        },
+        "date": 1726168256017,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.92599999999997,
+            "unit": "KiB"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.03716616387000002,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04492751494399995,
             "unit": "seconds"
           }
         ]
