@@ -1025,16 +1025,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(runner.async_run(|<span class="kw-2">mut </span>config| {
 				<span class="kw">let </span>(client, backend, <span class="kw">_</span>, task_manager) =
 					polkadot_service::new_chain_ops(<span class="kw-2">&amp;mut </span>config, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+				<span class="kw">let </span>task_handle = task_manager.spawn_handle();
 				<span class="kw">let </span>aux_revert = Box::new(|client, backend, blocks| {
-					polkadot_service::revert_backend(client, backend, blocks, config).map_err(
-						|err| {
+					polkadot_service::revert_backend(client, backend, blocks, config, task_handle)
+						.map_err(|err| {
 							<span class="kw">match </span>err {
 								polkadot_service::Error::Blockchain(err) =&gt; err.into(),
 								<span class="comment">// Generic application-specific error.
 								</span>err =&gt; sc_cli::Error::Application(err.into()),
 							}
-						},
-					)
+						})
 				});
 				<span class="prelude-val">Ok</span>((
 					cmd.run(client, backend, <span class="prelude-val">Some</span>(aux_revert)).map_err(Error::SubstrateCli),

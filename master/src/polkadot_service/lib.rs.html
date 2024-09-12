@@ -1713,6 +1713,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1561" id="1561">1561</a>
 <a href="#1562" id="1562">1562</a>
 <a href="#1563" id="1563">1563</a>
+<a href="#1564" id="1564">1564</a>
+<a href="#1565" id="1565">1565</a>
+<a href="#1566" id="1566">1566</a>
+<a href="#1567" id="1567">1567</a>
+<a href="#1568" id="1568">1568</a>
+<a href="#1569" id="1569">1569</a>
+<a href="#1570" id="1570">1570</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -1778,6 +1785,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 };
 
 <span class="kw">use </span>polkadot_node_subsystem_util::database::Database;
+<span class="kw">use </span>polkadot_overseer::SpawnGlue;
 
 <span class="attr">#[cfg(feature = <span class="string">"full-node"</span>)]
 </span><span class="kw">pub use </span>{
@@ -1798,7 +1806,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>prometheus_endpoint::Registry;
 <span class="attr">#[cfg(feature = <span class="string">"full-node"</span>)]
 </span><span class="kw">use </span>sc_service::KeystoreContainer;
-<span class="kw">use </span>sc_service::RpcHandlers;
+<span class="kw">use </span>sc_service::{RpcHandlers, SpawnTaskHandle};
 <span class="kw">use </span>sc_telemetry::TelemetryWorker;
 <span class="attr">#[cfg(feature = <span class="string">"full-node"</span>)]
 </span><span class="kw">use </span>sc_telemetry::{Telemetry, TelemetryWorkerHandle};
@@ -3215,6 +3223,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	backend: Arc&lt;FullBackend&gt;,
 	blocks: BlockNumber,
 	config: Configuration,
+	task_handle: SpawnTaskHandle,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
 	<span class="kw">let </span>best_number = client.info().best_number;
 	<span class="kw">let </span>finalized = client.info().finalized_number;
@@ -3235,7 +3244,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>parachains_db = open_database(<span class="kw-2">&amp;</span>config.database)
 		.map_err(|err| sp_blockchain::Error::Backend(err.to_string()))<span class="question-mark">?</span>;
 
-	revert_approval_voting(parachains_db.clone(), hash)<span class="question-mark">?</span>;
+	revert_approval_voting(parachains_db.clone(), hash, task_handle)<span class="question-mark">?</span>;
 	revert_chain_selection(parachains_db, hash)<span class="question-mark">?</span>;
 	<span class="comment">// Revert Substrate consensus related components
 	</span>sc_consensus_babe::revert(client.clone(), backend, blocks)<span class="question-mark">?</span>;
@@ -3258,7 +3267,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		.map_err(|err| sp_blockchain::Error::Backend(err.to_string()))
 }
 
-<span class="kw">fn </span>revert_approval_voting(db: Arc&lt;<span class="kw">dyn </span>Database&gt;, hash: Hash) -&gt; sp_blockchain::Result&lt;()&gt; {
+<span class="kw">fn </span>revert_approval_voting(
+	db: Arc&lt;<span class="kw">dyn </span>Database&gt;,
+	hash: Hash,
+	task_handle: SpawnTaskHandle,
+) -&gt; sp_blockchain::Result&lt;()&gt; {
 	<span class="kw">let </span>config = approval_voting_subsystem::Config {
 		col_approval_data: parachains_db::REAL_COLUMNS.col_approval_data,
 		slot_duration_millis: Default::default(),
@@ -3270,6 +3283,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		Arc::new(sc_keystore::LocalKeystore::in_memory()),
 		Box::new(sp_consensus::NoNetwork),
 		approval_voting_subsystem::Metrics::default(),
+		Arc::new(SpawnGlue(task_handle)),
 	);
 
 	approval_voting

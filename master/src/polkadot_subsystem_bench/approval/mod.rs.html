@@ -1251,6 +1251,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1099" id="1099">1099</a>
 <a href="#1100" id="1100">1100</a>
 <a href="#1101" id="1101">1101</a>
+<a href="#1102" id="1102">1102</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -2067,7 +2068,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		Arc::new(keystore),
 		Box::new(TestSyncOracle {}),
 		state.approval_voting_metrics.clone(),
-		Box::new(system_clock.clone()),
+		Arc::new(system_clock.clone()),
+		Arc::new(SpawnGlue(spawn_task_handle.clone())),
 	);
 
 	<span class="kw">let </span>approval_distribution = ApprovalDistribution::new_with_clock(

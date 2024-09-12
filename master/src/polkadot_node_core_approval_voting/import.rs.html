@@ -1673,6 +1673,22 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1521" id="1521">1521</a>
 <a href="#1522" id="1522">1522</a>
 <a href="#1523" id="1523">1523</a>
+<a href="#1524" id="1524">1524</a>
+<a href="#1525" id="1525">1525</a>
+<a href="#1526" id="1526">1526</a>
+<a href="#1527" id="1527">1527</a>
+<a href="#1528" id="1528">1528</a>
+<a href="#1529" id="1529">1529</a>
+<a href="#1530" id="1530">1530</a>
+<a href="#1531" id="1531">1531</a>
+<a href="#1532" id="1532">1532</a>
+<a href="#1533" id="1533">1533</a>
+<a href="#1534" id="1534">1534</a>
+<a href="#1535" id="1535">1535</a>
+<a href="#1536" id="1536">1536</a>
+<a href="#1537" id="1537">1537</a>
+<a href="#1538" id="1538">1538</a>
+<a href="#1539" id="1539">1539</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -1719,6 +1735,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	overseer, RuntimeApiError, SubsystemError, SubsystemResult,
 };
 <span class="kw">use </span>polkadot_node_subsystem_util::{determine_new_blocks, runtime::RuntimeInfo};
+<span class="kw">use </span>polkadot_overseer::SubsystemSender;
 <span class="kw">use </span>polkadot_primitives::{
 	node_features, BlockNumber, CandidateEvent, CandidateHash, CandidateReceipt, ConsensusLog,
 	CoreIndex, GroupIndex, Hash, Header, SessionIndex,
@@ -1786,8 +1803,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Computes information about the imported block. Returns an error if the info couldn't be
 /// extracted.
 </span><span class="attr">#[overseer::contextbounds(ApprovalVoting, prefix = <span class="self">self</span>::overseer)]
-</span><span class="kw">async fn </span>imported_block_info&lt;Context&gt;(
-	ctx: <span class="kw-2">&amp;mut </span>Context,
+</span><span class="kw">async fn </span>imported_block_info&lt;Sender: SubsystemSender&lt;RuntimeApiMessage&gt;&gt;(
+	sender: <span class="kw-2">&amp;mut </span>Sender,
 	env: ImportedBlockInfoEnv&lt;<span class="lifetime">'_</span>&gt;,
 	block_hash: Hash,
 	block_header: <span class="kw-2">&amp;</span>Header,
@@ -1799,11 +1816,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	// fetch candidates
 	</span><span class="kw">let </span>included_candidates: Vec&lt;<span class="kw">_</span>&gt; = {
 		<span class="kw">let </span>(c_tx, c_rx) = oneshot::channel();
-		ctx.send_message(RuntimeApiMessage::Request(
-			block_hash,
-			RuntimeApiRequest::CandidateEvents(c_tx),
-		))
-		.<span class="kw">await</span>;
+		sender
+			.send_message(RuntimeApiMessage::Request(
+				block_hash,
+				RuntimeApiRequest::CandidateEvents(c_tx),
+			))
+			.<span class="kw">await</span>;
 
 		<span class="kw">let </span>events: Vec&lt;CandidateEvent&gt; = <span class="kw">match </span>c_rx.<span class="kw">await </span>{
 			<span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(events)) =&gt; events,
@@ -1826,11 +1844,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	// short, that shouldn't happen.
 	</span><span class="kw">let </span>session_index = {
 		<span class="kw">let </span>(s_tx, s_rx) = oneshot::channel();
-		ctx.send_message(RuntimeApiMessage::Request(
-			block_header.parent_hash,
-			RuntimeApiRequest::SessionIndexForChild(s_tx),
-		))
-		.<span class="kw">await</span>;
+		sender
+			.send_message(RuntimeApiMessage::Request(
+				block_header.parent_hash,
+				RuntimeApiRequest::SessionIndexForChild(s_tx),
+			))
+			.<span class="kw">await</span>;
 
 		<span class="kw">let </span>session_index = <span class="kw">match </span>s_rx.<span class="kw">await </span>{
 			<span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(s)) =&gt; s,
@@ -1876,11 +1895,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		// by one block. This gives us the opposite invariant for sessions - the parent block's
 		// post-state gives us the canonical information about the session index for any of its
 		// children, regardless of which slot number they might be produced at.
-		</span>ctx.send_message(RuntimeApiMessage::Request(
-			block_hash,
-			RuntimeApiRequest::CurrentBabeEpoch(s_tx),
-		))
-		.<span class="kw">await</span>;
+		</span>sender
+			.send_message(RuntimeApiMessage::Request(
+				block_hash,
+				RuntimeApiRequest::CurrentBabeEpoch(s_tx),
+			))
+			.<span class="kw">await</span>;
 
 		<span class="kw">match </span>s_rx.<span class="kw">await </span>{
 			<span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(s)) =&gt; s,
@@ -1891,7 +1911,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	};
 
 	<span class="kw">let </span>extended_session_info =
-		get_extended_session_info(env.runtime_info, ctx.sender(), block_hash, session_index).<span class="kw">await</span>;
+		get_extended_session_info(env.runtime_info, sender, block_hash, session_index).<span class="kw">await</span>;
 	<span class="kw">let </span>enable_v2_assignments = extended_session_info.map_or(<span class="bool-val">false</span>, |extended_session_info| {
 		<span class="kw-2">*</span>extended_session_info
 			.node_features
@@ -1900,7 +1920,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.unwrap_or(<span class="kw-2">&amp;</span><span class="bool-val">false</span>)
 	});
 
-	<span class="kw">let </span>session_info = get_session_info(env.runtime_info, ctx.sender(), block_hash, session_index)
+	<span class="kw">let </span>session_info = get_session_info(env.runtime_info, sender, block_hash, session_index)
 		.<span class="kw">await
 		</span>.ok_or(ImportedBlockInfoError::SessionInfoUnavailable)<span class="question-mark">?</span>;
 
@@ -2004,9 +2024,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ///   * and return information about all candidates imported under each block.
 ///
 /// It is the responsibility of the caller to schedule wakeups for each block.
-</span><span class="attr">#[overseer::contextbounds(ApprovalVoting, prefix = <span class="self">self</span>::overseer)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>handle_new_head&lt;Context, B: Backend&gt;(
-	ctx: <span class="kw-2">&amp;mut </span>Context,
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>handle_new_head&lt;
+	Sender: SubsystemSender&lt;ChainApiMessage&gt;
+		+ SubsystemSender&lt;RuntimeApiMessage&gt;
+		+ SubsystemSender&lt;ChainSelectionMessage&gt;,
+	AVSender: SubsystemSender&lt;ApprovalDistributionMessage&gt;,
+	B: Backend,
+&gt;(
+	sender: <span class="kw-2">&amp;mut </span>Sender,
+	approval_voting_sender: <span class="kw-2">&amp;mut </span>AVSender,
 	state: <span class="kw-2">&amp;</span>State,
 	db: <span class="kw-2">&amp;mut </span>OverlayedBackend&lt;<span class="lifetime">'_</span>, B&gt;,
 	session_info_provider: <span class="kw-2">&amp;mut </span>RuntimeInfo,
@@ -2024,7 +2050,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">let </span>header = {
 		<span class="kw">let </span>(h_tx, h_rx) = oneshot::channel();
-		ctx.send_message(ChainApiMessage::BlockHeader(head, h_tx)).<span class="kw">await</span>;
+		sender.send_message(ChainApiMessage::BlockHeader(head, h_tx)).<span class="kw">await</span>;
 		<span class="kw">match </span>h_rx.<span class="kw">await</span><span class="question-mark">? </span>{
 			<span class="prelude-val">Err</span>(e) =&gt; {
 				<span class="macro">gum::debug!</span>(
@@ -2050,7 +2076,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>lower_bound_number = finalized_number.unwrap_or(lower_bound_number).max(lower_bound_number);
 
 	<span class="kw">let </span>new_blocks = determine_new_blocks(
-		ctx.sender(),
+		sender,
 		|h| db.load_block_entry(h).map(|e| e.is_some()),
 		head,
 		<span class="kw-2">&amp;</span>header,
@@ -2076,12 +2102,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				keystore: <span class="kw-2">&amp;</span>state.keystore,
 			};
 
-			<span class="kw">match </span>imported_block_info(ctx, env, block_hash, <span class="kw-2">&amp;</span>block_header, finalized_number).<span class="kw">await </span>{
+			<span class="kw">match </span>imported_block_info(sender, env, block_hash, <span class="kw-2">&amp;</span>block_header, finalized_number)
+				.<span class="kw">await
+			</span>{
 				<span class="prelude-val">Ok</span>(i) =&gt; imported_blocks_and_info.push((block_hash, block_header, i)),
 				<span class="prelude-val">Err</span>(error) =&gt; {
 					<span class="comment">// It's possible that we've lost a race with finality.
 					</span><span class="kw">let </span>(tx, rx) = oneshot::channel();
-					ctx.send_message(ChainApiMessage::FinalizedBlockHash(block_header.number, tx))
+					sender
+						.send_message(ChainApiMessage::FinalizedBlockHash(block_header.number, tx))
 						.<span class="kw">await</span>;
 
 					<span class="kw">let </span>lost_to_finality = <span class="kw">match </span>rx.<span class="kw">await </span>{
@@ -2125,17 +2154,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			force_approve,
 		} = imported_block_info;
 
-		<span class="kw">let </span>session_info = <span class="kw">match </span>get_session_info(
-			session_info_provider,
-			ctx.sender(),
-			head,
-			session_index,
-		)
-		.<span class="kw">await
-		</span>{
-			<span class="prelude-val">Some</span>(session_info) =&gt; session_info,
-			<span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(Vec::new()),
-		};
+		<span class="kw">let </span>session_info =
+			<span class="kw">match </span>get_session_info(session_info_provider, sender, head, session_index).<span class="kw">await </span>{
+				<span class="prelude-val">Some</span>(session_info) =&gt; session_info,
+				<span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(Vec::new()),
+			};
 
 		<span class="kw">let </span>(block_tick, no_show_duration) = {
 			<span class="kw">let </span>block_tick = slot_number_to_tick(state.slot_duration_millis, slot);
@@ -2185,7 +2208,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		};
 		<span class="comment">// If all bits are already set, then send an approve message.
 		</span><span class="kw">if </span>approved_bitfield.count_ones() == approved_bitfield.len() {
-			ctx.send_message(ChainSelectionMessage::Approved(block_hash)).<span class="kw">await</span>;
+			sender.send_message(ChainSelectionMessage::Approved(block_hash)).<span class="kw">await</span>;
 		}
 
 		<span class="kw">let </span>block_entry = v3::BlockEntry {
@@ -2242,7 +2265,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 			<span class="comment">// Notify chain-selection of all approved hashes.
 			</span><span class="kw">for </span>hash <span class="kw">in </span>approved_hashes {
-				ctx.send_message(ChainSelectionMessage::Approved(hash)).<span class="kw">await</span>;
+				sender.send_message(ChainSelectionMessage::Approved(hash)).<span class="kw">await</span>;
 			}
 		}
 
@@ -2278,7 +2301,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="string">"Informing distribution of newly imported chain"</span>,
 	);
 
-	ctx.send_unbounded_message(ApprovalDistributionMessage::NewBlocks(approval_meta));
+	approval_voting_sender
+		.send_unbounded_message(ApprovalDistributionMessage::NewBlocks(approval_meta));
 	<span class="prelude-val">Ok</span>(imported_candidates)
 }
 
@@ -2295,7 +2319,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		approval::v1::{VrfSignature, VrfTranscript},
 		DISPUTE_WINDOW,
 	};
-	<span class="kw">use </span>polkadot_node_subsystem::messages::{AllMessages, ApprovalVotingMessage};
+	<span class="kw">use </span>polkadot_node_subsystem::{
+		messages::{AllMessages, ApprovalVotingMessage},
+		SubsystemContext,
+	};
 	<span class="kw">use </span>polkadot_node_subsystem_test_helpers::make_subsystem_context;
 	<span class="kw">use </span>polkadot_node_subsystem_util::database::Database;
 	<span class="kw">use </span>polkadot_primitives::{
@@ -2337,7 +2364,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		State {
 			keystore: Arc::new(LocalKeystore::in_memory()),
 			slot_duration_millis: <span class="number">6_000</span>,
-			clock: Box::new(MockClock::default()),
+			clock: Arc::new(MockClock::default()),
 			assignment_criteria: Box::new(MockAssignmentCriteria::default()),
 			spans: HashMap::new(),
 			per_block_assignments_gathering_times: LruMap::new(ByLength::new(
@@ -2481,8 +2508,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						keystore: <span class="kw-2">&amp;</span>LocalKeystore::in_memory(),
 					};
 
-					<span class="kw">let </span>info =
-						imported_block_info(<span class="kw-2">&amp;mut </span>ctx, env, hash, <span class="kw-2">&amp;</span>header, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="number">4</span>)).<span class="kw">await</span>.unwrap();
+					<span class="kw">let </span>info = imported_block_info(ctx.sender(), env, hash, <span class="kw-2">&amp;</span>header, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="number">4</span>))
+						.<span class="kw">await
+						</span>.unwrap();
 
 					<span class="macro">assert_eq!</span>(info.included_candidates, included_candidates);
 					<span class="macro">assert_eq!</span>(info.session_index, session);
@@ -2628,7 +2656,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					keystore: <span class="kw-2">&amp;</span>LocalKeystore::in_memory(),
 				};
 
-				<span class="kw">let </span>info = imported_block_info(<span class="kw-2">&amp;mut </span>ctx, env, hash, <span class="kw-2">&amp;</span>header, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="number">4</span>)).<span class="kw">await</span>;
+				<span class="kw">let </span>info = imported_block_info(ctx.sender(), env, hash, <span class="kw-2">&amp;</span>header, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="number">4</span>)).<span class="kw">await</span>;
 
 				<span class="macro">assert_matches!</span>(info, <span class="prelude-val">Err</span>(ImportedBlockInfoError::VrfInfoUnavailable));
 			})
@@ -2767,7 +2795,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					keystore: <span class="kw-2">&amp;</span>LocalKeystore::in_memory(),
 				};
 
-				<span class="kw">let </span>info = imported_block_info(<span class="kw-2">&amp;mut </span>ctx, env, hash, <span class="kw-2">&amp;</span>header, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="number">6</span>)).<span class="kw">await</span>;
+				<span class="kw">let </span>info = imported_block_info(ctx.sender(), env, hash, <span class="kw-2">&amp;</span>header, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="number">6</span>)).<span class="kw">await</span>;
 
 				<span class="macro">assert_matches!</span>(info, <span class="prelude-val">Err</span>(ImportedBlockInfoError::BlockAlreadyFinalized));
 			})
@@ -2803,7 +2831,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>imported_block_info_extracts_force_approve() {
 		<span class="kw">let </span>pool = TaskExecutor::new();
-		<span class="kw">let </span>(<span class="kw-2">mut </span>ctx, <span class="kw-2">mut </span>handle) = make_subsystem_context(pool.clone());
+		<span class="kw">let </span>(<span class="kw-2">mut </span>ctx, <span class="kw-2">mut </span>handle) =
+			make_subsystem_context::&lt;ApprovalVotingMessage, <span class="kw">_</span>&gt;(pool.clone());
 
 		<span class="kw">let </span>session = <span class="number">5</span>;
 		<span class="kw">let </span>session_info = dummy_session_info(session);
@@ -2866,7 +2895,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				};
 
 				<span class="kw">let </span>info =
-					imported_block_info(<span class="kw-2">&amp;mut </span>ctx, env, hash, <span class="kw-2">&amp;</span>header, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="number">4</span>)).<span class="kw">await</span>.unwrap();
+					imported_block_info(ctx.sender(), env, hash, <span class="kw-2">&amp;</span>header, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="number">4</span>)).<span class="kw">await</span>.unwrap();
 
 				<span class="macro">assert_eq!</span>(info.included_candidates, included_candidates);
 				<span class="macro">assert_eq!</span>(info.session_index, session);
@@ -3059,8 +3088,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>test_fut = {
 			Box::pin(<span class="kw">async move </span>{
 				<span class="kw">let </span><span class="kw-2">mut </span>overlay_db = OverlayedBackend::new(<span class="kw-2">&amp;</span>db);
+
+				<span class="kw">let </span><span class="kw-2">mut </span>approval_voting_sender = ctx.sender().clone();
 				<span class="kw">let </span>result = handle_new_head(
-					<span class="kw-2">&amp;mut </span>ctx,
+					ctx.sender(),
+					<span class="kw-2">&amp;mut </span>approval_voting_sender,
 					<span class="kw-2">&amp;</span>state,
 					<span class="kw-2">&amp;mut </span>overlay_db,
 					<span class="kw-2">&amp;mut </span>session_info_provider,

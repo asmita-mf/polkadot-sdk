@@ -713,6 +713,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#561" id="561">561</a>
 <a href="#562" id="562">562</a>
 <a href="#563" id="563">563</a>
+<a href="#564" id="564">564</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -1035,6 +1036,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			keystore.clone(),
 			Box::new(sync_service.clone()),
 			Metrics::register(registry)<span class="question-mark">?</span>,
+			Arc::new(spawner.clone()),
 		))
 		.gossip_support(GossipSupportSubsystem::new(
 			keystore.clone(),
