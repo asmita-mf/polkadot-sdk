@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726243502255,
+  "lastUpdate": 1726248332761,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -24973,6 +24973,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "bitfield-distribution",
             "value": 0.021488129086666672,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "gallois.benjamin08@gmail.com",
+            "name": "Benjamin Gallois",
+            "username": "bgallois"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "51f336711a0391987db69d6281c9b57bfe49d925",
+          "message": "Fix treasury benchmarks when no SpendOrigin (#3049)\n\n### Issue\n\nIt was impossible to benchmark the pallet_treasury when `SpendOrigin =\nframe_support::traits::NeverEnsureOrigin<u64>;` was specified.\n\n### Done\n\n- [x] Use `weight = 0` for all extrinsics that are un-callable with no\n`SpendOrigin`.\n- [x] Fix benchmarks for extrinsics requiring a Spend even if\n`SpendOrigin = frame_support::traits::NeverEnsureOrigin<u64>;`\n\n---------\n\nSigned-off-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>\nCo-authored-by: Bastian Köcher <info@kchr.de>\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>",
+          "timestamp": "2024-09-13T16:10:17Z",
+          "tree_id": "988cd2c77c9c2cf659d555f16e1d6740b3c53253",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/51f336711a0391987db69d6281c9b57bfe49d925"
+        },
+        "date": 1726248303021,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021392858653333336,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18126131728,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016624831766666667,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008914381020000077,
             "unit": "seconds"
           }
         ]
