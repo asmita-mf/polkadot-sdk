@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726168211980,
+  "lastUpdate": 1726218560348,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -24703,6 +24703,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-store",
             "value": 0.18182602818666654,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "41779041+alvicsam@users.noreply.github.com",
+            "name": "Alexander Samusev",
+            "username": "alvicsam"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d66dee3c3da836bcf41a12ca4e1191faee0b6a5b",
+          "message": "[ci] Move check each crate osx from gitlab to github (#5690)\n\nPR adds `cargo-check-each-crate-macos` job in GitHub actions.\nIt'll work some time in both CI systems until it's moved entirely to\nGHA.\n\n\ncc https://github.com/paritytech/ci_cd/issues/1021",
+          "timestamp": "2024-09-13T07:55:15Z",
+          "tree_id": "7e75704830735d2621f47d2901b37c7b76ea4eb3",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/d66dee3c3da836bcf41a12ca4e1191faee0b6a5b"
+        },
+        "date": 1726218531519,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021453325006666666,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.01655945693333333,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18216660278666677,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.009027144193333416,
             "unit": "seconds"
           }
         ]
