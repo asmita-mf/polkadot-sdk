@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726218524833,
+  "lastUpdate": 1726228359007,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -19703,6 +19703,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.23492109910000006,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "cyrill@parity.io",
+            "name": "Cyrill Leutwiler",
+            "username": "xermicus"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b21da7480899fcfd5f9b8b6f44d54adb118badbb",
+          "message": "[pallet-revive] uapi: allow create1 equivalent calls (#5701)\n\nThe salt argument should be optional to allow create1 equivalent calls.\n\n---------\n\nSigned-off-by: xermicus <cyrill@parity.io>",
+          "timestamp": "2024-09-13T10:33:51Z",
+          "tree_id": "2f77ea7907e318e1454ac20ae20239a581bd9f33",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/b21da7480899fcfd5f9b8b6f44d54adb118badbb"
+        },
+        "date": 1726228329527,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23556472633333328,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.790687587900003,
             "unit": "seconds"
           }
         ]
