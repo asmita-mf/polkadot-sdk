@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726243465715,
+  "lastUpdate": 1726248296451,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -19879,6 +19879,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 11.809014299833331,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "gallois.benjamin08@gmail.com",
+            "name": "Benjamin Gallois",
+            "username": "bgallois"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "51f336711a0391987db69d6281c9b57bfe49d925",
+          "message": "Fix treasury benchmarks when no SpendOrigin (#3049)\n\n### Issue\n\nIt was impossible to benchmark the pallet_treasury when `SpendOrigin =\nframe_support::traits::NeverEnsureOrigin<u64>;` was specified.\n\n### Done\n\n- [x] Use `weight = 0` for all extrinsics that are un-callable with no\n`SpendOrigin`.\n- [x] Fix benchmarks for extrinsics requiring a Spend even if\n`SpendOrigin = frame_support::traits::NeverEnsureOrigin<u64>;`\n\n---------\n\nSigned-off-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>\nCo-authored-by: Bastian Köcher <info@kchr.de>\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>",
+          "timestamp": "2024-09-13T16:10:17Z",
+          "tree_id": "988cd2c77c9c2cf659d555f16e1d6740b3c53253",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/51f336711a0391987db69d6281c9b57bfe49d925"
+        },
+        "date": 1726248266460,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.714263904066666,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23670376146666663,
             "unit": "seconds"
           }
         ]
