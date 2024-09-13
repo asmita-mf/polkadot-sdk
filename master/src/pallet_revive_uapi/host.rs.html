@@ -767,6 +767,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#615" id="615">615</a>
 <a href="#616" id="616">616</a>
 <a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
+<a href="#622" id="622">622</a>
+<a href="#623" id="623">623</a>
+<a href="#624" id="624">624</a>
+<a href="#625" id="625">625</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -825,12 +833,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	///   otherwise.
 	</span><span class="kw">fn </span>lock_delegate_dependency(code_hash: <span class="kw-2">&amp;</span>[u8; <span class="number">32</span>]);
 
-	<span class="doccomment">/// Stores the *free* balance of the current account into the supplied buffer.
+	<span class="doccomment">/// Stores the **reducible** balance of the current account into the supplied buffer.
 	///
 	/// # Parameters
 	///
 	/// - `output`: A reference to the output data buffer to write the balance.
 	</span><span class="kw">fn </span>balance(output: <span class="kw-2">&amp;mut </span>[u8; <span class="number">32</span>]);
+
+	<span class="doccomment">/// Stores the **reducible** balance of the supplied address into the supplied buffer.
+	///
+	/// # Parameters
+	///
+	/// - `addr`: The target address of which to retreive the free balance.
+	/// - `output`: A reference to the output data buffer to write the balance.
+	</span><span class="kw">fn </span>balance_of(addr: <span class="kw-2">&amp;</span>[u8; <span class="number">20</span>], output: <span class="kw-2">&amp;mut </span>[u8; <span class="number">32</span>]);
 
 	<span class="doccomment">/// Stores the current block number of the current contract into the supplied buffer.
 	///

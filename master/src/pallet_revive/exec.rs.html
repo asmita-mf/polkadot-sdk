@@ -4248,6 +4248,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#4096" id="4096">4096</a>
 <a href="#4097" id="4097">4097</a>
 <a href="#4098" id="4098">4098</a>
+<a href="#4099" id="4099">4099</a>
+<a href="#4100" id="4100">4100</a>
+<a href="#4101" id="4101">4101</a>
+<a href="#4102" id="4102">4102</a>
+<a href="#4103" id="4103">4103</a>
+<a href="#4104" id="4104">4104</a>
+<a href="#4105" id="4105">4105</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -4287,7 +4294,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	traits::{
 		fungible::{Inspect, Mutate},
 		tokens::{Fortitude, Preservation},
-		Contains, IsType, OriginTrait, Time,
+		Contains, OriginTrait, Time,
 	},
 	weights::Weight,
 	Blake2_128Concat, BoundedVec, StorageHasher,
@@ -4554,6 +4561,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	///
 	/// The `value_transferred` is already added.
 	</span><span class="kw">fn </span>balance(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; U256;
+
+	<span class="doccomment">/// Returns the balance of the supplied account.
+	///
+	/// The `value_transferred` is already added.
+	</span><span class="kw">fn </span>balance_of(<span class="kw-2">&amp;</span><span class="self">self</span>, address: <span class="kw-2">&amp;</span>H160) -&gt; U256;
 
 	<span class="doccomment">/// Returns the value transferred along with this call.
 	</span><span class="kw">fn </span>value_transferred(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; U256;
@@ -4944,7 +4956,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T, E&gt; Stack&lt;<span class="lifetime">'a</span>, T, E&gt;
 <span class="kw">where
 	</span>T: Config,
-	T::Hash: IsType&lt;H256&gt;,
 	BalanceOf&lt;T&gt;: Into&lt;U256&gt; + TryFrom&lt;U256&gt;,
 	MomentOf&lt;T&gt;: Into&lt;U256&gt;,
 	E: Executable&lt;T&gt;,
@@ -5506,12 +5517,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">fn </span>allows_reentry(<span class="kw-2">&amp;</span><span class="self">self</span>, id: <span class="kw-2">&amp;</span>T::AccountId) -&gt; bool {
 		!<span class="self">self</span>.frames().any(|f| <span class="kw-2">&amp;</span>f.account_id == id &amp;&amp; !f.allows_reentry)
 	}
+
+	<span class="doccomment">/// Returns the *free* balance of the supplied AccountId.
+	</span><span class="kw">fn </span>account_balance(<span class="kw-2">&amp;</span><span class="self">self</span>, who: <span class="kw-2">&amp;</span>T::AccountId) -&gt; U256 {
+		T::Currency::reducible_balance(who, Preservation::Preserve, Fortitude::Polite).into()
+	}
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T, E&gt; Ext <span class="kw">for </span>Stack&lt;<span class="lifetime">'a</span>, T, E&gt;
 <span class="kw">where
 	</span>T: Config,
-	T::Hash: IsType&lt;H256&gt;,
 	E: Executable&lt;T&gt;,
 	BalanceOf&lt;T&gt;: Into&lt;U256&gt; + TryFrom&lt;U256&gt;,
 	MomentOf&lt;T&gt;: Into&lt;U256&gt;,
@@ -5746,12 +5761,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>balance(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; U256 {
-		T::Currency::reducible_balance(
-			<span class="kw-2">&amp;</span><span class="self">self</span>.top_frame().account_id,
-			Preservation::Preserve,
-			Fortitude::Polite,
-		)
-		.into()
+		<span class="self">self</span>.account_balance(<span class="kw-2">&amp;</span><span class="self">self</span>.top_frame().account_id)
+	}
+
+	<span class="kw">fn </span>balance_of(<span class="kw-2">&amp;</span><span class="self">self</span>, address: <span class="kw-2">&amp;</span>H160) -&gt; U256 {
+		<span class="self">self</span>.account_balance(<span class="kw-2">&amp;</span>&lt;<span class="self">Self</span>::T <span class="kw">as </span>Config&gt;::AddressMapper::to_account_id(address))
 	}
 
 	<span class="kw">fn </span>value_transferred(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; U256 {

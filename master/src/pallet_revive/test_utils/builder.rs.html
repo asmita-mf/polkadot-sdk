@@ -376,10 +376,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#224" id="224">224</a>
 <a href="#225" id="225">225</a>
 <a href="#226" id="226">226</a>
-<a href="#227" id="227">227</a>
-<a href="#228" id="228">228</a>
-<a href="#229" id="229">229</a>
-<a href="#230" id="230">230</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -403,11 +399,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	ContractExecResult, ContractInstantiateResult, DebugInfo, EventRecordOf, ExecReturnValue,
 	InstantiateReturnValue, OriginFor, Pallet, Weight,
 };
-<span class="kw">use </span>codec::{Encode, HasCompact};
-<span class="kw">use </span>core::fmt::Debug;
 <span class="kw">use </span>frame_support::pallet_prelude::DispatchResultWithPostInfo;
 <span class="kw">use </span>paste::paste;
-<span class="kw">use </span>scale_info::TypeInfo;
 <span class="kw">use </span>sp_core::H160;
 
 <span class="doccomment">/// Helper macro to generate a builder for contract API calls.
@@ -435,8 +428,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="attr">#[<span class="macro-nonterminal">allow</span>(dead_code)]
 		</span><span class="kw">impl</span>&lt;T: Config&gt; <span class="macro-nonterminal">$name</span>&lt;T&gt;
 		<span class="kw">where
-			</span>&lt;BalanceOf&lt;T&gt; <span class="kw">as </span>HasCompact&gt;::Type: Clone + Eq + PartialEq + Debug + TypeInfo + Encode,
-			BalanceOf&lt;T&gt;: Into&lt;sp_core::U256&gt; + TryFrom&lt;sp_core::U256&gt;,
+			</span>BalanceOf&lt;T&gt;: Into&lt;sp_core::U256&gt; + TryFrom&lt;sp_core::U256&gt;,
 			<span class="kw">crate</span>::MomentOf&lt;T&gt;: Into&lt;sp_core::U256&gt;,
 			T::Hash: frame_support::traits::IsType&lt;sp_core::H256&gt;,
 		{

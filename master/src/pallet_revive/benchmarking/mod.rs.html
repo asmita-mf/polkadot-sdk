@@ -1880,6 +1880,22 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1728" id="1728">1728</a>
 <a href="#1729" id="1729">1729</a>
 <a href="#1730" id="1730">1730</a>
+<a href="#1731" id="1731">1731</a>
+<a href="#1732" id="1732">1732</a>
+<a href="#1733" id="1733">1733</a>
+<a href="#1734" id="1734">1734</a>
+<a href="#1735" id="1735">1735</a>
+<a href="#1736" id="1736">1736</a>
+<a href="#1737" id="1737">1737</a>
+<a href="#1738" id="1738">1738</a>
+<a href="#1739" id="1739">1739</a>
+<a href="#1740" id="1740">1740</a>
+<a href="#1741" id="1741">1741</a>
+<a href="#1742" id="1742">1742</a>
+<a href="#1743" id="1743">1743</a>
+<a href="#1744" id="1744">1744</a>
+<a href="#1745" id="1745">1745</a>
+<a href="#1746" id="1746">1746</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1950,10 +1966,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">impl</span>&lt;T&gt; Contract&lt;T&gt;
 <span class="kw">where
 	</span>T: Config + pallet_balances::Config,
-	&lt;BalanceOf&lt;T&gt; <span class="kw">as </span>HasCompact&gt;::Type: Clone + Eq + PartialEq + Debug + TypeInfo + Encode,
 	BalanceOf&lt;T&gt;: Into&lt;U256&gt; + TryFrom&lt;U256&gt;,
 	MomentOf&lt;T&gt;: Into&lt;U256&gt;,
-	T::Hash: IsType&lt;H256&gt;,
 {
 	<span class="doccomment">/// Returns the address of the contract.
 	</span><span class="kw">fn </span>address(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; H160 {
@@ -2103,12 +2117,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="attr">#[benchmarks(
 	<span class="kw">where
-		</span>&lt;BalanceOf&lt;T&gt; <span class="kw">as </span>HasCompact&gt;::Type: Clone + Eq + PartialEq + Debug + TypeInfo + Encode,
-		BalanceOf&lt;T&gt;: From&lt;&lt;pallet_balances::Pallet&lt;T&gt; <span class="kw">as </span>Currency&lt;T::AccountId&gt;&gt;::Balance&gt; + Into&lt;U256&gt; + TryFrom&lt;U256&gt;,
+		</span>BalanceOf&lt;T&gt;: Into&lt;U256&gt; + TryFrom&lt;U256&gt;,
 		T: Config + pallet_balances::Config,
 		MomentOf&lt;T&gt;: Into&lt;U256&gt;,
 		&lt;T <span class="kw">as </span>frame_system::Config&gt;::RuntimeEvent: From&lt;pallet::Event&lt;T&gt;&gt;,
-		T::Hash: IsType&lt;H256&gt;,
 		&lt;pallet_balances::Pallet&lt;T&gt; <span class="kw">as </span>Currency&lt;T::AccountId&gt;&gt;::Balance: From&lt;BalanceOf&lt;T&gt;&gt;,
 )]
 </span><span class="kw">mod </span>benchmarks {
@@ -2492,6 +2504,26 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 		<span class="macro">assert_ok!</span>(result);
 		<span class="macro">assert_eq!</span>(U256::from_little_endian(<span class="kw-2">&amp;</span>memory[..]), runtime.ext().balance());
+	}
+
+	<span class="attr">#[benchmark(pov_mode = Measured)]
+	</span><span class="kw">fn </span>seal_balance_of() {
+		<span class="kw">let </span>len = &lt;sp_core::U256 <span class="kw">as </span>MaxEncodedLen&gt;::max_encoded_len();
+		<span class="kw">let </span>account = account::&lt;T::AccountId&gt;(<span class="string">"target"</span>, <span class="number">0</span>, <span class="number">0</span>);
+		<span class="kw">let </span>address = T::AddressMapper::to_address(<span class="kw-2">&amp;</span>account);
+		<span class="kw">let </span>balance = Pallet::&lt;T&gt;::min_balance() * <span class="number">2u32</span>.into();
+		T::Currency::set_balance(<span class="kw-2">&amp;</span>account, balance);
+
+		<span class="macro">build_runtime!</span>(runtime, memory: [<span class="macro">vec!</span>[<span class="number">0u8</span>; len], address.<span class="number">0</span>, ]);
+
+		<span class="kw">let </span>result;
+		<span class="attr">#[block]
+		</span>{
+			result = runtime.bench_balance_of(memory.as_mut_slice(), len <span class="kw">as </span>u32, <span class="number">0</span>);
+		}
+
+		<span class="macro">assert_ok!</span>(result);
+		<span class="macro">assert_eq!</span>(U256::from_little_endian(<span class="kw-2">&amp;</span>memory[..len]), runtime.ext().balance_of(<span class="kw-2">&amp;</span>address));
 	}
 
 	<span class="attr">#[benchmark(pov_mode = Measured)]

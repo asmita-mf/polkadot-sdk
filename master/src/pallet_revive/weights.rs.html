@@ -1899,6 +1899,27 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1747" id="1747">1747</a>
 <a href="#1748" id="1748">1748</a>
 <a href="#1749" id="1749">1749</a>
+<a href="#1750" id="1750">1750</a>
+<a href="#1751" id="1751">1751</a>
+<a href="#1752" id="1752">1752</a>
+<a href="#1753" id="1753">1753</a>
+<a href="#1754" id="1754">1754</a>
+<a href="#1755" id="1755">1755</a>
+<a href="#1756" id="1756">1756</a>
+<a href="#1757" id="1757">1757</a>
+<a href="#1758" id="1758">1758</a>
+<a href="#1759" id="1759">1759</a>
+<a href="#1760" id="1760">1760</a>
+<a href="#1761" id="1761">1761</a>
+<a href="#1762" id="1762">1762</a>
+<a href="#1763" id="1763">1763</a>
+<a href="#1764" id="1764">1764</a>
+<a href="#1765" id="1765">1765</a>
+<a href="#1766" id="1766">1766</a>
+<a href="#1767" id="1767">1767</a>
+<a href="#1768" id="1768">1768</a>
+<a href="#1769" id="1769">1769</a>
+<a href="#1770" id="1770">1770</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1970,6 +1991,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">fn </span>seal_address() -&gt; Weight;
 	<span class="kw">fn </span>seal_gas_left() -&gt; Weight;
 	<span class="kw">fn </span>seal_balance() -&gt; Weight;
+	<span class="kw">fn </span>seal_balance_of() -&gt; Weight;
 	<span class="kw">fn </span>seal_value_transferred() -&gt; Weight;
 	<span class="kw">fn </span>seal_minimum_balance() -&gt; Weight;
 	<span class="kw">fn </span>seal_block_number() -&gt; Weight;
@@ -2309,6 +2331,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		//  Estimated: `0`
 		// Minimum execution time: 4_361_000 picoseconds.
 		</span>Weight::from_parts(<span class="number">4_577_000</span>, <span class="number">0</span>)
+	}
+	<span class="doccomment">/// Storage: `System::Account` (r:1 w:0)
+	/// Proof: `System::Account` (`max_values`: None, `max_size`: Some(128), added: 2603, mode: `Measured`)
+	</span><span class="kw">fn </span>seal_balance_of() -&gt; Weight {
+		<span class="comment">// Proof Size summary in bytes:
+		//  Measured:  `52`
+		//  Estimated: `3517`
+		// Minimum execution time: 3_751_000 picoseconds.
+		</span>Weight::from_parts(<span class="number">3_874_000</span>, <span class="number">3517</span>)
+			.saturating_add(T::DbWeight::get().reads(<span class="number">1_u64</span>))
 	}
 	<span class="kw">fn </span>seal_value_transferred() -&gt; Weight {
 		<span class="comment">// Proof Size summary in bytes:
@@ -3123,6 +3155,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		//  Estimated: `0`
 		// Minimum execution time: 4_361_000 picoseconds.
 		</span>Weight::from_parts(<span class="number">4_577_000</span>, <span class="number">0</span>)
+	}
+	<span class="doccomment">/// Storage: `System::Account` (r:1 w:0)
+	/// Proof: `System::Account` (`max_values`: None, `max_size`: Some(128), added: 2603, mode: `Measured`)
+	</span><span class="kw">fn </span>seal_balance_of() -&gt; Weight {
+		<span class="comment">// Proof Size summary in bytes:
+		//  Measured:  `52`
+		//  Estimated: `3517`
+		// Minimum execution time: 3_751_000 picoseconds.
+		</span>Weight::from_parts(<span class="number">3_874_000</span>, <span class="number">3517</span>)
+			.saturating_add(RocksDbWeight::get().reads(<span class="number">1_u64</span>))
 	}
 	<span class="kw">fn </span>seal_value_transferred() -&gt; Weight {
 		<span class="comment">// Proof Size summary in bytes:
