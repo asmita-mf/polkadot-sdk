@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726168286703,
+  "lastUpdate": 1726218631590,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -10291,6 +10291,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.04492751494399995,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "41779041+alvicsam@users.noreply.github.com",
+            "name": "Alexander Samusev",
+            "username": "alvicsam"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d66dee3c3da836bcf41a12ca4e1191faee0b6a5b",
+          "message": "[ci] Move check each crate osx from gitlab to github (#5690)\n\nPR adds `cargo-check-each-crate-macos` job in GitHub actions.\nIt'll work some time in both CI systems until it's moved entirely to\nGHA.\n\n\ncc https://github.com/paritytech/ci_cd/issues/1021",
+          "timestamp": "2024-09-13T07:55:15Z",
+          "tree_id": "7e75704830735d2621f47d2901b37c7b76ea4eb3",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/d66dee3c3da836bcf41a12ca4e1191faee0b6a5b"
+        },
+        "date": 1726218602597,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.92999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.036554345814,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04458728721799995,
             "unit": "seconds"
           }
         ]
