@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726232285644,
+  "lastUpdate": 1726236007106,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -17397,6 +17397,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-voting",
             "value": 2.6588490770099997,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "yrong1997@gmail.com",
+            "name": "Ron",
+            "username": "yrong"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "fb7300ce15086de8333b22de823f5b02f2bb3280",
+          "message": "Transfer Polkadot-native assets to Ethereum (#5546)\n\n# Description\n\nAdding support for send polkadot native assets(PNA) to Ethereum network\nthrough snowbridge. Asset with location in view of AH Including:\n\n- Relay token `(1,Here)`\n- Native asset `(0,[PalletInstance(instance),GenereIndex(index)])`\nmanaged by Assets Pallet\n- Native asset of Parachain `(1,[Parachain(paraId)])` managed by Foreign\nAssets Pallet\n\nThe original PR in https://github.com/Snowfork/polkadot-sdk/pull/128\nwhich has been internally reviewed by Snowbridge team.\n\n# Notes\n\n- This feature depends on the companion solidity change in\nhttps://github.com/Snowfork/snowbridge/pull/1155. Currently register PNA\nis only allowed from\n[sudo](https://github.com/Snowfork/polkadot-sdk/blob/46cb3528cd8cd1394af2335a6907d7ab8647717a/bridges/snowbridge/pallets/system/src/lib.rs#L621),\nso it's actually not enabled. Will require another runtime upgrade to\nmake the call permissionless together with upgrading the Gateway\ncontract.\n\n- To make things easy multi-hop transfer(i.e. sending PNA from Ethereum\nthrough AH to Destination chain) is not support ed in this PR. For this\ncase user can switch to 2-phases transfer instead.\n\n---------\n\nCo-authored-by: Clara van Staden <claravanstaden64@gmail.com>\nCo-authored-by: Alistair Singh <alistair.singh7@gmail.com>\nCo-authored-by: Vincent Geddes <117534+vgeddes@users.noreply.github.com>\nCo-authored-by: Francisco Aguirre <franciscoaguirreperez@gmail.com>\nCo-authored-by: Adrian Catangiu <adrian@parity.io>",
+          "timestamp": "2024-09-13T12:09:47Z",
+          "tree_id": "7422f03587d9fd69a3bea4fb5afb503bb406e5e6",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/fb7300ce15086de8333b22de823f5b02f2bb3280"
+        },
+        "date": 1726235977942,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52944.09999999999,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63797.15,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.597279828890002,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.706772202969988,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.099005705413478,
             "unit": "seconds"
           }
         ]
