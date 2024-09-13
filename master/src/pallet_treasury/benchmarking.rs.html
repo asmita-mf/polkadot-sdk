@@ -432,6 +432,76 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#280" id="280">280</a>
 <a href="#281" id="281">281</a>
 <a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -460,7 +530,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	v2::<span class="kw-2">*</span>,
 };
 <span class="kw">use </span>frame_support::{
-	ensure,
+	assert_err, assert_ok, ensure,
 	traits::{
 		tokens::{ConversionFromAssetBalance, PaymentStatus},
 		EnsureOrigin, OnInitialize,
@@ -507,12 +577,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="comment">// Create proposals that are approved for use in `on_initialize`.
 </span><span class="kw">fn </span>create_approved_proposals&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt;(n: u32) -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; {
-	<span class="kw">let </span>origin = T::SpendOrigin::try_successful_origin().map_err(|<span class="kw">_</span>| BenchmarkError::Weightless)<span class="question-mark">?</span>;
+	<span class="kw">let </span>spender = T::SpendOrigin::try_successful_origin();
+
 	<span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
 		<span class="kw">let </span>(<span class="kw">_</span>, value, lookup) = setup_proposal::&lt;T, I&gt;(i);
-		Treasury::&lt;T, I&gt;::spend_local(origin.clone(), value, lookup)<span class="question-mark">?</span>;
+
+		<span class="kw">if let </span><span class="prelude-val">Ok</span>(origin) = <span class="kw-2">&amp;</span>spender {
+			Treasury::&lt;T, I&gt;::spend_local(origin.clone(), value, lookup)<span class="question-mark">?</span>;
+		}
 	}
-	<span class="macro">ensure!</span>(Approvals::&lt;T, I&gt;::get().len() == n <span class="kw">as </span>usize, <span class="string">"Not all approved"</span>);
+
+	<span class="kw">if </span>spender.is_ok() {
+		<span class="macro">ensure!</span>(Approvals::&lt;T, I&gt;::get().len() == n <span class="kw">as </span>usize, <span class="string">"Not all approved"</span>);
+	}
 	<span class="prelude-val">Ok</span>(())
 }
 
@@ -540,8 +617,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">mod </span>benchmarks {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-	<span class="comment">// This benchmark is short-circuited if `SpendOrigin` cannot provide
-	// a successful origin, in which case `spend` is un-callable and can use weight=0.
+	<span class="doccomment">/// This benchmark is short-circuited if `SpendOrigin` cannot provide
+	/// a successful origin, in which case `spend` is un-callable and can use weight=0.
 	</span><span class="attr">#[benchmark]
 	</span><span class="kw">fn </span>spend_local() -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
 		<span class="kw">let </span>(<span class="kw">_</span>, value, beneficiary_lookup) = setup_proposal::&lt;T, <span class="kw">_</span>&gt;(SEED);
@@ -589,7 +666,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="prelude-val">Ok</span>(())
 	}
 
-	<span class="attr">#[benchmark]
+	<span class="doccomment">/// This benchmark is short-circuited if `SpendOrigin` cannot provide
+	/// a successful origin, in which case `spend` is un-callable and can use weight=0.
+	</span><span class="attr">#[benchmark]
 	</span><span class="kw">fn </span>spend() -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
 		<span class="kw">let </span>origin =
 			T::SpendOrigin::try_successful_origin().map_err(|<span class="kw">_</span>| BenchmarkError::Weightless)<span class="question-mark">?</span>;
@@ -624,85 +703,135 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="attr">#[benchmark]
 	</span><span class="kw">fn </span>payout() -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
-		<span class="kw">let </span>origin = T::SpendOrigin::try_successful_origin().map_err(|<span class="kw">_</span>| <span class="string">"No origin"</span>)<span class="question-mark">?</span>;
 		<span class="kw">let </span>(asset_kind, amount, beneficiary, beneficiary_lookup) =
 			create_spend_arguments::&lt;T, <span class="kw">_</span>&gt;(SEED);
 		T::BalanceConverter::ensure_successful(asset_kind.clone());
-		Treasury::&lt;T, <span class="kw">_</span>&gt;::spend(
-			origin,
-			Box::new(asset_kind.clone()),
-			amount,
-			Box::new(beneficiary_lookup),
-			<span class="prelude-val">None</span>,
-		)<span class="question-mark">?</span>;
+
+		<span class="kw">let </span>spend_exists = <span class="kw">if let </span><span class="prelude-val">Ok</span>(origin) = T::SpendOrigin::try_successful_origin() {
+			Treasury::&lt;T, <span class="kw">_</span>&gt;::spend(
+				origin,
+				Box::new(asset_kind.clone()),
+				amount,
+				Box::new(beneficiary_lookup),
+				<span class="prelude-val">None</span>,
+			)<span class="question-mark">?</span>;
+
+			<span class="bool-val">true
+		</span>} <span class="kw">else </span>{
+			<span class="bool-val">false
+		</span>};
+
 		T::Paymaster::ensure_successful(<span class="kw-2">&amp;</span>beneficiary, asset_kind, amount);
 		<span class="kw">let </span>caller: T::AccountId = account(<span class="string">"caller"</span>, <span class="number">0</span>, SEED);
 
-		<span class="attr">#[extrinsic_call]
-		</span><span class="kw">_</span>(RawOrigin::Signed(caller.clone()), <span class="number">0u32</span>);
+		<span class="attr">#[block]
+		</span>{
+			<span class="kw">let </span>res = Treasury::&lt;T, <span class="kw">_</span>&gt;::payout(RawOrigin::Signed(caller.clone()).into(), <span class="number">0u32</span>);
 
-		<span class="kw">let </span>id = <span class="kw">match </span>Spends::&lt;T, I&gt;::get(<span class="number">0</span>).unwrap().status {
-			PaymentState::Attempted { id, .. } =&gt; {
-				<span class="macro">assert_ne!</span>(T::Paymaster::check_payment(id), PaymentStatus::Failure);
-				id
-			},
-			<span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"No payout attempt made"</span>),
-		};
-		assert_last_event::&lt;T, I&gt;(Event::Paid { index: <span class="number">0</span>, payment_id: id }.into());
-		<span class="macro">assert!</span>(Treasury::&lt;T, <span class="kw">_</span>&gt;::payout(RawOrigin::Signed(caller).into(), <span class="number">0u32</span>).is_err());
+			<span class="kw">if </span>spend_exists {
+				<span class="macro">assert_ok!</span>(res);
+			} <span class="kw">else </span>{
+				<span class="macro">assert_err!</span>(res, <span class="kw">crate</span>::Error::&lt;T, <span class="kw">_</span>&gt;::InvalidIndex);
+			}
+		}
+
+		<span class="kw">if </span>spend_exists {
+			<span class="kw">let </span>id = <span class="kw">match </span>Spends::&lt;T, I&gt;::get(<span class="number">0</span>).unwrap().status {
+				PaymentState::Attempted { id, .. } =&gt; {
+					<span class="macro">assert_ne!</span>(T::Paymaster::check_payment(id), PaymentStatus::Failure);
+					id
+				},
+				<span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"No payout attempt made"</span>),
+			};
+			assert_last_event::&lt;T, I&gt;(Event::Paid { index: <span class="number">0</span>, payment_id: id }.into());
+			<span class="macro">assert!</span>(Treasury::&lt;T, <span class="kw">_</span>&gt;::payout(RawOrigin::Signed(caller).into(), <span class="number">0u32</span>).is_err());
+		}
+
 		<span class="prelude-val">Ok</span>(())
 	}
 
 	<span class="attr">#[benchmark]
 	</span><span class="kw">fn </span>check_status() -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
-		<span class="kw">let </span>origin = T::SpendOrigin::try_successful_origin().map_err(|<span class="kw">_</span>| <span class="string">"No origin"</span>)<span class="question-mark">?</span>;
 		<span class="kw">let </span>(asset_kind, amount, beneficiary, beneficiary_lookup) =
 			create_spend_arguments::&lt;T, <span class="kw">_</span>&gt;(SEED);
-		T::BalanceConverter::ensure_successful(asset_kind.clone());
-		Treasury::&lt;T, <span class="kw">_</span>&gt;::spend(
-			origin,
-			Box::new(asset_kind.clone()),
-			amount,
-			Box::new(beneficiary_lookup),
-			<span class="prelude-val">None</span>,
-		)<span class="question-mark">?</span>;
-		T::Paymaster::ensure_successful(<span class="kw-2">&amp;</span>beneficiary, asset_kind, amount);
-		<span class="kw">let </span>caller: T::AccountId = account(<span class="string">"caller"</span>, <span class="number">0</span>, SEED);
-		Treasury::&lt;T, <span class="kw">_</span>&gt;::payout(RawOrigin::Signed(caller.clone()).into(), <span class="number">0u32</span>)<span class="question-mark">?</span>;
-		<span class="kw">match </span>Spends::&lt;T, I&gt;::get(<span class="number">0</span>).unwrap().status {
-			PaymentState::Attempted { id, .. } =&gt; {
-				T::Paymaster::ensure_concluded(id);
-			},
-			<span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"No payout attempt made"</span>),
-		};
 
-		<span class="attr">#[extrinsic_call]
-		</span><span class="kw">_</span>(RawOrigin::Signed(caller.clone()), <span class="number">0u32</span>);
+		T::BalanceConverter::ensure_successful(asset_kind.clone());
+		T::Paymaster::ensure_successful(<span class="kw-2">&amp;</span>beneficiary, asset_kind.clone(), amount);
+		<span class="kw">let </span>caller: T::AccountId = account(<span class="string">"caller"</span>, <span class="number">0</span>, SEED);
+
+		<span class="kw">let </span>spend_exists = <span class="kw">if let </span><span class="prelude-val">Ok</span>(origin) = T::SpendOrigin::try_successful_origin() {
+			Treasury::&lt;T, <span class="kw">_</span>&gt;::spend(
+				origin,
+				Box::new(asset_kind),
+				amount,
+				Box::new(beneficiary_lookup),
+				<span class="prelude-val">None</span>,
+			)<span class="question-mark">?</span>;
+
+			Treasury::&lt;T, <span class="kw">_</span>&gt;::payout(RawOrigin::Signed(caller.clone()).into(), <span class="number">0u32</span>)<span class="question-mark">?</span>;
+			<span class="kw">match </span>Spends::&lt;T, I&gt;::get(<span class="number">0</span>).unwrap().status {
+				PaymentState::Attempted { id, .. } =&gt; {
+					T::Paymaster::ensure_concluded(id);
+				},
+				<span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"No payout attempt made"</span>),
+			};
+
+			<span class="bool-val">true
+		</span>} <span class="kw">else </span>{
+			<span class="bool-val">false
+		</span>};
+
+		<span class="attr">#[block]
+		</span>{
+			<span class="kw">let </span>res =
+				Treasury::&lt;T, <span class="kw">_</span>&gt;::check_status(RawOrigin::Signed(caller.clone()).into(), <span class="number">0u32</span>);
+
+			<span class="kw">if </span>spend_exists {
+				<span class="macro">assert_ok!</span>(res);
+			} <span class="kw">else </span>{
+				<span class="macro">assert_err!</span>(res, <span class="kw">crate</span>::Error::&lt;T, <span class="kw">_</span>&gt;::InvalidIndex);
+			}
+		}
 
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(s) = Spends::&lt;T, I&gt;::get(<span class="number">0</span>) {
 			<span class="macro">assert!</span>(!<span class="macro">matches!</span>(s.status, PaymentState::Attempted { .. }));
 		}
+
 		<span class="prelude-val">Ok</span>(())
 	}
 
 	<span class="attr">#[benchmark]
 	</span><span class="kw">fn </span>void_spend() -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
-		<span class="kw">let </span>origin = T::SpendOrigin::try_successful_origin().map_err(|<span class="kw">_</span>| <span class="string">"No origin"</span>)<span class="question-mark">?</span>;
 		<span class="kw">let </span>(asset_kind, amount, <span class="kw">_</span>, beneficiary_lookup) = create_spend_arguments::&lt;T, <span class="kw">_</span>&gt;(SEED);
 		T::BalanceConverter::ensure_successful(asset_kind.clone());
-		Treasury::&lt;T, <span class="kw">_</span>&gt;::spend(
-			origin,
-			Box::new(asset_kind.clone()),
-			amount,
-			Box::new(beneficiary_lookup),
-			<span class="prelude-val">None</span>,
-		)<span class="question-mark">?</span>;
-		<span class="macro">assert!</span>(Spends::&lt;T, I&gt;::get(<span class="number">0</span>).is_some());
+		<span class="kw">let </span>spend_exists = <span class="kw">if let </span><span class="prelude-val">Ok</span>(origin) = T::SpendOrigin::try_successful_origin() {
+			Treasury::&lt;T, <span class="kw">_</span>&gt;::spend(
+				origin,
+				Box::new(asset_kind.clone()),
+				amount,
+				Box::new(beneficiary_lookup),
+				<span class="prelude-val">None</span>,
+			)<span class="question-mark">?</span>;
+			<span class="macro">assert!</span>(Spends::&lt;T, I&gt;::get(<span class="number">0</span>).is_some());
+
+			<span class="bool-val">true
+		</span>} <span class="kw">else </span>{
+			<span class="bool-val">false
+		</span>};
+
 		<span class="kw">let </span>origin =
 			T::RejectOrigin::try_successful_origin().map_err(|<span class="kw">_</span>| BenchmarkError::Weightless)<span class="question-mark">?</span>;
 
-		<span class="attr">#[extrinsic_call]
-		</span><span class="kw">_</span>(origin <span class="kw">as </span>T::RuntimeOrigin, <span class="number">0u32</span>);
+		<span class="attr">#[block]
+		</span>{
+			<span class="kw">let </span>res = Treasury::&lt;T, <span class="kw">_</span>&gt;::void_spend(origin <span class="kw">as </span>T::RuntimeOrigin, <span class="number">0u32</span>);
+
+			<span class="kw">if </span>spend_exists {
+				<span class="macro">assert_ok!</span>(res);
+			} <span class="kw">else </span>{
+				<span class="macro">assert_err!</span>(res, <span class="kw">crate</span>::Error::&lt;T, <span class="kw">_</span>&gt;::InvalidIndex);
+			}
+		}
 
 		<span class="macro">assert!</span>(Spends::&lt;T, I&gt;::get(<span class="number">0</span>).is_none());
 		<span class="prelude-val">Ok</span>(())
@@ -713,6 +842,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">crate</span>::tests::ExtBuilder::default().build(),
 		<span class="kw">crate</span>::tests::Test
 	);
+
+	<span class="kw">mod </span>no_spend_origin_tests {
+		<span class="kw">use super</span>::<span class="kw-2">*</span>;
+
+		<span class="macro">impl_benchmark_test_suite!</span>(
+			Treasury,
+			<span class="kw">crate</span>::tests::ExtBuilder::default().spend_origin_succesful_origin_err().build(),
+			<span class="kw">crate</span>::tests::Test,
+			benchmarks_path = benchmarking
+		);
+	}
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>
 
