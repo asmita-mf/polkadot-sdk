@@ -155,7 +155,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
         relayer_id_at_source: AccountIdOf&lt;P::<a class="associatedtype" href="trait.SubstrateMessageLane.html#associatedtype.SourceChain" title="type substrate_relay_helper::messages::SubstrateMessageLane::SourceChain">SourceChain</a>&gt;,
         proof: <a class="type" href="source/type.SubstrateMessagesProof.html" title="type substrate_relay_helper::messages::source::SubstrateMessagesProof">SubstrateMessagesProof</a>&lt;P::<a class="associatedtype" href="trait.SubstrateMessageLane.html#associatedtype.SourceChain" title="type substrate_relay_helper::messages::SubstrateMessageLane::SourceChain">SourceChain</a>&gt;,
         messages_count: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>,
-        dispatch_weight: Weight,
+        dispatch_weight: <a class="struct" href="../../sp_weights/weight_v2/struct.Weight.html" title="struct sp_weights::weight_v2::Weight">Weight</a>,
         trace_call: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.bool.html">bool</a>
     ) -&gt; CallOf&lt;P::<a class="associatedtype" href="trait.SubstrateMessageLane.html#associatedtype.TargetChain" title="type substrate_relay_helper::messages::SubstrateMessageLane::TargetChain">TargetChain</a>&gt;;
 }</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Different ways of building <code>receive_messages_proof</code> calls.</p>
@@ -163,7 +163,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
     relayer_id_at_source: AccountIdOf&lt;P::<a class="associatedtype" href="trait.SubstrateMessageLane.html#associatedtype.SourceChain" title="type substrate_relay_helper::messages::SubstrateMessageLane::SourceChain">SourceChain</a>&gt;,
     proof: <a class="type" href="source/type.SubstrateMessagesProof.html" title="type substrate_relay_helper::messages::source::SubstrateMessagesProof">SubstrateMessagesProof</a>&lt;P::<a class="associatedtype" href="trait.SubstrateMessageLane.html#associatedtype.SourceChain" title="type substrate_relay_helper::messages::SubstrateMessageLane::SourceChain">SourceChain</a>&gt;,
     messages_count: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.u32.html">u32</a>,
-    dispatch_weight: Weight,
+    dispatch_weight: <a class="struct" href="../../sp_weights/weight_v2/struct.Weight.html" title="struct sp_weights::weight_v2::Weight">Weight</a>,
     trace_call: <a class="primitive" href="https://doc.rust-lang.org/1.77.0/std/primitive.bool.html">bool</a>
 ) -&gt; CallOf&lt;P::<a class="associatedtype" href="trait.SubstrateMessageLane.html#associatedtype.TargetChain" title="type substrate_relay_helper::messages::SubstrateMessageLane::TargetChain">TargetChain</a>&gt;</h4></section></summary><div class="docblock"><p>Given messages proof, build call of <code>receive_messages_proof</code> function of bridge
 messages module at the target chain.</p>
