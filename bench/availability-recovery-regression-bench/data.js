@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726168175558,
+  "lastUpdate": 1726218524833,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -19659,6 +19659,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.23719118596666672,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "41779041+alvicsam@users.noreply.github.com",
+            "name": "Alexander Samusev",
+            "username": "alvicsam"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d66dee3c3da836bcf41a12ca4e1191faee0b6a5b",
+          "message": "[ci] Move check each crate osx from gitlab to github (#5690)\n\nPR adds `cargo-check-each-crate-macos` job in GitHub actions.\nIt'll work some time in both CI systems until it's moved entirely to\nGHA.\n\n\ncc https://github.com/paritytech/ci_cd/issues/1021",
+          "timestamp": "2024-09-13T07:55:15Z",
+          "tree_id": "7e75704830735d2621f47d2901b37c7b76ea4eb3",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/d66dee3c3da836bcf41a12ca4e1191faee0b6a5b"
+        },
+        "date": 1726218496064,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.711176939733333,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23492109910000006,
             "unit": "seconds"
           }
         ]
