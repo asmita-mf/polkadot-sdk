@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726168249118,
+  "lastUpdate": 1726218595900,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -17250,6 +17250,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-voting",
             "value": 2.6698367743200215,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "41779041+alvicsam@users.noreply.github.com",
+            "name": "Alexander Samusev",
+            "username": "alvicsam"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d66dee3c3da836bcf41a12ca4e1191faee0b6a5b",
+          "message": "[ci] Move check each crate osx from gitlab to github (#5690)\n\nPR adds `cargo-check-each-crate-macos` job in GitHub actions.\nIt'll work some time in both CI systems until it's moved entirely to\nGHA.\n\n\ncc https://github.com/paritytech/ci_cd/issues/1021",
+          "timestamp": "2024-09-13T07:55:15Z",
+          "tree_id": "7e75704830735d2621f47d2901b37c7b76ea4eb3",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/d66dee3c3da836bcf41a12ca4e1191faee0b6a5b"
+        },
+        "date": 1726218567244,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52940.5,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63754.27999999999,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.1255357117934635,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.6961729345900265,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.571547342400002,
             "unit": "seconds"
           }
         ]
