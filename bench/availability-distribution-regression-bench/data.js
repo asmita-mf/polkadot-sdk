@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726235971461,
+  "lastUpdate": 1726243502255,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -24919,6 +24919,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-distribution",
             "value": 0.01642422338666667,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "oliver.tale-yazdi@parity.io",
+            "name": "Oliver Tale-Yazdi",
+            "username": "ggwpez"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ac27c5f5e8571ebfc0191f14ccb842dc2d17cba9",
+          "message": "[Bot] Fix backport bot (#5681)\n\nApparently changing the GH Token made it lose permission... error from\nhere:\nhttps://github.com/paritytech/polkadot-sdk/actions/runs/10815755374/job/30005387859\n\nFrom this list it looks like comment creation should be allowed by\nadding issues to the list:\nhttps://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/controlling-permissions-for-github_token",
+          "timestamp": "2024-09-13T14:27:52Z",
+          "tree_id": "fd4be913cb10e3624d599c96f160ea00e810c25e",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/ac27c5f5e8571ebfc0191f14ccb842dc2d17cba9"
+        },
+        "date": 1726243472300,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.009102136013333423,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016301305200000005,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18104017953999998,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021488129086666672,
             "unit": "seconds"
           }
         ]
