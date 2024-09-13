@@ -150,7 +150,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../pallet_migrations/index.html">pallet_migrations</a><span class="version">1.0.0</span></h2></div><div class="sidebar-elems"><ul class="block">
             <li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#types">Type Aliases</a></li></ul></section></div></nav><div class="sidebar-resizer"></div>
-    <main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../pallet_migrations/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">pallet_migrations</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/pallet_migrations/lib.rs.html#18-790">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="pallet-migrations"><a class="doc-anchor" href="#pallet-migrations">§</a><code>pallet-migrations</code></h2>
+    <main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../pallet_migrations/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">pallet_migrations</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/pallet_migrations/lib.rs.html#18-791">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="pallet-migrations"><a class="doc-anchor" href="#pallet-migrations">§</a><code>pallet-migrations</code></h2>
 <p>Provides multi block migrations for FRAME runtimes.</p>
 <h3 id="overview"><a class="doc-anchor" href="#overview">§</a>Overview</h3>
 <p>The pallet takes care of executing a batch of multi-step migrations over multiple blocks. The
@@ -168,31 +168,21 @@ checked and events are asserted.</p>
 	<span class="kw">use </span>Event::<span class="kw-2">*</span>;
 	test_closure(|| {
 		<span class="comment">// Add three migrations, each taking one block longer than the previous.
-		</span>MockedMigrations::set(<span class="macro">vec!</span>[(SucceedAfter, <span class="number">0</span>), (SucceedAfter, <span class="number">1</span>), (SucceedAfter, <span class="number">2</span>)]);
+		</span>MockedMigrations::set(<span class="macro">vec!</span>[(SucceedAfter, <span class="number">2</span>)]);
 
 		System::set_block_number(<span class="number">1</span>);
 		Migrations::on_runtime_upgrade();
 		run_to_block(<span class="number">10</span>);
 
 		<span class="comment">// Check that the executed migrations are recorded in `Historical`.
-		</span><span class="macro">assert_eq!</span>(
-			historic(),
-			<span class="macro">vec!</span>[
-				mocked_id(SucceedAfter, <span class="number">0</span>),
-				mocked_id(SucceedAfter, <span class="number">1</span>),
-				mocked_id(SucceedAfter, <span class="number">2</span>),
-			]
-		);
+		</span><span class="macro">assert_eq!</span>(historic(), <span class="macro">vec!</span>[mocked_id(SucceedAfter, <span class="number">2</span>),]);
 
 		<span class="comment">// Check that we got all events.
 		</span>assert_events(<span class="macro">vec!</span>[
-			UpgradeStarted { migrations: <span class="number">3 </span>},
-			MigrationCompleted { index: <span class="number">0</span>, took: <span class="number">1 </span>},
-			MigrationAdvanced { index: <span class="number">1</span>, took: <span class="number">0 </span>},
-			MigrationCompleted { index: <span class="number">1</span>, took: <span class="number">1 </span>},
-			MigrationAdvanced { index: <span class="number">2</span>, took: <span class="number">0 </span>},
-			MigrationAdvanced { index: <span class="number">2</span>, took: <span class="number">1 </span>},
-			MigrationCompleted { index: <span class="number">2</span>, took: <span class="number">2 </span>},
+			UpgradeStarted { migrations: <span class="number">1 </span>},
+			MigrationAdvanced { index: <span class="number">0</span>, took: <span class="number">1 </span>},
+			MigrationAdvanced { index: <span class="number">0</span>, took: <span class="number">2 </span>},
+			MigrationCompleted { index: <span class="number">0</span>, took: <span class="number">3 </span>},
 			UpgradeCompleted,
 		]);
 	});

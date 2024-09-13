@@ -940,6 +940,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#788" id="788">788</a>
 <a href="#789" id="789">789</a>
 <a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1620,7 +1621,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">return </span><span class="prelude-val">Some</span>(ControlFlow::Break(cursor))
 		}
 
-		<span class="kw">let </span><span class="prelude-val">Some</span>(id) = T::Migrations::nth_id(cursor.index) <span class="kw">else </span>{
+		<span class="kw">if </span>cursor.index &gt;= T::Migrations::len() {
 			<span class="comment">// No more migrations in the tuple - we are done.
 			</span><span class="macro">defensive_assert!</span>(cursor.index == T::Migrations::len(), <span class="string">"Inconsistent MBMs tuple"</span>);
 			<span class="self">Self</span>::deposit_event(Event::UpgradeCompleted);
@@ -1629,8 +1630,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">return </span><span class="prelude-val">None</span>;
 		};
 
-		<span class="kw">let </span><span class="prelude-val">Ok</span>(bounded_id): <span class="prelude-ty">Result</span>&lt;IdentifierOf&lt;T&gt;, <span class="kw">_</span>&gt; = id.try_into() <span class="kw">else </span>{
-			<span class="macro">defensive!</span>(<span class="string">"integrity_test ensures that all identifiers' MEL bounds fit into CursorMaxLen; qed."</span>);
+		<span class="kw">let </span>id = T::Migrations::nth_id(cursor.index).map(TryInto::try_into);
+		<span class="kw">let </span><span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(bounded_id)): <span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;IdentifierOf&lt;T&gt;, <span class="kw">_</span>&gt;&gt; = id <span class="kw">else </span>{
+			<span class="macro">defensive!</span>(<span class="string">"integrity_test ensures that all identifiers are present and bounde; qed."</span>);
 			<span class="self">Self</span>::upgrade_failed(<span class="prelude-val">Some</span>(cursor.index));
 			<span class="kw">return </span><span class="prelude-val">None
 		</span>};

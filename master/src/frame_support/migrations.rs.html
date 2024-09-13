@@ -1262,6 +1262,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1110" id="1110">1110</a>
 <a href="#1111" id="1111">1111</a>
 <a href="#1112" id="1112">1112</a>
+<a href="#1113" id="1113">1113</a>
+<a href="#1114" id="1114">1114</a>
+<a href="#1115" id="1115">1115</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1937,7 +1940,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="doccomment">/// The `n`th [`SteppedMigration::id`].
 	///
-	/// Is guaranteed to return `Some` if `n &lt; Self::len()`.
+	/// Is guaranteed to return `Some` if `n &lt; Self::len()`. Calling this with any index larger or
+	/// equal to `Self::len()` MUST return `None`.
 	</span><span class="kw">fn </span>nth_id(n: u32) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;;
 
 	<span class="doccomment">/// The [`SteppedMigration::max_steps`] of the `n`th migration.
@@ -2041,8 +2045,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="number">1
 	</span>}
 
-	<span class="kw">fn </span>nth_id(_n: u32) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt; {
-		<span class="prelude-val">Some</span>(T::id().encode())
+	<span class="kw">fn </span>nth_id(n: u32) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt; {
+		n.is_zero()
+			.then_some(T::id().encode())
+			.defensive_proof(<span class="string">"nth_id should only be called with n==0"</span>)
 	}
 
 	<span class="kw">fn </span>nth_max_steps(n: u32) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt; {
