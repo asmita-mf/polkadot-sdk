@@ -336,6 +336,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#184" id="184">184</a>
 <a href="#185" id="185">185</a>
 <a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -509,7 +510,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">pub mod </span>snowbridge {
 	<span class="kw">use </span>frame_support::parameter_types;
-	<span class="kw">use </span>xcm::opaque::lts::NetworkId;
+	<span class="kw">use </span>xcm::prelude::{Location, NetworkId};
 
 	<span class="doccomment">/// The pallet index of the Ethereum inbound queue pallet in the bridge hub runtime.
 	</span><span class="kw">pub const </span>INBOUND_QUEUE_PALLET_INDEX: u8 = <span class="number">80</span>;
@@ -520,6 +521,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		/// &lt;https://chainlist.org/chain/11155111&gt;
 		/// &lt;https://ethereum.org/en/developers/docs/apis/json-rpc/#net_version&gt;
 		</span><span class="kw">pub </span>EthereumNetwork: NetworkId = NetworkId::Ethereum { chain_id: <span class="number">11155111 </span>};
+		<span class="kw">pub </span>EthereumLocation: Location = Location::new(<span class="number">2</span>, EthereumNetwork::get());
 	}
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>

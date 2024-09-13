@@ -317,6 +317,29 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#165" id="165">165</a>
 <a href="#166" id="166">166</a>
 <a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
 </pre></div><pre class="rust"><code><span class="comment">// SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2023 Snowfork &lt;hello@snowfork.com&gt;
 </span><span class="doccomment">//! Benchmarking setup for pallet-template
@@ -474,6 +497,29 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">fn </span>set_token_transfer_fees() -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
 		<span class="attr">#[extrinsic_call]
 		</span><span class="kw">_</span>(RawOrigin::Root, <span class="number">1</span>, <span class="number">1</span>, eth(<span class="number">1</span>));
+
+		<span class="prelude-val">Ok</span>(())
+	}
+
+	<span class="attr">#[benchmark]
+	</span><span class="kw">fn </span>register_token() -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
+		<span class="kw">let </span>caller: T::AccountId = whitelisted_caller();
+
+		<span class="kw">let </span>amount: BalanceOf&lt;T&gt; =
+			(<span class="number">10_000_000_000_000_u128</span>).saturated_into::&lt;u128&gt;().saturated_into();
+
+		T::Token::mint_into(<span class="kw-2">&amp;</span>caller, amount)<span class="question-mark">?</span>;
+
+		<span class="kw">let </span>relay_token_asset_id: Location = Location::parent();
+		<span class="kw">let </span>asset = Box::new(VersionedLocation::V4(relay_token_asset_id));
+		<span class="kw">let </span>asset_metadata = AssetMetadata {
+			name: <span class="string">"wnd"</span>.as_bytes().to_vec().try_into().unwrap(),
+			symbol: <span class="string">"wnd"</span>.as_bytes().to_vec().try_into().unwrap(),
+			decimals: <span class="number">12</span>,
+		};
+
+		<span class="attr">#[extrinsic_call]
+		</span><span class="kw">_</span>(RawOrigin::Root, asset, asset_metadata);
 
 		<span class="prelude-val">Ok</span>(())
 	}

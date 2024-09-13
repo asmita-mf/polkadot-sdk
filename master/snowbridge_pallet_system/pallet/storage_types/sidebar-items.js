@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Agents","Channels","PricingParameters"]};
+window.SIDEBAR_ITEMS = {"struct":["Agents","Channels","ForeignToNativeId","NativeToForeignId","PricingParameters"]};

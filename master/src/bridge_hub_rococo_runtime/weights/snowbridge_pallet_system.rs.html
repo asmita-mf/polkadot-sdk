@@ -406,6 +406,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#254" id="254">254</a>
 <a href="#255" id="255">255</a>
 <a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -659,6 +669,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		// Minimum execution time: 31_000_000 picoseconds.
 		</span>Weight::from_parts(<span class="number">42_000_000</span>, <span class="number">3517</span>)
 			.saturating_add(T::DbWeight::get().reads(<span class="number">4_u64</span>))
+			.saturating_add(T::DbWeight::get().writes(<span class="number">3_u64</span>))
+	}
+
+	<span class="kw">fn </span>register_token() -&gt; Weight {
+		<span class="comment">// Proof Size summary in bytes:
+		//  Measured:  `256`
+		//  Estimated: `6044`
+		// Minimum execution time: 45_000_000 picoseconds.
+		</span>Weight::from_parts(<span class="number">45_000_000</span>, <span class="number">6044</span>)
+			.saturating_add(T::DbWeight::get().reads(<span class="number">5_u64</span>))
 			.saturating_add(T::DbWeight::get().writes(<span class="number">3_u64</span>))
 	}
 }

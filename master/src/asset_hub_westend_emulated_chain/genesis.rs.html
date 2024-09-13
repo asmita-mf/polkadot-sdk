@@ -245,6 +245,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#93" id="93">93</a>
 <a href="#94" id="94">94</a>
 <a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -267,6 +275,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="comment">// Cumulus
 </span><span class="kw">use </span>emulated_integration_tests_common::{
 	accounts, build_genesis_storage, collators, get_account_id_from_seed,
+	PenpalBSiblingSovereignAccount, PenpalBTeleportableAssetLocation,
 	PenpalSiblingSovereignAccount, PenpalTeleportableAssetLocation, RESERVABLE_ASSET_ID,
 	SAFE_XCM_VERSION, USDT_ID,
 };
@@ -325,6 +334,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				</span>(
 					PenpalTeleportableAssetLocation::get(),
 					PenpalSiblingSovereignAccount::get(),
+					<span class="bool-val">false</span>,
+					ED,
+				),
+				<span class="comment">// PenpalB's teleportable asset representation
+				</span>(
+					PenpalBTeleportableAssetLocation::get(),
+					PenpalBSiblingSovereignAccount::get(),
 					<span class="bool-val">false</span>,
 					ED,
 				),

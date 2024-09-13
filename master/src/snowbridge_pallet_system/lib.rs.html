@@ -837,6 +837,112 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#685" id="685">685</a>
 <a href="#686" id="686">686</a>
 <a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
+<a href="#708" id="708">708</a>
+<a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
+<a href="#718" id="718">718</a>
+<a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+<a href="#723" id="723">723</a>
+<a href="#724" id="724">724</a>
+<a href="#725" id="725">725</a>
+<a href="#726" id="726">726</a>
+<a href="#727" id="727">727</a>
+<a href="#728" id="728">728</a>
+<a href="#729" id="729">729</a>
+<a href="#730" id="730">730</a>
+<a href="#731" id="731">731</a>
+<a href="#732" id="732">732</a>
+<a href="#733" id="733">733</a>
+<a href="#734" id="734">734</a>
+<a href="#735" id="735">735</a>
+<a href="#736" id="736">736</a>
+<a href="#737" id="737">737</a>
+<a href="#738" id="738">738</a>
+<a href="#739" id="739">739</a>
+<a href="#740" id="740">740</a>
+<a href="#741" id="741">741</a>
+<a href="#742" id="742">742</a>
+<a href="#743" id="743">743</a>
+<a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a>
+<a href="#746" id="746">746</a>
+<a href="#747" id="747">747</a>
+<a href="#748" id="748">748</a>
+<a href="#749" id="749">749</a>
+<a href="#750" id="750">750</a>
+<a href="#751" id="751">751</a>
+<a href="#752" id="752">752</a>
+<a href="#753" id="753">753</a>
+<a href="#754" id="754">754</a>
+<a href="#755" id="755">755</a>
+<a href="#756" id="756">756</a>
+<a href="#757" id="757">757</a>
+<a href="#758" id="758">758</a>
+<a href="#759" id="759">759</a>
+<a href="#760" id="760">760</a>
+<a href="#761" id="761">761</a>
+<a href="#762" id="762">762</a>
+<a href="#763" id="763">763</a>
+<a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
 </pre></div><pre class="rust"><code><span class="comment">// SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2023 Snowfork &lt;hello@snowfork.com&gt;
 </span><span class="doccomment">//! Governance API for controlling the Ethereum side of the bridge
@@ -874,8 +980,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 //!
 //! Typically, Polkadot governance will use the `force_transfer_native_from_agent` and
 //! `force_update_channel` and extrinsics to manage agents and channels for system parachains.
+//!
+//! ## Polkadot-native tokens on Ethereum
+//!
+//! Tokens deposited on AssetHub pallet can be bridged to Ethereum as wrapped ERC20 tokens. As a
+//! prerequisite, the token should be registered first.
+//!
+//! * [`Call::register_token`]: Register a token location as a wrapped ERC20 contract on Ethereum.
 </span><span class="attr">#![cfg_attr(not(feature = <span class="string">"std"</span>), no_std)]
-
 #[cfg(test)]
 </span><span class="kw">mod </span>mock;
 
@@ -902,13 +1014,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>snowbridge_core::{
 	meth,
 	outbound::{Command, Initializer, Message, OperatingMode, SendError, SendMessage},
-	sibling_sovereign_account, AgentId, Channel, ChannelId, ParaId,
-	PricingParameters <span class="kw">as </span>PricingParametersRecord, PRIMARY_GOVERNANCE_CHANNEL,
+	sibling_sovereign_account, AgentId, AssetMetadata, Channel, ChannelId, ParaId,
+	PricingParameters <span class="kw">as </span>PricingParametersRecord, TokenId, TokenIdOf, PRIMARY_GOVERNANCE_CHANNEL,
 	SECONDARY_GOVERNANCE_CHANNEL,
 };
 <span class="kw">use </span>sp_core::{RuntimeDebug, H160, H256};
 <span class="kw">use </span>sp_io::hashing::blake2_256;
-<span class="kw">use </span>sp_runtime::{traits::BadOrigin, DispatchError, SaturatedConversion};
+<span class="kw">use </span>sp_runtime::{
+	traits::{BadOrigin, MaybeEquivalence},
+	DispatchError, SaturatedConversion,
+};
 <span class="kw">use </span>sp_std::prelude::<span class="kw-2">*</span>;
 <span class="kw">use </span>xcm::prelude::<span class="kw-2">*</span>;
 <span class="kw">use </span>xcm_executor::traits::ConvertLocation;
@@ -938,7 +1053,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="doccomment">/// Hash the location to produce an agent id
-</span><span class="kw">fn </span>agent_id_of&lt;T: Config&gt;(location: <span class="kw-2">&amp;</span>Location) -&gt; <span class="prelude-ty">Result</span>&lt;H256, DispatchError&gt; {
+</span><span class="kw">pub fn </span>agent_id_of&lt;T: Config&gt;(location: <span class="kw-2">&amp;</span>Location) -&gt; <span class="prelude-ty">Result</span>&lt;H256, DispatchError&gt; {
 	T::AgentIdOf::convert_location(location).ok_or(Error::&lt;T&gt;::LocationConversionFailed.into())
 }
 
@@ -966,6 +1081,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="attr">#[frame_support::pallet]
 </span><span class="kw">pub mod </span>pallet {
+	<span class="kw">use </span>frame_support::dispatch::PostDispatchInfo;
 	<span class="kw">use </span>snowbridge_core::StaticLookup;
 	<span class="kw">use </span>sp_core::U256;
 
@@ -1002,6 +1118,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">type </span>InboundDeliveryCost: Get&lt;BalanceOf&lt;<span class="self">Self</span>&gt;&gt;;
 
 		<span class="kw">type </span>WeightInfo: WeightInfo;
+
+		<span class="doccomment">/// This chain's Universal Location.
+		</span><span class="kw">type </span>UniversalLocation: Get&lt;InteriorLocation&gt;;
+
+		<span class="comment">// The bridges configured Ethereum location
+		</span><span class="kw">type </span>EthereumLocation: Get&lt;Location&gt;;
 
 		<span class="attr">#[cfg(feature = <span class="string">"runtime-benchmarks"</span>)]
 		</span><span class="kw">type </span>Helper: BenchmarkHelper&lt;<span class="self">Self</span>::RuntimeOrigin&gt;;
@@ -1050,6 +1172,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		PricingParametersChanged {
 			params: PricingParametersOf&lt;T&gt;,
 		},
+		<span class="doccomment">/// Register Polkadot-native token as a wrapped ERC20 token on Ethereum
+		</span>RegisterToken {
+			<span class="doccomment">/// Location of Polkadot-native token
+			</span>location: VersionedLocation,
+			<span class="doccomment">/// ID of Polkadot-native token on Ethereum
+			</span>foreign_token_id: H256,
+		},
 	}
 
 	<span class="attr">#[pallet::error]
@@ -1081,6 +1210,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	#[pallet::getter(<span class="kw">fn </span>parameters)]
 	</span><span class="kw">pub type </span>PricingParameters&lt;T: Config&gt; =
 		StorageValue&lt;<span class="kw">_</span>, PricingParametersOf&lt;T&gt;, ValueQuery, T::DefaultPricingParameters&gt;;
+
+	<span class="doccomment">/// Lookup table for foreign token ID to native location relative to ethereum
+	</span><span class="attr">#[pallet::storage]
+	</span><span class="kw">pub type </span>ForeignToNativeId&lt;T: Config&gt; =
+		StorageMap&lt;<span class="kw">_</span>, Blake2_128Concat, TokenId, xcm::v4::Location, OptionQuery&gt;;
+
+	<span class="doccomment">/// Lookup table for native location relative to ethereum to foreign token ID
+	</span><span class="attr">#[pallet::storage]
+	</span><span class="kw">pub type </span>NativeToForeignId&lt;T: Config&gt; =
+		StorageMap&lt;<span class="kw">_</span>, Blake2_128Concat, xcm::v4::Location, TokenId, OptionQuery&gt;;
 
 	<span class="attr">#[pallet::genesis_config]
 	#[derive(frame_support::DefaultNoBound)]
@@ -1413,6 +1552,34 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			});
 			<span class="prelude-val">Ok</span>(())
 		}
+
+		<span class="doccomment">/// Registers a Polkadot-native token as a wrapped ERC20 token on Ethereum.
+		/// Privileged. Can only be called by root.
+		///
+		/// Fee required: No
+		///
+		/// - `origin`: Must be root
+		/// - `location`: Location of the asset (relative to this chain)
+		/// - `metadata`: Metadata to include in the instantiated ERC20 contract on Ethereum
+		</span><span class="attr">#[pallet::call_index(<span class="number">10</span>)]
+		#[pallet::weight(T::WeightInfo::register_token())]
+		</span><span class="kw">pub fn </span>register_token(
+			origin: OriginFor&lt;T&gt;,
+			location: Box&lt;VersionedLocation&gt;,
+			metadata: AssetMetadata,
+		) -&gt; DispatchResultWithPostInfo {
+			ensure_root(origin)<span class="question-mark">?</span>;
+
+			<span class="kw">let </span>location: Location =
+				(<span class="kw-2">*</span>location).try_into().map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::UnsupportedLocationVersion)<span class="question-mark">?</span>;
+
+			<span class="self">Self</span>::do_register_token(<span class="kw-2">&amp;</span>location, metadata, PaysFee::&lt;T&gt;::No)<span class="question-mark">?</span>;
+
+			<span class="prelude-val">Ok</span>(PostDispatchInfo {
+				actual_weight: <span class="prelude-val">Some</span>(T::WeightInfo::register_token()),
+				pays_fee: Pays::No,
+			})
+		}
 	}
 
 	<span class="kw">impl</span>&lt;T: Config&gt; Pallet&lt;T&gt; {
@@ -1502,6 +1669,42 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>secondary_exists = Channels::&lt;T&gt;::contains_key(SECONDARY_GOVERNANCE_CHANNEL);
 			primary_exists &amp;&amp; secondary_exists
 		}
+
+		<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>do_register_token(
+			location: <span class="kw-2">&amp;</span>Location,
+			metadata: AssetMetadata,
+			pays_fee: PaysFee&lt;T&gt;,
+		) -&gt; <span class="prelude-ty">Result</span>&lt;(), DispatchError&gt; {
+			<span class="kw">let </span>ethereum_location = T::EthereumLocation::get();
+			<span class="comment">// reanchor to Ethereum context
+			</span><span class="kw">let </span>location = location
+				.clone()
+				.reanchored(<span class="kw-2">&amp;</span>ethereum_location, <span class="kw-2">&amp;</span>T::UniversalLocation::get())
+				.map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::LocationConversionFailed)<span class="question-mark">?</span>;
+
+			<span class="kw">let </span>token_id = TokenIdOf::convert_location(<span class="kw-2">&amp;</span>location)
+				.ok_or(Error::&lt;T&gt;::LocationConversionFailed)<span class="question-mark">?</span>;
+
+			<span class="kw">if </span>!ForeignToNativeId::&lt;T&gt;::contains_key(token_id) {
+				NativeToForeignId::&lt;T&gt;::insert(location.clone(), token_id);
+				ForeignToNativeId::&lt;T&gt;::insert(token_id, location.clone());
+			}
+
+			<span class="kw">let </span>command = Command::RegisterForeignToken {
+				token_id,
+				name: metadata.name.into_inner(),
+				symbol: metadata.symbol.into_inner(),
+				decimals: metadata.decimals,
+			};
+			<span class="self">Self</span>::send(SECONDARY_GOVERNANCE_CHANNEL, command, pays_fee)<span class="question-mark">?</span>;
+
+			<span class="self">Self</span>::deposit_event(Event::&lt;T&gt;::RegisterToken {
+				location: location.clone().into(),
+				foreign_token_id: token_id,
+			});
+
+			<span class="prelude-val">Ok</span>(())
+		}
 	}
 
 	<span class="kw">impl</span>&lt;T: Config&gt; StaticLookup <span class="kw">for </span>Pallet&lt;T&gt; {
@@ -1521,6 +1724,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">impl</span>&lt;T: Config&gt; Get&lt;PricingParametersOf&lt;T&gt;&gt; <span class="kw">for </span>Pallet&lt;T&gt; {
 		<span class="kw">fn </span>get() -&gt; PricingParametersOf&lt;T&gt; {
 			PricingParameters::&lt;T&gt;::get()
+		}
+	}
+
+	<span class="kw">impl</span>&lt;T: Config&gt; MaybeEquivalence&lt;TokenId, Location&gt; <span class="kw">for </span>Pallet&lt;T&gt; {
+		<span class="kw">fn </span>convert(foreign_id: <span class="kw-2">&amp;</span>TokenId) -&gt; <span class="prelude-ty">Option</span>&lt;Location&gt; {
+			ForeignToNativeId::&lt;T&gt;::get(foreign_id)
+		}
+		<span class="kw">fn </span>convert_back(location: <span class="kw-2">&amp;</span>Location) -&gt; <span class="prelude-ty">Option</span>&lt;TokenId&gt; {
+			NativeToForeignId::&lt;T&gt;::get(location)
 		}
 	}
 }

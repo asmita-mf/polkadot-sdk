@@ -528,9 +528,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#376" id="376">376</a>
 <a href="#377" id="377">377</a>
 <a href="#378" id="378">378</a>
-<a href="#379" id="379">379</a>
-<a href="#380" id="380">380</a>
-<a href="#381" id="381">381</a>
 </pre></div><pre class="rust"><code><span class="comment">// SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2023 Snowfork &lt;hello@snowfork.com&gt;
 </span><span class="doccomment">//! Inbound Queue
@@ -581,12 +578,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 };
 <span class="kw">use </span>frame_system::ensure_signed;
 <span class="kw">use </span>scale_info::TypeInfo;
-<span class="kw">use </span>sp_core::{H160, H256};
+<span class="kw">use </span>sp_core::H160;
 <span class="kw">use </span>sp_runtime::traits::Zero;
 <span class="kw">use </span>sp_std::vec;
 <span class="kw">use </span>xcm::prelude::{
-	send_xcm, Instruction::SetTopic, Junction::<span class="kw-2">*</span>, Location, SendError <span class="kw">as </span>XcmpSendError, SendXcm,
-	Xcm, XcmContext, XcmHash,
+	send_xcm, Junction::<span class="kw-2">*</span>, Location, SendError <span class="kw">as </span>XcmpSendError, SendXcm, Xcm, XcmContext, XcmHash,
 };
 <span class="kw">use </span>xcm_executor::traits::TransactAsset;
 
@@ -595,9 +591,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	sibling_sovereign_account, BasicOperatingMode, Channel, ChannelId, ParaId, PricingParameters,
 	StaticLookup,
 };
-<span class="kw">use </span>snowbridge_router_primitives::{
-	inbound,
-	inbound::{ConvertMessage, ConvertMessageError},
+<span class="kw">use </span>snowbridge_router_primitives::inbound::{
+	ConvertMessage, ConvertMessageError, VersionedMessage,
 };
 <span class="kw">use </span>sp_runtime::{traits::Saturating, SaturatedConversion, TokenError};
 
@@ -619,6 +614,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">use </span>frame_support::pallet_prelude::<span class="kw-2">*</span>;
 	<span class="kw">use </span>frame_system::pallet_prelude::<span class="kw-2">*</span>;
+	<span class="kw">use </span>sp_core::H256;
 
 	<span class="attr">#[pallet::pallet]
 	</span><span class="kw">pub struct </span>Pallet&lt;T&gt;(<span class="kw">_</span>);
@@ -809,12 +805,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				T::Token::transfer(<span class="kw-2">&amp;</span>sovereign_account, <span class="kw-2">&amp;</span>who, amount, Preservation::Preserve)<span class="question-mark">?</span>;
 			}
 
+			<span class="comment">// Decode payload into `VersionedMessage`
+			</span><span class="kw">let </span>message = VersionedMessage::decode_all(<span class="kw-2">&amp;mut </span>envelope.payload.as_ref())
+				.map_err(|<span class="kw">_</span>| Error::&lt;T&gt;::InvalidPayload)<span class="question-mark">?</span>;
+
 			<span class="comment">// Decode message into XCM
-			</span><span class="kw">let </span>(xcm, fee) =
-				<span class="kw">match </span>inbound::VersionedMessage::decode_all(<span class="kw-2">&amp;mut </span>envelope.payload.as_ref()) {
-					<span class="prelude-val">Ok</span>(message) =&gt; <span class="self">Self</span>::do_convert(envelope.message_id, message)<span class="question-mark">?</span>,
-					<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::&lt;T&gt;::InvalidPayload.into()),
-				};
+			</span><span class="kw">let </span>(xcm, fee) = <span class="self">Self</span>::do_convert(envelope.message_id, message.clone())<span class="question-mark">?</span>;
 
 			<span class="macro">log::info!</span>(
 				target: LOG_TARGET,
@@ -856,12 +852,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">impl</span>&lt;T: Config&gt; Pallet&lt;T&gt; {
 		<span class="kw">pub fn </span>do_convert(
 			message_id: H256,
-			message: inbound::VersionedMessage,
+			message: VersionedMessage,
 		) -&gt; <span class="prelude-ty">Result</span>&lt;(Xcm&lt;()&gt;, BalanceOf&lt;T&gt;), Error&lt;T&gt;&gt; {
-			<span class="kw">let </span>(<span class="kw-2">mut </span>xcm, fee) =
-				T::MessageConverter::convert(message).map_err(|e| Error::&lt;T&gt;::ConvertMessage(e))<span class="question-mark">?</span>;
-			<span class="comment">// Append the message id as an XCM topic
-			</span>xcm.inner_mut().extend(<span class="macro">vec!</span>[SetTopic(message_id.into())]);
+			<span class="kw">let </span>(xcm, fee) = T::MessageConverter::convert(message_id, message)
+				.map_err(|e| Error::&lt;T&gt;::ConvertMessage(e))<span class="question-mark">?</span>;
 			<span class="prelude-val">Ok</span>((xcm, fee))
 		}
 

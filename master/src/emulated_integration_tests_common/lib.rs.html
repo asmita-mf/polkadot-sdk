@@ -344,6 +344,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#192" id="192">192</a>
 <a href="#193" id="193">193</a>
 <a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -406,6 +415,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub const </span>USDT_ID: u32 = <span class="number">1984</span>;
 
 <span class="kw">pub const </span>PENPAL_ID: u32 = <span class="number">2000</span>;
+<span class="kw">pub const </span>PENPAL_B_ID: u32 = <span class="number">2001</span>;
 <span class="kw">pub const </span>ASSETS_PALLET_ID: u8 = <span class="number">50</span>;
 
 <span class="macro">parameter_types! </span>{
@@ -417,6 +427,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			]
 		);
 	<span class="kw">pub </span>PenpalSiblingSovereignAccount: AccountId = Sibling::from(PENPAL_ID).into_account_truncating();
+	<span class="kw">pub </span>PenpalBTeleportableAssetLocation: xcm::v4::Location
+		= xcm::v4::Location::new(<span class="number">1</span>, [
+				xcm::v4::Junction::Parachain(PENPAL_B_ID),
+				xcm::v4::Junction::PalletInstance(ASSETS_PALLET_ID),
+				xcm::v4::Junction::GeneralIndex(TELEPORTABLE_ASSET_ID.into()),
+			]
+		);
+	<span class="kw">pub </span>PenpalBSiblingSovereignAccount: AccountId = Sibling::from(PENPAL_B_ID).into_account_truncating();
 }
 
 <span class="doccomment">/// Helper function to generate a crypto pair from seed

@@ -416,7 +416,7 @@ var srcIndex = new Map(JSON.parse('[\
 ["shell_runtime",["",[],["lib.rs","xcm_config.rs"]]],\
 ["slot_range_helper",["",[],["lib.rs"]]],\
 ["snowbridge_beacon_primitives",["",[],["bits.rs","bls.rs","config.rs","lib.rs","merkle_proof.rs","receipt.rs","serde_utils.rs","ssz.rs","types.rs","updates.rs"]]],\
-["snowbridge_core",["",[],["inbound.rs","lib.rs","operating_mode.rs","outbound.rs","pricing.rs","ringbuffer.rs"]]],\
+["snowbridge_core",["",[],["inbound.rs","lib.rs","location.rs","operating_mode.rs","outbound.rs","pricing.rs","ringbuffer.rs"]]],\
 ["snowbridge_ethereum",["",[],["header.rs","lib.rs","log.rs","mpt.rs","receipt.rs"]]],\
 ["snowbridge_outbound_queue_merkle_tree",["",[],["lib.rs"]]],\
 ["snowbridge_outbound_queue_runtime_api",["",[],["lib.rs"]]],\
