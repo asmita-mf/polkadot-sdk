@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726236007106,
+  "lastUpdate": 1726243538966,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -17446,6 +17446,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 3.099005705413478,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "oliver.tale-yazdi@parity.io",
+            "name": "Oliver Tale-Yazdi",
+            "username": "ggwpez"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ac27c5f5e8571ebfc0191f14ccb842dc2d17cba9",
+          "message": "[Bot] Fix backport bot (#5681)\n\nApparently changing the GH Token made it lose permission... error from\nhere:\nhttps://github.com/paritytech/polkadot-sdk/actions/runs/10815755374/job/30005387859\n\nFrom this list it looks like comment creation should be allowed by\nadding issues to the list:\nhttps://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/controlling-permissions-for-github_token",
+          "timestamp": "2024-09-13T14:27:52Z",
+          "tree_id": "fd4be913cb10e3624d599c96f160ea00e810c25e",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/ac27c5f5e8571ebfc0191f14ccb842dc2d17cba9"
+        },
+        "date": 1726243509209,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63774.08,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52942.8,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.53788733091,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.6947362070599925,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.047469301173613,
             "unit": "seconds"
           }
         ]
