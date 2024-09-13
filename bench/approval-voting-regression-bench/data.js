@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726228431661,
+  "lastUpdate": 1726232285644,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -17348,6 +17348,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-distribution",
             "value": 11.473524944240001,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "oliver.tale-yazdi@parity.io",
+            "name": "Oliver Tale-Yazdi",
+            "username": "ggwpez"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "0136463321dcf661740f9bfec2a0f0739487b60d",
+          "message": "pallet-migrations: fix index access for singluar migrations (#5695)\n\nDiscovered a bug in the migrations pallet while debugging\nhttps://github.com/paritytech/try-runtime-cli/pull/90.\nIt only occurs when a single MBM is configured - hence it did not happen\nwhen Ajuna Network tried it...\n\nChanges:\n- Check len of the tuple before accessing its nth_id\n- Make nth_id return `None` on unary tuples and n>0\n\n---------\n\nSigned-off-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>\nCo-authored-by: ggwpez <ggwpez@users.noreply.github.com>",
+          "timestamp": "2024-09-13T11:31:17Z",
+          "tree_id": "b0fb2f4bd2e0110c4ebaac7f0a63697d3c3ade49",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/0136463321dcf661740f9bfec2a0f0739487b60d"
+        },
+        "date": 1726232257153,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63764.67999999999,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52940.09999999999,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.042675971963546,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.467208389869997,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.6588490770099997,
             "unit": "seconds"
           }
         ]
