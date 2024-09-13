@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726235935876,
+  "lastUpdate": 1726243465715,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -19835,6 +19835,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.23522330609999997,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "oliver.tale-yazdi@parity.io",
+            "name": "Oliver Tale-Yazdi",
+            "username": "ggwpez"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ac27c5f5e8571ebfc0191f14ccb842dc2d17cba9",
+          "message": "[Bot] Fix backport bot (#5681)\n\nApparently changing the GH Token made it lose permission... error from\nhere:\nhttps://github.com/paritytech/polkadot-sdk/actions/runs/10815755374/job/30005387859\n\nFrom this list it looks like comment creation should be allowed by\nadding issues to the list:\nhttps://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/controlling-permissions-for-github_token",
+          "timestamp": "2024-09-13T14:27:52Z",
+          "tree_id": "fd4be913cb10e3624d599c96f160ea00e810c25e",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/ac27c5f5e8571ebfc0191f14ccb842dc2d17cba9"
+        },
+        "date": 1726243435667,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23397221026666673,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.809014299833331,
             "unit": "seconds"
           }
         ]
