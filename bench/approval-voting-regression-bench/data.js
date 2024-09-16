@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726248369363,
+  "lastUpdate": 1726481982677,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -17544,6 +17544,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-distribution",
             "value": 11.511584281169998,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "git@kchr.de",
+            "name": "Bastian Köcher",
+            "username": "bkchr"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "316b7a7ae6ef2b5aafe0f0dac7e3da039546f97a",
+          "message": "Introduces `VerifyExistenceProof` trait (#5682)\n\nIntroduces a trait for verifying existence proofs in the runtime. The\ntrait is implemented for the 16 patricia merkle tree and the binary\ntree.\n\n---------\n\nCo-authored-by: Shawn Tabrizi <shawntabrizi@gmail.com>\nCo-authored-by: command-bot <>",
+          "timestamp": "2024-09-16T08:50:29Z",
+          "tree_id": "aa5958fd59eaee76d67e64535b4d5f3e7ca94c59",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/316b7a7ae6ef2b5aafe0f0dac7e3da039546f97a"
+        },
+        "date": 1726481952813,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63765.27999999999,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52942.3,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.449843670879996,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.6857126715600037,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.0809944516137473,
             "unit": "seconds"
           }
         ]
