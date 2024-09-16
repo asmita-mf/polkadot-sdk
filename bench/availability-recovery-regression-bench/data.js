@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726493052211,
+  "lastUpdate": 1726499996646,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -20011,6 +20011,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 11.459756977000001,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "evgeny@parity.io",
+            "name": "Evgeny Snitko",
+            "username": "AndWeHaveAPlan"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "1e25ada05b51dd81219e1dbc1d32da823b3b66b2",
+          "message": "Preflight workflow (#5692)\n\nPreflight reusable workflow - aggregated workflow to perform all\npreliminary jobs\nIt currently includes:\n- check changed files\n- `set-image` (and runner) job\n- useful variables",
+          "timestamp": "2024-09-16T14:03:53Z",
+          "tree_id": "7ccb24319c8bab5e023d32d317c9c471753bd683",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/1e25ada05b51dd81219e1dbc1d32da823b3b66b2"
+        },
+        "date": 1726499967771,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.470583639766664,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23294488843333325,
             "unit": "seconds"
           }
         ]
