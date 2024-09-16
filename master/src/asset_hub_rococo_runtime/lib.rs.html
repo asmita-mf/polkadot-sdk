@@ -1925,6 +1925,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1773" id="1773">1773</a>
 <a href="#1774" id="1774">1774</a>
 <a href="#1775" id="1775">1775</a>
+<a href="#1776" id="1776">1776</a>
+<a href="#1777" id="1777">1777</a>
+<a href="#1778" id="1778">1778</a>
+<a href="#1779" id="1779">1779</a>
+<a href="#1780" id="1780">1780</a>
+<a href="#1781" id="1781">1781</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -2193,7 +2199,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>Freezer = AssetsFreezer;
 	<span class="kw">type </span>Extra = ();
 	<span class="kw">type </span>WeightInfo = weights::pallet_assets_local::WeightInfo&lt;Runtime&gt;;
-	<span class="kw">type </span>CallbackHandle = ();
+	<span class="kw">type </span>CallbackHandle = pallet_assets::AutoIncAssetId&lt;Runtime, TrustBackedAssetsInstance&gt;;
 	<span class="kw">type </span>AssetAccountDeposit = AssetAccountDeposit;
 	<span class="kw">type </span>RemoveItemsLimit = frame_support::traits::ConstU32&lt;<span class="number">1000</span>&gt;;
 	<span class="attr">#[cfg(feature = <span class="string">"runtime-benchmarks"</span>)]
@@ -2946,6 +2952,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	cumulus_pallet_xcmp_queue::migration::v5::MigrateV4ToV5&lt;Runtime&gt;,
 	pallet_collator_selection::migration::v2::MigrationToV2&lt;Runtime&gt;,
 	frame_support::migrations::RemovePallet&lt;StateTrieMigrationName, RocksDbWeight&gt;,
+	<span class="comment">// unreleased
+	</span>pallet_assets::migration::next_asset_id::SetNextAssetId&lt;
+		ConstU32&lt;<span class="number">50_000_000</span>&gt;,
+		Runtime,
+		TrustBackedAssetsInstance,
+	&gt;,
 	<span class="comment">// permanent
 	</span>pallet_xcm::migration::MigrateToLatestXcmVersion&lt;Runtime&gt;,
 );

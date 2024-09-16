@@ -159,8 +159,8 @@ the <code>latest</code> XCM version. This could change the <code>BridgeId</code>
 In other words, <code>LaneId</code> will never change, while <code>BridgeId</code> could change with (every) XCM
 upgrade.</p>
 </div></details><h2 id="implementations" class="section-header">Implementations<a href="#implementations" class="anchor">§</a></h2><div id="implementations-list"><details class="toggle implementors-toggle" open><summary><section id="impl-BridgeId" class="impl"><a class="src rightside" href="../src/bp_xcm_bridge_hub/lib.rs.html#74-91">source</a><a href="#impl-BridgeId" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.BridgeId.html" title="struct bp_xcm_bridge_hub::BridgeId">BridgeId</a></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.new" class="method"><a class="src rightside" href="../src/bp_xcm_bridge_hub/lib.rs.html#79-90">source</a><h4 class="code-header">pub fn <a href="#method.new" class="fn">new</a>(
-    universal_source: &amp;<a class="type" href="../staging_xcm/v4/location/type.InteriorLocation.html" title="type staging_xcm::v4::location::InteriorLocation">InteriorLocation</a>,
-    universal_destination: &amp;<a class="type" href="../staging_xcm/v4/location/type.InteriorLocation.html" title="type staging_xcm::v4::location::InteriorLocation">InteriorLocation</a>
+    universal_source: &amp;InteriorLocation,
+    universal_destination: &amp;InteriorLocation
 ) -&gt; Self</h4></section></summary><div class="docblock"><p>Create bridge identifier from two universal locations.</p>
 <p>Note: The <code>BridgeId</code> is constructed from <code>latest</code> XCM, so if stored, you need to ensure
 compatibility with newer XCM versions.</p>
