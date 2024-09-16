@@ -538,6 +538,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#386" id="386">386</a>
 <a href="#387" id="387">387</a>
 <a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -679,7 +682,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">where
 	</span>Hashing: sp_core::Hasher,
 	Key: Encode,
-	Value: Encode + Decode,
+	Value: Encode,
 {
 	<span class="doccomment">/// Create a new instance of a `ProvingTrie` using an iterator of key/value pairs.
 	</span><span class="kw">pub fn </span>generate_for&lt;I&gt;(items: I) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, DispatchError&gt;
@@ -707,7 +710,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="doccomment">/// Query a value contained within the current trie. Returns `None` if the
 	/// nodes within the current `MemoryDB` are insufficient to query the item.
-	</span><span class="kw">pub fn </span>query(<span class="kw-2">&amp;</span><span class="self">self</span>, key: Key) -&gt; <span class="prelude-ty">Option</span>&lt;Value&gt; {
+	</span><span class="kw">pub fn </span>query(<span class="kw-2">&amp;</span><span class="self">self</span>, key: Key) -&gt; <span class="prelude-ty">Option</span>&lt;Value&gt;
+	<span class="kw">where
+		</span>Value: Decode,
+	{
 		<span class="kw">let </span>trie = TrieDBBuilder::new(<span class="kw-2">&amp;</span><span class="self">self</span>.db, <span class="kw-2">&amp;</span><span class="self">self</span>.root).build();
 		key.using_encoded(|s| trie.get(s))
 			.ok()<span class="question-mark">?
