@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726499996646,
+  "lastUpdate": 1726509157165,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -20055,6 +20055,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.23294488843333325,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "przemek@parity.io",
+            "name": "Przemek Rzad",
+            "username": "rzadp"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "9064fb4d6dea751c537e33cb7c0a78c2510a1dce",
+          "message": "Ensure correct product name in license headers (#5702)\n\n- This will ensure that a correct product name\n(Polkadot/Cumulus/Substrate) is referenced in license headers.\n- Closes https://github.com/paritytech/license-scanner/issues/49",
+          "timestamp": "2024-09-16T16:14:54Z",
+          "tree_id": "917cc6963ff5650fc99bbd0e2b256df091d14af6",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9064fb4d6dea751c537e33cb7c0a78c2510a1dce"
+        },
+        "date": 1726509127064,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23419427033333334,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.475912532899999,
             "unit": "seconds"
           }
         ]
