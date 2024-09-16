@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726248406222,
+  "lastUpdate": 1726482018942,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -10555,6 +10555,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.04598728125999996,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "git@kchr.de",
+            "name": "Bastian Köcher",
+            "username": "bkchr"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "316b7a7ae6ef2b5aafe0f0dac7e3da039546f97a",
+          "message": "Introduces `VerifyExistenceProof` trait (#5682)\n\nIntroduces a trait for verifying existence proofs in the runtime. The\ntrait is implemented for the 16 patricia merkle tree and the binary\ntree.\n\n---------\n\nCo-authored-by: Shawn Tabrizi <shawntabrizi@gmail.com>\nCo-authored-by: command-bot <>",
+          "timestamp": "2024-09-16T08:50:29Z",
+          "tree_id": "aa5958fd59eaee76d67e64535b4d5f3e7ca94c59",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/316b7a7ae6ef2b5aafe0f0dac7e3da039546f97a"
+        },
+        "date": 1726481989336,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.9139999999999,
+            "unit": "KiB"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.037046546563999985,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04465378154399995,
             "unit": "seconds"
           }
         ]
