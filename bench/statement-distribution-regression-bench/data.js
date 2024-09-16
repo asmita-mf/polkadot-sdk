@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726509269104,
+  "lastUpdate": 1726518720938,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -10731,6 +10731,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "statement-distribution",
             "value": 0.03690217434200001,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9307d99ab6959b1416f9a178c601f387a1f0e534",
+          "message": "add zombienet-sdk test to parachain-template (#5342)\n\nAdd new `CI` machinery to smoke test the `parachain-template-node` using\nzombienet-sdk.\nThx!\n\n---------\n\nCo-authored-by: Przemek Rzad <przemek@parity.io>\nCo-authored-by: Shawn Tabrizi <shawntabrizi@gmail.com>\nCo-authored-by: rzadp <roopert7@gmail.com>\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: Kian Paimani <5588131+kianenigma@users.noreply.github.com>",
+          "timestamp": "2024-09-16T18:58:52Z",
+          "tree_id": "33d07553e1884c2befe3a722f16a31d5b2682e6c",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9307d99ab6959b1416f9a178c601f387a1f0e534"
+        },
+        "date": 1726518690264,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 127.92799999999994,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.03717134704800002,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04473792980599998,
             "unit": "seconds"
           }
         ]
