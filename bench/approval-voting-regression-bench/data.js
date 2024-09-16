@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726493125051,
+  "lastUpdate": 1726500067857,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -17642,6 +17642,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 3.1243970378834702,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "evgeny@parity.io",
+            "name": "Evgeny Snitko",
+            "username": "AndWeHaveAPlan"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "1e25ada05b51dd81219e1dbc1d32da823b3b66b2",
+          "message": "Preflight workflow (#5692)\n\nPreflight reusable workflow - aggregated workflow to perform all\npreliminary jobs\nIt currently includes:\n- check changed files\n- `set-image` (and runner) job\n- useful variables",
+          "timestamp": "2024-09-16T14:03:53Z",
+          "tree_id": "7ccb24319c8bab5e023d32d317c9c471753bd683",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/1e25ada05b51dd81219e1dbc1d32da823b3b66b2"
+        },
+        "date": 1726500039217,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52945.09999999999,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63786.840000000004,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.365203327100001,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.6347439572600093,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.0732799146734378,
             "unit": "seconds"
           }
         ]
