@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726248332761,
+  "lastUpdate": 1726481946127,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25027,6 +25027,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.008914381020000077,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "git@kchr.de",
+            "name": "Bastian Köcher",
+            "username": "bkchr"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "316b7a7ae6ef2b5aafe0f0dac7e3da039546f97a",
+          "message": "Introduces `VerifyExistenceProof` trait (#5682)\n\nIntroduces a trait for verifying existence proofs in the runtime. The\ntrait is implemented for the 16 patricia merkle tree and the binary\ntree.\n\n---------\n\nCo-authored-by: Shawn Tabrizi <shawntabrizi@gmail.com>\nCo-authored-by: command-bot <>",
+          "timestamp": "2024-09-16T08:50:29Z",
+          "tree_id": "aa5958fd59eaee76d67e64535b4d5f3e7ca94c59",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/316b7a7ae6ef2b5aafe0f0dac7e3da039546f97a"
+        },
+        "date": 1726481916468,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021500268819999998,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18122237870666666,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.009185818060000081,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016398716919999994,
             "unit": "seconds"
           }
         ]
