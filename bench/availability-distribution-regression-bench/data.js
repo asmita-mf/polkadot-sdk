@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726493088453,
+  "lastUpdate": 1726500032615,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25135,6 +25135,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.009176586653333436,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "evgeny@parity.io",
+            "name": "Evgeny Snitko",
+            "username": "AndWeHaveAPlan"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "1e25ada05b51dd81219e1dbc1d32da823b3b66b2",
+          "message": "Preflight workflow (#5692)\n\nPreflight reusable workflow - aggregated workflow to perform all\npreliminary jobs\nIt currently includes:\n- check changed files\n- `set-image` (and runner) job\n- useful variables",
+          "timestamp": "2024-09-16T14:03:53Z",
+          "tree_id": "7ccb24319c8bab5e023d32d317c9c471753bd683",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/1e25ada05b51dd81219e1dbc1d32da823b3b66b2"
+        },
+        "date": 1726500003626,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18081633707999997,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008766896200000106,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021555509613333333,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016203869566666668,
             "unit": "seconds"
           }
         ]
