@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726481946127,
+  "lastUpdate": 1726493088453,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25081,6 +25081,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-distribution",
             "value": 0.016398716919999994,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "write@reusable.software",
+            "name": "ordian",
+            "username": "ordian"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "655382fa87cd82f12920e316af63084ae098a4e3",
+          "message": "fix rococo-dev bench (#5688)\n\nthe range should always contain at least 2 values for the benchmark to\nwork\ncloses #5680",
+          "timestamp": "2024-09-16T12:09:16Z",
+          "tree_id": "e388fd4962c555f0a7af9102a9913e2952000f8b",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/655382fa87cd82f12920e316af63084ae098a4e3"
+        },
+        "date": 1726493059137,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02140949042666667,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016580329813333336,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18084596305333345,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.009176586653333436,
             "unit": "seconds"
           }
         ]
