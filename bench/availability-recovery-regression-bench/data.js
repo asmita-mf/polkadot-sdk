@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726248296451,
+  "lastUpdate": 1726481910253,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -19923,6 +19923,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.23670376146666663,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "git@kchr.de",
+            "name": "Bastian Köcher",
+            "username": "bkchr"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "316b7a7ae6ef2b5aafe0f0dac7e3da039546f97a",
+          "message": "Introduces `VerifyExistenceProof` trait (#5682)\n\nIntroduces a trait for verifying existence proofs in the runtime. The\ntrait is implemented for the 16 patricia merkle tree and the binary\ntree.\n\n---------\n\nCo-authored-by: Shawn Tabrizi <shawntabrizi@gmail.com>\nCo-authored-by: command-bot <>",
+          "timestamp": "2024-09-16T08:50:29Z",
+          "tree_id": "aa5958fd59eaee76d67e64535b4d5f3e7ca94c59",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/316b7a7ae6ef2b5aafe0f0dac7e3da039546f97a"
+        },
+        "date": 1726481880646,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.501919198433331,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23540772873333338,
             "unit": "seconds"
           }
         ]
