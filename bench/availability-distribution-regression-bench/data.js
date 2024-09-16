@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726509194414,
+  "lastUpdate": 1726518645658,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25243,6 +25243,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-distribution",
             "value": 0.016446227333333337,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9307d99ab6959b1416f9a178c601f387a1f0e534",
+          "message": "add zombienet-sdk test to parachain-template (#5342)\n\nAdd new `CI` machinery to smoke test the `parachain-template-node` using\nzombienet-sdk.\nThx!\n\n---------\n\nCo-authored-by: Przemek Rzad <przemek@parity.io>\nCo-authored-by: Shawn Tabrizi <shawntabrizi@gmail.com>\nCo-authored-by: rzadp <roopert7@gmail.com>\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: Kian Paimani <5588131+kianenigma@users.noreply.github.com>",
+          "timestamp": "2024-09-16T18:58:52Z",
+          "tree_id": "33d07553e1884c2befe3a722f16a31d5b2682e6c",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9307d99ab6959b1416f9a178c601f387a1f0e534"
+        },
+        "date": 1726518615161,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021488534473333334,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18049949325333337,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.009010358406666759,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.01614733722,
             "unit": "seconds"
           }
         ]
