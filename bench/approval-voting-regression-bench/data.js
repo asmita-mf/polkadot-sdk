@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726509231840,
+  "lastUpdate": 1726518683171,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -17740,6 +17740,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 3.0536532527035325,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9307d99ab6959b1416f9a178c601f387a1f0e534",
+          "message": "add zombienet-sdk test to parachain-template (#5342)\n\nAdd new `CI` machinery to smoke test the `parachain-template-node` using\nzombienet-sdk.\nThx!\n\n---------\n\nCo-authored-by: Przemek Rzad <przemek@parity.io>\nCo-authored-by: Shawn Tabrizi <shawntabrizi@gmail.com>\nCo-authored-by: rzadp <roopert7@gmail.com>\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: Kian Paimani <5588131+kianenigma@users.noreply.github.com>",
+          "timestamp": "2024-09-16T18:58:52Z",
+          "tree_id": "33d07553e1884c2befe3a722f16a31d5b2682e6c",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9307d99ab6959b1416f9a178c601f387a1f0e534"
+        },
+        "date": 1726518652363,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63777.73,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52939.3,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.5153575882,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.105501109463558,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.6672208878499877,
             "unit": "seconds"
           }
         ]
