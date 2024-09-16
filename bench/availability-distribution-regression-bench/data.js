@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726500032615,
+  "lastUpdate": 1726509194414,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25189,6 +25189,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-distribution",
             "value": 0.016203869566666668,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "przemek@parity.io",
+            "name": "Przemek Rzad",
+            "username": "rzadp"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "9064fb4d6dea751c537e33cb7c0a78c2510a1dce",
+          "message": "Ensure correct product name in license headers (#5702)\n\n- This will ensure that a correct product name\n(Polkadot/Cumulus/Substrate) is referenced in license headers.\n- Closes https://github.com/paritytech/license-scanner/issues/49",
+          "timestamp": "2024-09-16T16:14:54Z",
+          "tree_id": "917cc6963ff5650fc99bbd0e2b256df091d14af6",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9064fb4d6dea751c537e33cb7c0a78c2510a1dce"
+        },
+        "date": 1726509164199,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021422573026666662,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008898707306666764,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18105226077333342,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016446227333333337,
             "unit": "seconds"
           }
         ]
