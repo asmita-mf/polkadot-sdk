@@ -157,14 +157,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
     network: <a class="struct" href="https://doc.rust-lang.org/1.77.0/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;dyn NetworkService&gt;,
     protocol_name: ProtocolName,
     transaction_pool: <a class="struct" href="https://doc.rust-lang.org/1.77.0/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;P&gt;,
-    keystore: <a class="enum" href="https://doc.rust-lang.org/1.77.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;KeystorePtr&gt;,
+    keystore: <a class="enum" href="https://doc.rust-lang.org/1.77.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../sp_keystore/type.KeystorePtr.html" title="type sp_keystore::KeystorePtr">KeystorePtr</a>&gt;,
     notification_service: <a class="struct" href="https://doc.rust-lang.org/1.77.0/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;dyn NotificationService&gt;
 )<div class="where">where
     B: Block,
-    C: BlockchainEvents&lt;B&gt; + ProvideRuntimeApi&lt;B&gt; + <a class="trait" href="../sp_blockchain/backend/trait.HeaderBackend.html" title="trait sp_blockchain::backend::HeaderBackend">HeaderBackend</a>&lt;B&gt;,
-    C::Api: <a class="trait" href="../sp_mixnet/runtime_api/trait.MixnetApi.html" title="trait sp_mixnet::runtime_api::MixnetApi">MixnetApi</a>&lt;B&gt;,
+    C: BlockchainEvents&lt;B&gt; + ProvideRuntimeApi&lt;B&gt; + HeaderBackend&lt;B&gt;,
+    C::Api: MixnetApi&lt;B&gt;,
     S: SyncOracle,
-    P: <a class="trait" href="../sc_transaction_pool_api/trait.TransactionPool.html" title="trait sc_transaction_pool_api::TransactionPool">TransactionPool</a>&lt;Block = B&gt; + <a class="trait" href="../sc_transaction_pool_api/trait.LocalTransactionPool.html" title="trait sc_transaction_pool_api::LocalTransactionPool">LocalTransactionPool</a>&lt;Block = B&gt; + 'static,</div></code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Run the mixnet service. If <code>keystore</code> is <code>None</code>, the service will not attempt to register the
+    P: TransactionPool&lt;Block = B&gt; + LocalTransactionPool&lt;Block = B&gt; + 'static,</div></code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Run the mixnet service. If <code>keystore</code> is <code>None</code>, the service will not attempt to register the
 local node as a mixnode, even if <code>config.register</code> is <code>true</code>.</p>
 </div></details></section></div></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>
 
