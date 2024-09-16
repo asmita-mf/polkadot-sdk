@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726509157165,
+  "lastUpdate": 1726518607903,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -20099,6 +20099,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 11.475912532899999,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9307d99ab6959b1416f9a178c601f387a1f0e534",
+          "message": "add zombienet-sdk test to parachain-template (#5342)\n\nAdd new `CI` machinery to smoke test the `parachain-template-node` using\nzombienet-sdk.\nThx!\n\n---------\n\nCo-authored-by: Przemek Rzad <przemek@parity.io>\nCo-authored-by: Shawn Tabrizi <shawntabrizi@gmail.com>\nCo-authored-by: rzadp <roopert7@gmail.com>\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: Kian Paimani <5588131+kianenigma@users.noreply.github.com>",
+          "timestamp": "2024-09-16T18:58:52Z",
+          "tree_id": "33d07553e1884c2befe3a722f16a31d5b2682e6c",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9307d99ab6959b1416f9a178c601f387a1f0e534"
+        },
+        "date": 1726518576927,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23583579133333327,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.495842107433337,
             "unit": "seconds"
           }
         ]
