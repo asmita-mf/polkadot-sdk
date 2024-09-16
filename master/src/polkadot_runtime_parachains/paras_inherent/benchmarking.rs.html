@@ -394,7 +394,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::{inclusion, ParaId};
 <span class="kw">use </span>alloc::collections::btree_map::BTreeMap;
-<span class="kw">use </span>core::cmp::min;
+<span class="kw">use </span>core::cmp::{max, min};
 <span class="kw">use </span>frame_benchmarking::{benchmarks, impl_benchmark_test_suite};
 <span class="kw">use </span>frame_system::RawOrigin;
 
@@ -484,7 +484,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	// of a single backed candidate.
 	</span>enter_backed_candidates_variable {
 		<span class="kw">let </span>v <span class="kw">in </span>(BenchBuilder::&lt;T&gt;::fallback_min_backing_votes())
-			..(BenchBuilder::&lt;T&gt;::fallback_max_validators_per_core());
+			.. max(BenchBuilder::&lt;T&gt;::fallback_min_backing_votes() + <span class="number">1</span>, BenchBuilder::&lt;T&gt;::fallback_max_validators_per_core());
 
 		<span class="kw">let </span>cores_with_backed: BTreeMap&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;
 			= <span class="macro">vec!</span>[(<span class="number">0</span>, v)] <span class="comment">// The backed candidate will have `v` validity votes.
