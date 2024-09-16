@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726481910253,
+  "lastUpdate": 1726493052211,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -19967,6 +19967,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.23540772873333338,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "write@reusable.software",
+            "name": "ordian",
+            "username": "ordian"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "655382fa87cd82f12920e316af63084ae098a4e3",
+          "message": "fix rococo-dev bench (#5688)\n\nthe range should always contain at least 2 values for the benchmark to\nwork\ncloses #5680",
+          "timestamp": "2024-09-16T12:09:16Z",
+          "tree_id": "e388fd4962c555f0a7af9102a9913e2952000f8b",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/655382fa87cd82f12920e316af63084ae098a4e3"
+        },
+        "date": 1726493022543,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23376897186666667,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.459756977000001,
             "unit": "seconds"
           }
         ]
