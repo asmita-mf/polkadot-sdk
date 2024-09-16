@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726481982677,
+  "lastUpdate": 1726493125051,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -17593,6 +17593,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 3.0809944516137473,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "write@reusable.software",
+            "name": "ordian",
+            "username": "ordian"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "655382fa87cd82f12920e316af63084ae098a4e3",
+          "message": "fix rococo-dev bench (#5688)\n\nthe range should always contain at least 2 values for the benchmark to\nwork\ncloses #5680",
+          "timestamp": "2024-09-16T12:09:16Z",
+          "tree_id": "e388fd4962c555f0a7af9102a9913e2952000f8b",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/655382fa87cd82f12920e316af63084ae098a4e3"
+        },
+        "date": 1726493095431,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63749.72000000001,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52939,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.521966620719997,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.7221119155900246,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.1243970378834702,
             "unit": "seconds"
           }
         ]
