@@ -1403,6 +1403,26 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1251" id="1251">1251</a>
 <a href="#1252" id="1252">1252</a>
 <a href="#1253" id="1253">1253</a>
+<a href="#1254" id="1254">1254</a>
+<a href="#1255" id="1255">1255</a>
+<a href="#1256" id="1256">1256</a>
+<a href="#1257" id="1257">1257</a>
+<a href="#1258" id="1258">1258</a>
+<a href="#1259" id="1259">1259</a>
+<a href="#1260" id="1260">1260</a>
+<a href="#1261" id="1261">1261</a>
+<a href="#1262" id="1262">1262</a>
+<a href="#1263" id="1263">1263</a>
+<a href="#1264" id="1264">1264</a>
+<a href="#1265" id="1265">1265</a>
+<a href="#1266" id="1266">1266</a>
+<a href="#1267" id="1267">1267</a>
+<a href="#1268" id="1268">1268</a>
+<a href="#1269" id="1269">1269</a>
+<a href="#1270" id="1270">1270</a>
+<a href="#1271" id="1271">1271</a>
+<a href="#1272" id="1272">1272</a>
+<a href="#1273" id="1273">1273</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1471,8 +1491,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	block_request_handler::BlockRequestHandler,
 	service::{network::NetworkServiceProvider, syncing_service::SyncingService},
 	state_request_handler::StateRequestHandler,
-	strategy::warp::{
-		AuthorityList, EncodedProof, SetId, VerificationResult, WarpSyncConfig, WarpSyncProvider,
+	strategy::{
+		warp::{
+			AuthorityList, EncodedProof, SetId, VerificationResult, WarpSyncConfig,
+			WarpSyncProvider,
+		},
+		PolkadotSyncingStrategy, SyncingConfig,
 	},
 	warp_request_handler,
 };
@@ -2310,6 +2334,24 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			&lt;Block <span class="kw">as </span>BlockT&gt;::Hash,
 		&gt;&gt;::register_notification_metrics(<span class="prelude-val">None</span>);
 
+		<span class="kw">let </span>syncing_config = SyncingConfig {
+			mode: network_config.sync_mode,
+			max_parallel_downloads: network_config.max_parallel_downloads,
+			max_blocks_per_request: network_config.max_blocks_per_request,
+			metrics_registry: <span class="prelude-val">None</span>,
+			state_request_protocol_name: state_request_protocol_config.name.clone(),
+		};
+		<span class="comment">// Initialize syncing strategy.
+		</span><span class="kw">let </span>syncing_strategy = Box::new(
+			PolkadotSyncingStrategy::new(
+				syncing_config,
+				client.clone(),
+				<span class="prelude-val">Some</span>(warp_sync_config),
+				<span class="prelude-val">Some</span>(warp_protocol_config.name.clone()),
+			)
+			.unwrap(),
+		);
+
 		<span class="kw">let </span>(engine, sync_service, block_announce_config) =
 			sc_network_sync::engine::SyncingEngine::new(
 				Roles::from(<span class="kw">if </span>config.is_authority { <span class="kw-2">&amp;</span>Role::Authority } <span class="kw">else </span>{ <span class="kw-2">&amp;</span>Role::Full }),
@@ -2320,12 +2362,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				protocol_id.clone(),
 				<span class="kw-2">&amp;</span>fork_id,
 				block_announce_validator,
-				<span class="prelude-val">Some</span>(warp_sync_config),
+				syncing_strategy,
 				chain_sync_network_handle,
 				import_queue.service(),
 				block_relay_params.downloader,
-				state_request_protocol_config.name.clone(),
-				<span class="prelude-val">Some</span>(warp_protocol_config.name.clone()),
 				peer_store_handle.clone(),
 			)
 			.unwrap();

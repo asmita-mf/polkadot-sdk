@@ -970,6 +970,51 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#818" id="818">818</a>
 <a href="#819" id="819">819</a>
 <a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
+<a href="#825" id="825">825</a>
+<a href="#826" id="826">826</a>
+<a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
+<a href="#841" id="841">841</a>
+<a href="#842" id="842">842</a>
+<a href="#843" id="843">843</a>
+<a href="#844" id="844">844</a>
+<a href="#845" id="845">845</a>
+<a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
+<a href="#850" id="850">850</a>
+<a href="#851" id="851">851</a>
+<a href="#852" id="852">852</a>
+<a href="#853" id="853">853</a>
+<a href="#854" id="854">854</a>
+<a href="#855" id="855">855</a>
+<a href="#856" id="856">856</a>
+<a href="#857" id="857">857</a>
+<a href="#858" id="858">858</a>
+<a href="#859" id="859">859</a>
+<a href="#860" id="860">860</a>
+<a href="#861" id="861">861</a>
+<a href="#862" id="862">862</a>
+<a href="#863" id="863">863</a>
+<a href="#864" id="864">864</a>
+<a href="#865" id="865">865</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1002,6 +1047,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>log::{debug, error, trace};
 <span class="kw">use </span>sc_client_api::ProofProvider;
 <span class="kw">use </span>sc_consensus::{BlockImportError, BlockImportStatus, IncomingBlock};
+<span class="kw">use </span>sc_network::ProtocolName;
 <span class="kw">use </span>sc_network_common::sync::message::BlockAnnounce;
 <span class="kw">use </span>sc_network_types::PeerId;
 <span class="kw">use </span>sp_consensus::BlockOrigin;
@@ -1024,7 +1070,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Action that should be performed on [`StateStrategy`]'s behalf.
 </span><span class="kw">pub enum </span>StateStrategyAction&lt;B: BlockT&gt; {
 	<span class="doccomment">/// Send state request to peer.
-	</span>SendStateRequest { peer_id: PeerId, request: OpaqueStateRequest },
+	</span>SendStateRequest { peer_id: PeerId, protocol_name: ProtocolName, request: OpaqueStateRequest },
 	<span class="doccomment">/// Disconnect and report peer.
 	</span>DropPeer(BadPeer),
 	<span class="doccomment">/// Import blocks.
@@ -1055,6 +1101,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	peers: HashMap&lt;PeerId, Peer&lt;B&gt;&gt;,
 	disconnected_peers: DisconnectedPeers,
 	actions: Vec&lt;StateStrategyAction&lt;B&gt;&gt;,
+	protocol_name: ProtocolName,
 	succeeded: bool,
 }
 
@@ -1067,6 +1114,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		target_justifications: <span class="prelude-ty">Option</span>&lt;Justifications&gt;,
 		skip_proof: bool,
 		initial_peers: <span class="kw">impl </span>Iterator&lt;Item = (PeerId, NumberFor&lt;B&gt;)&gt;,
+		protocol_name: ProtocolName,
 	) -&gt; <span class="self">Self
 	</span><span class="kw">where
 		</span>Client: ProofProvider&lt;B&gt; + Send + Sync + <span class="lifetime">'static</span>,
@@ -1087,6 +1135,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			peers,
 			disconnected_peers: DisconnectedPeers::new(),
 			actions: Vec::new(),
+			protocol_name,
 			succeeded: <span class="bool-val">false</span>,
 		}
 	}
@@ -1097,6 +1146,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">fn </span>new_with_provider(
 		state_sync_provider: Box&lt;<span class="kw">dyn </span>StateSyncProvider&lt;B&gt;&gt;,
 		initial_peers: <span class="kw">impl </span>Iterator&lt;Item = (PeerId, NumberFor&lt;B&gt;)&gt;,
+		protocol_name: ProtocolName,
 	) -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{
 			state_sync: state_sync_provider,
@@ -1107,6 +1157,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				.collect(),
 			disconnected_peers: DisconnectedPeers::new(),
 			actions: Vec::new(),
+			protocol_name,
 			succeeded: <span class="bool-val">false</span>,
 		}
 	}
@@ -1321,10 +1372,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Get actions that should be performed by the owner on [`WarpSync`]'s behalf
 	</span><span class="attr">#[must_use]
 	</span><span class="kw">pub fn </span>actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = StateStrategyAction&lt;B&gt;&gt; {
-		<span class="kw">let </span>state_request = <span class="self">self
-			</span>.state_request()
-			.into_iter()
-			.map(|(peer_id, request)| StateStrategyAction::SendStateRequest { peer_id, request });
+		<span class="kw">let </span>state_request = <span class="self">self</span>.state_request().into_iter().map(|(peer_id, request)| {
+			StateStrategyAction::SendStateRequest {
+				peer_id,
+				protocol_name: <span class="self">self</span>.protocol_name.clone(),
+				request,
+			}
+		});
 		<span class="self">self</span>.actions.extend(state_request);
 
 		std::mem::take(<span class="kw-2">&amp;mut </span><span class="self">self</span>.actions).into_iter()
@@ -1381,8 +1435,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.block;
 		<span class="kw">let </span>target_header = target_block.header().clone();
 
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new(client, target_header, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="bool-val">false</span>, std::iter::empty());
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new(
+			client,
+			target_header,
+			<span class="prelude-val">None</span>,
+			<span class="prelude-val">None</span>,
+			<span class="bool-val">false</span>,
+			std::iter::empty(),
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 
 		<span class="macro">assert!</span>(state_strategy
 			.schedule_next_peer(PeerState::DownloadingState, Zero::zero())
@@ -1414,6 +1475,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
 				initial_peers,
+				ProtocolName::Static(<span class="string">""</span>),
 			);
 
 			<span class="kw">let </span>peer_id =
@@ -1447,6 +1509,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
 				initial_peers,
+				ProtocolName::Static(<span class="string">""</span>),
 			);
 
 			<span class="kw">let </span>peer_id = state_strategy.schedule_next_peer(PeerState::DownloadingState, <span class="number">10</span>);
@@ -1480,6 +1543,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">None</span>,
 			<span class="bool-val">false</span>,
 			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
 		);
 
 		<span class="comment">// Disconnecting a peer without an inflight request has no effect on persistent states.
@@ -1529,6 +1593,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">None</span>,
 			<span class="bool-val">false</span>,
 			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
 		);
 
 		<span class="kw">let </span>(_peer_id, <span class="kw-2">mut </span>opaque_request) = state_strategy.state_request().unwrap();
@@ -1559,6 +1624,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">None</span>,
 			<span class="bool-val">false</span>,
 			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
 		);
 
 		<span class="comment">// First request is sent.
@@ -1574,8 +1640,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		state_sync_provider.expect_import().return_once(|<span class="kw">_</span>| ImportResult::Continue);
 		<span class="kw">let </span>peer_id = PeerId::random();
 		<span class="kw">let </span>initial_peers = std::iter::once((peer_id, <span class="number">10</span>));
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), initial_peers);
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 		<span class="comment">// Manually set the peer's state.
 		</span>state_strategy.peers.get_mut(<span class="kw-2">&amp;</span>peer_id).unwrap().state = PeerState::DownloadingState;
 
@@ -1592,8 +1661,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span>state_sync_provider.expect_import().return_once(|<span class="kw">_</span>| ImportResult::BadResponse);
 		<span class="kw">let </span>peer_id = PeerId::random();
 		<span class="kw">let </span>initial_peers = std::iter::once((peer_id, <span class="number">10</span>));
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), initial_peers);
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 		<span class="comment">// Manually set the peer's state.
 		</span>state_strategy.peers.get_mut(<span class="kw-2">&amp;</span>peer_id).unwrap().state = PeerState::DownloadingState;
 		<span class="kw">let </span>dummy_response = OpaqueStateResponse(Box::new(StateResponse::default()));
@@ -1611,8 +1683,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span>state_sync_provider.expect_import().return_once(|<span class="kw">_</span>| ImportResult::Continue);
 		<span class="kw">let </span>peer_id = PeerId::random();
 		<span class="kw">let </span>initial_peers = std::iter::once((peer_id, <span class="number">10</span>));
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), initial_peers);
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 		<span class="comment">// Manually set the peer's state .
 		</span>state_strategy.peers.get_mut(<span class="kw-2">&amp;</span>peer_id).unwrap().state = PeerState::DownloadingState;
 
@@ -1670,8 +1745,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="comment">// Prepare `StateStrategy`.
 		</span><span class="kw">let </span>peer_id = PeerId::random();
 		<span class="kw">let </span>initial_peers = std::iter::once((peer_id, <span class="number">10</span>));
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), initial_peers);
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 		<span class="comment">// Manually set the peer's state .
 		</span>state_strategy.peers.get_mut(<span class="kw-2">&amp;</span>peer_id).unwrap().state = PeerState::DownloadingState;
 
@@ -1694,8 +1772,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span><span class="kw-2">mut </span>state_sync_provider = MockStateSync::&lt;Block&gt;::new();
 		state_sync_provider.expect_target_hash().return_const(target_hash);
 
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), std::iter::empty());
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			std::iter::empty(),
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 
 		<span class="comment">// Unknown block imported.
 		</span>state_strategy.on_blocks_processed(
@@ -1717,8 +1798,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span><span class="kw-2">mut </span>state_sync_provider = MockStateSync::&lt;Block&gt;::new();
 		state_sync_provider.expect_target_hash().return_const(target_hash);
 
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), std::iter::empty());
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			std::iter::empty(),
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 
 		<span class="comment">// Target block imported.
 		</span>state_strategy.on_blocks_processed(
@@ -1741,8 +1825,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span><span class="kw-2">mut </span>state_sync_provider = MockStateSync::&lt;Block&gt;::new();
 		state_sync_provider.expect_target_hash().return_const(target_hash);
 
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), std::iter::empty());
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			std::iter::empty(),
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 
 		<span class="comment">// Target block import failed.
 		</span>state_strategy.on_blocks_processed(
@@ -1769,8 +1856,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="comment">// Get enough peers for possible spurious requests.
 		</span><span class="kw">let </span>initial_peers = (<span class="number">1</span>..=<span class="number">10</span>).map(|best_number| (PeerId::random(), best_number));
 
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), initial_peers);
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 
 		state_strategy.on_blocks_processed(
 			<span class="number">1</span>,

@@ -1269,6 +1269,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1117" id="1117">1117</a>
 <a href="#1118" id="1118">1118</a>
 <a href="#1119" id="1119">1119</a>
+<a href="#1120" id="1120">1120</a>
+<a href="#1121" id="1121">1121</a>
+<a href="#1122" id="1122">1122</a>
+<a href="#1123" id="1123">1123</a>
+<a href="#1124" id="1124">1124</a>
+<a href="#1125" id="1125">1125</a>
+<a href="#1126" id="1126">1126</a>
+<a href="#1127" id="1127">1127</a>
+<a href="#1128" id="1128">1128</a>
+<a href="#1129" id="1129">1129</a>
+<a href="#1130" id="1130">1130</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1303,6 +1314,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>futures::prelude::<span class="kw-2">*</span>;
 <span class="kw">use </span>kitchensink_runtime::RuntimeApi;
 <span class="kw">use </span>node_primitives::Block;
+<span class="kw">use </span>polkadot_sdk::sc_service::build_polkadot_syncing_strategy;
 <span class="kw">use </span>sc_client_api::{Backend, BlockBackend};
 <span class="kw">use </span>sc_consensus_babe::{<span class="self">self</span>, SlotProportion};
 <span class="kw">use </span>sc_network::{
@@ -1777,6 +1789,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		Vec::default(),
 	));
 
+	<span class="kw">let </span>syncing_strategy = build_polkadot_syncing_strategy(
+		config.protocol_id(),
+		config.chain_spec.fork_id(),
+		<span class="kw-2">&amp;mut </span>net_config,
+		<span class="prelude-val">Some</span>(WarpSyncConfig::WithProvider(warp_sync)),
+		client.clone(),
+		<span class="kw-2">&amp;</span>task_manager.spawn_handle(),
+		config.prometheus_config.as_ref().map(|config| <span class="kw-2">&amp;</span>config.registry),
+	)<span class="question-mark">?</span>;
+
 	<span class="kw">let </span>(network, system_rpc_tx, tx_handler_controller, network_starter, sync_service) =
 		sc_service::build_network(sc_service::BuildNetworkParams {
 			config: <span class="kw-2">&amp;</span>config,
@@ -1786,7 +1808,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			spawn_handle: task_manager.spawn_handle(),
 			import_queue,
 			block_announce_validator_builder: <span class="prelude-val">None</span>,
-			warp_sync_config: <span class="prelude-val">Some</span>(WarpSyncConfig::WithProvider(warp_sync)),
+			syncing_strategy,
 			block_relay: <span class="prelude-val">None</span>,
 			metrics,
 		})<span class="question-mark">?</span>;

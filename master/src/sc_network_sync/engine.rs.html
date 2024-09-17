@@ -1428,45 +1428,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1276" id="1276">1276</a>
 <a href="#1277" id="1277">1277</a>
 <a href="#1278" id="1278">1278</a>
-<a href="#1279" id="1279">1279</a>
-<a href="#1280" id="1280">1280</a>
-<a href="#1281" id="1281">1281</a>
-<a href="#1282" id="1282">1282</a>
-<a href="#1283" id="1283">1283</a>
-<a href="#1284" id="1284">1284</a>
-<a href="#1285" id="1285">1285</a>
-<a href="#1286" id="1286">1286</a>
-<a href="#1287" id="1287">1287</a>
-<a href="#1288" id="1288">1288</a>
-<a href="#1289" id="1289">1289</a>
-<a href="#1290" id="1290">1290</a>
-<a href="#1291" id="1291">1291</a>
-<a href="#1292" id="1292">1292</a>
-<a href="#1293" id="1293">1293</a>
-<a href="#1294" id="1294">1294</a>
-<a href="#1295" id="1295">1295</a>
-<a href="#1296" id="1296">1296</a>
-<a href="#1297" id="1297">1297</a>
-<a href="#1298" id="1298">1298</a>
-<a href="#1299" id="1299">1299</a>
-<a href="#1300" id="1300">1300</a>
-<a href="#1301" id="1301">1301</a>
-<a href="#1302" id="1302">1302</a>
-<a href="#1303" id="1303">1303</a>
-<a href="#1304" id="1304">1304</a>
-<a href="#1305" id="1305">1305</a>
-<a href="#1306" id="1306">1306</a>
-<a href="#1307" id="1307">1307</a>
-<a href="#1308" id="1308">1308</a>
-<a href="#1309" id="1309">1309</a>
-<a href="#1310" id="1310">1310</a>
-<a href="#1311" id="1311">1311</a>
-<a href="#1312" id="1312">1312</a>
-<a href="#1313" id="1313">1313</a>
-<a href="#1314" id="1314">1314</a>
-<a href="#1315" id="1315">1315</a>
-<a href="#1316" id="1316">1316</a>
-<a href="#1317" id="1317">1317</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1493,7 +1454,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		BlockAnnounceValidationResult, BlockAnnounceValidator <span class="kw">as </span>BlockAnnounceValidatorStream,
 	},
 	block_relay_protocol::{BlockDownloader, BlockResponseError},
-	block_request_handler::MAX_BLOCKS_IN_RESPONSE,
 	pending_responses::{PendingResponses, ResponseEvent},
 	schema::v1::{StateRequest, StateResponse},
 	service::{
@@ -1501,8 +1461,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		syncing_service::{SyncingService, ToServiceCommand},
 	},
 	strategy::{
-		warp::{EncodedProof, WarpProofRequest, WarpSyncConfig},
-		PolkadotSyncingStrategy, StrategyKey, SyncingAction, SyncingConfig, SyncingStrategy,
+		warp::{EncodedProof, WarpProofRequest},
+		StrategyKey, SyncingAction, SyncingStrategy,
 	},
 	types::{
 		BadPeer, ExtendedPeerInfo, OpaqueStateRequest, OpaqueStateResponse, PeerRequest, SyncEvent,
@@ -1658,7 +1618,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">pub struct </span>SyncingEngine&lt;B: BlockT, Client&gt; {
 	<span class="doccomment">/// Syncing strategy.
-	</span>strategy: PolkadotSyncingStrategy&lt;B, Client&gt;,
+	</span>strategy: Box&lt;<span class="kw">dyn </span>SyncingStrategy&lt;B&gt;&gt;,
 
 	<span class="doccomment">/// Blockchain client.
 	</span>client: Arc&lt;Client&gt;,
@@ -1740,12 +1700,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Block downloader
 	</span>block_downloader: Arc&lt;<span class="kw">dyn </span>BlockDownloader&lt;B&gt;&gt;,
 
-	<span class="doccomment">/// Protocol name used to send out state requests
-	</span>state_request_protocol_name: ProtocolName,
-
-	<span class="doccomment">/// Protocol name used to send out warp sync requests
-	</span>warp_sync_protocol_name: <span class="prelude-ty">Option</span>&lt;ProtocolName&gt;,
-
 	<span class="doccomment">/// Handle to import queue.
 	</span>import_queue: Box&lt;<span class="kw">dyn </span>ImportQueueService&lt;B&gt;&gt;,
 }
@@ -1770,35 +1724,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		protocol_id: ProtocolId,
 		fork_id: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
 		block_announce_validator: Box&lt;<span class="kw">dyn </span>BlockAnnounceValidator&lt;B&gt; + Send&gt;,
-		warp_sync_config: <span class="prelude-ty">Option</span>&lt;WarpSyncConfig&lt;B&gt;&gt;,
+		syncing_strategy: Box&lt;<span class="kw">dyn </span>SyncingStrategy&lt;B&gt;&gt;,
 		network_service: service::network::NetworkServiceHandle,
 		import_queue: Box&lt;<span class="kw">dyn </span>ImportQueueService&lt;B&gt;&gt;,
 		block_downloader: Arc&lt;<span class="kw">dyn </span>BlockDownloader&lt;B&gt;&gt;,
-		state_request_protocol_name: ProtocolName,
-		warp_sync_protocol_name: <span class="prelude-ty">Option</span>&lt;ProtocolName&gt;,
 		peer_store_handle: Arc&lt;<span class="kw">dyn </span>PeerStoreProvider&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="self">Self</span>, SyncingService&lt;B&gt;, N::NotificationProtocolConfig), ClientError&gt;
 	<span class="kw">where
 		</span>N: NetworkBackend&lt;B, &lt;B <span class="kw">as </span>BlockT&gt;::Hash&gt;,
 	{
-		<span class="kw">let </span>mode = net_config.network_config.sync_mode;
-		<span class="kw">let </span>max_parallel_downloads = net_config.network_config.max_parallel_downloads;
-		<span class="kw">let </span>max_blocks_per_request =
-			<span class="kw">if </span>net_config.network_config.max_blocks_per_request &gt; MAX_BLOCKS_IN_RESPONSE <span class="kw">as </span>u32 {
-				<span class="macro">log::info!</span>(
-					target: LOG_TARGET,
-					<span class="string">"clamping maximum blocks per request to {MAX_BLOCKS_IN_RESPONSE}"</span>,
-				);
-				MAX_BLOCKS_IN_RESPONSE <span class="kw">as </span>u32
-			} <span class="kw">else </span>{
-				net_config.network_config.max_blocks_per_request
-			};
-		<span class="kw">let </span>syncing_config = SyncingConfig {
-			mode,
-			max_parallel_downloads,
-			max_blocks_per_request,
-			metrics_registry: metrics_registry.cloned(),
-		};
 		<span class="kw">let </span>cache_capacity = (net_config.network_config.default_peers_set.in_peers +
 			net_config.network_config.default_peers_set.out_peers)
 			.max(<span class="number">1</span>);
@@ -1857,10 +1791,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				Arc::clone(<span class="kw-2">&amp;</span>peer_store_handle),
 			);
 
-		<span class="comment">// Initialize syncing strategy.
-		</span><span class="kw">let </span>strategy =
-			PolkadotSyncingStrategy::new(syncing_config, client.clone(), warp_sync_config)<span class="question-mark">?</span>;
-
 		<span class="kw">let </span>block_announce_protocol_name = block_announce_config.protocol_name().clone();
 		<span class="kw">let </span>(tx, service_rx) = tracing_unbounded(<span class="string">"mpsc_chain_sync"</span>, <span class="number">100_000</span>);
 		<span class="kw">let </span>num_connected = Arc::new(AtomicUsize::new(<span class="number">0</span>));
@@ -1882,7 +1812,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="self">Self </span>{
 				roles,
 				client,
-				strategy,
+				strategy: syncing_strategy,
 				network_service,
 				peers: HashMap::new(),
 				block_announce_data_cache: LruMap::new(ByLength::new(cache_capacity)),
@@ -1919,8 +1849,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				</span>},
 				pending_responses: PendingResponses::new(),
 				block_downloader,
-				state_request_protocol_name,
-				warp_sync_protocol_name,
 				import_queue,
 			},
 			SyncingService::new(tx, num_connected, is_major_syncing),
@@ -2121,16 +2049,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						<span class="string">"Processed {action:?}, response removed: {removed}."</span>,
 					);
 				},
-				SyncingAction::SendStateRequest { peer_id, key, request } =&gt; {
-					<span class="self">self</span>.send_state_request(peer_id, key, request);
+				SyncingAction::SendStateRequest { peer_id, key, protocol_name, request } =&gt; {
+					<span class="self">self</span>.send_state_request(peer_id, key, protocol_name, request);
 
 					<span class="macro">trace!</span>(
 						target: LOG_TARGET,
 						<span class="string">"Processed `ChainSyncAction::SendStateRequest` to {peer_id}."</span>,
 					);
 				},
-				SyncingAction::SendWarpProofRequest { peer_id, key, request } =&gt; {
-					<span class="self">self</span>.send_warp_proof_request(peer_id, key, request.clone());
+				SyncingAction::SendWarpProofRequest { peer_id, key, protocol_name, request } =&gt; {
+					<span class="self">self</span>.send_warp_proof_request(peer_id, key, protocol_name, request.clone());
 
 					<span class="macro">trace!</span>(
 						target: LOG_TARGET,
@@ -2523,6 +2451,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		peer_id: PeerId,
 		key: StrategyKey,
+		protocol_name: ProtocolName,
 		request: OpaqueStateRequest,
 	) {
 		<span class="kw">if </span>!<span class="self">self</span>.peers.contains_key(<span class="kw-2">&amp;</span>peer_id) {
@@ -2539,7 +2468,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(data) =&gt; {
 				<span class="self">self</span>.network_service.start_request(
 					peer_id,
-					<span class="self">self</span>.state_request_protocol_name.clone(),
+					protocol_name,
 					data,
 					tx,
 					IfDisconnected::ImmediateError,
@@ -2558,6 +2487,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		peer_id: PeerId,
 		key: StrategyKey,
+		protocol_name: ProtocolName,
 		request: WarpProofRequest&lt;B&gt;,
 	) {
 		<span class="kw">if </span>!<span class="self">self</span>.peers.contains_key(<span class="kw-2">&amp;</span>peer_id) {
@@ -2570,21 +2500,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="self">self</span>.pending_responses.insert(peer_id, key, PeerRequest::WarpProof, rx.boxed());
 
-		<span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.warp_sync_protocol_name {
-			<span class="prelude-val">Some</span>(name) =&gt; <span class="self">self</span>.network_service.start_request(
-				peer_id,
-				name.clone(),
-				request.encode(),
-				tx,
-				IfDisconnected::ImmediateError,
-			),
-			<span class="prelude-val">None </span>=&gt; {
-				<span class="macro">log::warn!</span>(
-					target: LOG_TARGET,
-					<span class="string">"Trying to send warp sync request when no protocol is configured {request:?}"</span>,
-				);
-			},
-		}
+		<span class="self">self</span>.network_service.start_request(
+			peer_id,
+			protocol_name,
+			request.encode(),
+			tx,
+			IfDisconnected::ImmediateError,
+		);
 	}
 
 	<span class="kw">fn </span>encode_state_request(request: <span class="kw-2">&amp;</span>OpaqueStateRequest) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;u8&gt;, String&gt; {

@@ -1615,6 +1615,28 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1463" id="1463">1463</a>
 <a href="#1464" id="1464">1464</a>
 <a href="#1465" id="1465">1465</a>
+<a href="#1466" id="1466">1466</a>
+<a href="#1467" id="1467">1467</a>
+<a href="#1468" id="1468">1468</a>
+<a href="#1469" id="1469">1469</a>
+<a href="#1470" id="1470">1470</a>
+<a href="#1471" id="1471">1471</a>
+<a href="#1472" id="1472">1472</a>
+<a href="#1473" id="1473">1473</a>
+<a href="#1474" id="1474">1474</a>
+<a href="#1475" id="1475">1475</a>
+<a href="#1476" id="1476">1476</a>
+<a href="#1477" id="1477">1477</a>
+<a href="#1478" id="1478">1478</a>
+<a href="#1479" id="1479">1479</a>
+<a href="#1480" id="1480">1480</a>
+<a href="#1481" id="1481">1481</a>
+<a href="#1482" id="1482">1482</a>
+<a href="#1483" id="1483">1483</a>
+<a href="#1484" id="1484">1484</a>
+<a href="#1485" id="1485">1485</a>
+<a href="#1486" id="1486">1486</a>
+<a href="#1487" id="1487">1487</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1643,7 +1665,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	LOG_TARGET,
 };
 <span class="kw">use </span>codec::{Decode, Encode};
-<span class="kw">use </span>log::{debug, error, trace};
+<span class="kw">use </span>log::{debug, error, trace, warn};
+<span class="kw">use </span>sc_network::ProtocolName;
 <span class="kw">use </span>sc_network_common::sync::message::{
 	BlockAnnounce, BlockAttributes, BlockData, BlockRequest, Direction, FromBlock,
 };
@@ -1805,7 +1828,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Action that should be performed on [`WarpSync`]'s behalf.
 </span><span class="kw">pub enum </span>WarpSyncAction&lt;B: BlockT&gt; {
 	<span class="doccomment">/// Send warp proof request to peer.
-	</span>SendWarpProofRequest { peer_id: PeerId, request: WarpProofRequest&lt;B&gt; },
+	</span>SendWarpProofRequest {
+		peer_id: PeerId,
+		protocol_name: ProtocolName,
+		request: WarpProofRequest&lt;B&gt;,
+	},
 	<span class="doccomment">/// Send block request to peer. Always implies dropping a stale block request to the same peer.
 	</span>SendBlockRequest { peer_id: PeerId, request: BlockRequest&lt;B&gt; },
 	<span class="doccomment">/// Disconnect and report peer.
@@ -1828,6 +1855,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	total_state_bytes: u64,
 	peers: HashMap&lt;PeerId, Peer&lt;B&gt;&gt;,
 	disconnected_peers: DisconnectedPeers,
+	protocol_name: <span class="prelude-ty">Option</span>&lt;ProtocolName&gt;,
 	actions: Vec&lt;WarpSyncAction&lt;B&gt;&gt;,
 	result: <span class="prelude-ty">Option</span>&lt;WarpSyncResult&lt;B&gt;&gt;,
 }
@@ -1840,7 +1868,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Create a new instance. When passing a warp sync provider we will be checking for proof and
 	/// authorities. Alternatively we can pass a target block when we want to skip downloading
 	/// proofs, in this case we will continue polling until the target block is known.
-	</span><span class="kw">pub fn </span>new(client: Arc&lt;Client&gt;, warp_sync_config: WarpSyncConfig&lt;B&gt;) -&gt; <span class="self">Self </span>{
+	</span><span class="kw">pub fn </span>new(
+		client: Arc&lt;Client&gt;,
+		warp_sync_config: WarpSyncConfig&lt;B&gt;,
+		protocol_name: <span class="prelude-ty">Option</span>&lt;ProtocolName&gt;,
+	) -&gt; <span class="self">Self </span>{
 		<span class="kw">if </span>client.info().finalized_state.is_some() {
 			<span class="macro">error!</span>(
 				target: LOG_TARGET,
@@ -1853,6 +1885,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				total_state_bytes: <span class="number">0</span>,
 				peers: HashMap::new(),
 				disconnected_peers: DisconnectedPeers::new(),
+				protocol_name,
 				actions: <span class="macro">vec!</span>[WarpSyncAction::Finished],
 				result: <span class="prelude-val">None</span>,
 			}
@@ -1871,6 +1904,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			total_state_bytes: <span class="number">0</span>,
 			peers: HashMap::new(),
 			disconnected_peers: DisconnectedPeers::new(),
+			protocol_name,
 			actions: Vec::new(),
 			result: <span class="prelude-val">None</span>,
 		}
@@ -2086,7 +2120,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span>}
 
 	<span class="doccomment">/// Produce warp proof request.
-	</span><span class="kw">fn </span>warp_proof_request(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(PeerId, WarpProofRequest&lt;B&gt;)&gt; {
+	</span><span class="kw">fn </span>warp_proof_request(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(PeerId, ProtocolName, WarpProofRequest&lt;B&gt;)&gt; {
 		<span class="kw">let </span>Phase::WarpProof { last_hash, .. } = <span class="kw-2">&amp;</span><span class="self">self</span>.phase <span class="kw">else </span>{ <span class="kw">return </span><span class="prelude-val">None </span>};
 
 		<span class="comment">// Copy `last_hash` early to cut the borrowing tie.
@@ -2104,7 +2138,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>peer_id = <span class="self">self</span>.schedule_next_peer(PeerState::DownloadingProofs, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
 		<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"New WarpProofRequest to {peer_id}, begin hash: {begin}."</span>);
 
-		<span class="prelude-val">Some</span>((peer_id, WarpProofRequest { begin }))
+		<span class="kw">let </span>request = WarpProofRequest { begin };
+
+		<span class="kw">let </span><span class="prelude-val">Some</span>(protocol_name) = <span class="self">self</span>.protocol_name.clone() <span class="kw">else </span>{
+			<span class="macro">warn!</span>(
+				target: LOG_TARGET,
+				<span class="string">"Trying to send warp sync request when no protocol is configured {request:?}"</span>,
+			);
+			<span class="kw">return </span><span class="prelude-val">None</span>;
+		};
+
+		<span class="prelude-val">Some</span>((peer_id, protocol_name, request))
 	}
 
 	<span class="doccomment">/// Produce target block request.
@@ -2202,10 +2246,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Get actions that should be performed by the owner on [`WarpSync`]'s behalf
 	</span><span class="attr">#[must_use]
 	</span><span class="kw">pub fn </span>actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = WarpSyncAction&lt;B&gt;&gt; {
-		<span class="kw">let </span>warp_proof_request = <span class="self">self
-			</span>.warp_proof_request()
-			.into_iter()
-			.map(|(peer_id, request)| WarpSyncAction::SendWarpProofRequest { peer_id, request });
+		<span class="kw">let </span>warp_proof_request =
+			<span class="self">self</span>.warp_proof_request().into_iter().map(|(peer_id, protocol_name, request)| {
+				WarpSyncAction::SendWarpProofRequest { peer_id, protocol_name, request }
+			});
 		<span class="self">self</span>.actions.extend(warp_proof_request);
 
 		<span class="kw">let </span>target_block_request = <span class="self">self
@@ -2311,7 +2355,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>client = mock_client_with_state();
 		<span class="kw">let </span>provider = MockWarpSyncProvider::&lt;Block&gt;::new();
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Warp sync instantly finishes
 		</span><span class="kw">let </span>actions = warp_sync.actions().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
@@ -2332,7 +2376,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			Default::default(),
 			Default::default(),
 		));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Warp sync instantly finishes
 		</span><span class="kw">let </span>actions = warp_sync.actions().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
@@ -2348,7 +2392,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>client = mock_client_without_state();
 		<span class="kw">let </span>provider = MockWarpSyncProvider::&lt;Block&gt;::new();
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// No actions are emitted.
 		</span><span class="macro">assert_eq!</span>(warp_sync.actions().count(), <span class="number">0</span>)
@@ -2364,7 +2408,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			Default::default(),
 			Default::default(),
 		));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// No actions are emitted.
 		</span><span class="macro">assert_eq!</span>(warp_sync.actions().count(), <span class="number">0</span>)
@@ -2379,7 +2423,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.once()
 			.return_const(AuthorityList::default());
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Warp sync is not started when there is not enough peers.
 		</span><span class="kw">for _ in </span><span class="number">0</span>..(MIN_PEERS_TO_START_WARP_SYNC - <span class="number">1</span>) {
@@ -2397,7 +2441,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>client = mock_client_without_state();
 		<span class="kw">let </span>provider = MockWarpSyncProvider::&lt;Block&gt;::new();
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">None</span>);
 
 		<span class="macro">assert!</span>(warp_sync.schedule_next_peer(PeerState::DownloadingProofs, <span class="prelude-val">None</span>).is_none());
 	}
@@ -2421,7 +2465,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				.once()
 				.return_const(AuthorityList::default());
 			<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-			<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+			<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">None</span>);
 
 			<span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
 				warp_sync.add_peer(PeerId::random(), Hash::random(), best_number);
@@ -2442,7 +2486,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				.once()
 				.return_const(AuthorityList::default());
 			<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-			<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+			<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">None</span>);
 
 			<span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
 				warp_sync.add_peer(PeerId::random(), Hash::random(), best_number);
@@ -2462,7 +2506,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.once()
 			.return_const(AuthorityList::default());
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">None</span>);
 
 		<span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
 			warp_sync.add_peer(PeerId::random(), Hash::random(), best_number);
@@ -2506,7 +2550,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.once()
 			.return_const(AuthorityList::default());
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">Some</span>(ProtocolName::Static(<span class="string">""</span>)));
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2535,7 +2579,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.once()
 			.return_const(AuthorityList::default());
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">Some</span>(ProtocolName::Static(<span class="string">""</span>)));
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2553,7 +2597,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Invalid phase."</span>),
 		}
 
-		<span class="kw">let </span>(_peer_id, request) = warp_sync.warp_proof_request().unwrap();
+		<span class="kw">let </span>(_peer_id, _protocol_name, request) = warp_sync.warp_proof_request().unwrap();
 		<span class="macro">assert_eq!</span>(request.begin, known_last_hash);
 	}
 
@@ -2566,7 +2610,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.once()
 			.return_const(AuthorityList::default());
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">Some</span>(ProtocolName::Static(<span class="string">""</span>)));
 
 		<span class="comment">// Make sure we have enough peers to make requests.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2593,7 +2637,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Err</span>(Box::new(std::io::Error::new(ErrorKind::Other, <span class="string">"test-verification-failure"</span>)))
 		});
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">Some</span>(ProtocolName::Static(<span class="string">""</span>)));
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2634,7 +2678,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(VerificationResult::Partial(set_id, authorities, Hash::random()))
 		});
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">Some</span>(ProtocolName::Static(<span class="string">""</span>)));
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2678,7 +2722,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(VerificationResult::Complete(set_id, authorities, target_header))
 		});
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config, <span class="prelude-val">Some</span>(ProtocolName::Static(<span class="string">""</span>)));
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2711,7 +2755,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.once()
 			.return_const(AuthorityList::default());
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(Arc::new(client), config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2746,7 +2790,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(VerificationResult::Complete(set_id, authorities, target_header))
 		});
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2778,7 +2822,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.block;
 		<span class="kw">let </span>target_header = target_block.header().clone();
 		<span class="kw">let </span>config = WarpSyncConfig::WithTarget(target_header);
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2818,7 +2862,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(VerificationResult::Complete(set_id, authorities, target_header))
 		});
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2856,7 +2900,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(VerificationResult::Complete(set_id, authorities, target_header))
 		});
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2910,7 +2954,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(VerificationResult::Complete(set_id, authorities, target_header))
 		});
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -2987,7 +3031,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(VerificationResult::Complete(set_id, authorities, target_header))
 		});
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{
@@ -3040,7 +3084,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(VerificationResult::Complete(set_id, authorities, target_header))
 		});
 		<span class="kw">let </span>config = WarpSyncConfig::WithProvider(Arc::new(provider));
-		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config);
+		<span class="kw">let </span><span class="kw-2">mut </span>warp_sync = WarpSync::new(client, config, <span class="prelude-val">None</span>);
 
 		<span class="comment">// Make sure we have enough peers to make a request.
 		</span><span class="kw">for </span>best_number <span class="kw">in </span><span class="number">1</span>..<span class="number">11 </span>{

@@ -1272,6 +1272,35 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1120" id="1120">1120</a>
 <a href="#1121" id="1121">1121</a>
 <a href="#1122" id="1122">1122</a>
+<a href="#1123" id="1123">1123</a>
+<a href="#1124" id="1124">1124</a>
+<a href="#1125" id="1125">1125</a>
+<a href="#1126" id="1126">1126</a>
+<a href="#1127" id="1127">1127</a>
+<a href="#1128" id="1128">1128</a>
+<a href="#1129" id="1129">1129</a>
+<a href="#1130" id="1130">1130</a>
+<a href="#1131" id="1131">1131</a>
+<a href="#1132" id="1132">1132</a>
+<a href="#1133" id="1133">1133</a>
+<a href="#1134" id="1134">1134</a>
+<a href="#1135" id="1135">1135</a>
+<a href="#1136" id="1136">1136</a>
+<a href="#1137" id="1137">1137</a>
+<a href="#1138" id="1138">1138</a>
+<a href="#1139" id="1139">1139</a>
+<a href="#1140" id="1140">1140</a>
+<a href="#1141" id="1141">1141</a>
+<a href="#1142" id="1142">1142</a>
+<a href="#1143" id="1143">1143</a>
+<a href="#1144" id="1144">1144</a>
+<a href="#1145" id="1145">1145</a>
+<a href="#1146" id="1146">1146</a>
+<a href="#1147" id="1147">1147</a>
+<a href="#1148" id="1148">1148</a>
+<a href="#1149" id="1149">1149</a>
+<a href="#1150" id="1150">1150</a>
+<a href="#1151" id="1151">1151</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1316,7 +1345,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 };
 <span class="kw">use </span>sc_keystore::LocalKeystore;
 <span class="kw">use </span>sc_network::{
-	config::{FullNetworkConfiguration, SyncMode},
+	config::{FullNetworkConfiguration, ProtocolId, SyncMode},
 	multiaddr::Protocol,
 	service::{
 		traits::{PeerStore, RequestResponseConfig},
@@ -1327,10 +1356,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>sc_network_common::role::Roles;
 <span class="kw">use </span>sc_network_light::light_client_requests::handler::LightClientRequestHandler;
 <span class="kw">use </span>sc_network_sync::{
-	block_relay_protocol::BlockRelayParams, block_request_handler::BlockRequestHandler,
-	engine::SyncingEngine, service::network::NetworkServiceProvider,
+	block_relay_protocol::BlockRelayParams,
+	block_request_handler::BlockRequestHandler,
+	engine::SyncingEngine,
+	service::network::NetworkServiceProvider,
 	state_request_handler::StateRequestHandler,
-	warp_request_handler::RequestHandler <span class="kw">as </span>WarpSyncRequestHandler, SyncingService, WarpSyncConfig,
+	strategy::{PolkadotSyncingStrategy, SyncingConfig, SyncingStrategy},
+	warp_request_handler::RequestHandler <span class="kw">as </span>WarpSyncRequestHandler,
+	SyncingService, WarpSyncConfig,
 };
 <span class="kw">use </span>sc_rpc::{
 	author::AuthorApiServer,
@@ -2051,65 +2084,63 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="doccomment">/// Parameters to pass into `build_network`.
-</span><span class="kw">pub struct </span>BuildNetworkParams&lt;
-	<span class="lifetime">'a</span>,
-	TBl: BlockT,
-	TNet: NetworkBackend&lt;TBl, &lt;TBl <span class="kw">as </span>BlockT&gt;::Hash&gt;,
-	TExPool,
-	TImpQu,
-	TCl,
-&gt; {
+</span><span class="kw">pub struct </span>BuildNetworkParams&lt;<span class="lifetime">'a</span>, Block, Net, TxPool, IQ, Client&gt;
+<span class="kw">where
+	</span>Block: BlockT,
+	Net: NetworkBackend&lt;Block, &lt;Block <span class="kw">as </span>BlockT&gt;::Hash&gt;,
+{
 	<span class="doccomment">/// The service configuration.
 	</span><span class="kw">pub </span>config: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Configuration,
 	<span class="doccomment">/// Full network configuration.
-	</span><span class="kw">pub </span>net_config: FullNetworkConfiguration&lt;TBl, &lt;TBl <span class="kw">as </span>BlockT&gt;::Hash, TNet&gt;,
+	</span><span class="kw">pub </span>net_config: FullNetworkConfiguration&lt;Block, &lt;Block <span class="kw">as </span>BlockT&gt;::Hash, Net&gt;,
 	<span class="doccomment">/// A shared client returned by `new_full_parts`.
-	</span><span class="kw">pub </span>client: Arc&lt;TCl&gt;,
+	</span><span class="kw">pub </span>client: Arc&lt;Client&gt;,
 	<span class="doccomment">/// A shared transaction pool.
-	</span><span class="kw">pub </span>transaction_pool: Arc&lt;TExPool&gt;,
+	</span><span class="kw">pub </span>transaction_pool: Arc&lt;TxPool&gt;,
 	<span class="doccomment">/// A handle for spawning tasks.
 	</span><span class="kw">pub </span>spawn_handle: SpawnTaskHandle,
 	<span class="doccomment">/// An import queue.
-	</span><span class="kw">pub </span>import_queue: TImpQu,
+	</span><span class="kw">pub </span>import_queue: IQ,
 	<span class="doccomment">/// A block announce validator builder.
-	</span><span class="kw">pub </span>block_announce_validator_builder:
-		<span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>FnOnce(Arc&lt;TCl&gt;) -&gt; Box&lt;<span class="kw">dyn </span>BlockAnnounceValidator&lt;TBl&gt; + Send&gt; + Send&gt;&gt;,
-	<span class="doccomment">/// Optional warp sync config.
-	</span><span class="kw">pub </span>warp_sync_config: <span class="prelude-ty">Option</span>&lt;WarpSyncConfig&lt;TBl&gt;&gt;,
+	</span><span class="kw">pub </span>block_announce_validator_builder: <span class="prelude-ty">Option</span>&lt;
+		Box&lt;<span class="kw">dyn </span>FnOnce(Arc&lt;Client&gt;) -&gt; Box&lt;<span class="kw">dyn </span>BlockAnnounceValidator&lt;Block&gt; + Send&gt; + Send&gt;,
+	&gt;,
+	<span class="doccomment">/// Syncing strategy to use in syncing engine.
+	</span><span class="kw">pub </span>syncing_strategy: Box&lt;<span class="kw">dyn </span>SyncingStrategy&lt;Block&gt;&gt;,
 	<span class="doccomment">/// User specified block relay params. If not specified, the default
 	/// block request handler will be used.
-	</span><span class="kw">pub </span>block_relay: <span class="prelude-ty">Option</span>&lt;BlockRelayParams&lt;TBl, TNet&gt;&gt;,
+	</span><span class="kw">pub </span>block_relay: <span class="prelude-ty">Option</span>&lt;BlockRelayParams&lt;Block, Net&gt;&gt;,
 	<span class="doccomment">/// Metrics.
 	</span><span class="kw">pub </span>metrics: NotificationMetrics,
 }
 
 <span class="doccomment">/// Build the network service, the network status sinks and an RPC sender.
-</span><span class="kw">pub fn </span>build_network&lt;TBl, TNet, TExPool, TImpQu, TCl&gt;(
-	params: BuildNetworkParams&lt;TBl, TNet, TExPool, TImpQu, TCl&gt;,
+</span><span class="kw">pub fn </span>build_network&lt;Block, Net, TxPool, IQ, Client&gt;(
+	params: BuildNetworkParams&lt;Block, Net, TxPool, IQ, Client&gt;,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;
 	(
 		Arc&lt;<span class="kw">dyn </span>sc_network::service::traits::NetworkService&gt;,
-		TracingUnboundedSender&lt;sc_rpc::system::Request&lt;TBl&gt;&gt;,
-		sc_network_transactions::TransactionsHandlerController&lt;&lt;TBl <span class="kw">as </span>BlockT&gt;::Hash&gt;,
+		TracingUnboundedSender&lt;sc_rpc::system::Request&lt;Block&gt;&gt;,
+		sc_network_transactions::TransactionsHandlerController&lt;&lt;Block <span class="kw">as </span>BlockT&gt;::Hash&gt;,
 		NetworkStarter,
-		Arc&lt;SyncingService&lt;TBl&gt;&gt;,
+		Arc&lt;SyncingService&lt;Block&gt;&gt;,
 	),
 	Error,
 &gt;
 <span class="kw">where
-	</span>TBl: BlockT,
-	TCl: ProvideRuntimeApi&lt;TBl&gt;
-		+ HeaderMetadata&lt;TBl, Error = sp_blockchain::Error&gt;
-		+ Chain&lt;TBl&gt;
-		+ BlockBackend&lt;TBl&gt;
-		+ BlockIdTo&lt;TBl, Error = sp_blockchain::Error&gt;
-		+ ProofProvider&lt;TBl&gt;
-		+ HeaderBackend&lt;TBl&gt;
-		+ BlockchainEvents&lt;TBl&gt;
+	</span>Block: BlockT,
+	Client: ProvideRuntimeApi&lt;Block&gt;
+		+ HeaderMetadata&lt;Block, Error = sp_blockchain::Error&gt;
+		+ Chain&lt;Block&gt;
+		+ BlockBackend&lt;Block&gt;
+		+ BlockIdTo&lt;Block, Error = sp_blockchain::Error&gt;
+		+ ProofProvider&lt;Block&gt;
+		+ HeaderBackend&lt;Block&gt;
+		+ BlockchainEvents&lt;Block&gt;
 		+ <span class="lifetime">'static</span>,
-	TExPool: TransactionPool&lt;Block = TBl, Hash = &lt;TBl <span class="kw">as </span>BlockT&gt;::Hash&gt; + <span class="lifetime">'static</span>,
-	TImpQu: ImportQueue&lt;TBl&gt; + <span class="lifetime">'static</span>,
-	TNet: NetworkBackend&lt;TBl, &lt;TBl <span class="kw">as </span>BlockT&gt;::Hash&gt;,
+	TxPool: TransactionPool&lt;Block = Block, Hash = &lt;Block <span class="kw">as </span>BlockT&gt;::Hash&gt; + <span class="lifetime">'static</span>,
+	IQ: ImportQueue&lt;Block&gt; + <span class="lifetime">'static</span>,
+	Net: NetworkBackend&lt;Block, &lt;Block <span class="kw">as </span>BlockT&gt;::Hash&gt;,
 {
 	<span class="kw">let </span>BuildNetworkParams {
 		config,
@@ -2119,30 +2150,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		spawn_handle,
 		import_queue,
 		block_announce_validator_builder,
-		warp_sync_config,
+		syncing_strategy,
 		block_relay,
 		metrics,
 	} = params;
 
-	<span class="kw">if </span>warp_sync_config.is_none() &amp;&amp; config.network.sync_mode.is_warp() {
-		<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Warp sync enabled, but no warp sync provider configured."</span>.into())
-	}
-
-	<span class="kw">if </span>client.requires_full_sync() {
-		<span class="kw">match </span>config.network.sync_mode {
-			SyncMode::LightState { .. } =&gt;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Fast sync doesn't work for archive nodes"</span>.into()),
-			SyncMode::Warp =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Warp sync doesn't work for archive nodes"</span>.into()),
-			SyncMode::Full =&gt; {},
-		}
-	}
-
 	<span class="kw">let </span>protocol_id = config.protocol_id();
-	<span class="kw">let </span>genesis_hash = client
-		.block_hash(<span class="number">0u32</span>.into())
-		.ok()
-		.flatten()
-		.expect(<span class="string">"Genesis block exists; qed"</span>);
+	<span class="kw">let </span>genesis_hash = client.info().genesis_hash;
 
 	<span class="kw">let </span>block_announce_validator = <span class="kw">if let </span><span class="prelude-val">Some</span>(f) = block_announce_validator_builder {
 		f(client.clone())
@@ -2156,7 +2170,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="prelude-val">None </span>=&gt; {
 			<span class="comment">// Custom protocol was not specified, use the default block handler.
 			// Allow both outgoing and incoming requests.
-			</span><span class="kw">let </span>params = BlockRequestHandler::new::&lt;TNet&gt;(
+			</span><span class="kw">let </span>params = BlockRequestHandler::new::&lt;Net&gt;(
 				chain_sync_network_handle.clone(),
 				<span class="kw-2">&amp;</span>protocol_id,
 				config.chain_spec.fork_id(),
@@ -2171,42 +2185,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		block_server.run().<span class="kw">await</span>;
 	});
 
-	<span class="kw">let </span>(state_request_protocol_config, state_request_protocol_name) = {
-		<span class="kw">let </span>num_peer_hint = net_config.network_config.default_peers_set_num_full <span class="kw">as </span>usize +
-			net_config.network_config.default_peers_set.reserved_nodes.len();
-		<span class="comment">// Allow both outgoing and incoming requests.
-		</span><span class="kw">let </span>(handler, protocol_config) = StateRequestHandler::new::&lt;TNet&gt;(
-			<span class="kw-2">&amp;</span>protocol_id,
-			config.chain_spec.fork_id(),
-			client.clone(),
-			num_peer_hint,
-		);
-		<span class="kw">let </span>config_name = protocol_config.protocol_name().clone();
-
-		spawn_handle.spawn(<span class="string">"state-request-handler"</span>, <span class="prelude-val">Some</span>(<span class="string">"networking"</span>), handler.run());
-		(protocol_config, config_name)
-	};
-
-	<span class="kw">let </span>(warp_sync_protocol_config, warp_request_protocol_name) = <span class="kw">match </span>warp_sync_config.as_ref() {
-		<span class="prelude-val">Some</span>(WarpSyncConfig::WithProvider(warp_with_provider)) =&gt; {
-			<span class="comment">// Allow both outgoing and incoming requests.
-			</span><span class="kw">let </span>(handler, protocol_config) = WarpSyncRequestHandler::new::&lt;<span class="kw">_</span>, TNet&gt;(
-				protocol_id.clone(),
-				genesis_hash,
-				config.chain_spec.fork_id(),
-				warp_with_provider.clone(),
-			);
-			<span class="kw">let </span>config_name = protocol_config.protocol_name().clone();
-
-			spawn_handle.spawn(<span class="string">"warp-sync-request-handler"</span>, <span class="prelude-val">Some</span>(<span class="string">"networking"</span>), handler.run());
-			(<span class="prelude-val">Some</span>(protocol_config), <span class="prelude-val">Some</span>(config_name))
-		},
-		<span class="kw">_ </span>=&gt; (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
-	};
-
 	<span class="kw">let </span>light_client_request_protocol_config = {
 		<span class="comment">// Allow both outgoing and incoming requests.
-		</span><span class="kw">let </span>(handler, protocol_config) = LightClientRequestHandler::new::&lt;TNet&gt;(
+		</span><span class="kw">let </span>(handler, protocol_config) = LightClientRequestHandler::new::&lt;Net&gt;(
 			<span class="kw-2">&amp;</span>protocol_id,
 			config.chain_spec.fork_id(),
 			client.clone(),
@@ -2217,15 +2198,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="comment">// install request handlers to `FullNetworkConfiguration`
 	</span>net_config.add_request_response_protocol(block_request_protocol_config);
-	net_config.add_request_response_protocol(state_request_protocol_config);
 	net_config.add_request_response_protocol(light_client_request_protocol_config);
 
-	<span class="kw">if let </span><span class="prelude-val">Some</span>(config) = warp_sync_protocol_config {
-		net_config.add_request_response_protocol(config);
-	}
-
 	<span class="kw">let </span>bitswap_config = config.network.ipfs_server.then(|| {
-		<span class="kw">let </span>(handler, config) = TNet::bitswap_server(client.clone());
+		<span class="kw">let </span>(handler, config) = Net::bitswap_server(client.clone());
 		spawn_handle.spawn(<span class="string">"bitswap-request-handler"</span>, <span class="prelude-val">Some</span>(<span class="string">"networking"</span>), handler);
 
 		config
@@ -2234,7 +2210,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="comment">// create transactions protocol and add it to the list of supported protocols of
 	</span><span class="kw">let </span>peer_store_handle = net_config.peer_store_handle();
 	<span class="kw">let </span>(transactions_handler_proto, transactions_config) =
-		sc_network_transactions::TransactionsHandlerPrototype::new::&lt;<span class="kw">_</span>, TBl, TNet&gt;(
+		sc_network_transactions::TransactionsHandlerPrototype::new::&lt;<span class="kw">_</span>, Block, Net&gt;(
 			protocol_id.clone(),
 			genesis_hash,
 			config.chain_spec.fork_id(),
@@ -2257,19 +2233,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		protocol_id.clone(),
 		<span class="kw-2">&amp;</span>config.chain_spec.fork_id().map(ToOwned::to_owned),
 		block_announce_validator,
-		warp_sync_config,
+		syncing_strategy,
 		chain_sync_network_handle,
 		import_queue.service(),
 		block_downloader,
-		state_request_protocol_name,
-		warp_request_protocol_name,
 		Arc::clone(<span class="kw-2">&amp;</span>peer_store_handle),
 	)<span class="question-mark">?</span>;
 	<span class="kw">let </span>sync_service_import_queue = sync_service.clone();
 	<span class="kw">let </span>sync_service = Arc::new(sync_service);
 
-	<span class="kw">let </span>genesis_hash = client.hash(Zero::zero()).ok().flatten().expect(<span class="string">"Genesis block exists; qed"</span>);
-	<span class="kw">let </span>network_params = sc_network::config::Params::&lt;TBl, &lt;TBl <span class="kw">as </span>BlockT&gt;::Hash, TNet&gt; {
+	<span class="kw">let </span>network_params = sc_network::config::Params::&lt;Block, &lt;Block <span class="kw">as </span>BlockT&gt;::Hash, Net&gt; {
 		role: config.role,
 		executor: {
 			<span class="kw">let </span>spawn_handle = Clone::clone(<span class="kw-2">&amp;</span>spawn_handle);
@@ -2279,7 +2252,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		},
 		network_config: net_config,
 		genesis_hash,
-		protocol_id: protocol_id.clone(),
+		protocol_id,
 		fork_id: config.chain_spec.fork_id().map(ToOwned::to_owned),
 		metrics_registry: config.prometheus_config.as_ref().map(|config| config.registry.clone()),
 		block_announce_config,
@@ -2288,7 +2261,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	};
 
 	<span class="kw">let </span>has_bootnodes = !network_params.network_config.network_config.boot_nodes.is_empty();
-	<span class="kw">let </span>network_mut = TNet::new(network_params)<span class="question-mark">?</span>;
+	<span class="kw">let </span>network_mut = Net::new(network_params)<span class="question-mark">?</span>;
 	<span class="kw">let </span>network = network_mut.network_service().clone();
 
 	<span class="kw">let </span>(tx_handler, tx_handler_controller) = transactions_handler_proto.build(
@@ -2315,7 +2288,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	spawn_handle.spawn(
 		<span class="string">"system-rpc-handler"</span>,
 		<span class="prelude-val">Some</span>(<span class="string">"networking"</span>),
-		build_system_rpc_future::&lt;<span class="kw">_</span>, <span class="kw">_</span>, &lt;TBl <span class="kw">as </span>BlockT&gt;::Hash&gt;(
+		build_system_rpc_future::&lt;<span class="kw">_</span>, <span class="kw">_</span>, &lt;Block <span class="kw">as </span>BlockT&gt;::Hash&gt;(
 			config.role,
 			network_mut.network_service(),
 			sync_service.clone(),
@@ -2325,7 +2298,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		),
 	);
 
-	<span class="kw">let </span>future = build_network_future::&lt;<span class="kw">_</span>, <span class="kw">_</span>, &lt;TBl <span class="kw">as </span>BlockT&gt;::Hash, <span class="kw">_</span>&gt;(
+	<span class="kw">let </span>future = build_network_future::&lt;<span class="kw">_</span>, <span class="kw">_</span>, &lt;Block <span class="kw">as </span>BlockT&gt;::Hash, <span class="kw">_</span>&gt;(
 		network_mut,
 		client,
 		sync_service.clone(),
@@ -2375,6 +2348,91 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		NetworkStarter(network_start_tx),
 		sync_service.clone(),
 	))
+}
+
+<span class="doccomment">/// Build standard polkadot syncing strategy
+</span><span class="kw">pub fn </span>build_polkadot_syncing_strategy&lt;Block, Client, Net&gt;(
+	protocol_id: ProtocolId,
+	fork_id: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
+	net_config: <span class="kw-2">&amp;mut </span>FullNetworkConfiguration&lt;Block, &lt;Block <span class="kw">as </span>BlockT&gt;::Hash, Net&gt;,
+	warp_sync_config: <span class="prelude-ty">Option</span>&lt;WarpSyncConfig&lt;Block&gt;&gt;,
+	client: Arc&lt;Client&gt;,
+	spawn_handle: <span class="kw-2">&amp;</span>SpawnTaskHandle,
+	metrics_registry: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Registry&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;Box&lt;<span class="kw">dyn </span>SyncingStrategy&lt;Block&gt;&gt;, Error&gt;
+<span class="kw">where
+	</span>Block: BlockT,
+	Client: HeaderBackend&lt;Block&gt;
+		+ BlockBackend&lt;Block&gt;
+		+ HeaderMetadata&lt;Block, Error = sp_blockchain::Error&gt;
+		+ ProofProvider&lt;Block&gt;
+		+ Send
+		+ Sync
+		+ <span class="lifetime">'static</span>,
+
+	Net: NetworkBackend&lt;Block, &lt;Block <span class="kw">as </span>BlockT&gt;::Hash&gt;,
+{
+	<span class="kw">if </span>warp_sync_config.is_none() &amp;&amp; net_config.network_config.sync_mode.is_warp() {
+		<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Warp sync enabled, but no warp sync provider configured."</span>.into())
+	}
+
+	<span class="kw">if </span>client.requires_full_sync() {
+		<span class="kw">match </span>net_config.network_config.sync_mode {
+			SyncMode::LightState { .. } =&gt;
+				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Fast sync doesn't work for archive nodes"</span>.into()),
+			SyncMode::Warp =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Warp sync doesn't work for archive nodes"</span>.into()),
+			SyncMode::Full =&gt; {},
+		}
+	}
+
+	<span class="kw">let </span>genesis_hash = client.info().genesis_hash;
+
+	<span class="kw">let </span>(state_request_protocol_config, state_request_protocol_name) = {
+		<span class="kw">let </span>num_peer_hint = net_config.network_config.default_peers_set_num_full <span class="kw">as </span>usize +
+			net_config.network_config.default_peers_set.reserved_nodes.len();
+		<span class="comment">// Allow both outgoing and incoming requests.
+		</span><span class="kw">let </span>(handler, protocol_config) =
+			StateRequestHandler::new::&lt;Net&gt;(<span class="kw-2">&amp;</span>protocol_id, fork_id, client.clone(), num_peer_hint);
+		<span class="kw">let </span>config_name = protocol_config.protocol_name().clone();
+
+		spawn_handle.spawn(<span class="string">"state-request-handler"</span>, <span class="prelude-val">Some</span>(<span class="string">"networking"</span>), handler.run());
+		(protocol_config, config_name)
+	};
+	net_config.add_request_response_protocol(state_request_protocol_config);
+
+	<span class="kw">let </span>(warp_sync_protocol_config, warp_sync_protocol_name) = <span class="kw">match </span>warp_sync_config.as_ref() {
+		<span class="prelude-val">Some</span>(WarpSyncConfig::WithProvider(warp_with_provider)) =&gt; {
+			<span class="comment">// Allow both outgoing and incoming requests.
+			</span><span class="kw">let </span>(handler, protocol_config) = WarpSyncRequestHandler::new::&lt;<span class="kw">_</span>, Net&gt;(
+				protocol_id,
+				genesis_hash,
+				fork_id,
+				warp_with_provider.clone(),
+			);
+			<span class="kw">let </span>config_name = protocol_config.protocol_name().clone();
+
+			spawn_handle.spawn(<span class="string">"warp-sync-request-handler"</span>, <span class="prelude-val">Some</span>(<span class="string">"networking"</span>), handler.run());
+			(<span class="prelude-val">Some</span>(protocol_config), <span class="prelude-val">Some</span>(config_name))
+		},
+		<span class="kw">_ </span>=&gt; (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+	};
+	<span class="kw">if let </span><span class="prelude-val">Some</span>(config) = warp_sync_protocol_config {
+		net_config.add_request_response_protocol(config);
+	}
+
+	<span class="kw">let </span>syncing_config = SyncingConfig {
+		mode: net_config.network_config.sync_mode,
+		max_parallel_downloads: net_config.network_config.max_parallel_downloads,
+		max_blocks_per_request: net_config.network_config.max_blocks_per_request,
+		metrics_registry: metrics_registry.cloned(),
+		state_request_protocol_name,
+	};
+	<span class="prelude-val">Ok</span>(Box::new(PolkadotSyncingStrategy::new(
+		syncing_config,
+		client,
+		warp_sync_config,
+		warp_sync_protocol_name,
+	)<span class="question-mark">?</span>))
 }
 
 <span class="doccomment">/// Object used to start the network.

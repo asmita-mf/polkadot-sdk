@@ -2459,6 +2459,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#2307" id="2307">2307</a>
 <a href="#2308" id="2308">2308</a>
 <a href="#2309" id="2309">2309</a>
+<a href="#2310" id="2310">2310</a>
+<a href="#2311" id="2311">2311</a>
+<a href="#2312" id="2312">2312</a>
+<a href="#2313" id="2313">2313</a>
+<a href="#2314" id="2314">2314</a>
+<a href="#2315" id="2315">2315</a>
+<a href="#2316" id="2316">2316</a>
+<a href="#2317" id="2317">2317</a>
+<a href="#2318" id="2318">2318</a>
+<a href="#2319" id="2319">2319</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2508,6 +2518,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>prometheus_endpoint::{register, Gauge, PrometheusError, Registry, U64};
 <span class="kw">use </span>sc_client_api::{blockchain::BlockGap, BlockBackend, ProofProvider};
 <span class="kw">use </span>sc_consensus::{BlockImportError, BlockImportStatus, IncomingBlock};
+<span class="kw">use </span>sc_network::ProtocolName;
 <span class="kw">use </span>sc_network_common::sync::message::{
 	BlockAnnounce, BlockAttributes, BlockData, BlockRequest, BlockResponse, Direction, FromBlock,
 };
@@ -2779,6 +2790,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span>max_parallel_downloads: u32,
 	<span class="doccomment">/// Maximum blocks per request.
 	</span>max_blocks_per_request: u32,
+	<span class="doccomment">/// Protocol name used to send out state requests
+	</span>state_request_protocol_name: ProtocolName,
 	<span class="doccomment">/// Total number of downloaded blocks.
 	</span>downloaded_blocks: usize,
 	<span class="doccomment">/// State sync in progress, if any.
@@ -3341,7 +3354,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="self">self</span>.actions.extend(justification_requests);
 
 		<span class="kw">let </span>state_request = <span class="self">self</span>.state_request().into_iter().map(|(peer_id, request)| {
-			SyncingAction::SendStateRequest { peer_id, key: StrategyKey::ChainSync, request }
+			SyncingAction::SendStateRequest {
+				peer_id,
+				key: StrategyKey::ChainSync,
+				protocol_name: <span class="self">self</span>.state_request_protocol_name.clone(),
+				request,
+			}
 		});
 		<span class="self">self</span>.actions.extend(state_request);
 
@@ -3366,6 +3384,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		client: Arc&lt;Client&gt;,
 		max_parallel_downloads: u32,
 		max_blocks_per_request: u32,
+		state_request_protocol_name: ProtocolName,
 		metrics_registry: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Registry&gt;,
 		initial_peers: <span class="kw">impl </span>Iterator&lt;Item = (PeerId, B::Hash, NumberFor&lt;B&gt;)&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ClientError&gt; {
@@ -3384,6 +3403,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			allowed_requests: Default::default(),
 			max_parallel_downloads,
 			max_blocks_per_request,
+			state_request_protocol_name,
 			downloaded_blocks: <span class="number">0</span>,
 			state_sync: <span class="prelude-val">None</span>,
 			import_existing: <span class="bool-val">false</span>,

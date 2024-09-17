@@ -1720,6 +1720,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1568" id="1568">1568</a>
 <a href="#1569" id="1569">1569</a>
 <a href="#1570" id="1570">1570</a>
+<a href="#1571" id="1571">1571</a>
+<a href="#1572" id="1572">1572</a>
+<a href="#1573" id="1573">1573</a>
+<a href="#1574" id="1574">1574</a>
+<a href="#1575" id="1575">1575</a>
+<a href="#1576" id="1576">1576</a>
+<a href="#1577" id="1577">1577</a>
+<a href="#1578" id="1578">1578</a>
+<a href="#1579" id="1579">1579</a>
+<a href="#1580" id="1580">1580</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -1806,7 +1816,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>prometheus_endpoint::Registry;
 <span class="attr">#[cfg(feature = <span class="string">"full-node"</span>)]
 </span><span class="kw">use </span>sc_service::KeystoreContainer;
-<span class="kw">use </span>sc_service::{RpcHandlers, SpawnTaskHandle};
+<span class="kw">use </span>sc_service::{build_polkadot_syncing_strategy, RpcHandlers, SpawnTaskHandle};
 <span class="kw">use </span>sc_telemetry::TelemetryWorker;
 <span class="attr">#[cfg(feature = <span class="string">"full-node"</span>)]
 </span><span class="kw">use </span>sc_telemetry::{Telemetry, TelemetryWorkerHandle};
@@ -2750,6 +2760,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		})
 	};
 
+	<span class="kw">let </span>syncing_strategy = build_polkadot_syncing_strategy(
+		config.protocol_id(),
+		config.chain_spec.fork_id(),
+		<span class="kw-2">&amp;mut </span>net_config,
+		<span class="prelude-val">Some</span>(WarpSyncConfig::WithProvider(warp_sync)),
+		client.clone(),
+		<span class="kw-2">&amp;</span>task_manager.spawn_handle(),
+		config.prometheus_config.as_ref().map(|config| <span class="kw-2">&amp;</span>config.registry),
+	)<span class="question-mark">?</span>;
+
 	<span class="kw">let </span>(network, system_rpc_tx, tx_handler_controller, network_starter, sync_service) =
 		sc_service::build_network(sc_service::BuildNetworkParams {
 			config: <span class="kw-2">&amp;</span>config,
@@ -2759,7 +2779,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			spawn_handle: task_manager.spawn_handle(),
 			import_queue,
 			block_announce_validator_builder: <span class="prelude-val">None</span>,
-			warp_sync_config: <span class="prelude-val">Some</span>(WarpSyncConfig::WithProvider(warp_sync)),
+			syncing_strategy,
 			block_relay: <span class="prelude-val">None</span>,
 			metrics,
 		})<span class="question-mark">?</span>;
