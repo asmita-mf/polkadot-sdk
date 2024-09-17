@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726568630643,
+  "lastUpdate": 1726584906625,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -20187,6 +20187,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 11.449229624666668,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "git@kchr.de",
+            "name": "Bastian Köcher",
+            "username": "bkchr"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9cdbdc5a73f3c2d1d9afdf266799f249c3c04c2d",
+          "message": "pallet-treasury: Improve `remove_approval` benchmark (#5713)\n\nWhen `SpendOrigin` doesn't return any `succesful_origin`, it doesn't\nmean that `RejectOrigin` will do the same. Thus, this pr fixes a\npotential wrong benchmarked weight for when `SpendOrigin` is set to e.g.\n`NeverOrigin`.",
+          "timestamp": "2024-09-17T13:21:50Z",
+          "tree_id": "92598a2a70299ea74e95cc6fe1ca15af3e5a84a4",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9cdbdc5a73f3c2d1d9afdf266799f249c3c04c2d"
+        },
+        "date": 1726584876564,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23611162263333335,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.4615925086,
             "unit": "seconds"
           }
         ]
