@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726518720938,
+  "lastUpdate": 1726568743086,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -10775,6 +10775,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.04473792980599998,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "nazar@mokrynskyi.com",
+            "name": "Nazar Mokrynskyi",
+            "username": "nazar-pc"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "43cd6fd4370d3043272f64a79aeb9e6dc0edd13f",
+          "message": "Syncing strategy refactoring (part 2) (#5666)\n\n# Description\n\nFollow-up to https://github.com/paritytech/polkadot-sdk/pull/5469 and\nmostly covering https://github.com/paritytech/polkadot-sdk/issues/5333.\n\nThe primary change here is that syncing strategy is no longer created\ninside of syncing engine, instead syncing strategy is an argument of\nsyncing engine, more specifically it is an argument to `build_network`\nthat most downstream users will use. This also extracts addition of\nrequest-response protocols outside of network construction, making sure\nthey are physically not present when they don't need to be (imagine\nsyncing strategy that uses none of Substrate's protocols in its\nimplementation for example).\n\nThis technically allows to completely replace syncing strategy with\nwhatever strategy chain might need.\n\nThere will be at least one follow-up PR that will simplify\n`SyncingStrategy` trait and other public interfaces to remove mentions\nof block/state/warp sync requests, replacing them with generic APIs,\nsuch that strategies where warp sync is not applicable don't have to\nprovide dummy method implementations, etc.\n\n## Integration\n\nDownstream projects will have to write a bit of boilerplate calling\n`build_polkadot_syncing_strategy` function to create previously default\nsyncing strategy.\n\n## Review Notes\n\nPlease review PR through individual commits rather than the final diff,\nit will be easier that way. The changes are mostly just moving code\naround one step at a time.\n\n# Checklist\n\n* [x] My PR includes a detailed description as outlined in the\n\"Description\" and its two subsections above.\n* [x] My PR follows the [labeling requirements](\n\nhttps://github.com/paritytech/polkadot-sdk/blob/master/docs/contributor/CONTRIBUTING.md#Process\n) of this project (at minimum one label for `T` required)\n* External contributors: ask maintainers to put the right label on your\nPR.\n* [x] I have made corresponding changes to the documentation (if\napplicable)",
+          "timestamp": "2024-09-17T09:08:50Z",
+          "tree_id": "7de8f58a2e9edc8b33e7b2bc22d661a1433c69fe",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/43cd6fd4370d3043272f64a79aeb9e6dc0edd13f"
+        },
+        "date": 1726568712072,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.93599999999994,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04466494008799995,
+            "unit": "seconds"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.036844762816000014,
             "unit": "seconds"
           }
         ]
