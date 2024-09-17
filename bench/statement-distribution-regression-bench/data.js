@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726568743086,
+  "lastUpdate": 1726585017557,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -10819,6 +10819,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "statement-distribution",
             "value": 0.036844762816000014,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "git@kchr.de",
+            "name": "Bastian Köcher",
+            "username": "bkchr"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9cdbdc5a73f3c2d1d9afdf266799f249c3c04c2d",
+          "message": "pallet-treasury: Improve `remove_approval` benchmark (#5713)\n\nWhen `SpendOrigin` doesn't return any `succesful_origin`, it doesn't\nmean that `RejectOrigin` will do the same. Thus, this pr fixes a\npotential wrong benchmarked weight for when `SpendOrigin` is set to e.g.\n`NeverOrigin`.",
+          "timestamp": "2024-09-17T13:21:50Z",
+          "tree_id": "92598a2a70299ea74e95cc6fe1ca15af3e5a84a4",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9cdbdc5a73f3c2d1d9afdf266799f249c3c04c2d"
+        },
+        "date": 1726584987464,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.93599999999994,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04448659196199995,
+            "unit": "seconds"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.03708514863399999,
             "unit": "seconds"
           }
         ]
