@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726568705238,
+  "lastUpdate": 1726584980405,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -17838,6 +17838,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-voting",
             "value": 2.6904599273499916,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "git@kchr.de",
+            "name": "Bastian Köcher",
+            "username": "bkchr"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9cdbdc5a73f3c2d1d9afdf266799f249c3c04c2d",
+          "message": "pallet-treasury: Improve `remove_approval` benchmark (#5713)\n\nWhen `SpendOrigin` doesn't return any `succesful_origin`, it doesn't\nmean that `RejectOrigin` will do the same. Thus, this pr fixes a\npotential wrong benchmarked weight for when `SpendOrigin` is set to e.g.\n`NeverOrigin`.",
+          "timestamp": "2024-09-17T13:21:50Z",
+          "tree_id": "92598a2a70299ea74e95cc6fe1ca15af3e5a84a4",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9cdbdc5a73f3c2d1d9afdf266799f249c3c04c2d"
+        },
+        "date": 1726584950539,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63750.219999999994,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52937.8,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.724146431250003,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.120750568793373,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.709596177430011,
             "unit": "seconds"
           }
         ]
