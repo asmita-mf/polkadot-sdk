@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726568667844,
+  "lastUpdate": 1726584943321,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25351,6 +25351,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-distribution",
             "value": 0.016517556360000008,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "git@kchr.de",
+            "name": "Bastian Köcher",
+            "username": "bkchr"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9cdbdc5a73f3c2d1d9afdf266799f249c3c04c2d",
+          "message": "pallet-treasury: Improve `remove_approval` benchmark (#5713)\n\nWhen `SpendOrigin` doesn't return any `succesful_origin`, it doesn't\nmean that `RejectOrigin` will do the same. Thus, this pr fixes a\npotential wrong benchmarked weight for when `SpendOrigin` is set to e.g.\n`NeverOrigin`.",
+          "timestamp": "2024-09-17T13:21:50Z",
+          "tree_id": "92598a2a70299ea74e95cc6fe1ca15af3e5a84a4",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9cdbdc5a73f3c2d1d9afdf266799f249c3c04c2d"
+        },
+        "date": 1726584913504,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.1808757650466667,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.01622275631333334,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02146905692666666,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.009037463366666755,
             "unit": "seconds"
           }
         ]
