@@ -502,6 +502,21 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#350" id="350">350</a>
 <a href="#351" id="351">351</a>
 <a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
+<a href="#359" id="359">359</a>
+<a href="#360" id="360">360</a>
+<a href="#361" id="361">361</a>
+<a href="#362" id="362">362</a>
+<a href="#363" id="363">363</a>
+<a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -637,16 +652,31 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="attr">#[benchmark]
 	</span><span class="kw">fn </span>remove_approval() -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
-		<span class="kw">let </span>origin =
-			T::SpendOrigin::try_successful_origin().map_err(|<span class="kw">_</span>| BenchmarkError::Weightless)<span class="question-mark">?</span>;
-		<span class="kw">let </span>(<span class="kw">_</span>, value, beneficiary_lookup) = setup_proposal::&lt;T, <span class="kw">_</span>&gt;(SEED);
-		Treasury::&lt;T, <span class="kw">_</span>&gt;::spend_local(origin, value, beneficiary_lookup)<span class="question-mark">?</span>;
-		<span class="kw">let </span>proposal_id = ProposalCount::&lt;T, <span class="kw">_</span>&gt;::get() - <span class="number">1</span>;
+		<span class="kw">let </span>(spend_exists, proposal_id) =
+			<span class="kw">if let </span><span class="prelude-val">Ok</span>(origin) = T::SpendOrigin::try_successful_origin() {
+				<span class="kw">let </span>(<span class="kw">_</span>, value, beneficiary_lookup) = setup_proposal::&lt;T, <span class="kw">_</span>&gt;(SEED);
+				Treasury::&lt;T, <span class="kw">_</span>&gt;::spend_local(origin, value, beneficiary_lookup)<span class="question-mark">?</span>;
+				<span class="kw">let </span>proposal_id = ProposalCount::&lt;T, <span class="kw">_</span>&gt;::get() - <span class="number">1</span>;
+
+				(<span class="bool-val">true</span>, proposal_id)
+			} <span class="kw">else </span>{
+				(<span class="bool-val">false</span>, <span class="number">0</span>)
+			};
+
 		<span class="kw">let </span>reject_origin =
 			T::RejectOrigin::try_successful_origin().map_err(|<span class="kw">_</span>| BenchmarkError::Weightless)<span class="question-mark">?</span>;
 
-		<span class="attr">#[extrinsic_call]
-		</span><span class="kw">_</span>(reject_origin <span class="kw">as </span>T::RuntimeOrigin, proposal_id);
+		<span class="attr">#[block]
+		</span>{
+			<span class="kw">let </span>res =
+				Treasury::&lt;T, <span class="kw">_</span>&gt;::remove_approval(reject_origin <span class="kw">as </span>T::RuntimeOrigin, proposal_id);
+
+			<span class="kw">if </span>spend_exists {
+				<span class="macro">assert_ok!</span>(res);
+			} <span class="kw">else </span>{
+				<span class="macro">assert_err!</span>(res, Error::&lt;T, <span class="kw">_</span>&gt;::ProposalNotApproved);
+			}
+		}
 
 		<span class="prelude-val">Ok</span>(())
 	}
