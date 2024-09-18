@@ -453,6 +453,65 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#301" id="301">301</a>
 <a href="#302" id="302">302</a>
 <a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
+<a href="#359" id="359">359</a>
+<a href="#360" id="360">360</a>
+<a href="#361" id="361">361</a>
+<a href="#362" id="362">362</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -472,13 +531,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="doccomment">//! Implementation of the `derive_impl` attribute macro.
 
-</span><span class="kw">use </span>derive_syn_parse::Parse;
-<span class="kw">use </span>macro_magic::mm_core::ForeignPath;
+</span><span class="kw">use </span>macro_magic::mm_core::ForeignPath;
 <span class="kw">use </span>proc_macro2::TokenStream <span class="kw">as </span>TokenStream2;
 <span class="kw">use </span>quote::{quote, ToTokens};
 <span class="kw">use </span>std::collections::HashSet;
 <span class="kw">use </span>syn::{
-	parse2, parse_quote, spanned::Spanned, token, Ident, ImplItem, ItemImpl, Path, <span class="prelude-ty">Result</span>, Token,
+	parse2, parse_quote, spanned::Spanned, token, AngleBracketedGenericArguments, Ident, ImplItem,
+	ItemImpl, Path, PathArguments, PathSegment, <span class="prelude-ty">Result</span>, Token,
 };
 
 <span class="kw">mod </span>keyword {
@@ -511,16 +570,58 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="bool-val">false
 	</span>})
 }
-
-<span class="attr">#[derive(Parse, Debug)]
-</span><span class="kw">pub struct </span>DeriveImplAttrArgs {
+<span class="kw">pub struct </span>DeriveImplAttrArgs {
 	<span class="kw">pub </span>default_impl_path: Path,
+	<span class="kw">pub </span>generics: <span class="prelude-ty">Option</span>&lt;AngleBracketedGenericArguments&gt;,
 	_as: <span class="prelude-ty">Option</span>&lt;<span class="macro">Token!</span>[<span class="kw">as</span>]&gt;,
-	<span class="attr">#[parse_if(_as.is_some())]
-	</span><span class="kw">pub </span>disambiguation_path: <span class="prelude-ty">Option</span>&lt;Path&gt;,
+	<span class="kw">pub </span>disambiguation_path: <span class="prelude-ty">Option</span>&lt;Path&gt;,
 	_comma: <span class="prelude-ty">Option</span>&lt;<span class="macro">Token!</span>[,]&gt;,
-	<span class="attr">#[parse_if(_comma.is_some())]
-	</span><span class="kw">pub </span>no_aggregated_types: <span class="prelude-ty">Option</span>&lt;keyword::no_aggregated_types&gt;,
+	<span class="kw">pub </span>no_aggregated_types: <span class="prelude-ty">Option</span>&lt;keyword::no_aggregated_types&gt;,
+}
+
+<span class="kw">impl </span>syn::parse::Parse <span class="kw">for </span>DeriveImplAttrArgs {
+	<span class="kw">fn </span>parse(input: syn::parse::ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+		<span class="kw">let </span><span class="kw-2">mut </span>default_impl_path: Path = input.parse()<span class="question-mark">?</span>;
+		<span class="comment">// Extract the generics if any
+		</span><span class="kw">let </span>(default_impl_path, generics) = <span class="kw">match </span>default_impl_path.clone().segments.last() {
+			<span class="prelude-val">Some</span>(PathSegment { ident, arguments: PathArguments::AngleBracketed(args) }) =&gt; {
+				default_impl_path.segments.pop();
+				default_impl_path
+					.segments
+					.push(PathSegment { ident: ident.clone(), arguments: PathArguments::None });
+				(default_impl_path, <span class="prelude-val">Some</span>(args.clone()))
+			},
+			<span class="prelude-val">Some</span>(PathSegment { arguments: PathArguments::None, .. }) =&gt; (default_impl_path, <span class="prelude-val">None</span>),
+			<span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(default_impl_path.span(), <span class="string">"Invalid default impl path"</span>)),
+		};
+
+		<span class="kw">let </span>lookahead = input.lookahead1();
+		<span class="kw">let </span>(_as, disambiguation_path) = <span class="kw">if </span>lookahead.peek(<span class="macro">Token!</span>[<span class="kw">as</span>]) {
+			<span class="kw">let </span>_as: <span class="macro">Token!</span>[<span class="kw">as</span>] = input.parse()<span class="question-mark">?</span>;
+			<span class="kw">let </span>disambiguation_path: Path = input.parse()<span class="question-mark">?</span>;
+			(<span class="prelude-val">Some</span>(_as), <span class="prelude-val">Some</span>(disambiguation_path))
+		} <span class="kw">else </span>{
+			(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
+		};
+
+		<span class="kw">let </span>lookahead = input.lookahead1();
+		<span class="kw">let </span>(_comma, no_aggregated_types) = <span class="kw">if </span>lookahead.peek(<span class="macro">Token!</span>[,]) {
+			<span class="kw">let </span>_comma: <span class="macro">Token!</span>[,] = input.parse()<span class="question-mark">?</span>;
+			<span class="kw">let </span>no_aggregated_types: keyword::no_aggregated_types = input.parse()<span class="question-mark">?</span>;
+			(<span class="prelude-val">Some</span>(_comma), <span class="prelude-val">Some</span>(no_aggregated_types))
+		} <span class="kw">else </span>{
+			(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
+		};
+
+		<span class="prelude-val">Ok</span>(DeriveImplAttrArgs {
+			default_impl_path,
+			generics,
+			_as,
+			disambiguation_path,
+			_comma,
+			no_aggregated_types,
+		})
+	}
 }
 
 <span class="kw">impl </span>ForeignPath <span class="kw">for </span>DeriveImplAttrArgs {
@@ -532,6 +633,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">impl </span>ToTokens <span class="kw">for </span>DeriveImplAttrArgs {
 	<span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream2) {
 		tokens.extend(<span class="self">self</span>.default_impl_path.to_token_stream());
+		tokens.extend(<span class="self">self</span>.generics.to_token_stream());
 		tokens.extend(<span class="self">self</span>._as.to_token_stream());
 		tokens.extend(<span class="self">self</span>.disambiguation_path.to_token_stream());
 		tokens.extend(<span class="self">self</span>._comma.to_token_stream());
@@ -572,6 +674,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	default_impl_path: Path,
 	disambiguation_path: Path,
 	inject_runtime_types: bool,
+	generics: <span class="prelude-ty">Option</span>&lt;AngleBracketedGenericArguments&gt;,
 ) -&gt; ItemImpl {
 	<span class="kw">let </span>(existing_local_keys, existing_unsupported_items): (HashSet&lt;ImplItem&gt;, HashSet&lt;ImplItem&gt;) =
 		local_impl
@@ -610,7 +713,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="comment">// modify and insert uncolliding type items
 				</span><span class="kw">let </span>modified_item: ImplItem = <span class="macro">parse_quote! </span>{
 					#( #cfg_attrs )*
-					<span class="kw">type </span>#ident = &lt;#default_impl_path <span class="kw">as </span>#disambiguation_path&gt;::#ident;
+					<span class="kw">type </span>#ident = &lt;#default_impl_path #generics <span class="kw">as </span>#disambiguation_path&gt;::#ident;
 				};
 				<span class="kw">return </span><span class="prelude-val">Some</span>(modified_item)
 			}
@@ -671,6 +774,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	local_tokens: TokenStream2,
 	disambiguation_path: <span class="prelude-ty">Option</span>&lt;Path&gt;,
 	no_aggregated_types: <span class="prelude-ty">Option</span>&lt;keyword::no_aggregated_types&gt;,
+	generics: <span class="prelude-ty">Option</span>&lt;AngleBracketedGenericArguments&gt;,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;TokenStream2&gt; {
 	<span class="kw">let </span>local_impl = parse2::&lt;ItemImpl&gt;(local_tokens)<span class="question-mark">?</span>;
 	<span class="kw">let </span>foreign_impl = parse2::&lt;ItemImpl&gt;(foreign_tokens)<span class="question-mark">?</span>;
@@ -689,6 +793,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		default_impl_path,
 		disambiguation_path,
 		no_aggregated_types.is_none(),
+		generics,
 	);
 
 	<span class="prelude-val">Ok</span>(<span class="macro">quote!</span>(#combined_impl))
@@ -755,6 +860,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">let </span>disambiguation_path =
 		compute_disambiguation_path(<span class="prelude-val">None</span>, foreign_impl.clone(), <span class="macro">parse_quote!</span>(SomeType));
 	<span class="macro">assert_eq!</span>(disambiguation_path.unwrap(), <span class="macro">parse_quote!</span>(SomeTrait));
+}
+
+<span class="attr">#[test]
+</span><span class="kw">fn </span>test_derive_impl_attr_args_parsing_with_generic() {
+	<span class="kw">let </span>args = parse2::&lt;DeriveImplAttrArgs&gt;(<span class="macro">quote!</span>(
+		some::path::TestDefaultConfig&lt;Config&gt; <span class="kw">as </span>some::path::DefaultConfig
+	))
+	.unwrap();
+	<span class="macro">assert_eq!</span>(args.default_impl_path, <span class="macro">parse_quote!</span>(some::path::TestDefaultConfig));
+	<span class="macro">assert_eq!</span>(args.generics.unwrap().args[<span class="number">0</span>], <span class="macro">parse_quote!</span>(Config));
+	<span class="kw">let </span>args = parse2::&lt;DeriveImplAttrArgs&gt;(<span class="macro">quote!</span>(TestDefaultConfig&lt;Config2&gt;)).unwrap();
+	<span class="macro">assert_eq!</span>(args.default_impl_path, <span class="macro">parse_quote!</span>(TestDefaultConfig));
+	<span class="macro">assert_eq!</span>(args.generics.unwrap().args[<span class="number">0</span>], <span class="macro">parse_quote!</span>(Config2));
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>
 

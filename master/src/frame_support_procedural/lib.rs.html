@@ -1465,6 +1465,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1313" id="1313">1313</a>
 <a href="#1314" id="1314">1314</a>
 <a href="#1315" id="1315">1315</a>
+<a href="#1316" id="1316">1316</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2150,6 +2151,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		input.into(),
 		custom_attrs.disambiguation_path,
 		custom_attrs.no_aggregated_types,
+		custom_attrs.generics,
 	)
 	.unwrap_or_else(|r| r.into_compile_error())
 	.into()
