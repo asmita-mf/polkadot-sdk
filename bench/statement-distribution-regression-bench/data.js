@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726668615022,
+  "lastUpdate": 1726676016492,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -11039,6 +11039,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.04487719173399995,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "alex.theissen@me.com",
+            "name": "Alexander Theißen",
+            "username": "athei"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "310ef5ce1086affdc522c4d1736211de2a7dd99e",
+          "message": "revive: Limit the amount of static memory a contract can use (#5726)\n\nThis will make sure that when uploading new code that the declared\nstatic memory fits within a defined limit. We apply different limits to\ncode and data. Reason is that code will consume much more memory per\nbyte once decoded during lazy execution.\n\nThis PR:\n\n1) Remove the MaxCodeLen from the `Config` to we maintain tight control\nover it.\n2) Defines a single `STATIC_MEMORY_BYTES` knob that limits the maximum\ndecoded size.\n3) Enforces them only on upload but not on execution so we can raise\nthem later.\n4) Adapt the worst case calculation in `integrity_check`.\n5) Bumps the max stack depth from 5 to 10 as this will still fit within\nour memory envelope.\n6) The memory limit per contract is now a cool 1MB that can be spent on\ndata or code.\n7) Bump PolkaVM for good measure\n8) The blob is limited to 256kb which is just a sanity check to not even\ntry parsing very big inputs.\n\n---------\n\nCo-authored-by: Cyrill Leutwiler <cyrill@parity.io>",
+          "timestamp": "2024-09-18T14:48:30Z",
+          "tree_id": "f4149a98b6360dd41854d8da570e3a990b95e369",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/310ef5ce1086affdc522c4d1736211de2a7dd99e"
+        },
+        "date": 1726675986903,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 127.93599999999994,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.044489949857999915,
+            "unit": "seconds"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.036714734686,
             "unit": "seconds"
           }
         ]
