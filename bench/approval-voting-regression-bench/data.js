@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726664945411,
+  "lastUpdate": 1726668579275,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -18034,6 +18034,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-voting",
             "value": 2.7079731558799973,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "08d171e36801bae4eec28d1e1efe7bce07639bb2",
+          "message": "Add timeout for script/after_script and debug (#5748)\n\nFix tests:\n- minimal_template_block_production_test\n- parachain_template_block_production_test",
+          "timestamp": "2024-09-18T12:39:54Z",
+          "tree_id": "3e79c64a8fce11a53f0b06c3cf7196c151032fc0",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/08d171e36801bae4eec28d1e1efe7bce07639bb2"
+        },
+        "date": 1726668550167,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52943.7,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63776.88999999999,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.564324581100006,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.7020152841999887,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.1109236461035454,
             "unit": "seconds"
           }
         ]
