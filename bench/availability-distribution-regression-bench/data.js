@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726693444351,
+  "lastUpdate": 1726696797021,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25729,6 +25729,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "bitfield-distribution",
             "value": 0.021467914126666664,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "1177472+mordamax@users.noreply.github.com",
+            "name": "Maksym H",
+            "username": "mordamax"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "69b02a3cff430403c33401d4bb084bcdf4e5c62f",
+          "message": "make update-ui-test executable (#5760)",
+          "timestamp": "2024-09-18T20:44:23Z",
+          "tree_id": "351ec13383f6401663a52a4088b8911b2984a570",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/69b02a3cff430403c33401d4bb084bcdf4e5c62f"
+        },
+        "date": 1726696769317,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.0214598065,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.17911255014666658,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016735368920000007,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008911077713333427,
             "unit": "seconds"
           }
         ]
