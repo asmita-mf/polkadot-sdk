@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726675907723,
+  "lastUpdate": 1726693409960,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -20451,6 +20451,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 11.762954919833334,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "37bdc897e313adb9323f5c44abef4009970e18ff",
+          "message": "Bump soketto from 0.7.1 to 0.8.0 (#5719)\n\nBumps [soketto](https://github.com/paritytech/soketto) from 0.7.1 to\n0.8.0.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a\nhref=\"https://github.com/paritytech/soketto/releases\">soketto's\nreleases</a>.</em></p>\n<blockquote>\n<h2>v0.8.0</h2>\n<h2>0.8.0</h2>\n<ul>\n<li>[changed] move to rust 2021 <a\nhref=\"https://redirect.github.com/paritytech/soketto/pull/56\">#56</a></li>\n<li>[changed] Replace sha-1 v0.9 with sha1 v0.10 <a\nhref=\"https://redirect.github.com/paritytech/soketto/pull/62\">#62</a></li>\n<li>[changed] Update hyper requirement from v0.14 to v1.0 <a\nhref=\"https://redirect.github.com/paritytech/soketto/pull/99\">#99</a></li>\n<li>[changed] Update base64 requirement from 0.13 to 0.22 <a\nhref=\"https://redirect.github.com/paritytech/soketto/pull/97\">#97</a></li>\n<li>[changed] Bump MSRV to 1.71.1.</li>\n<li>[fixed] doc typo on Client resource field <a\nhref=\"https://redirect.github.com/paritytech/soketto/pull/97\">#79</a></li>\n</ul>\n</blockquote>\n</details>\n<details>\n<summary>Changelog</summary>\n<p><em>Sourced from <a\nhref=\"https://github.com/paritytech/soketto/blob/master/CHANGELOG.md\">soketto's\nchangelog</a>.</em></p>\n<blockquote>\n<h2>0.8.0</h2>\n<ul>\n<li>[changed] move to rust 2021 <a\nhref=\"https://redirect.github.com/paritytech/soketto/pull/56\">#56</a></li>\n<li>[changed] Replace sha-1 v0.9 with sha1 v0.10 <a\nhref=\"https://redirect.github.com/paritytech/soketto/pull/62\">#62</a></li>\n<li>[changed] Update hyper requirement from v0.14 to v1.0 <a\nhref=\"https://redirect.github.com/paritytech/soketto/pull/99\">#99</a></li>\n<li>[changed] Update base64 requirement from 0.13 to 0.22 <a\nhref=\"https://redirect.github.com/paritytech/soketto/pull/97\">#97</a></li>\n<li>[changed] Bump MSRV to 1.71.1.</li>\n<li>[fixed] doc typo on Client resource field <a\nhref=\"https://redirect.github.com/paritytech/soketto/pull/97\">#79</a></li>\n</ul>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a\nhref=\"https://github.com/paritytech/soketto/commit/7fee76678b7d08b21f5081de0f9041c7c9c1afdd\"><code>7fee766</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/paritytech/soketto/issues/100\">#100</a>\nfrom paritytech/chore-release-soketto-0.8</li>\n<li><a\nhref=\"https://github.com/paritytech/soketto/commit/f392c852b2ad7d6146accb5b75989dd60cbeaed1\"><code>f392c85</code></a>\nchore: release v0.8.0</li>\n<li><a\nhref=\"https://github.com/paritytech/soketto/commit/6f31ad11e742a3e83ec9b9b75644b2e0242f5da7\"><code>6f31ad1</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/paritytech/soketto/issues/88\">#88</a>\nfrom paritytech/dependabot/github_actions/actions/chec...</li>\n<li><a\nhref=\"https://github.com/paritytech/soketto/commit/322240516dc844abd5deb9d740df3b16614c08b9\"><code>3222405</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/paritytech/soketto/issues/99\">#99</a>\nfrom paritytech/chore-update-hyper</li>\n<li><a\nhref=\"https://github.com/paritytech/soketto/commit/afe56f5d26687b60b038522e7f10277adfd73c14\"><code>afe56f5</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/paritytech/soketto/issues/97\">#97</a>\nfrom paritytech/dependabot/cargo/base64-0.22</li>\n<li><a\nhref=\"https://github.com/paritytech/soketto/commit/420216aad917301e3513905ad55f60ffc068a4e0\"><code>420216a</code></a>\nchore(deps): update hyper v1.0</li>\n<li><a\nhref=\"https://github.com/paritytech/soketto/commit/050d44ba45cd800877729b649a898ac483fbff97\"><code>050d44b</code></a>\nUpdate base64 requirement from 0.21 to 0.22</li>\n<li><a\nhref=\"https://github.com/paritytech/soketto/commit/3d65c54d37162a57c8401f6428b3f9213bed8fd7\"><code>3d65c54</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/paritytech/soketto/issues/95\">#95</a>\nfrom paritytech/dependabot/cargo/env_logger-0.11.1</li>\n<li><a\nhref=\"https://github.com/paritytech/soketto/commit/153cd94dfcdcded2e0f6857ef8623d14ca4cc91a\"><code>153cd94</code></a>\nUpdate env_logger requirement from 0.10.0 to 0.11.1</li>\n<li><a\nhref=\"https://github.com/paritytech/soketto/commit/26a2fc647258345da8cdefe3f8d9f0a01553eb46\"><code>26a2fc6</code></a>\nMerge pull request <a\nhref=\"https://redirect.github.com/paritytech/soketto/issues/87\">#87</a>\nfrom kayabaNerve/master</li>\n<li>Additional commits viewable in <a\nhref=\"https://github.com/paritytech/soketto/compare/v0.7.1...v0.8.0\">compare\nview</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility\nscore](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=soketto&package-manager=cargo&previous-version=0.7.1&new-version=0.8.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't\nalter it yourself. You can also trigger a rebase manually by commenting\n`@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits\nthat have been made to it\n- `@dependabot merge` will merge this PR after your CI passes on it\n- `@dependabot squash and merge` will squash and merge this PR after\nyour CI passes on it\n- `@dependabot cancel merge` will cancel a previously requested merge\nand block automerging\n- `@dependabot reopen` will reopen this PR if it is closed\n- `@dependabot close` will close this PR and stop Dependabot recreating\nit. You can achieve the same result by closing it manually\n- `@dependabot show <dependency name> ignore conditions` will show all\nof the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop\nDependabot creating any more for this major version (unless you reopen\nthe PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop\nDependabot creating any more for this minor version (unless you reopen\nthe PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop\nDependabot creating any more for this dependency (unless you reopen the\nPR or upgrade to it yourself)\n\n\n</details>\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Bastian Köcher <git@kchr.de>",
+          "timestamp": "2024-09-18T19:38:20Z",
+          "tree_id": "b09a839d7f261946aca4d16e8952a21134fb5d64",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/37bdc897e313adb9323f5c44abef4009970e18ff"
+        },
+        "date": 1726693382903,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23082877376666672,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.763526410766667,
             "unit": "seconds"
           }
         ]
