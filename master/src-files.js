@@ -343,6 +343,7 @@ var srcIndex = new Map(JSON.parse('[\
 ["polkadot_test_runtime",["",[],["lib.rs","xcm_config.rs"]]],\
 ["polkadot_test_service",["",[],["chain_spec.rs","lib.rs"]]],\
 ["polkadot_voter_bags",["",[],["main.rs"]]],\
+["polkadot_zombienet_sdk_tests",["",[],["lib.rs"]]],\
 ["reconstruct",["",[],["reconstruct.rs"]]],\
 ["reduce",["",[],["common.rs","reduce.rs"]]],\
 ["relay_substrate_client",["",[["client",[],["caching.rs","mod.rs","rpc.rs","rpc_api.rs","subscription.rs","traits.rs"]],["metrics",[],["float_storage_value.rs","mod.rs"]]],["calls.rs","chain.rs","error.rs","guard.rs","lib.rs","sync_header.rs","test_chain.rs","transaction_tracker.rs"]]],\
