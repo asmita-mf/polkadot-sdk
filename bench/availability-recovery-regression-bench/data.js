@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726664873607,
+  "lastUpdate": 1726668507081,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -20363,6 +20363,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.23280210066666665,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "08d171e36801bae4eec28d1e1efe7bce07639bb2",
+          "message": "Add timeout for script/after_script and debug (#5748)\n\nFix tests:\n- minimal_template_block_production_test\n- parachain_template_block_production_test",
+          "timestamp": "2024-09-18T12:39:54Z",
+          "tree_id": "3e79c64a8fce11a53f0b06c3cf7196c151032fc0",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/08d171e36801bae4eec28d1e1efe7bce07639bb2"
+        },
+        "date": 1726668477558,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.582904309566661,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.2373622762,
             "unit": "seconds"
           }
         ]
