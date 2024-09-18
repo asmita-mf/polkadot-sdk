@@ -2127,9 +2127,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1975" id="1975">1975</a>
 <a href="#1976" id="1976">1976</a>
 <a href="#1977" id="1977">1977</a>
-<a href="#1978" id="1978">1978</a>
-<a href="#1979" id="1979">1979</a>
-<a href="#1980" id="1980">1980</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2783,11 +2780,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="doccomment">/// Write the given buffer and its length to the designated locations in sandbox memory and
 	/// charge gas according to the token returned by `create_token`.
-	</span><span class="comment">//
-	</span><span class="doccomment">/// `out_ptr` is the location in sandbox memory where `buf` should be written to.
+	///
+	/// `out_ptr` is the location in sandbox memory where `buf` should be written to.
 	/// `out_len_ptr` is an in-out location in sandbox memory. It is read to determine the
-	/// length of the buffer located at `out_ptr`. If that buffer is large enough the actual
-	/// `buf.len()` is written to this location.
+	/// length of the buffer located at `out_ptr`. If that buffer is smaller than the actual
+	/// `buf.len()`, only what fits into that buffer is written to `out_ptr`.
+	/// The actual amount of bytes copied to `out_ptr` is written to `out_len_ptr`.
 	///
 	/// If `out_ptr` is set to the sentinel value of `SENTINEL` and `allow_skip` is true the
 	/// operation is skipped and `Ok` is returned. This is supposed to help callers to make copying
@@ -2813,18 +2811,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">return </span><span class="prelude-val">Ok</span>(())
 		}
 
-		<span class="kw">let </span>buf_len = buf.len() <span class="kw">as </span>u32;
 		<span class="kw">let </span>len = memory.read_u32(out_len_ptr)<span class="question-mark">?</span>;
-
-		<span class="kw">if </span>len &lt; buf_len {
-			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::&lt;E::T&gt;::OutputBufferTooSmall.into())
-		}
+		<span class="kw">let </span>buf_len = len.min(buf.len() <span class="kw">as </span>u32);
 
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(costs) = create_token(buf_len) {
 			<span class="self">self</span>.charge_gas(costs)<span class="question-mark">?</span>;
 		}
 
-		memory.write(out_ptr, buf)<span class="question-mark">?</span>;
+		memory.write(out_ptr, <span class="kw-2">&amp;</span>buf[..buf_len <span class="kw">as </span>usize])<span class="question-mark">?</span>;
 		memory.write(out_len_ptr, <span class="kw-2">&amp;</span>buf_len.encode())
 	}
 
