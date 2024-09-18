@@ -1355,38 +1355,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1203" id="1203">1203</a>
 <a href="#1204" id="1204">1204</a>
 <a href="#1205" id="1205">1205</a>
-<a href="#1206" id="1206">1206</a>
-<a href="#1207" id="1207">1207</a>
-<a href="#1208" id="1208">1208</a>
-<a href="#1209" id="1209">1209</a>
-<a href="#1210" id="1210">1210</a>
-<a href="#1211" id="1211">1211</a>
-<a href="#1212" id="1212">1212</a>
-<a href="#1213" id="1213">1213</a>
-<a href="#1214" id="1214">1214</a>
-<a href="#1215" id="1215">1215</a>
-<a href="#1216" id="1216">1216</a>
-<a href="#1217" id="1217">1217</a>
-<a href="#1218" id="1218">1218</a>
-<a href="#1219" id="1219">1219</a>
-<a href="#1220" id="1220">1220</a>
-<a href="#1221" id="1221">1221</a>
-<a href="#1222" id="1222">1222</a>
-<a href="#1223" id="1223">1223</a>
-<a href="#1224" id="1224">1224</a>
-<a href="#1225" id="1225">1225</a>
-<a href="#1226" id="1226">1226</a>
-<a href="#1227" id="1227">1227</a>
-<a href="#1228" id="1228">1228</a>
-<a href="#1229" id="1229">1229</a>
-<a href="#1230" id="1230">1230</a>
-<a href="#1231" id="1231">1231</a>
-<a href="#1232" id="1232">1232</a>
-<a href="#1233" id="1233">1233</a>
-<a href="#1234" id="1234">1234</a>
-<a href="#1235" id="1235">1235</a>
-<a href="#1236" id="1236">1236</a>
-<a href="#1237" id="1237">1237</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1479,7 +1447,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">type </span>TrieId = BoundedVec&lt;u8, ConstU32&lt;<span class="number">128</span>&gt;&gt;;
 <span class="kw">type </span>BalanceOf&lt;T&gt; =
 	&lt;&lt;T <span class="kw">as </span>Config&gt;::Currency <span class="kw">as </span>Inspect&lt;&lt;T <span class="kw">as </span>frame_system::Config&gt;::AccountId&gt;&gt;::Balance;
-<span class="kw">type </span>CodeVec&lt;T&gt; = BoundedVec&lt;u8, &lt;T <span class="kw">as </span>Config&gt;::MaxCodeLen&gt;;
+<span class="kw">type </span>CodeVec = BoundedVec&lt;u8, ConstU32&lt;{ limits::code::BLOB_BYTES }&gt;&gt;;
 <span class="kw">type </span>EventRecordOf&lt;T&gt; =
 	EventRecord&lt;&lt;T <span class="kw">as </span>frame_system::Config&gt;::RuntimeEvent, &lt;T <span class="kw">as </span>frame_system::Config&gt;::Hash&gt;;
 <span class="kw">type </span>DebugBuffer = BoundedVec&lt;u8, ConstU32&lt;{ limits::DEBUG_BUFFER_BYTES }&gt;&gt;;
@@ -1621,14 +1589,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="attr">#[pallet::no_default_bounds]
 		</span><span class="kw">type </span>AddressMapper: AddressMapper&lt;AccountIdOf&lt;<span class="self">Self</span>&gt;&gt;;
 
-		<span class="doccomment">/// The maximum length of a contract code in bytes.
-		///
-		/// This value hugely affects the memory requirements of this pallet since all the code of
-		/// all contracts on the call stack will need to be held in memory. Setting of a correct
-		/// value will be enforced in [`Pallet::integrity_test`].
-		</span><span class="attr">#[pallet::constant]
-		</span><span class="kw">type </span>MaxCodeLen: Get&lt;u32&gt;;
-
 		<span class="doccomment">/// Make contract callable functions marked as `#[unstable]` available.
 		///
 		/// Contracts that use `#[unstable]` functions won't be able to be uploaded unless
@@ -1752,7 +1712,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">type </span>CodeHashLockupDepositPercent = CodeHashLockupDepositPercent;
 			<span class="kw">type </span>DepositPerByte = DepositPerByte;
 			<span class="kw">type </span>DepositPerItem = DepositPerItem;
-			<span class="kw">type </span>MaxCodeLen = ConstU32&lt;{ <span class="number">123 </span>* <span class="number">1024 </span>}&gt;;
 			<span class="kw">type </span>Time = <span class="self">Self</span>;
 			<span class="kw">type </span>UnsafeUnstableInterface = ConstBool&lt;<span class="bool-val">true</span>&gt;;
 			<span class="kw">type </span>UploadOrigin = EnsureSigned&lt;AccountId&gt;;
@@ -1864,9 +1823,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span>MaxCallDepthReached,
 		<span class="doccomment">/// No contract was found at the specified address.
 		</span>ContractNotFound,
-		<span class="doccomment">/// The code supplied to `instantiate_with_code` exceeds the limit specified in the
-		/// current schedule.
-		</span>CodeTooLarge,
 		<span class="doccomment">/// No code could be found at the supplied code hash.
 		</span>CodeNotFound,
 		<span class="doccomment">/// No code info could be found at the supplied code hash.
@@ -1920,6 +1876,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		/// A more detailed error can be found on the node console if debug messages are enabled
 		/// by supplying `-lruntime::revive=debug`.
 		</span>CodeRejected,
+		<span class="doccomment">/// The code blob supplied is larger than [`limits::code::BLOB_BYTES`].
+		</span>BlobTooLarge,
+		<span class="doccomment">/// The static memory consumption of the blob will be larger than
+		/// [`limits::code::STATIC_MEMORY_BYTES`].
+		</span>StaticMemoryTooLarge,
 		<span class="doccomment">/// The contract has reached its maximum number of delegate dependencies.
 		</span>MaxDelegateDependenciesReached,
 		<span class="doccomment">/// The dependency was not found in the contract's delegate dependencies.
@@ -1951,7 +1912,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="doccomment">/// A mapping from a contract's code hash to its code.
 	</span><span class="attr">#[pallet::storage]
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>PristineCode&lt;T: Config&gt; = StorageMap&lt;<span class="kw">_</span>, Identity, H256, CodeVec&lt;T&gt;&gt;;
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>PristineCode&lt;T: Config&gt; = StorageMap&lt;<span class="kw">_</span>, Identity, H256, CodeVec&gt;;
 
 	<span class="doccomment">/// A mapping from a contract's code hash to its code info.
 	</span><span class="attr">#[pallet::storage]
@@ -1991,13 +1952,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 
 		<span class="kw">fn </span>integrity_test() {
-			<span class="comment">// Total runtime memory limit
+			<span class="kw">use </span>limits::code::STATIC_MEMORY_BYTES;
+
+			<span class="comment">// The memory available in the block building runtime
 			</span><span class="kw">let </span>max_runtime_mem: u32 = T::RuntimeMemory::get();
-			<span class="comment">// Memory limits for a single contract:
-			// Value stack size: 1Mb per contract, default defined in wasmi
-			</span><span class="kw">const </span>MAX_STACK_SIZE: u32 = <span class="number">1024 </span>* <span class="number">1024</span>;
-			<span class="comment">// Heap limit is normally 16 mempages of 64kb each = 1Mb per contract
-			</span><span class="kw">let </span>max_heap_size = limits::MEMORY_BYTES;
 			<span class="comment">// The root frame is not accounted in CALL_STACK_DEPTH
 			</span><span class="kw">let </span>max_call_depth =
 				limits::CALL_STACK_DEPTH.checked_add(<span class="number">1</span>).expect(<span class="string">"CallStack size is too big"</span>);
@@ -2007,50 +1965,36 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				.checked_mul(<span class="number">2</span>)
 				.expect(<span class="string">"MaxTransientStorageSize is too large"</span>);
 
-			<span class="comment">// Check that given configured `MaxCodeLen`, runtime heap memory limit can't be broken.
-			//
-			// In worst case, the decoded Wasm contract code would be `x16` times larger than the
-			// encoded one. This is because even a single-byte wasm instruction has 16-byte size in
-			// wasmi. This gives us `MaxCodeLen*16` safety margin.
-			//
-			// Next, the pallet keeps the Wasm blob for each
-			// contract, hence we add up `MaxCodeLen` to the safety margin.
-			//
-			// The inefficiencies of the freeing-bump allocator
-			// being used in the client for the runtime memory allocations, could lead to possible
-			// memory allocations for contract code grow up to `x4` times in some extreme cases,
-			// which gives us total multiplier of `17*4` for `MaxCodeLen`.
-			//
-			// That being said, for every contract executed in runtime, at least `MaxCodeLen*17*4`
-			// memory should be available. Note that maximum allowed heap memory and stack size per
-			// each contract (stack frame) should also be counted.
-			//
-			// The pallet holds transient storage with a size up to `max_transient_storage_size`.
-			//
-			// Finally, we allow 50% of the runtime memory to be utilized by the contracts call
+			<span class="comment">// We only allow 50% of the runtime memory to be utilized by the contracts call
 			// stack, keeping the rest for other facilities, such as PoV, etc.
+			</span><span class="kw">const </span>TOTAL_MEMORY_DEVIDER: u32 = <span class="number">2</span>;
+
+			<span class="comment">// The inefficiencies of the freeing-bump allocator
+			// being used in the client for the runtime memory allocations, could lead to possible
+			// memory allocations grow up to `x4` times in some extreme cases.
+			</span><span class="kw">const </span>MEMORY_ALLOCATOR_INEFFICENCY_DEVIDER: u32 = <span class="number">4</span>;
+
+			<span class="comment">// Check that the configured `STATIC_MEMORY_BYTES` fits into runtime memory.
 			//
-			// This gives us the following formula:
+			// `STATIC_MEMORY_BYTES` is the amount of memory that a contract can consume
+			// in memory and is enforced at upload time.
 			//
-			// `(MaxCodeLen * 17 * 4 + MAX_STACK_SIZE + max_heap_size) * max_call_depth +
-			// max_transient_storage_size &lt; max_runtime_mem/2`
-			//
-			// Hence the upper limit for the `MaxCodeLen` can be defined as follows:
-			</span><span class="kw">let </span>code_len_limit = max_runtime_mem
-				.saturating_div(<span class="number">2</span>)
+			// Dynamic allocations are not available, yet. Hence are not taken into consideration
+			// here.
+			</span><span class="kw">let </span>static_memory_limit = max_runtime_mem
+				.saturating_div(TOTAL_MEMORY_DEVIDER)
 				.saturating_sub(max_transient_storage_size)
 				.saturating_div(max_call_depth)
-				.saturating_sub(max_heap_size)
-				.saturating_sub(MAX_STACK_SIZE)
-				.saturating_div(<span class="number">17 </span>* <span class="number">4</span>);
+				.saturating_sub(STATIC_MEMORY_BYTES)
+				.saturating_div(MEMORY_ALLOCATOR_INEFFICENCY_DEVIDER);
 
 			<span class="macro">assert!</span>(
-				T::MaxCodeLen::get() &lt; code_len_limit,
-				<span class="string">"Given `CallStack` height {:?}, `MaxCodeLen` should be set less than {:?} \
+				STATIC_MEMORY_BYTES &lt; static_memory_limit,
+				<span class="string">"Given `CallStack` height {:?}, `STATIC_MEMORY_LIMIT` should be set less than {:?} \
 				 (current value is {:?}), to avoid possible runtime oom issues."</span>,
 				max_call_depth,
-				code_len_limit,
-				T::MaxCodeLen::get(),
+				static_memory_limit,
+				STATIC_MEMORY_BYTES,
 			);
 
 			<span class="comment">// Validators are configured to be able to use more memory than block builders. This is
@@ -2449,12 +2393,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>(executable, upload_deposit) = <span class="kw">match </span>code {
 				Code::Upload(code) =&gt; {
 					<span class="kw">let </span>upload_account = T::UploadOrigin::ensure_origin(origin)<span class="question-mark">?</span>;
-					<span class="kw">let </span>(executable, upload_deposit) = <span class="self">Self</span>::try_upload_code(
-						upload_account,
-						code,
-						storage_deposit_limit,
-						debug_message.as_mut(),
-					)<span class="question-mark">?</span>;
+					<span class="kw">let </span>(executable, upload_deposit) =
+						<span class="self">Self</span>::try_upload_code(upload_account, code, storage_deposit_limit)<span class="question-mark">?</span>;
 					storage_deposit_limit.saturating_reduce(upload_deposit);
 					(executable, upload_deposit)
 				},
@@ -2506,7 +2446,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		storage_deposit_limit: BalanceOf&lt;T&gt;,
 	) -&gt; CodeUploadResult&lt;BalanceOf&lt;T&gt;&gt; {
 		<span class="kw">let </span>origin = T::UploadOrigin::ensure_origin(origin)<span class="question-mark">?</span>;
-		<span class="kw">let </span>(module, deposit) = <span class="self">Self</span>::try_upload_code(origin, code, storage_deposit_limit, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+		<span class="kw">let </span>(module, deposit) = <span class="self">Self</span>::try_upload_code(origin, code, storage_deposit_limit)<span class="question-mark">?</span>;
 		<span class="prelude-val">Ok</span>(CodeUploadReturnValue { code_hash: <span class="kw-2">*</span>module.code_hash(), deposit })
 	}
 
@@ -2524,12 +2464,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		origin: T::AccountId,
 		code: Vec&lt;u8&gt;,
 		storage_deposit_limit: BalanceOf&lt;T&gt;,
-		<span class="kw-2">mut </span>debug_message: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>DebugBuffer&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(WasmBlob&lt;T&gt;, BalanceOf&lt;T&gt;), DispatchError&gt; {
-		<span class="kw">let </span><span class="kw-2">mut </span>module = WasmBlob::from_code(code, origin).map_err(|(err, msg)| {
-			debug_message.as_mut().map(|d| d.try_extend(msg.bytes()));
-			err
-		})<span class="question-mark">?</span>;
+		<span class="kw">let </span><span class="kw-2">mut </span>module = WasmBlob::from_code(code, origin)<span class="question-mark">?</span>;
 		<span class="kw">let </span>deposit = module.store_code()<span class="question-mark">?</span>;
 		<span class="macro">ensure!</span>(storage_deposit_limit &gt;= deposit, &lt;Error&lt;T&gt;&gt;::StorageDepositLimitExhausted);
 		<span class="prelude-val">Ok</span>((module, deposit))

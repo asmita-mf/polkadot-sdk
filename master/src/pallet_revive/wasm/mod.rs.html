@@ -553,6 +553,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	address::AddressMapper,
 	exec::{ExecResult, Executable, ExportedFunction, Ext},
 	gas::{GasMeter, Token},
+	limits,
 	storage::meter::Diff,
 	weights::WeightInfo,
 	AccountIdOf, BadOrigin, BalanceOf, CodeInfoOf, CodeVec, Config, Error, Event, ExecError,
@@ -574,7 +575,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 #[codec(mel_bound())]
 #[scale_info(skip_type_params(T))]
 </span><span class="kw">pub struct </span>WasmBlob&lt;T: Config&gt; {
-	code: CodeVec&lt;T&gt;,
+	code: CodeVec,
 	<span class="comment">// This isn't needed for contract execution and is not stored alongside it.
 	</span><span class="attr">#[codec(skip)]
 	</span>code_info: CodeInfo&lt;T&gt;,
@@ -646,12 +647,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span>BalanceOf&lt;T&gt;: Into&lt;U256&gt; + TryFrom&lt;U256&gt;,
 {
 	<span class="doccomment">/// We only check for size and nothing else when the code is uploaded.
-	</span><span class="kw">pub fn </span>from_code(
-		code: Vec&lt;u8&gt;,
-		owner: AccountIdOf&lt;T&gt;,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, (DispatchError, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str)&gt; {
-		<span class="kw">let </span>code: CodeVec&lt;T&gt; =
-			code.try_into().map_err(|<span class="kw">_</span>| (&lt;Error&lt;T&gt;&gt;::CodeTooLarge.into(), <span class="string">""</span>))<span class="question-mark">?</span>;
+	</span><span class="kw">pub fn </span>from_code(code: Vec&lt;u8&gt;, owner: AccountIdOf&lt;T&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, DispatchError&gt; {
+		<span class="comment">// We do size checks when new code is deployed. This allows us to increase
+		// the limits later without affecting already deployed code.
+		</span><span class="kw">let </span>code = limits::code::enforce::&lt;T&gt;(code)<span class="question-mark">?</span>;
+
 		<span class="kw">let </span>code_len = code.len() <span class="kw">as </span>u32;
 		<span class="kw">let </span>bytes_added = code_len.saturating_add(&lt;CodeInfo&lt;T&gt;&gt;::max_encoded_len() <span class="kw">as </span>u32);
 		<span class="kw">let </span>deposit = Diff { bytes_added, items_added: <span class="number">2</span>, ..Default::default() }
@@ -801,16 +801,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		entry_point: ExportedFunction,
 		api_version: ApiVersion,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;PreparedCall&lt;E&gt;, ExecError&gt; {
-		<span class="kw">let </span>code = <span class="self">self</span>.code.as_slice();
-
 		<span class="kw">let </span><span class="kw-2">mut </span>config = polkavm::Config::default();
 		config.set_backend(<span class="prelude-val">Some</span>(polkavm::BackendKind::Interpreter));
 		<span class="kw">let </span>engine =
 			polkavm::Engine::new(<span class="kw-2">&amp;</span>config).expect(<span class="string">"interpreter is available on all plattforms; qed"</span>);
 
 		<span class="kw">let </span><span class="kw-2">mut </span>module_config = polkavm::ModuleConfig::new();
+		module_config.set_page_size(limits::PAGE_SIZE);
 		module_config.set_gas_metering(<span class="prelude-val">Some</span>(polkavm::GasMeteringKind::Sync));
-		<span class="kw">let </span>module = polkavm::Module::new(<span class="kw-2">&amp;</span>engine, <span class="kw-2">&amp;</span>module_config, code.into()).map_err(|err| {
+		<span class="kw">let </span>module = polkavm::Module::new(<span class="kw-2">&amp;</span>engine, <span class="kw-2">&amp;</span>module_config, <span class="self">self</span>.code.into_inner().into())
+			.map_err(|err| {
 			<span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">"failed to create polkavm module: {err:?}"</span>);
 			Error::&lt;T&gt;::CodeRejected
 		})<span class="question-mark">?</span>;

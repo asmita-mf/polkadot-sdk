@@ -2156,7 +2156,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	// call_with_code_per_byte(0)`.
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
 	</span><span class="kw">fn </span>call_with_code_per_byte(
-		c: Linear&lt;<span class="number">0</span>, { T::MaxCodeLen::get() }&gt;,
+		c: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
 		<span class="kw">let </span>instance =
 			Contract::&lt;T&gt;::with_caller(whitelisted_caller(), WasmModule::sized(c), <span class="macro">vec!</span>[])<span class="question-mark">?</span>;
@@ -2181,8 +2181,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	// `i`: Size of the input in bytes.
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
 	</span><span class="kw">fn </span>instantiate_with_code(
-		c: Linear&lt;<span class="number">0</span>, { T::MaxCodeLen::get() }&gt;,
-		i: Linear&lt;<span class="number">0</span>, { limits::MEMORY_BYTES }&gt;,
+		c: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;,
+		i: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;,
 	) {
 		<span class="kw">let </span>input = <span class="macro">vec!</span>[<span class="number">42u8</span>; i <span class="kw">as </span>usize];
 		<span class="kw">let </span>salt = [<span class="number">42u8</span>; <span class="number">32</span>];
@@ -2214,7 +2214,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="comment">// `i`: Size of the input in bytes.
 	// `s`: Size of e salt in bytes.
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>instantiate(i: Linear&lt;<span class="number">0</span>, { limits::MEMORY_BYTES }&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
+	</span><span class="kw">fn </span>instantiate(i: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
 		<span class="kw">let </span>input = <span class="macro">vec!</span>[<span class="number">42u8</span>; i <span class="kw">as </span>usize];
 		<span class="kw">let </span>salt = [<span class="number">42u8</span>; <span class="number">32</span>];
 		<span class="kw">let </span>value = Pallet::&lt;T&gt;::min_balance();
@@ -2299,7 +2299,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	// It creates a maximum number of metering blocks per byte.
 	// `c`: Size of the code in bytes.
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>upload_code(c: Linear&lt;<span class="number">0</span>, { T::MaxCodeLen::get() }&gt;) {
+	</span><span class="kw">fn </span>upload_code(c: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;) {
 		<span class="kw">let </span>caller = whitelisted_caller();
 		T::Currency::set_balance(<span class="kw-2">&amp;</span>caller, caller_funding::&lt;T&gt;());
 		<span class="kw">let </span>WasmModule { code, hash, .. } = WasmModule::sized(c);
@@ -2593,7 +2593,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>seal_input(n: Linear&lt;<span class="number">0</span>, { limits::MEMORY_BYTES - <span class="number">4 </span>}&gt;) {
+	</span><span class="kw">fn </span>seal_input(n: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES - <span class="number">4 </span>}&gt;) {
 		<span class="kw">let </span><span class="kw-2">mut </span>setup = CallSetup::&lt;T&gt;::default();
 		<span class="kw">let </span>(<span class="kw-2">mut </span>ext, <span class="kw">_</span>) = setup.ext();
 		<span class="kw">let </span><span class="kw-2">mut </span>runtime = <span class="kw">crate</span>::wasm::Runtime::new(<span class="kw-2">&amp;mut </span>ext, <span class="macro">vec!</span>[<span class="number">42u8</span>; n <span class="kw">as </span>usize]);
@@ -2608,7 +2608,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>seal_return(n: Linear&lt;<span class="number">0</span>, { limits::MEMORY_BYTES - <span class="number">4 </span>}&gt;) {
+	</span><span class="kw">fn </span>seal_return(n: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES - <span class="number">4 </span>}&gt;) {
 		<span class="macro">build_runtime!</span>(runtime, memory: [n.to_le_bytes(), <span class="macro">vec!</span>[<span class="number">42u8</span>; n <span class="kw">as </span>usize], ]);
 
 		<span class="kw">let </span>result;
@@ -2698,7 +2698,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	// buffer size, whichever is less.
 	</span><span class="attr">#[benchmark]
 	</span><span class="kw">fn </span>seal_debug_message(
-		i: Linear&lt;<span class="number">0</span>, { (limits::MEMORY_BYTES).min(limits::DEBUG_BUFFER_BYTES) }&gt;,
+		i: Linear&lt;<span class="number">0</span>, { (limits::code::BLOB_BYTES).min(limits::DEBUG_BUFFER_BYTES) }&gt;,
 	) {
 		<span class="kw">let </span><span class="kw-2">mut </span>setup = CallSetup::&lt;T&gt;::default();
 		setup.enable_debug_message();
@@ -3292,7 +3292,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="comment">// t: with or without some value to transfer
 	// i: size of the input data
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>seal_call(t: Linear&lt;<span class="number">0</span>, <span class="number">1</span>&gt;, i: Linear&lt;<span class="number">0</span>, { limits::MEMORY_BYTES }&gt;) {
+	</span><span class="kw">fn </span>seal_call(t: Linear&lt;<span class="number">0</span>, <span class="number">1</span>&gt;, i: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;) {
 		<span class="kw">let </span>Contract { account_id: callee, .. } =
 			Contract::&lt;T&gt;::with_index(<span class="number">1</span>, WasmModule::dummy(), <span class="macro">vec!</span>[]).unwrap();
 		<span class="kw">let </span>callee_bytes = callee.encode();
@@ -3367,7 +3367,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="comment">// t: value to transfer
 	// i: size of input in bytes
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>seal_instantiate(i: Linear&lt;<span class="number">0</span>, { limits::MEMORY_BYTES }&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
+	</span><span class="kw">fn </span>seal_instantiate(i: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), BenchmarkError&gt; {
 		<span class="kw">let </span>code = WasmModule::dummy();
 		<span class="kw">let </span>hash = Contract::&lt;T&gt;::with_index(<span class="number">1</span>, WasmModule::dummy(), <span class="macro">vec!</span>[])<span class="question-mark">?</span>.info()<span class="question-mark">?</span>.code_hash;
 		<span class="kw">let </span>hash_bytes = hash.encode();
@@ -3433,7 +3433,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="comment">// `n`: Input to hash in bytes
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>seal_hash_sha2_256(n: Linear&lt;<span class="number">0</span>, { limits::MEMORY_BYTES }&gt;) {
+	</span><span class="kw">fn </span>seal_hash_sha2_256(n: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;) {
 		<span class="macro">build_runtime!</span>(runtime, memory: [[<span class="number">0u8</span>; <span class="number">32</span>], <span class="macro">vec!</span>[<span class="number">0u8</span>; n <span class="kw">as </span>usize], ]);
 
 		<span class="kw">let </span>result;
@@ -3447,7 +3447,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="comment">// `n`: Input to hash in bytes
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>seal_hash_keccak_256(n: Linear&lt;<span class="number">0</span>, { limits::MEMORY_BYTES }&gt;) {
+	</span><span class="kw">fn </span>seal_hash_keccak_256(n: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;) {
 		<span class="macro">build_runtime!</span>(runtime, memory: [[<span class="number">0u8</span>; <span class="number">32</span>], <span class="macro">vec!</span>[<span class="number">0u8</span>; n <span class="kw">as </span>usize], ]);
 
 		<span class="kw">let </span>result;
@@ -3461,7 +3461,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="comment">// `n`: Input to hash in bytes
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>seal_hash_blake2_256(n: Linear&lt;<span class="number">0</span>, { limits::MEMORY_BYTES }&gt;) {
+	</span><span class="kw">fn </span>seal_hash_blake2_256(n: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;) {
 		<span class="macro">build_runtime!</span>(runtime, memory: [[<span class="number">0u8</span>; <span class="number">32</span>], <span class="macro">vec!</span>[<span class="number">0u8</span>; n <span class="kw">as </span>usize], ]);
 
 		<span class="kw">let </span>result;
@@ -3475,7 +3475,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="comment">// `n`: Input to hash in bytes
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>seal_hash_blake2_128(n: Linear&lt;<span class="number">0</span>, { limits::MEMORY_BYTES }&gt;) {
+	</span><span class="kw">fn </span>seal_hash_blake2_128(n: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES }&gt;) {
 		<span class="macro">build_runtime!</span>(runtime, memory: [[<span class="number">0u8</span>; <span class="number">16</span>], <span class="macro">vec!</span>[<span class="number">0u8</span>; n <span class="kw">as </span>usize], ]);
 
 		<span class="kw">let </span>result;
@@ -3490,7 +3490,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="comment">// `n`: Message input length to verify in bytes.
 	// need some buffer so the code size does not exceed the max code size.
 	</span><span class="attr">#[benchmark(pov_mode = Measured)]
-	</span><span class="kw">fn </span>seal_sr25519_verify(n: Linear&lt;<span class="number">0</span>, { T::MaxCodeLen::get() - <span class="number">255 </span>}&gt;) {
+	</span><span class="kw">fn </span>seal_sr25519_verify(n: Linear&lt;<span class="number">0</span>, { limits::code::BLOB_BYTES - <span class="number">255 </span>}&gt;) {
 		<span class="kw">let </span>message = (<span class="number">0</span>..n).zip((<span class="number">32u8</span>..<span class="number">127u8</span>).cycle()).map(|(<span class="kw">_</span>, c)| c).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 		<span class="kw">let </span>message_len = message.len() <span class="kw">as </span>u32;
 
