@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726645749956,
+  "lastUpdate": 1726659121689,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25459,6 +25459,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-distribution",
             "value": 0.016391299146666666,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "cyrill@parity.io",
+            "name": "Cyrill Leutwiler",
+            "username": "xermicus"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "c0d5c4d8d672d9b1c15f5fec491c53988ef2314b",
+          "message": "[pallet-revive] write sandbox output according to the provided output buffer length (#5743)\n\nInstead of error out if the provided output buffer is smaller than what\nwe want to write, we can just write what fits into the output buffer\ninstead. We already write back the actual bytes written to the in-out\npointer, so contracts can check it anyways.\n\nThis in turn introduces the benefit of allowing contracts to implicitly\nrequest only a portion of the returned data from calls and incantations.\nWhich is especially beneficial for YUL as the `call` family opcodes have\na return data size argument and this change removes the need to work\naround it in contract code.\n\n---------\n\nSigned-off-by: xermicus <cyrill@parity.io>",
+          "timestamp": "2024-09-18T09:56:12Z",
+          "tree_id": "92f4cd89cddcbbf5f994e8dbb546d7dca065a122",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/c0d5c4d8d672d9b1c15f5fec491c53988ef2314b"
+        },
+        "date": 1726659092272,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016380176786666662,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008939545466666749,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021432408646666668,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18169902620666656,
             "unit": "seconds"
           }
         ]
