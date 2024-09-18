@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726585017557,
+  "lastUpdate": 1726645819544,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -10863,6 +10863,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "statement-distribution",
             "value": 0.03708514863399999,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "mail.guptanikhil@gmail.com",
+            "name": "gupnik",
+            "username": "gupnik"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "69e96659984d10c67d4a8912b8eeaa5620bfa2cd",
+          "message": "Adds support for generics in`derive-impl` (#5584)\n\nAs raised by @kianenigma in\nhttps://github.com/sam0x17/macro_magic/issues/15, this PR adds the\nsupport for generics while using `derive_impl`.\n\nThis can then be used in conjunction with `FliteFrameSystem` being\ndefined [here](https://github.com/kianenigma/flite) as\n```diff\n+#[derive_impl(FliteFrameSystem<Configuration>)]\nimpl frame_system::Config for Runtime {\n  type Block = Block;\n\n  // .. Rest can be removed\n}\n```\n\n---------\n\nCo-authored-by: Kian Paimani <5588131+kianenigma@users.noreply.github.com>",
+          "timestamp": "2024-09-18T06:30:06Z",
+          "tree_id": "bc34a5df865f8d3faed65f2d6460a665b63034b3",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/69e96659984d10c67d4a8912b8eeaa5620bfa2cd"
+        },
+        "date": 1726645791739,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.92399999999992,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04470718813999995,
+            "unit": "seconds"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.037386922418,
             "unit": "seconds"
           }
         ]
