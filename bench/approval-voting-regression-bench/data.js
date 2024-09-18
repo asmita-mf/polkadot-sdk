@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726659157896,
+  "lastUpdate": 1726664945411,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -17985,6 +17985,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-distribution",
             "value": 11.55905220834,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "33208377+ndkazu@users.noreply.github.com",
+            "name": "Kazunobu Ndong",
+            "username": "ndkazu"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "70633959eb5ba0c61b6da57b575e0af758e3da1f",
+          "message": "Remove libp2p dependency from sc-network-sync (#4974)\n\n## Issue\nhttps://github.com/paritytech/polkadot-sdk/issues/4858\n\n## Description\nThis PR removes `libp2p::request_response::OutboundFailure` from\n`substrate/client/network/sync/src/engine.rs`. This way, the dependency\nwith the library `libp2p` is removed from `sc-network-sync`.\n\n---------\n\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: command-bot <>\nCo-authored-by: Dmitry Markin <dmitry@markin.tech>\nCo-authored-by: Alexandru Vasile <60601340+lexnv@users.noreply.github.com>",
+          "timestamp": "2024-09-18T11:38:38Z",
+          "tree_id": "b2ebb2429a16d84dd14456e3b401ff99b3b24ba7",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/70633959eb5ba0c61b6da57b575e0af758e3da1f"
+        },
+        "date": 1726664916148,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63767.18000000001,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52941,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.1299674503332473,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.572873191090002,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.7079731558799973,
             "unit": "seconds"
           }
         ]
