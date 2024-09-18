@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726645819544,
+  "lastUpdate": 1726659194027,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -10907,6 +10907,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "statement-distribution",
             "value": 0.037386922418,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "cyrill@parity.io",
+            "name": "Cyrill Leutwiler",
+            "username": "xermicus"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "c0d5c4d8d672d9b1c15f5fec491c53988ef2314b",
+          "message": "[pallet-revive] write sandbox output according to the provided output buffer length (#5743)\n\nInstead of error out if the provided output buffer is smaller than what\nwe want to write, we can just write what fits into the output buffer\ninstead. We already write back the actual bytes written to the in-out\npointer, so contracts can check it anyways.\n\nThis in turn introduces the benefit of allowing contracts to implicitly\nrequest only a portion of the returned data from calls and incantations.\nWhich is especially beneficial for YUL as the `call` family opcodes have\na return data size argument and this change removes the need to work\naround it in contract code.\n\n---------\n\nSigned-off-by: xermicus <cyrill@parity.io>",
+          "timestamp": "2024-09-18T09:56:12Z",
+          "tree_id": "92f4cd89cddcbbf5f994e8dbb546d7dca065a122",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/c0d5c4d8d672d9b1c15f5fec491c53988ef2314b"
+        },
+        "date": 1726659164467,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 127.93199999999993,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.044264735085999936,
+            "unit": "seconds"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.036981424,
             "unit": "seconds"
           }
         ]
