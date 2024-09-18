@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726693478706,
+  "lastUpdate": 1726696831821,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -18181,6 +18181,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-voting",
             "value": 2.758120585799999,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "1177472+mordamax@users.noreply.github.com",
+            "name": "Maksym H",
+            "username": "mordamax"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "69b02a3cff430403c33401d4bb084bcdf4e5c62f",
+          "message": "make update-ui-test executable (#5760)",
+          "timestamp": "2024-09-18T20:44:23Z",
+          "tree_id": "351ec13383f6401663a52a4088b8911b2984a570",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/69b02a3cff430403c33401d4bb084bcdf4e5c62f"
+        },
+        "date": 1726696803824,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63786.94,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52943.8,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.7772755055900062,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.165485546583234,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.64595884304,
             "unit": "seconds"
           }
         ]
