@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726659121689,
+  "lastUpdate": 1726664909477,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25513,6 +25513,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-store",
             "value": 0.18169902620666656,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "33208377+ndkazu@users.noreply.github.com",
+            "name": "Kazunobu Ndong",
+            "username": "ndkazu"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "70633959eb5ba0c61b6da57b575e0af758e3da1f",
+          "message": "Remove libp2p dependency from sc-network-sync (#4974)\n\n## Issue\nhttps://github.com/paritytech/polkadot-sdk/issues/4858\n\n## Description\nThis PR removes `libp2p::request_response::OutboundFailure` from\n`substrate/client/network/sync/src/engine.rs`. This way, the dependency\nwith the library `libp2p` is removed from `sc-network-sync`.\n\n---------\n\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: command-bot <>\nCo-authored-by: Dmitry Markin <dmitry@markin.tech>\nCo-authored-by: Alexandru Vasile <60601340+lexnv@users.noreply.github.com>",
+          "timestamp": "2024-09-18T11:38:38Z",
+          "tree_id": "b2ebb2429a16d84dd14456e3b401ff99b3b24ba7",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/70633959eb5ba0c61b6da57b575e0af758e3da1f"
+        },
+        "date": 1726664880123,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021536924326666665,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.1809319249466666,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008967775420000077,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016726878126666674,
             "unit": "seconds"
           }
         ]
