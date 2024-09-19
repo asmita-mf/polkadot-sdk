@@ -453,17 +453,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">let </span>fut = <span class="self">self</span>.<span class="number">0</span>.call(req);
 
 		<span class="kw">async move </span>{
-			<span class="kw">let </span>res = fut.<span class="kw">await</span>.map_err(|err| err.into())<span class="question-mark">?</span>;
-
 			<span class="prelude-val">Ok</span>(<span class="kw">match </span>maybe_intercept {
 				InterceptRequest::Deny =&gt;
 					http_response(StatusCode::METHOD_NOT_ALLOWED, HttpBody::empty()),
-				InterceptRequest::No =&gt; res,
+				InterceptRequest::No =&gt; fut.<span class="kw">await</span>.map_err(|err| err.into())<span class="question-mark">?</span>,
 				InterceptRequest::Health =&gt; {
+					<span class="kw">let </span>res = fut.<span class="kw">await</span>.map_err(|err| err.into())<span class="question-mark">?</span>;
 					<span class="kw">let </span>health = parse_rpc_response(res.into_body()).<span class="kw">await</span><span class="question-mark">?</span>;
 					http_ok_response(serde_json::to_string(<span class="kw-2">&amp;</span>health)<span class="question-mark">?</span>)
 				},
 				InterceptRequest::Readiness =&gt; {
+					<span class="kw">let </span>res = fut.<span class="kw">await</span>.map_err(|err| err.into())<span class="question-mark">?</span>;
 					<span class="kw">let </span>health = parse_rpc_response(res.into_body()).<span class="kw">await</span><span class="question-mark">?</span>;
 					<span class="kw">if </span>(!health.is_syncing &amp;&amp; health.peers &gt; <span class="number">0</span>) || !health.should_have_peers {
 						http_ok_response(HttpBody::empty())
