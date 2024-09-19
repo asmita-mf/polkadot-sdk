@@ -1760,6 +1760,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1608" id="1608">1608</a>
 <a href="#1609" id="1609">1609</a>
 <a href="#1610" id="1610">1610</a>
+<a href="#1611" id="1611">1611</a>
+<a href="#1612" id="1612">1612</a>
+<a href="#1613" id="1613">1613</a>
+<a href="#1614" id="1614">1614</a>
+<a href="#1615" id="1615">1615</a>
+<a href="#1616" id="1616">1616</a>
+<a href="#1617" id="1617">1617</a>
+<a href="#1618" id="1618">1618</a>
+<a href="#1619" id="1619">1619</a>
+<a href="#1620" id="1620">1620</a>
+<a href="#1621" id="1621">1621</a>
+<a href="#1622" id="1622">1622</a>
+<a href="#1623" id="1623">1623</a>
+<a href="#1624" id="1624">1624</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -1778,6 +1792,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="kw">extern crate </span>alloc;
 
+<span class="kw">pub use </span>array_bytes;
 <span class="kw">pub use </span>codec::{Decode, Encode, EncodeLike, MaxEncodedLen};
 <span class="kw">pub use </span>lazy_static::lazy_static;
 <span class="kw">pub use </span>log;
@@ -2288,7 +2303,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				</span>&lt;<span class="macro-nonterminal">$network</span>&gt;::init();
 
 				<span class="comment">// Execute
-				</span><span class="kw">let </span>r = <span class="macro-nonterminal">$local_ext</span>.with(|v| v.borrow_mut().execute_with(execute));
+				</span><span class="kw">let </span>r = <span class="macro-nonterminal">$local_ext</span>.with(|v| {
+					<span class="macro-nonterminal">$</span><span class="macro">crate::log::info!</span>(<span class="macro-nonterminal">target</span>: <span class="string">"xcm::emulator::execute_with"</span>, <span class="string">"Executing as {}"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>));
+					v.borrow_mut().execute_with(execute)
+				});
 
 				<span class="comment">// Send messages if needed
 				</span><span class="macro-nonterminal">$local_ext</span>.with(|v| {
@@ -2312,7 +2330,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 						<span class="comment">// log events
 						</span><span class="self">Self</span>::events().iter().for_each(|event| {
-							<span class="macro-nonterminal">$</span><span class="macro">crate::log::debug!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"events::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)), <span class="string">"{:?}"</span>, event);
+							<span class="macro-nonterminal">$</span><span class="macro">crate::log::info!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"events::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)), <span class="string">"{:?}"</span>, event);
 						});
 
 						<span class="comment">// clean events
@@ -2588,7 +2606,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				</span><span class="self">Self</span>::new_block();
 
 				<span class="comment">// Execute
-				</span><span class="kw">let </span>r = <span class="macro-nonterminal">$local_ext</span>.with(|v| v.borrow_mut().execute_with(execute));
+				</span><span class="kw">let </span>r = <span class="macro-nonterminal">$local_ext</span>.with(|v| {
+					<span class="macro-nonterminal">$</span><span class="macro">crate::log::info!</span>(<span class="macro-nonterminal">target</span>: <span class="string">"xcm::emulator::execute_with"</span>, <span class="string">"Executing as {}"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>));
+					v.borrow_mut().execute_with(execute)
+				});
 
 				<span class="comment">// Finalize the block
 				</span><span class="self">Self</span>::finalize_block();
@@ -2634,7 +2655,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 						<span class="comment">// log events
 						</span>&lt;<span class="self">Self </span><span class="kw">as </span><span class="macro-nonterminal">$crate::Chain</span>&gt;::events().iter().for_each(|event| {
-							<span class="macro-nonterminal">$</span><span class="macro">crate::log::debug!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"events::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)), <span class="string">"{:?}"</span>, event);
+							<span class="macro-nonterminal">$</span><span class="macro">crate::log::info!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"events::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)), <span class="string">"{:?}"</span>, event);
 						});
 
 						<span class="comment">// clean events
@@ -2786,7 +2807,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 											<span class="kw-2">&amp;mut </span>msg.using_encoded(<span class="macro-nonterminal">$crate::blake2_256</span>),
 										);
 									});
-									<span class="macro-nonterminal">$</span><span class="macro">crate::log::debug!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"dmp::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)) , <span class="string">"DMP messages processed {:?} to para_id {:?}"</span>, msgs.clone(), <span class="kw-2">&amp;</span>to_para_id);
+									<span class="kw">let </span>messages = msgs.clone().iter().map(|(block, message)| {
+										(<span class="kw-2">*</span>block, <span class="macro-nonterminal">$crate::array_bytes::bytes2hex</span>(<span class="string">"0x"</span>, message))
+									}).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+									<span class="macro-nonterminal">$</span><span class="macro">crate::log::info!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"xcm::dmp::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)) , <span class="string">"Downward messages processed by para_id {:?}: {:?}"</span>, <span class="kw-2">&amp;</span>to_para_id, messages);
 									<span class="macro-nonterminal">$crate::DMP_DONE</span>.with(|b| b.borrow_mut().get_mut(<span class="self">Self</span>::name()).unwrap().push_back((to_para_id, block, msg)));
 								}
 							}
@@ -2799,7 +2823,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 					<span class="kw">while let </span><span class="prelude-val">Some</span>((to_para_id, messages))
 						= <span class="macro-nonterminal">$crate::HORIZONTAL_MESSAGES</span>.with(|b| b.borrow_mut().get_mut(<span class="self">Self</span>::name()).unwrap().pop_front()) {
-						<span class="kw">let </span>iter = messages.iter().map(|(p, b, m)| (<span class="kw-2">*</span>p, <span class="kw-2">*</span>b, <span class="kw-2">&amp;</span>m[..])).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;().into_iter();
+						<span class="kw">let </span>iter = messages.iter().map(|(para_id, relay_block_number, message)| (<span class="kw-2">*</span>para_id, <span class="kw-2">*</span>relay_block_number, <span class="kw-2">&amp;</span>message[..])).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;().into_iter();
 						$(
 							<span class="kw">let </span>para_id: u32 = &lt;<span class="macro-nonterminal">$parachain</span>&lt;<span class="self">Self</span>&gt;&gt;::para_id().into();
 
@@ -2809,7 +2833,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 									<span class="comment">// Nudge the MQ pallet to process immediately instead of in the next block.
 									</span><span class="kw">let _ </span>=  &lt;<span class="macro-nonterminal">$parachain</span>&lt;<span class="self">Self</span>&gt; <span class="kw">as </span>Parachain&gt;::MessageProcessor::service_queues(<span class="macro-nonterminal">$crate::Weight::MAX</span>);
 								});
-								<span class="macro-nonterminal">$</span><span class="macro">crate::log::debug!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"hrmp::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)) , <span class="string">"HRMP messages processed {:?} to para_id {:?}"</span>, <span class="kw-2">&amp;</span>messages, <span class="kw-2">&amp;</span>to_para_id);
+								<span class="kw">let </span>messages = messages.clone().iter().map(|(para_id, relay_block_number, message)| {
+									(<span class="kw-2">*</span>para_id, <span class="kw-2">*</span>relay_block_number, <span class="macro-nonterminal">$crate::array_bytes::bytes2hex</span>(<span class="string">"0x"</span>, message))
+								}).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+								<span class="macro-nonterminal">$</span><span class="macro">crate::log::info!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"xcm::hrmp::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)), <span class="string">"Horizontal messages processed by para_id {:?}: {:?}"</span>, <span class="kw-2">&amp;</span>to_para_id, <span class="kw-2">&amp;</span>messages);
 							}
 						)*
 					}
@@ -2828,7 +2855,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								<span class="kw-2">&amp;mut </span>msg.using_encoded(<span class="macro-nonterminal">$crate::blake2_256</span>),
 							);
 						});
-						<span class="macro-nonterminal">$</span><span class="macro">crate::log::debug!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"ump::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)) , <span class="string">"Upward message processed {:?} from para_id {:?}"</span>, <span class="kw-2">&amp;</span>msg, <span class="kw-2">&amp;</span>from_para_id);
+						<span class="kw">let </span>message = <span class="macro-nonterminal">$crate::array_bytes::bytes2hex</span>(<span class="string">"0x"</span>, msg.clone());
+						<span class="macro-nonterminal">$</span><span class="macro">crate::log::info!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"xcm::ump::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)) , <span class="string">"Upward message processed from para_id {:?}: {:?}"</span>, <span class="kw-2">&amp;</span>from_para_id, <span class="kw-2">&amp;</span>message);
 					}
 				}
 
@@ -2848,7 +2876,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								&lt;&lt;<span class="self">Self</span>::Bridge <span class="kw">as </span>Bridge&gt;::Source <span class="kw">as </span>TestExt&gt;::ext_wrapper(|| {
 									&lt;&lt;<span class="self">Self</span>::Bridge <span class="kw">as </span>Bridge&gt;::Handler <span class="kw">as </span>BridgeMessageHandler&gt;::notify_source_message_delivery(msg.lane_id.clone());
 								});
-								<span class="macro-nonterminal">$</span><span class="macro">crate::log::debug!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"bridge::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)) , <span class="string">"Bridged message processed {:?}"</span>, msg);
+								<span class="macro-nonterminal">$</span><span class="macro">crate::log::info!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"bridge::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>)) , <span class="string">"Bridged message processed {:?}"</span>, msg);
 							}
 						}
 					}
@@ -3059,7 +3087,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">if </span>!message.is_empty() {
 			<span class="comment">// Log events as they will not be logged after the panic
 			</span>&lt;<span class="macro-nonterminal">$chain </span><span class="kw">as </span><span class="macro-nonterminal">$crate::Chain</span>&gt;::events().iter().for_each(|event| {
-				<span class="macro-nonterminal">$</span><span class="macro">crate::log::debug!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"events::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$chain</span>)), <span class="string">"{:?}"</span>, event);
+				<span class="macro-nonterminal">$</span><span class="macro">crate::log::info!</span>(<span class="macro-nonterminal">target</span>: <span class="macro">concat!</span>(<span class="string">"events::"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$chain</span>)), <span class="string">"{:?}"</span>, event);
 			});
 			<span class="macro">panic!</span>(<span class="string">"{}"</span>, message.concat())
 		}
