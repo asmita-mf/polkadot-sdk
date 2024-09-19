@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726732494018,
+  "lastUpdate": 1726755732438,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25837,6 +25837,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-store",
             "value": 0.17991185840666676,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "yjh465402634@gmail.com",
+            "name": "yjh",
+            "username": "yjhmelody"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d31bb8ac990286f4d4caa759ea960bb9866fc2b0",
+          "message": "chore: fast return for invalid request of node health (#5762)\n\nCo-authored-by: command-bot <>",
+          "timestamp": "2024-09-19T12:49:04Z",
+          "tree_id": "2dededc311818c941d0b8af061e59f356785e864",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/d31bb8ac990286f4d4caa759ea960bb9866fc2b0"
+        },
+        "date": 1726755704269,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.1793346455066667,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.01644865469333334,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021356322493333333,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008987261500000092,
             "unit": "seconds"
           }
         ]
