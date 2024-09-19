@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726732528583,
+  "lastUpdate": 1726755767833,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -18279,6 +18279,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-voting",
             "value": 2.705393381829998,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "yjh465402634@gmail.com",
+            "name": "yjh",
+            "username": "yjhmelody"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d31bb8ac990286f4d4caa759ea960bb9866fc2b0",
+          "message": "chore: fast return for invalid request of node health (#5762)\n\nCo-authored-by: command-bot <>",
+          "timestamp": "2024-09-19T12:49:04Z",
+          "tree_id": "2dededc311818c941d0b8af061e59f356785e864",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/d31bb8ac990286f4d4caa759ea960bb9866fc2b0"
+        },
+        "date": 1726755739620,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63757.72000000001,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52940,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.0867236017632473,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.658526711730001,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.7257599388800244,
             "unit": "seconds"
           }
         ]
