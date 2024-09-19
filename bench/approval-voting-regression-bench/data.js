@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726766504014,
+  "lastUpdate": 1726770457744,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -18377,6 +18377,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-voting",
             "value": 2.7336083456099862,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "14218860+iulianbarbu@users.noreply.github.com",
+            "name": "Iulian Barbu",
+            "username": "iulianbarbu"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c8d5e5a383c01ee02c3cc49fbd5e07540b6b79cc",
+          "message": "cumulus/minimal-node: added prometheus metrics for the RPC client (#5572)\n\n# Description\n\nWhen we start a node with connections to external RPC servers (as a\nminimal node), we lack metrics around how many individual calls we're\ndoing to the remote RPC servers and their duration. This PR adds metrics\nthat measure durations of each RPC call made by the minimal nodes, and\nimplicitly how many calls there are.\n\nCloses #5409 \nCloses #5689\n\n## Integration\n\nNode operators should be able to track minimal node metrics and decide\nappropriate actions according to how the metrics are interpreted/felt.\nThe added metrics can be observed by curl'ing the prometheus metrics\nendpoint for the ~relaychain~ parachain (it was changed based on the\nreview). The metrics are represented by\n~`polkadot_parachain_relay_chain_rpc_interface`~\n`relay_chain_rpc_interface` namespace (I realized lining up\n`parachain_relay_chain` in the same metric might be confusing :).\nExcerpt from the curl:\n\n```\nrelay_chain_rpc_interface_bucket{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\",le=\"0.001\"} 15\nrelay_chain_rpc_interface_bucket{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\",le=\"0.004\"} 23\nrelay_chain_rpc_interface_bucket{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\",le=\"0.016\"} 23\nrelay_chain_rpc_interface_bucket{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\",le=\"0.064\"} 23\nrelay_chain_rpc_interface_bucket{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\",le=\"0.256\"} 24\nrelay_chain_rpc_interface_bucket{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\",le=\"1.024\"} 24\nrelay_chain_rpc_interface_bucket{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\",le=\"4.096\"} 24\nrelay_chain_rpc_interface_bucket{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\",le=\"16.384\"} 24\nrelay_chain_rpc_interface_bucket{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\",le=\"65.536\"} 24\nrelay_chain_rpc_interface_bucket{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\",le=\"+Inf\"} 24\nrelay_chain_rpc_interface_sum{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\"} 0.11719075\nrelay_chain_rpc_interface_count{method=\"chain_getBlockHash\",chain=\"rococo_local_testnet\"} 24\n```\n\n## Review Notes\n\nThe way we measure durations/hits is based on `HistogramVec` struct\nwhich allows us to collect timings for each RPC client method called\nfrom the minimal node., It can be extended to measure the RPCs against\nother dimensions too (status codes, response sizes, etc). The timing\nmeasuring is done at the level of the `relay-chain-rpc-interface`, in\nthe `RelayChainRpcClient` struct's method 'request_tracing'. A single\nentry point for all RPC requests done through the\nrelay-chain-rpc-interface. The requests durations will fall under\nexponential buckets described by start `0.001`, factor `4` and count\n`9`.\n\n---------\n\nSigned-off-by: Iulian Barbu <iulian.barbu@parity.io>",
+          "timestamp": "2024-09-19T17:09:51Z",
+          "tree_id": "351b215fa2a8178d624645b2dbc867e4a8d41efb",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/c8d5e5a383c01ee02c3cc49fbd5e07540b6b79cc"
+        },
+        "date": 1726770429828,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52942.40000000001,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63764.55,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.700460905609987,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.0852593637733716,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.634686718909997,
             "unit": "seconds"
           }
         ]
