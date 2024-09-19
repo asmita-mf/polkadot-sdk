@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726696797021,
+  "lastUpdate": 1726732494018,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -25783,6 +25783,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.008911077713333427,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "franciscoaguirreperez@gmail.com",
+            "name": "Francisco Aguirre",
+            "username": "franciscoaguirre"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "b230b0e32b8a12ab9b53b6a1040ba26a55704947",
+          "message": "[xcm-emulator] Better logs for message execution and processing (#5712)\n\nWhen running XCM emulated tests and seeing the logs with `RUST_LOG=xcm`\nor `RUST_LOG=xcm=trace`, it's sometimes a bit hard to figure out the\nchain where the logs are coming from.\n\nI added a log whenever `execute_with` is called, to know the chain which\nmakes the following logs. Looks like so:\n\n<img width=\"1499\" alt=\"Screenshot 2024-09-13 at 20 14 13\"\nsrc=\"https://github.com/user-attachments/assets/a31d7aa4-11d1-4d3e-9a65-86f38347c880\">\n\nThere are already log targets for when UMP, DMP and HRMP messages are\nbeing processed. To see them, you have to use the log targets `ump`,\n`dmp`, and `hrmp` respectively. So `RUST_LOG=xcm,ump,dmp,hrmp` would let\nyou see every log.\nI prefixed the targets with `xcm::` so you can get all the relevant logs\njust by filtering by `xcm`. You can always use the whole target to see\njust the messages being processed.\n\nThese logs showed the message as an array of bytes, I made them show a\nhexadecimal string instead since that's easier to copy in case you want\nto decode it or use it in another tool. They look like this now:\n\n<img width=\"1499\" alt=\"Screenshot 2024-09-13 at 20 17 15\"\nsrc=\"https://github.com/user-attachments/assets/5abf4a97-1ea7-4832-b3b0-d54c54905d1a\">\n\nThe HRMP and UMP ones are very similar.",
+          "timestamp": "2024-09-19T06:38:00Z",
+          "tree_id": "e1be4fc51a3fafb04ca1c09492d01549e43d3918",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/b230b0e32b8a12ab9b53b6a1040ba26a55704947"
+        },
+        "date": 1726732466326,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008977383580000083,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016653760206666673,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02136867699333334,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.17991185840666676,
             "unit": "seconds"
           }
         ]
