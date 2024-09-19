@@ -682,6 +682,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#530" id="530">530</a>
 <a href="#531" id="531">531</a>
 <a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Substrate.
 
@@ -707,6 +708,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">use crate</span>::{
 	request_responses::{IncomingRequest, OutgoingResponse, ProtocolConfig},
 	types::ProtocolName,
+	MAX_RESPONSE_SIZE,
 };
 
 <span class="kw">use </span>cid::{<span class="self">self</span>, Version};
@@ -731,7 +733,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 // https://github.com/ipfs/js-ipfs-bitswap/blob/
 // d8f80408aadab94c962f6b88f343eb9f39fa0fcc/src/decision-engine/index.js#L16
 // We set it to the same value as max substrate protocol message
-</span><span class="kw">const </span>MAX_PACKET_SIZE: u64 = <span class="number">16 </span>* <span class="number">1024 </span>* <span class="number">1024</span>;
+</span><span class="kw">const </span>MAX_PACKET_SIZE: u64 = MAX_RESPONSE_SIZE;
 
 <span class="doccomment">/// Max number of queued responses before denying requests.
 </span><span class="kw">const </span>MAX_REQUEST_QUEUE: usize = <span class="number">20</span>;

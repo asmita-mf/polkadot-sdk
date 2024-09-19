@@ -812,7 +812,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	request_responses::{IfDisconnected, IncomingRequest, OutgoingResponse, RequestFailure},
 	service::traits::RequestResponseConfig,
 	types::ProtocolName,
-	NetworkBackend,
+	NetworkBackend, MAX_RESPONSE_SIZE,
 };
 <span class="kw">use </span>sc_network_common::sync::message::{BlockAttributes, BlockData, BlockRequest, FromBlock};
 <span class="kw">use </span>sc_network_types::PeerId;
@@ -862,7 +862,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		generate_protocol_name(genesis_hash, fork_id).into(),
 		std::iter::once(generate_legacy_protocol_name(protocol_id).into()).collect(),
 		<span class="number">1024 </span>* <span class="number">1024</span>,
-		<span class="number">16 </span>* <span class="number">1024 </span>* <span class="number">1024</span>,
+		MAX_RESPONSE_SIZE,
 		Duration::from_secs(<span class="number">20</span>),
 		<span class="prelude-val">Some</span>(inbound_queue),
 	)

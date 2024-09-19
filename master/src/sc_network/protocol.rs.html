@@ -547,6 +547,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#395" id="395">395</a>
 <a href="#396" id="396">396</a>
 <a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -571,6 +572,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	protocol_controller::{<span class="self">self</span>, SetId},
 	service::{metrics::NotificationMetrics, traits::Direction},
 	types::ProtocolName,
+	MAX_RESPONSE_SIZE,
 };
 
 <span class="kw">use </span>codec::Encode;
@@ -605,7 +607,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Maximum size used for notifications in the block announce and transaction protocols.
 </span><span class="comment">// Must be equal to `max(MAX_BLOCK_ANNOUNCE_SIZE, MAX_TRANSACTIONS_SIZE)`.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>BLOCK_ANNOUNCES_TRANSACTIONS_SUBSTREAM_SIZE: u64 = <span class="number">16 </span>* <span class="number">1024 </span>* <span class="number">1024</span>;
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>BLOCK_ANNOUNCES_TRANSACTIONS_SUBSTREAM_SIZE: u64 = MAX_RESPONSE_SIZE;
 
 <span class="doccomment">/// Identifier of the peerset for the block announces protocol.
 </span><span class="kw">const </span>HARDCODED_PEERSETS_SYNC: SetId = SetId::from(<span class="number">0</span>);

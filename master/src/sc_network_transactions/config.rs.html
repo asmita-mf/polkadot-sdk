@@ -248,6 +248,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#96" id="96">96</a>
 <a href="#97" id="97">97</a>
 <a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -269,6 +270,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="doccomment">//! Configuration of the transaction protocol
 
 </span><span class="kw">use </span>futures::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>sc_network::MAX_RESPONSE_SIZE;
 <span class="kw">use </span>sc_network_common::ExHashT;
 <span class="kw">use </span>sp_runtime::traits::Block <span class="kw">as </span>BlockT;
 <span class="kw">use </span>std::{collections::HashMap, future::Future, pin::Pin, time};
@@ -282,7 +284,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>MAX_KNOWN_TRANSACTIONS: usize = <span class="number">10240</span>; <span class="comment">// ~300kb per peer + overhead.
 
 </span><span class="doccomment">/// Maximum allowed size for a transactions notification.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>MAX_TRANSACTIONS_SIZE: u64 = <span class="number">16 </span>* <span class="number">1024 </span>* <span class="number">1024</span>;
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>MAX_TRANSACTIONS_SIZE: u64 = MAX_RESPONSE_SIZE;
 
 <span class="doccomment">/// Maximum number of transaction validation request we keep at any moment.
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>MAX_PENDING_TRANSACTIONS: usize = <span class="number">8192</span>;

@@ -583,9 +583,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#431" id="431">431</a>
 <a href="#432" id="432">432</a>
 <a href="#433" id="433">433</a>
-<a href="#434" id="434">434</a>
-<a href="#435" id="435">435</a>
-<a href="#436" id="436">436</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -639,8 +636,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="kw">use </span>std::{collections::HashMap, time::Duration, u64};
 
-<span class="kw">use </span>polkadot_primitives::{MAX_CODE_SIZE, MAX_POV_SIZE};
-<span class="kw">use </span>sc_network::NetworkBackend;
+<span class="kw">use </span>polkadot_primitives::MAX_CODE_SIZE;
+<span class="kw">use </span>sc_network::{NetworkBackend, MAX_RESPONSE_SIZE};
 <span class="kw">use </span>sp_runtime::traits::Block;
 <span class="kw">use </span>strum::{EnumIter, IntoEnumIterator};
 
@@ -747,11 +744,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Response size limit for responses of POV like data.
 ///
-/// This is larger than `MAX_POV_SIZE` to account for protocol overhead and for additional data in
-/// `CollationFetchingV1` or `AvailableDataFetchingV1` for example. We try to err on larger limits
-/// here as a too large limit only allows an attacker to waste our bandwidth some more, a too low
-/// limit might have more severe effects.
-</span><span class="kw">const </span>POV_RESPONSE_SIZE: u64 = MAX_POV_SIZE <span class="kw">as </span>u64 + <span class="number">10_000</span>;
+/// Same as what we use in substrate networking.
+</span><span class="kw">const </span>POV_RESPONSE_SIZE: u64 = MAX_RESPONSE_SIZE;
 
 <span class="doccomment">/// Maximum response sizes for `StatementFetchingV1`.
 ///
@@ -805,7 +799,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				name,
 				legacy_names,
 				<span class="number">1_000</span>,
-				POV_RESPONSE_SIZE <span class="kw">as </span>u64 * <span class="number">3</span>,
+				POV_RESPONSE_SIZE,
 				<span class="comment">// We are connected to all validators:
 				</span>CHUNK_REQUEST_TIMEOUT,
 				tx,
