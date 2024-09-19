@@ -1189,6 +1189,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1037" id="1037">1037</a>
 <a href="#1038" id="1038">1038</a>
 <a href="#1039" id="1039">1039</a>
+<a href="#1040" id="1040">1040</a>
+<a href="#1041" id="1041">1041</a>
+<a href="#1042" id="1042">1042</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -1223,6 +1226,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	ImportQueueParams,
 };
 <span class="kw">use </span>cumulus_client_consensus_proposer::Proposer;
+<span class="kw">use </span>prometheus::Registry;
 <span class="kw">use </span>runtime::AccountId;
 <span class="kw">use </span>sc_executor::{HeapAllocStrategy, WasmExecutor, DEFAULT_HEAP_ALLOC_STRATEGY};
 <span class="kw">use </span>sp_consensus_aura::sr25519::AuthorityPair;
@@ -1455,11 +1459,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">async fn </span>build_relay_chain_interface(
 	relay_chain_config: Configuration,
+	parachain_prometheus_registry: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Registry&gt;,
 	collator_key: <span class="prelude-ty">Option</span>&lt;CollatorPair&gt;,
 	collator_options: CollatorOptions,
 	task_manager: <span class="kw-2">&amp;mut </span>TaskManager,
 ) -&gt; RelayChainResult&lt;Arc&lt;<span class="kw">dyn </span>RelayChainInterface + <span class="lifetime">'static</span>&gt;&gt; {
-	<span class="kw">let </span>relay_chain_full_node = <span class="kw">match </span>collator_options.relay_chain_mode {
+	<span class="kw">let </span>relay_chain_node = <span class="kw">match </span>collator_options.relay_chain_mode {
 		cumulus_client_cli::RelayChainMode::Embedded =&gt; polkadot_test_service::new_full(
 			relay_chain_config,
 			<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>key) = collator_key {
@@ -1474,6 +1479,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		cumulus_client_cli::RelayChainMode::ExternalRpc(rpc_target_urls) =&gt;
 			<span class="kw">return </span>build_minimal_relay_chain_node_with_rpc(
 				relay_chain_config,
+				parachain_prometheus_registry,
 				task_manager,
 				rpc_target_urls,
 			)
@@ -1485,13 +1491,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				</span>.map(|r| r.<span class="number">0</span>),
 	};
 
-	task_manager.add_child(relay_chain_full_node.task_manager);
+	task_manager.add_child(relay_chain_node.task_manager);
 	<span class="macro">tracing::info!</span>(<span class="string">"Using inprocess node."</span>);
 	<span class="prelude-val">Ok</span>(Arc::new(RelayChainInProcessInterface::new(
-		relay_chain_full_node.client.clone(),
-		relay_chain_full_node.backend.clone(),
-		relay_chain_full_node.sync_service.clone(),
-		relay_chain_full_node.overseer_handle.ok_or(RelayChainError::GenericError(
+		relay_chain_node.client.clone(),
+		relay_chain_node.backend.clone(),
+		relay_chain_node.sync_service.clone(),
+		relay_chain_node.overseer_handle.ok_or(RelayChainError::GenericError(
 			<span class="string">"Overseer should be running in full node."</span>.to_string(),
 		))<span class="question-mark">?</span>,
 	)))
@@ -1535,9 +1541,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>backend = params.backend.clone();
 
 	<span class="kw">let </span>block_import = params.other;
-
 	<span class="kw">let </span>relay_chain_interface = build_relay_chain_interface(
 		relay_chain_config,
+		parachain_config.prometheus_registry(),
 		collator_key.clone(),
 		collator_options.clone(),
 		<span class="kw-2">&amp;mut </span>task_manager,
@@ -1685,7 +1691,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					slot_drift: Duration::from_secs(<span class="number">1</span>),
 				};
 
-				<span class="kw">let </span>(collation_future, block_builer_future) =
+				<span class="kw">let </span>(collation_future, block_builder_future) =
 					slot_based::run::&lt;Block, AuthorityPair, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>&gt;(params);
 				task_manager.spawn_essential_handle().spawn(
 					<span class="string">"collation-task"</span>,
@@ -1695,7 +1701,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				task_manager.spawn_essential_handle().spawn(
 					<span class="string">"block-builder-task"</span>,
 					<span class="prelude-val">None</span>,
-					block_builer_future,
+					block_builder_future,
 				);
 			} <span class="kw">else </span>{
 				<span class="macro">tracing::info!</span>(target: LOG_TARGET, <span class="string">"Starting block authoring with lookahead collator."</span>);

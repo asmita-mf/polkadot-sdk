@@ -302,6 +302,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#150" id="150">150</a>
 <a href="#151" id="151">151</a>
 <a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -365,36 +368,39 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>collator_options = cli.run.collator_options();
 			<span class="kw">let </span>tokio_runtime = sc_cli::build_runtime()<span class="question-mark">?</span>;
 			<span class="kw">let </span>tokio_handle = tokio_runtime.handle();
-			<span class="kw">let </span>config = cli
+			<span class="kw">let </span>parachain_config = cli
 				.run
 				.normalize()
 				.create_configuration(<span class="kw-2">&amp;</span>cli, tokio_handle.clone())
 				.expect(<span class="string">"Should be able to generate config"</span>);
 
-			<span class="kw">let </span>polkadot_cli = RelayChainCli::new(
-				<span class="kw-2">&amp;</span>config,
+			<span class="kw">let </span>relay_chain_cli = RelayChainCli::new(
+				<span class="kw-2">&amp;</span>parachain_config,
 				[RelayChainCli::executable_name()].iter().chain(cli.relaychain_args.iter()),
 			);
+			<span class="kw">let </span>tokio_handle = parachain_config.tokio_handle.clone();
+			<span class="kw">let </span>relay_chain_config = SubstrateCli::create_configuration(
+				<span class="kw-2">&amp;</span>relay_chain_cli,
+				<span class="kw-2">&amp;</span>relay_chain_cli,
+				tokio_handle,
+			)
+			.map_err(|err| <span class="macro">format!</span>(<span class="string">"Relay chain argument error: {}"</span>, err))<span class="question-mark">?</span>;
 
-			<span class="kw">let </span>tokio_handle = config.tokio_handle.clone();
-			<span class="kw">let </span>polkadot_config =
-				SubstrateCli::create_configuration(<span class="kw-2">&amp;</span>polkadot_cli, <span class="kw-2">&amp;</span>polkadot_cli, tokio_handle)
-					.map_err(|err| <span class="macro">format!</span>(<span class="string">"Relay chain argument error: {}"</span>, err))<span class="question-mark">?</span>;
-
-			<span class="kw">let </span>parachain_id = chain_spec::Extensions::try_get(<span class="kw-2">&amp;*</span>config.chain_spec)
+			<span class="kw">let </span>parachain_id = chain_spec::Extensions::try_get(<span class="kw-2">&amp;*</span>parachain_config.chain_spec)
 				.map(|e| e.para_id)
 				.ok_or(<span class="string">"Could not find parachain extension in chain-spec."</span>)<span class="question-mark">?</span>;
 
 			<span class="macro">tracing::info!</span>(<span class="string">"Parachain id: {:?}"</span>, parachain_id);
 			<span class="macro">tracing::info!</span>(
 				<span class="string">"Is collating: {}"</span>,
-				<span class="kw">if </span>config.role.is_authority() { <span class="string">"yes" </span>} <span class="kw">else </span>{ <span class="string">"no" </span>}
+				<span class="kw">if </span>parachain_config.role.is_authority() { <span class="string">"yes" </span>} <span class="kw">else </span>{ <span class="string">"no" </span>}
 			);
 			<span class="kw">if </span>cli.fail_pov_recovery {
 				<span class="macro">tracing::info!</span>(<span class="string">"PoV recovery failure enabled"</span>);
 			}
 
-			<span class="kw">let </span>collator_key = config.role.is_authority().then(|| CollatorPair::generate().<span class="number">0</span>);
+			<span class="kw">let </span>collator_key =
+				parachain_config.role.is_authority().then(|| CollatorPair::generate().<span class="number">0</span>);
 
 			<span class="kw">let </span>consensus = cli
 				.use_null_consensus
@@ -406,15 +412,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 			<span class="kw">let </span>(<span class="kw-2">mut </span>task_manager, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) = tokio_runtime
 				.block_on(<span class="kw">async move </span>{
-					<span class="kw">match </span>polkadot_config.network.network_backend {
+					<span class="kw">match </span>relay_chain_config.network.network_backend {
 						sc_network::config::NetworkBackendType::Libp2p =&gt;
 							cumulus_test_service::start_node_impl::&lt;
 								<span class="kw">_</span>,
 								sc_network::NetworkWorker&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;,
 							&gt;(
-								config,
+								parachain_config,
 								collator_key,
-								polkadot_config,
+								relay_chain_config,
 								parachain_id.into(),
 								cli.disable_block_announcements.then(wrap_announce_block),
 								cli.fail_pov_recovery,
@@ -430,9 +436,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								<span class="kw">_</span>,
 								sc_network::Litep2pNetworkBackend,
 							&gt;(
-								config,
+								parachain_config,
 								collator_key,
-								polkadot_config,
+								relay_chain_config,
 								parachain_id.into(),
 								cli.disable_block_announcements.then(wrap_announce_block),
 								cli.fail_pov_recovery,

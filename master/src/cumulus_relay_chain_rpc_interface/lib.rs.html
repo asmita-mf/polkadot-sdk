@@ -411,6 +411,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#259" id="259">259</a>
 <a href="#260" id="260">260</a>
 <a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -452,6 +454,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">pub use </span>url::Url;
 
 <span class="kw">mod </span>light_client_worker;
+<span class="kw">mod </span>metrics;
 <span class="kw">mod </span>reconnecting_ws_client;
 <span class="kw">mod </span>rpc_client;
 <span class="kw">mod </span>tokio_platform;
@@ -500,12 +503,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">async fn </span>header(<span class="kw-2">&amp;</span><span class="self">self</span>, block_id: BlockId) -&gt; RelayChainResult&lt;<span class="prelude-ty">Option</span>&lt;PHeader&gt;&gt; {
 		<span class="kw">let </span>hash = <span class="kw">match </span>block_id {
 			BlockId::Hash(hash) =&gt; hash,
-			BlockId::Number(num) =&gt;
+			BlockId::Number(num) =&gt; {
 				<span class="kw">if let </span><span class="prelude-val">Some</span>(hash) = <span class="self">self</span>.rpc_client.chain_get_block_hash(<span class="prelude-val">Some</span>(num)).<span class="kw">await</span><span class="question-mark">? </span>{
 					hash
 				} <span class="kw">else </span>{
 					<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
-				},
+				}
+			},
 		};
 		<span class="kw">let </span>header = <span class="self">self</span>.rpc_client.chain_get_header(<span class="prelude-val">Some</span>(hash)).<span class="kw">await</span><span class="question-mark">?</span>;
 

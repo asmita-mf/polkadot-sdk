@@ -444,6 +444,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#292" id="292">292</a>
 <a href="#293" id="293">293</a>
 <a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -542,19 +545,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	client: RelayChainRpcClient,
 ) -&gt; RelayChainResult&lt;(Arc&lt;(<span class="kw">dyn </span>RelayChainInterface + <span class="lifetime">'static</span>)&gt;, <span class="prelude-ty">Option</span>&lt;CollatorPair&gt;)&gt; {
 	<span class="kw">let </span>collator_pair = CollatorPair::generate().<span class="number">0</span>;
+	<span class="kw">let </span>blockchain_rpc_client = Arc::new(BlockChainRpcClient::new(client.clone()));
 	<span class="kw">let </span>collator_node = <span class="kw">match </span>polkadot_config.network.network_backend {
 		sc_network::config::NetworkBackendType::Libp2p =&gt;
 			new_minimal_relay_chain::&lt;RelayBlock, sc_network::NetworkWorker&lt;RelayBlock, RelayHash&gt;&gt;(
 				polkadot_config,
 				collator_pair.clone(),
-				Arc::new(BlockChainRpcClient::new(client.clone())),
+				blockchain_rpc_client,
 			)
 			.<span class="kw">await</span><span class="question-mark">?</span>,
 		sc_network::config::NetworkBackendType::Litep2p =&gt;
 			new_minimal_relay_chain::&lt;RelayBlock, sc_network::Litep2pNetworkBackend&gt;(
 				polkadot_config,
 				collator_pair.clone(),
-				Arc::new(BlockChainRpcClient::new(client.clone())),
+				blockchain_rpc_client,
 			)
 			.<span class="kw">await</span><span class="question-mark">?</span>,
 	};
@@ -566,17 +570,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="kw">pub async fn </span>build_minimal_relay_chain_node_with_rpc(
-	polkadot_config: Configuration,
+	relay_chain_config: Configuration,
+	parachain_prometheus_registry: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Registry&gt;,
 	task_manager: <span class="kw-2">&amp;mut </span>TaskManager,
 	relay_chain_url: Vec&lt;Url&gt;,
 ) -&gt; RelayChainResult&lt;(Arc&lt;(<span class="kw">dyn </span>RelayChainInterface + <span class="lifetime">'static</span>)&gt;, <span class="prelude-ty">Option</span>&lt;CollatorPair&gt;)&gt; {
 	<span class="kw">let </span>client = cumulus_relay_chain_rpc_interface::create_client_and_start_worker(
 		relay_chain_url,
 		task_manager,
+		parachain_prometheus_registry,
 	)
 	.<span class="kw">await</span><span class="question-mark">?</span>;
 
-	build_interface(polkadot_config, task_manager, client).<span class="kw">await
+	build_interface(relay_chain_config, task_manager, client).<span class="kw">await
 </span>}
 
 <span class="kw">pub async fn </span>build_minimal_relay_chain_node_light_client(

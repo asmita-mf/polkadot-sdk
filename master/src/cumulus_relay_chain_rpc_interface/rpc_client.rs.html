@@ -888,6 +888,23 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#736" id="736">736</a>
 <a href="#737" id="737">737</a>
 <a href="#738" id="738">738</a>
+<a href="#739" id="739">739</a>
+<a href="#740" id="740">740</a>
+<a href="#741" id="741">741</a>
+<a href="#742" id="742">742</a>
+<a href="#743" id="743">743</a>
+<a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a>
+<a href="#746" id="746">746</a>
+<a href="#747" id="747">747</a>
+<a href="#748" id="748">748</a>
+<a href="#749" id="749">749</a>
+<a href="#750" id="750">750</a>
+<a href="#751" id="751">751</a>
+<a href="#752" id="752">752</a>
+<a href="#753" id="753">753</a>
+<a href="#754" id="754">754</a>
+<a href="#755" id="755">755</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -912,6 +929,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	core::{params::ArrayParams, ClientError <span class="kw">as </span>JsonRpseeError},
 	rpc_params,
 };
+<span class="kw">use </span>prometheus::Registry;
 <span class="kw">use </span>serde::de::DeserializeOwned;
 <span class="kw">use </span>serde_json::Value <span class="kw">as </span>JsonValue;
 <span class="kw">use </span>std::collections::{btree_map::BTreeMap, VecDeque};
@@ -942,6 +960,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use crate</span>::{
 	light_client_worker::{build_smoldot_client, LightClientRpcWorker},
+	metrics::RelaychainRpcMetrics,
 	reconnecting_ws_client::ReconnectingWebsocketWorker,
 };
 <span class="kw">pub use </span>url::Url;
@@ -977,6 +996,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub async fn </span>create_client_and_start_worker(
 	urls: Vec&lt;Url&gt;,
 	task_manager: <span class="kw-2">&amp;mut </span>TaskManager,
+	prometheus_registry: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Registry&gt;,
 ) -&gt; RelayChainResult&lt;RelayChainRpcClient&gt; {
 	<span class="kw">let </span>(worker, sender) = ReconnectingWebsocketWorker::new(urls).<span class="kw">await</span>;
 
@@ -984,7 +1004,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		.spawn_essential_handle()
 		.spawn(<span class="string">"relay-chain-rpc-worker"</span>, <span class="prelude-val">None</span>, worker.run());
 
-	<span class="kw">let </span>client = RelayChainRpcClient::new(sender);
+	<span class="kw">let </span>client = RelayChainRpcClient::new(sender, prometheus_registry);
 
 	<span class="prelude-val">Ok</span>(client)
 }
@@ -1003,7 +1023,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		.spawn_essential_handle()
 		.spawn(<span class="string">"relay-light-client-worker"</span>, <span class="prelude-val">None</span>, worker.run());
 
-	<span class="kw">let </span>client = RelayChainRpcClient::new(sender);
+	<span class="comment">// We'll not setup prometheus exporter metrics for the light client worker.
+	</span><span class="kw">let </span>client = RelayChainRpcClient::new(sender, <span class="prelude-val">None</span>);
 
 	<span class="prelude-val">Ok</span>(client)
 }
@@ -1013,6 +1034,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub struct </span>RelayChainRpcClient {
 	<span class="doccomment">/// Sender to send messages to the worker.
 	</span>worker_channel: TokioSender&lt;RpcDispatcherMessage&gt;,
+	metrics: <span class="prelude-ty">Option</span>&lt;RelaychainRpcMetrics&gt;,
 }
 
 <span class="kw">impl </span>RelayChainRpcClient {
@@ -1020,8 +1042,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	///
 	/// This client expects a channel connected to a worker that processes
 	/// requests sent via this channel.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(worker_channel: TokioSender&lt;RpcDispatcherMessage&gt;) -&gt; <span class="self">Self </span>{
-		RelayChainRpcClient { worker_channel }
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(
+		worker_channel: TokioSender&lt;RpcDispatcherMessage&gt;,
+		prometheus_registry: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Registry&gt;,
+	) -&gt; <span class="self">Self </span>{
+		RelayChainRpcClient {
+			worker_channel,
+			metrics: prometheus_registry
+				.and_then(|inner| RelaychainRpcMetrics::register(inner).map_err(|err| {
+					<span class="macro">tracing::warn!</span>(target: LOG_TARGET, error = %err, <span class="string">"Unable to instantiate the RPC client metrics, continuing w/o metrics setup."</span>);
+				}).ok()),
+		}
 	}
 
 	<span class="doccomment">/// Call a call to `state_call` rpc method.
@@ -1038,6 +1069,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			payload_bytes,
 			hash
 		};
+
 		<span class="kw">let </span>res = <span class="self">self
 			</span>.request_tracing::&lt;sp_core::Bytes, <span class="kw">_</span>&gt;(<span class="string">"state_call"</span>, params, |err| {
 				<span class="macro">tracing::trace!</span>(
@@ -1080,6 +1112,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span>R: DeserializeOwned + std::fmt::Debug,
 		OR: Fn(<span class="kw-2">&amp;</span>RelayChainError),
 	{
+		<span class="kw">let </span>_timer = <span class="self">self</span>.metrics.as_ref().map(|inner| inner.start_request_timer(method));
+
 		<span class="kw">let </span>(tx, rx) = futures::channel::oneshot::channel();
 
 		<span class="kw">let </span>message = RpcDispatcherMessage::Request(method.into(), params, tx);

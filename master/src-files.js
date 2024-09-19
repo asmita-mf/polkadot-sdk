@@ -86,7 +86,7 @@ var srcIndex = new Map(JSON.parse('[\
 ["cumulus_relay_chain_inprocess_interface",["",[],["lib.rs"]]],\
 ["cumulus_relay_chain_interface",["",[],["lib.rs"]]],\
 ["cumulus_relay_chain_minimal_node",["",[],["blockchain_rpc_client.rs","collator_overseer.rs","lib.rs","network.rs"]]],\
-["cumulus_relay_chain_rpc_interface",["",[],["lib.rs","light_client_worker.rs","reconnecting_ws_client.rs","rpc_client.rs","tokio_platform.rs"]]],\
+["cumulus_relay_chain_rpc_interface",["",[],["lib.rs","light_client_worker.rs","metrics.rs","reconnecting_ws_client.rs","rpc_client.rs","tokio_platform.rs"]]],\
 ["cumulus_test_client",["",[],["block_builder.rs","lib.rs"]]],\
 ["cumulus_test_relay_sproof_builder",["",[],["lib.rs"]]],\
 ["cumulus_test_runtime",["",[],["lib.rs","test_pallet.rs"]]],\
