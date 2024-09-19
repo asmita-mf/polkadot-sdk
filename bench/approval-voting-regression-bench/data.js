@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726755767833,
+  "lastUpdate": 1726766504014,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -18328,6 +18328,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-voting",
             "value": 2.7257599388800244,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "eresav@me.com",
+            "name": "Andrei Eres",
+            "username": "AndreiEres"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "0c9d8fedc6ef1fde939346c91d304226cb297ec1",
+          "message": "Use maximum allowed response size for request/response protocols (#5753)\n\n# Description\n\nAdjust the PoV response size to the default values used in the\nsubstrate.\nFixes https://github.com/paritytech/polkadot-sdk/issues/5503\n\n## Integration\n\nThe changes shouldn't impact downstream projects since we are only\nincreasing the limit.\n\n## Review Notes\n\nYou can't see it from the changes, but it affects all protocols that use\nthe `POV_RESPONSE_SIZE` constant.\n- Protocol::ChunkFetchingV1\n- Protocol::ChunkFetchingV2\n- Protocol::CollationFetchingV1\n- Protocol::CollationFetchingV2\n- Protocol::PoVFetchingV1\n- Protocol::AvailableDataFetchingV1\n\n## Increasing timeouts\n\n\nhttps://github.com/paritytech/polkadot-sdk/blob/fae15379cba0c876aa16c77e11809c83d1db8f5c/polkadot/node/network/protocol/src/request_response/mod.rs#L126-L129\n\nI assume the current PoV request timeout is set to 1.2s to handle 5\nconsecutive requests during a 6s block. This setting does not relate to\nthe PoV response size. I see no reason to change the current timeouts\nafter adjusting the response size.\n\nHowever, we should consider networking speed limitations if we want to\nincrease the maximum PoV size to 10 MB. With the number of parallel\nrequests set to 10, validators will need the following networking\nspeeds:\n- 5 MB PoV: at least 42 MB/s, ideally 50 MB/s.  \n- 10 MB PoV: at least 84 MB/s, ideally 100 MB/s.\n\nThe current required speed of 50 MB/s aligns with the 62.5 MB/s\nspecified [in the reference hardware\nrequirements](https://wiki.polkadot.network/docs/maintain-guides-how-to-validate-polkadot#reference-hardware).\nIncreasing the PoV size to 10 MB may require a higher networking speed.\n\n---------\n\nCo-authored-by: Andrei Sandu <54316454+sandreim@users.noreply.github.com>",
+          "timestamp": "2024-09-19T15:45:35Z",
+          "tree_id": "2d97c6d5f4f763c20bceed78acf8e2419a7b56cc",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/0c9d8fedc6ef1fde939346c91d304226cb297ec1"
+        },
+        "date": 1726766476139,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63780,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52944,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.222729159692912,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.684197227789998,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.7336083456099862,
             "unit": "seconds"
           }
         ]
