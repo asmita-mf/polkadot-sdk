@@ -2469,6 +2469,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#2317" id="2317">2317</a>
 <a href="#2318" id="2318">2318</a>
 <a href="#2319" id="2319">2319</a>
+<a href="#2320" id="2320">2320</a>
+<a href="#2321" id="2321">2321</a>
+<a href="#2322" id="2322">2322</a>
+<a href="#2323" id="2323">2323</a>
+<a href="#2324" id="2324">2324</a>
+<a href="#2325" id="2325">2325</a>
+<a href="#2326" id="2326">2326</a>
+<a href="#2327" id="2327">2327</a>
+<a href="#2328" id="2328">2328</a>
+<a href="#2329" id="2329">2329</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2619,7 +2629,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 }
 
-<span class="kw">enum </span>AllowedRequests {
+<span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">enum </span>AllowedRequests {
 	<span class="prelude-val">Some</span>(HashSet&lt;PeerId&gt;),
 	All,
 }
@@ -4185,13 +4196,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>best_queued = <span class="self">self</span>.best_queued_number;
 		<span class="kw">let </span>client = <span class="kw-2">&amp;</span><span class="self">self</span>.client;
 		<span class="kw">let </span>queue_blocks = <span class="kw-2">&amp;</span><span class="self">self</span>.queue_blocks;
-		<span class="kw">let </span>allowed_requests = <span class="self">self</span>.allowed_requests.take();
+		<span class="kw">let </span>allowed_requests = <span class="self">self</span>.allowed_requests.clone();
 		<span class="kw">let </span>max_parallel = <span class="kw">if </span>is_major_syncing { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="self">self</span>.max_parallel_downloads };
 		<span class="kw">let </span>max_blocks_per_request = <span class="self">self</span>.max_blocks_per_request;
 		<span class="kw">let </span>gap_sync = <span class="kw-2">&amp;mut </span><span class="self">self</span>.gap_sync;
 		<span class="kw">let </span>disconnected_peers = <span class="kw-2">&amp;mut </span><span class="self">self</span>.disconnected_peers;
 		<span class="kw">let </span>metrics = <span class="self">self</span>.metrics.as_ref();
-		<span class="self">self</span>.peers
+		<span class="kw">let </span>requests = <span class="self">self
+			</span>.peers
 			.iter_mut()
 			.filter_map(<span class="kw">move </span>|(<span class="kw-2">&amp;</span>id, peer)| {
 				<span class="kw">if </span>!peer.state.is_available() ||
@@ -4290,7 +4302,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					<span class="prelude-val">None
 				</span>}
 			})
-			.collect()
+			.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+
+		<span class="comment">// Clear the allowed_requests state when sending new block requests
+		// to prevent multiple inflight block requests from being issued.
+		</span><span class="kw">if </span>!requests.is_empty() {
+			<span class="self">self</span>.allowed_requests.take();
+		}
+
+		requests
 	}
 
 	<span class="doccomment">/// Get a state request scheduled by sync to be sent out (if any).
