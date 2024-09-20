@@ -1511,6 +1511,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1359" id="1359">1359</a>
 <a href="#1360" id="1360">1360</a>
 <a href="#1361" id="1361">1361</a>
+<a href="#1362" id="1362">1362</a>
+<a href="#1363" id="1363">1363</a>
+<a href="#1364" id="1364">1364</a>
+<a href="#1365" id="1365">1365</a>
+<a href="#1366" id="1366">1366</a>
+<a href="#1367" id="1367">1367</a>
+<a href="#1368" id="1368">1368</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -1613,6 +1620,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>testnet_parachains_constants::westend::{consensus::<span class="kw-2">*</span>, currency::<span class="kw-2">*</span>, fee::WeightToFee, time::<span class="kw-2">*</span>};
 <span class="kw">use </span>xcm::VersionedLocation;
 
+<span class="kw">use </span>westend_runtime_constants::system_parachain::{ASSET_HUB_ID, BRIDGE_HUB_ID};
+
 <span class="doccomment">/// The address format for describing accounts.
 </span><span class="kw">pub type </span>Address = MultiAddress&lt;AccountId, ()&gt;;
 
@@ -1665,6 +1674,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	&gt;,
 	<span class="comment">// permanent
 	</span>pallet_xcm::migration::MigrateToLatestXcmVersion&lt;Runtime&gt;,
+	snowbridge_pallet_system::migration::v0::InitializeOnUpgrade&lt;
+		Runtime,
+		ConstU32&lt;BRIDGE_HUB_ID&gt;,
+		ConstU32&lt;ASSET_HUB_ID&gt;,
+	&gt;,
 );
 
 <span class="macro">parameter_types! </span>{
@@ -1722,7 +1736,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	spec_name: <span class="macro">create_runtime_str!</span>(<span class="string">"bridge-hub-westend"</span>),
 	impl_name: <span class="macro">create_runtime_str!</span>(<span class="string">"bridge-hub-westend"</span>),
 	authoring_version: <span class="number">1</span>,
-	spec_version: <span class="number">1_016_000</span>,
+	spec_version: <span class="number">1_016_001</span>,
 	impl_version: <span class="number">0</span>,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: <span class="number">5</span>,
