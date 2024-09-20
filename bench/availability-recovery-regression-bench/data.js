@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726821466926,
+  "lastUpdate": 1726861455507,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -20803,6 +20803,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.2339147373333333,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "xuliuchengxlc@gmail.com",
+            "name": "Liu-Cheng Xu",
+            "username": "liuchengxu"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "515fcc952cd52504ab7d3866a83adb9bf0f8e56b",
+          "message": "Avoid unnecessary state reset of `allowed_requests` when no block requests are sent (#5774)\n\nThis PR is cherry-picked from\nhttps://github.com/paritytech/polkadot-sdk/pull/5663 so that I can\nmaintain a smaller polkadot-sdk diff downstream sooner than later.\n\ncc @lexnv @dmitry-markin\n\n---------\n\nCo-authored-by: Alexandru Vasile <60601340+lexnv@users.noreply.github.com>\nCo-authored-by: Dmitry Markin <dmitry@markin.tech>",
+          "timestamp": "2024-09-20T18:27:39Z",
+          "tree_id": "e01927fe5c76c5e9741bf2f6fe4daf841828c98d",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/515fcc952cd52504ab7d3866a83adb9bf0f8e56b"
+        },
+        "date": 1726861428640,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.2342492451666666,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.720764082933336,
             "unit": "seconds"
           }
         ]
