@@ -905,6 +905,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#753" id="753">753</a>
 <a href="#754" id="754">754</a>
 <a href="#755" id="755">755</a>
+<a href="#756" id="756">756</a>
+<a href="#757" id="757">757</a>
+<a href="#758" id="758">758</a>
+<a href="#759" id="759">759</a>
+<a href="#760" id="760">760</a>
+<a href="#761" id="761">761</a>
+<a href="#762" id="762">762</a>
+<a href="#763" id="763">763</a>
+<a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -1055,15 +1069,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 	}
 
-	<span class="doccomment">/// Call a call to `state_call` rpc method.
-	</span><span class="kw">pub async fn </span>call_remote_runtime_function&lt;R: Decode&gt;(
+	<span class="doccomment">/// Same as `call_remote_runtime_function` but work on encoded data
+	</span><span class="kw">pub async fn </span>call_remote_runtime_function_encoded(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		method_name: <span class="kw-2">&amp;</span>str,
 		hash: RelayHash,
-		payload: <span class="prelude-ty">Option</span>&lt;<span class="kw">impl </span>Encode&gt;,
-	) -&gt; RelayChainResult&lt;R&gt; {
-		<span class="kw">let </span>payload_bytes =
-			payload.map_or(sp_core::Bytes(Vec::new()), |v| sp_core::Bytes(v.encode()));
+		payload_bytes: <span class="kw-2">&amp;</span>[u8],
+	) -&gt; RelayChainResult&lt;sp_core::Bytes&gt; {
 		<span class="kw">let </span>params = <span class="macro">rpc_params! </span>{
 			method_name,
 			payload_bytes,
@@ -1080,6 +1092,22 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					<span class="string">"Error during call to 'state_call'."</span>,
 				);
 			})
+			.<span class="kw">await</span><span class="question-mark">?</span>;
+
+		<span class="prelude-val">Ok</span>(res)
+	}
+
+	<span class="doccomment">/// Call a call to `state_call` rpc method.
+	</span><span class="kw">pub async fn </span>call_remote_runtime_function&lt;R: Decode&gt;(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		method_name: <span class="kw-2">&amp;</span>str,
+		hash: RelayHash,
+		payload: <span class="prelude-ty">Option</span>&lt;<span class="kw">impl </span>Encode&gt;,
+	) -&gt; RelayChainResult&lt;R&gt; {
+		<span class="kw">let </span>payload_bytes =
+			payload.map_or(sp_core::Bytes(Vec::new()), |v| sp_core::Bytes(v.encode()));
+		<span class="kw">let </span>res = <span class="self">self
+			</span>.call_remote_runtime_function_encoded(method_name, hash, <span class="kw-2">&amp;</span>payload_bytes)
 			.<span class="kw">await</span><span class="question-mark">?</span>;
 		Decode::decode(<span class="kw-2">&amp;mut &amp;*</span>res.<span class="number">0</span>).map_err(Into::into)
 	}
