@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726783810563,
+  "lastUpdate": 1726821502235,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -26053,6 +26053,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.008990268860000088,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "44604217+tmpolaczyk@users.noreply.github.com",
+            "name": "tmpolaczyk",
+            "username": "tmpolaczyk"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5a431470d2a4155a4bb00ea6ac07d7f9707f8e82",
+          "message": "Allow to call arbitrary runtime apis using RelayChainInterface (#5521)\n\nWhen using the relay chain though a `Arc<dyn RelayChainInterface>` there\nis no way to call arbitrary runtime apis. Both implementations of that\ntrait allow this, so it feels natural to expose this functionality in\nthe trait.\n\nThis PR adds a `call_runtime_api` method to RelayChainInterface trait,\nand a separate function also named `call_runtime_api` which allows the\ncaller to specify the input and output types, as opposed to having to\nencode them. This generic function cannot be part of the trait because a\n`dyn Trait` object cannot have generic methods.\n\n---------\n\nCo-authored-by: Bastian Köcher <git@kchr.de>",
+          "timestamp": "2024-09-20T07:17:39Z",
+          "tree_id": "1320be831f035e37737c2f5ac959c6eeb3f5de63",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/5a431470d2a4155a4bb00ea6ac07d7f9707f8e82"
+        },
+        "date": 1726821473752,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.00879271846666676,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.021504781333333323,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016580457846666664,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18286028595333342,
             "unit": "seconds"
           }
         ]
