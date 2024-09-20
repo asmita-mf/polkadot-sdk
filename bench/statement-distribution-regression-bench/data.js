@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726783879020,
+  "lastUpdate": 1726821572482,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -11391,6 +11391,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "statement-distribution",
             "value": 0.03708004255400001,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "44604217+tmpolaczyk@users.noreply.github.com",
+            "name": "tmpolaczyk",
+            "username": "tmpolaczyk"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5a431470d2a4155a4bb00ea6ac07d7f9707f8e82",
+          "message": "Allow to call arbitrary runtime apis using RelayChainInterface (#5521)\n\nWhen using the relay chain though a `Arc<dyn RelayChainInterface>` there\nis no way to call arbitrary runtime apis. Both implementations of that\ntrait allow this, so it feels natural to expose this functionality in\nthe trait.\n\nThis PR adds a `call_runtime_api` method to RelayChainInterface trait,\nand a separate function also named `call_runtime_api` which allows the\ncaller to specify the input and output types, as opposed to having to\nencode them. This generic function cannot be part of the trait because a\n`dyn Trait` object cannot have generic methods.\n\n---------\n\nCo-authored-by: Bastian Köcher <git@kchr.de>",
+          "timestamp": "2024-09-20T07:17:39Z",
+          "tree_id": "1320be831f035e37737c2f5ac959c6eeb3f5de63",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/5a431470d2a4155a4bb00ea6ac07d7f9707f8e82"
+        },
+        "date": 1726821544221,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.93999999999994,
+            "unit": "KiB"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.036857243892,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04440102649599997,
             "unit": "seconds"
           }
         ]
