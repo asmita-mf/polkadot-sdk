@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726861522550,
+  "lastUpdate": 1726878633236,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -18573,6 +18573,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-voting",
             "value": 2.7088228502100136,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "eshaben@icloud.com",
+            "name": "Erin Shaben",
+            "username": "eshaben"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "6ff41dcac7c8a2fb9f62e68a70c9a214e42d2bf3",
+          "message": "Update README.md (#5780)\n\n# Description\n\nThis PR just makes some minor adjustments to the README. The main goal\nof it is to consistently refer to the Polkadot SDK as such, without a\nhyphen. I noticed some other minor inconsistencies, so I fixed those\nwhile I was at it",
+          "timestamp": "2024-09-20T23:12:37Z",
+          "tree_id": "5c0635c013ffab3932ef7df7329fb779be33f539",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/6ff41dcac7c8a2fb9f62e68a70c9a214e42d2bf3"
+        },
+        "date": 1726878605308,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52942,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63759.990000000005,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.090632853103436,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.690539811789995,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.6998653394700023,
             "unit": "seconds"
           }
         ]
