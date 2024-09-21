@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726861556576,
+  "lastUpdate": 1726878668075,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -11479,6 +11479,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.04454715393399997,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "eshaben@icloud.com",
+            "name": "Erin Shaben",
+            "username": "eshaben"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "6ff41dcac7c8a2fb9f62e68a70c9a214e42d2bf3",
+          "message": "Update README.md (#5780)\n\n# Description\n\nThis PR just makes some minor adjustments to the README. The main goal\nof it is to consistently refer to the Polkadot SDK as such, without a\nhyphen. I noticed some other minor inconsistencies, so I fixed those\nwhile I was at it",
+          "timestamp": "2024-09-20T23:12:37Z",
+          "tree_id": "5c0635c013ffab3932ef7df7329fb779be33f539",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/6ff41dcac7c8a2fb9f62e68a70c9a214e42d2bf3"
+        },
+        "date": 1726878640301,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 127.93199999999993,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.044701663139999945,
+            "unit": "seconds"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.037126174136,
             "unit": "seconds"
           }
         ]
