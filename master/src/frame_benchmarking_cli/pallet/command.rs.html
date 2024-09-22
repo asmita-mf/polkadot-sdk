@@ -1162,56 +1162,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1010" id="1010">1010</a>
 <a href="#1011" id="1011">1011</a>
 <a href="#1012" id="1012">1012</a>
-<a href="#1013" id="1013">1013</a>
-<a href="#1014" id="1014">1014</a>
-<a href="#1015" id="1015">1015</a>
-<a href="#1016" id="1016">1016</a>
-<a href="#1017" id="1017">1017</a>
-<a href="#1018" id="1018">1018</a>
-<a href="#1019" id="1019">1019</a>
-<a href="#1020" id="1020">1020</a>
-<a href="#1021" id="1021">1021</a>
-<a href="#1022" id="1022">1022</a>
-<a href="#1023" id="1023">1023</a>
-<a href="#1024" id="1024">1024</a>
-<a href="#1025" id="1025">1025</a>
-<a href="#1026" id="1026">1026</a>
-<a href="#1027" id="1027">1027</a>
-<a href="#1028" id="1028">1028</a>
-<a href="#1029" id="1029">1029</a>
-<a href="#1030" id="1030">1030</a>
-<a href="#1031" id="1031">1031</a>
-<a href="#1032" id="1032">1032</a>
-<a href="#1033" id="1033">1033</a>
-<a href="#1034" id="1034">1034</a>
-<a href="#1035" id="1035">1035</a>
-<a href="#1036" id="1036">1036</a>
-<a href="#1037" id="1037">1037</a>
-<a href="#1038" id="1038">1038</a>
-<a href="#1039" id="1039">1039</a>
-<a href="#1040" id="1040">1040</a>
-<a href="#1041" id="1041">1041</a>
-<a href="#1042" id="1042">1042</a>
-<a href="#1043" id="1043">1043</a>
-<a href="#1044" id="1044">1044</a>
-<a href="#1045" id="1045">1045</a>
-<a href="#1046" id="1046">1046</a>
-<a href="#1047" id="1047">1047</a>
-<a href="#1048" id="1048">1048</a>
-<a href="#1049" id="1049">1049</a>
-<a href="#1050" id="1050">1050</a>
-<a href="#1051" id="1051">1051</a>
-<a href="#1052" id="1052">1052</a>
-<a href="#1053" id="1053">1053</a>
-<a href="#1054" id="1054">1054</a>
-<a href="#1055" id="1055">1055</a>
-<a href="#1056" id="1056">1056</a>
-<a href="#1057" id="1057">1057</a>
-<a href="#1058" id="1058">1058</a>
-<a href="#1059" id="1059">1059</a>
-<a href="#1060" id="1060">1060</a>
-<a href="#1061" id="1061">1061</a>
-<a href="#1062" id="1062">1062</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1233,7 +1183,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	types::{ComponentRange, ComponentRangeMap},
 	writer, ListOutput, PalletCmd,
 };
-<span class="kw">use </span><span class="kw">crate</span>::pallet::{types::FetchedCode, GenesisBuilder};
+<span class="kw">use </span><span class="kw">crate</span>::pallet::{types::FetchedCode, GenesisBuilderPolicy};
 <span class="kw">use </span>codec::{Decode, Encode};
 <span class="kw">use </span>frame_benchmarking::{
 	Analysis, BenchmarkBatch, BenchmarkBatchSplitResults, BenchmarkList, BenchmarkParameter,
@@ -1241,7 +1191,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 };
 <span class="kw">use </span>frame_support::traits::StorageInfo;
 <span class="kw">use </span>linked_hash_map::LinkedHashMap;
-<span class="kw">use </span>sc_chain_spec::json_patch::merge <span class="kw">as </span>json_merge;
+<span class="kw">use </span>sc_chain_spec::GenesisConfigBuilderRuntimeCaller;
 <span class="kw">use </span>sc_cli::{execution_method_from_cli, ChainSpec, CliConfiguration, <span class="prelude-ty">Result</span>, SharedParams};
 <span class="kw">use </span>sc_client_db::BenchmarkingState;
 <span class="kw">use </span>sc_executor::{HeapAllocStrategy, WasmExecutor, DEFAULT_HEAP_ALLOC_STRATEGY};
@@ -1250,18 +1200,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		testing::{TestOffchainExt, TestTransactionPoolExt},
 		OffchainDbExt, OffchainWorkerExt, TransactionPoolExt,
 	},
-	traits::{CallContext, CodeExecutor, ReadRuntimeVersionExt, WrappedRuntimeCode},
+	traits::{CallContext, CodeExecutor, ReadRuntimeVersionExt},
 	Hasher,
 };
 <span class="kw">use </span>sp_externalities::Extensions;
-<span class="kw">use </span>sp_genesis_builder::{PresetId, <span class="prelude-ty">Result </span><span class="kw">as </span>GenesisBuildResult};
 <span class="kw">use </span>sp_keystore::{testing::MemoryKeystore, KeystoreExt};
 <span class="kw">use </span>sp_runtime::traits::Hash;
-<span class="kw">use </span>sp_state_machine::{OverlayedChanges, StateMachine};
+<span class="kw">use </span>sp_state_machine::StateMachine;
+<span class="kw">use </span>sp_storage::{well_known_keys::CODE, Storage};
 <span class="kw">use </span>sp_trie::{proof_size_extension::ProofSizeExt, recorder::Recorder};
 <span class="kw">use </span>sp_wasm_interface::HostFunctions;
 <span class="kw">use </span>std::{
-	borrow::Cow,
 	collections::{BTreeMap, BTreeSet, HashMap},
 	fmt::Debug,
 	fs,
@@ -1376,9 +1325,6 @@ generate the genesis state is deprecated. Please remove the `--chain`/`--dev`/`-
 point `--runtime` to your runtime blob and set `--genesis-builder=runtime`. This warning may \
 become a hard error any time after December 2024."</span>;
 
-<span class="doccomment">/// The preset that we expect to find in the GenesisBuilder runtime API.
-</span><span class="kw">const </span>GENESIS_PRESET: <span class="kw-2">&amp;</span>str = <span class="string">"development"</span>;
-
 <span class="kw">impl </span>PalletCmd {
 	<span class="doccomment">/// Runs the command and benchmarks a pallet.
 	</span><span class="attr">#[deprecated(
@@ -1428,9 +1374,7 @@ become a hard error any time after December 2024."</span>;
 			<span class="kw">return </span><span class="self">self</span>.output_from_results(<span class="kw-2">&amp;</span>batches)
 		}
 
-		<span class="kw">let </span>(genesis_storage, genesis_changes) =
-			<span class="self">self</span>.genesis_storage::&lt;Hasher, ExtraHostFunctions&gt;(<span class="kw-2">&amp;</span>chain_spec)<span class="question-mark">?</span>;
-		<span class="kw">let </span><span class="kw-2">mut </span>changes = genesis_changes.clone();
+		<span class="kw">let </span>genesis_storage = <span class="self">self</span>.genesis_storage::&lt;ExtraHostFunctions&gt;(<span class="kw-2">&amp;</span>chain_spec)<span class="question-mark">?</span>;
 
 		<span class="kw">let </span>cache_size = <span class="prelude-val">Some</span>(<span class="self">self</span>.database_cache_size <span class="kw">as </span>usize);
 		<span class="kw">let </span>state_with_tracking = BenchmarkingState::&lt;Hasher&gt;::new(
@@ -1476,7 +1420,7 @@ become a hard error any time after December 2024."</span>;
 			<span class="self">Self</span>::exec_state_machine(
 				StateMachine::new(
 					state,
-					<span class="kw-2">&amp;mut </span>changes,
+					<span class="kw-2">&amp;mut </span>Default::default(),
 					<span class="kw-2">&amp;</span>executor,
 					<span class="string">"Benchmark_benchmark_metadata"</span>,
 					<span class="kw-2">&amp;</span>(<span class="self">self</span>.extra).encode(),
@@ -1561,7 +1505,6 @@ become a hard error any time after December 2024."</span>;
 			<span class="kw">for </span>(s, selected_components) <span class="kw">in </span>all_components.iter().enumerate() {
 				<span class="comment">// First we run a verification
 				</span><span class="kw">if </span>!<span class="self">self</span>.no_verify {
-					<span class="kw">let </span><span class="kw-2">mut </span>changes = genesis_changes.clone();
 					<span class="kw">let </span>state = <span class="kw-2">&amp;</span>state_without_tracking;
 					<span class="comment">// Don't use these results since verification code will add overhead.
 					</span><span class="kw">let </span>_batch: Vec&lt;BenchmarkBatch&gt; = <span class="kw">match </span><span class="self">Self</span>::exec_state_machine::&lt;
@@ -1571,7 +1514,7 @@ become a hard error any time after December 2024."</span>;
 					&gt;(
 						StateMachine::new(
 							state,
-							<span class="kw-2">&amp;mut </span>changes,
+							<span class="kw-2">&amp;mut </span>Default::default(),
 							<span class="kw-2">&amp;</span>executor,
 							<span class="string">"Benchmark_dispatch_benchmark"</span>,
 							<span class="kw-2">&amp;</span>(
@@ -1603,7 +1546,6 @@ become a hard error any time after December 2024."</span>;
 				}
 				<span class="comment">// Do one loop of DB tracking.
 				</span>{
-					<span class="kw">let </span><span class="kw-2">mut </span>changes = genesis_changes.clone();
 					<span class="kw">let </span>state = <span class="kw-2">&amp;</span>state_with_tracking;
 					<span class="kw">let </span>batch: Vec&lt;BenchmarkBatch&gt; = <span class="kw">match </span><span class="self">Self</span>::exec_state_machine::&lt;
 						std::result::Result&lt;Vec&lt;BenchmarkBatch&gt;, String&gt;,
@@ -1612,7 +1554,7 @@ become a hard error any time after December 2024."</span>;
 					&gt;(
 						StateMachine::new(
 							state, <span class="comment">// todo remove tracking
-							</span><span class="kw-2">&amp;mut </span>changes,
+							</span><span class="kw-2">&amp;mut </span>Default::default(),
 							<span class="kw-2">&amp;</span>executor,
 							<span class="string">"Benchmark_dispatch_benchmark"</span>,
 							<span class="kw-2">&amp;</span>(
@@ -1646,7 +1588,6 @@ become a hard error any time after December 2024."</span>;
 				}
 				<span class="comment">// Finally run a bunch of loops to get extrinsic timing information.
 				</span><span class="kw">for </span>r <span class="kw">in </span><span class="number">0</span>..<span class="self">self</span>.external_repeat {
-					<span class="kw">let </span><span class="kw-2">mut </span>changes = genesis_changes.clone();
 					<span class="kw">let </span>state = <span class="kw-2">&amp;</span>state_without_tracking;
 					<span class="kw">let </span>batch = <span class="kw">match </span><span class="self">Self</span>::exec_state_machine::&lt;
 						std::result::Result&lt;Vec&lt;BenchmarkBatch&gt;, String&gt;,
@@ -1655,7 +1596,7 @@ become a hard error any time after December 2024."</span>;
 					&gt;(
 						StateMachine::new(
 							state, <span class="comment">// todo remove tracking
-							</span><span class="kw-2">&amp;mut </span>changes,
+							</span><span class="kw-2">&amp;mut </span>Default::default(),
 							<span class="kw-2">&amp;</span>executor,
 							<span class="string">"Benchmark_dispatch_benchmark"</span>,
 							<span class="kw-2">&amp;</span>(
@@ -1781,19 +1722,19 @@ become a hard error any time after December 2024."</span>;
 		<span class="prelude-val">Ok</span>(benchmarks_to_run)
 	}
 
-	<span class="doccomment">/// Produce a genesis storage and genesis changes.
+	<span class="doccomment">/// Build the genesis storage by either the Genesis Builder API, chain spec or nothing.
 	///
-	/// It would be easier to only return one type, but there is no easy way to convert them.
-	</span><span class="comment">// TODO: Re-write `BenchmarkingState` to not be such a clusterfuck and only accept
-	// `OverlayedChanges` instead of a mix between `OverlayedChanges` and `State`. But this can only
-	// be done once we deprecated and removed the legacy interface :(
-	</span><span class="kw">fn </span>genesis_storage&lt;H: Hash, F: HostFunctions&gt;(
+	/// Behaviour can be controlled by the `--genesis-builder` flag.
+	</span><span class="kw">fn </span>genesis_storage&lt;F: HostFunctions&gt;(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		chain_spec: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>ChainSpec&gt;&gt;,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;(sp_storage::Storage, OverlayedChanges&lt;H&gt;)&gt; {
-		<span class="prelude-val">Ok</span>(<span class="kw">match </span>(<span class="self">self</span>.genesis_builder, <span class="self">self</span>.runtime.is_some()) {
-			(<span class="prelude-val">Some</span>(GenesisBuilder::None), <span class="kw">_</span>) =&gt; Default::default(),
-			(<span class="prelude-val">Some</span>(GenesisBuilder::Spec), <span class="kw">_</span>) | (<span class="prelude-val">None</span>, <span class="bool-val">false</span>) =&gt; {
+	) -&gt; <span class="prelude-ty">Result</span>&lt;sp_storage::Storage&gt; {
+		<span class="prelude-val">Ok</span>(<span class="kw">match </span>(<span class="self">self</span>.genesis_builder, <span class="self">self</span>.runtime.as_ref()) {
+			(<span class="prelude-val">Some</span>(GenesisBuilderPolicy::None), <span class="prelude-val">Some</span>(<span class="kw">_</span>)) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Cannot use `--genesis-builder=none` with `--runtime` since the runtime would be ignored."</span>.into()),
+			(<span class="prelude-val">Some</span>(GenesisBuilderPolicy::None), <span class="prelude-val">None</span>) =&gt; Storage::default(),
+			(<span class="prelude-val">Some</span>(GenesisBuilderPolicy::SpecGenesis | GenesisBuilderPolicy::Spec), <span class="prelude-val">Some</span>(<span class="kw">_</span>)) =&gt;
+					<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Cannot use `--genesis-builder=spec-genesis` with `--runtime` since the runtime would be ignored."</span>.into()),
+			(<span class="prelude-val">Some</span>(GenesisBuilderPolicy::SpecGenesis | GenesisBuilderPolicy::Spec), <span class="prelude-val">None</span>) | (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; {
 				<span class="macro">log::warn!</span>(<span class="string">"{WARN_SPEC_GENESIS_CTOR}"</span>);
 				<span class="kw">let </span><span class="prelude-val">Some</span>(chain_spec) = chain_spec <span class="kw">else </span>{
 					<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"No chain spec specified to generate the genesis state"</span>.into());
@@ -1803,111 +1744,73 @@ become a hard error any time after December 2024."</span>;
 					.build_storage()
 					.map_err(|e| <span class="macro">format!</span>(<span class="string">"{ERROR_CANNOT_BUILD_GENESIS}\nError: {e}"</span>))<span class="question-mark">?</span>;
 
-				(storage, Default::default())
+				storage
 			},
-			(<span class="prelude-val">Some</span>(GenesisBuilder::Runtime), <span class="kw">_</span>) | (<span class="prelude-val">None</span>, <span class="bool-val">true</span>) =&gt;
-				(Default::default(), <span class="self">self</span>.genesis_from_runtime::&lt;H, F&gt;()<span class="question-mark">?</span>),
+			(<span class="prelude-val">Some</span>(GenesisBuilderPolicy::SpecRuntime), <span class="prelude-val">Some</span>(<span class="kw">_</span>)) =&gt;
+				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Cannot use `--genesis-builder=spec` with `--runtime` since the runtime would be ignored."</span>.into()),
+			(<span class="prelude-val">Some</span>(GenesisBuilderPolicy::SpecRuntime), <span class="prelude-val">None</span>) =&gt; {
+				<span class="kw">let </span><span class="prelude-val">Some</span>(chain_spec) = chain_spec <span class="kw">else </span>{
+					<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"No chain spec specified to generate the genesis state"</span>.into());
+				};
+
+				<span class="self">self</span>.genesis_from_spec_runtime::&lt;F&gt;(chain_spec.as_ref())<span class="question-mark">?
+			</span>},
+			(<span class="prelude-val">Some</span>(GenesisBuilderPolicy::Runtime), <span class="prelude-val">None</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Cannot use `--genesis-builder=runtime` without `--runtime`"</span>.into()),
+			(<span class="prelude-val">Some</span>(GenesisBuilderPolicy::Runtime), <span class="prelude-val">Some</span>(runtime)) | (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(runtime)) =&gt; {
+				<span class="macro">log::info!</span>(<span class="string">"Loading WASM from {}"</span>, runtime.display());
+
+				<span class="kw">let </span>code = fs::read(<span class="kw-2">&amp;</span>runtime).map_err(|e| {
+					<span class="macro">format!</span>(
+						<span class="string">"Could not load runtime file from path: {}, error: {}"</span>,
+						runtime.display(),
+						e
+					)
+				})<span class="question-mark">?</span>;
+
+				<span class="self">self</span>.genesis_from_code::&lt;F&gt;(<span class="kw-2">&amp;</span>code)<span class="question-mark">?
+			</span>}
 		})
 	}
 
-	<span class="doccomment">/// Generate the genesis changeset by the runtime API.
-	</span><span class="kw">fn </span>genesis_from_runtime&lt;H: Hash, F: HostFunctions&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;OverlayedChanges&lt;H&gt;&gt; {
-		<span class="kw">let </span>state = BenchmarkingState::&lt;H&gt;::new(
-			Default::default(),
-			<span class="prelude-val">Some</span>(<span class="self">self</span>.database_cache_size <span class="kw">as </span>usize),
-			<span class="bool-val">false</span>,
-			<span class="bool-val">false</span>,
-		)<span class="question-mark">?</span>;
+	<span class="doccomment">/// Setup the genesis state by calling the runtime APIs of the chain-specs genesis runtime.
+	</span><span class="kw">fn </span>genesis_from_spec_runtime&lt;EHF: HostFunctions&gt;(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		chain_spec: <span class="kw-2">&amp;</span><span class="kw">dyn </span>ChainSpec,
+	) -&gt; <span class="prelude-ty">Result</span>&lt;Storage&gt; {
+		<span class="macro">log::info!</span>(<span class="string">"Building genesis state from chain spec runtime"</span>);
+		<span class="kw">let </span>storage = chain_spec
+			.build_storage()
+			.map_err(|e| <span class="macro">format!</span>(<span class="string">"{ERROR_CANNOT_BUILD_GENESIS}\nError: {e}"</span>))<span class="question-mark">?</span>;
 
-		<span class="comment">// Create a dummy WasmExecutor just to build the genesis storage.
-		</span><span class="kw">let </span>method =
-			execution_method_from_cli(<span class="self">self</span>.wasm_method, <span class="self">self</span>.wasmtime_instantiation_strategy);
-		<span class="kw">let </span>executor = WasmExecutor::&lt;(
+		<span class="kw">let </span>code: <span class="kw-2">&amp;</span>Vec&lt;u8&gt; =
+			storage.top.get(CODE).ok_or(<span class="string">"No runtime code in the genesis storage"</span>)<span class="question-mark">?</span>;
+
+		<span class="self">self</span>.genesis_from_code::&lt;EHF&gt;(code)
+	}
+
+	<span class="kw">fn </span>genesis_from_code&lt;EHF: HostFunctions&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, code: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Storage&gt; {
+		<span class="kw">let </span>genesis_config_caller = GenesisConfigBuilderRuntimeCaller::&lt;(
 			sp_io::SubstrateHostFunctions,
 			frame_benchmarking::benchmarking::HostFunctions,
-			F,
-		)&gt;::builder()
-		.with_execution_method(method)
-		.with_allow_missing_host_functions(<span class="self">self</span>.allow_missing_host_functions)
-		.build();
+			EHF,
+		)&gt;::new(code);
+		<span class="kw">let </span>preset = <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.genesis_builder_preset);
 
-		<span class="kw">let </span>runtime = <span class="self">self</span>.runtime_blob(<span class="kw-2">&amp;</span>state)<span class="question-mark">?</span>;
-		<span class="kw">let </span>runtime_code = runtime.code()<span class="question-mark">?</span>;
-
-		<span class="comment">// We cannot use the `GenesisConfigBuilderRuntimeCaller` here since it returns the changes
-		// as `Storage` item, but we need it as `OverlayedChanges`.
-		</span><span class="kw">let </span>genesis_json: <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt; = <span class="self">Self</span>::exec_state_machine(
-			StateMachine::new(
-				<span class="kw-2">&amp;</span>state,
-				<span class="kw-2">&amp;mut </span>Default::default(),
-				<span class="kw-2">&amp;</span>executor,
-				<span class="string">"GenesisBuilder_get_preset"</span>,
-				<span class="kw-2">&amp;</span><span class="prelude-val">None</span>::&lt;PresetId&gt;.encode(), <span class="comment">// Use the default preset
-				</span><span class="kw-2">&amp;mut </span><span class="self">Self</span>::build_extensions(executor.clone(), state.recorder()),
-				<span class="kw-2">&amp;</span>runtime_code,
-				CallContext::Offchain,
-			),
-			<span class="string">"build the genesis spec"</span>,
-		)<span class="question-mark">?</span>;
-
-		<span class="kw">let </span><span class="prelude-val">Some</span>(base_genesis_json) = genesis_json <span class="kw">else </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"GenesisBuilder::get_preset returned no data"</span>.into())
-		};
-
-		<span class="kw">let </span>base_genesis_json = serde_json::from_slice::&lt;serde_json::Value&gt;(<span class="kw-2">&amp;</span>base_genesis_json)
-			.map_err(|e| <span class="macro">format!</span>(<span class="string">"GenesisBuilder::get_preset returned invalid JSON: {:?}"</span>, e))<span class="question-mark">?</span>;
-
-		<span class="kw">let </span>dev_genesis_json: <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt; = <span class="self">Self</span>::exec_state_machine(
-			StateMachine::new(
-				<span class="kw-2">&amp;</span>state,
-				<span class="kw-2">&amp;mut </span>Default::default(),
-				<span class="kw-2">&amp;</span>executor,
-				<span class="string">"GenesisBuilder_get_preset"</span>,
-				<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>::&lt;PresetId&gt;(GENESIS_PRESET.into()).encode(), <span class="comment">// Use the default preset
-				</span><span class="kw-2">&amp;mut </span><span class="self">Self</span>::build_extensions(executor.clone(), state.recorder()),
-				<span class="kw-2">&amp;</span>runtime_code,
-				CallContext::Offchain,
-			),
-			<span class="string">"build the genesis spec"</span>,
-		)<span class="question-mark">?</span>;
-
-		<span class="kw">let </span><span class="kw-2">mut </span>genesis_json = serde_json::Value::default();
-		json_merge(<span class="kw-2">&amp;mut </span>genesis_json, base_genesis_json);
-
-		<span class="kw">if let </span><span class="prelude-val">Some</span>(dev) = dev_genesis_json {
-			<span class="kw">let </span>dev: serde_json::Value = serde_json::from_slice(<span class="kw-2">&amp;</span>dev).map_err(|e| {
-				<span class="macro">format!</span>(<span class="string">"GenesisBuilder::get_preset returned invalid JSON: {:?}"</span>, e)
+		<span class="kw">let </span><span class="kw-2">mut </span>storage =
+			genesis_config_caller.get_storage_for_named_preset(preset).inspect_err(|e| {
+				<span class="kw">let </span>presets = genesis_config_caller.preset_names().unwrap_or_default();
+				<span class="macro">log::error!</span>(
+					<span class="string">"Please pick one of the available presets with \
+			`--genesis-builder-preset=&lt;PRESET&gt;`. Available presets ({}): {:?}. Error: {:?}"</span>,
+					presets.len(),
+					presets,
+					e
+				);
 			})<span class="question-mark">?</span>;
-			json_merge(<span class="kw-2">&amp;mut </span>genesis_json, dev);
-		} <span class="kw">else </span>{
-			<span class="macro">log::warn!</span>(
-				<span class="string">"Could not find genesis preset '{GENESIS_PRESET}'. Falling back to default."
-			</span>);
-		}
 
-		<span class="kw">let </span>json_pretty_str = serde_json::to_string_pretty(<span class="kw-2">&amp;</span>genesis_json)
-			.map_err(|e| <span class="macro">format!</span>(<span class="string">"json to string failed: {e}"</span>))<span class="question-mark">?</span>;
+		storage.top.insert(CODE.into(), code.into());
 
-		<span class="kw">let </span><span class="kw-2">mut </span>changes = Default::default();
-		<span class="kw">let </span>build_res: GenesisBuildResult = <span class="self">Self</span>::exec_state_machine(
-			StateMachine::new(
-				<span class="kw-2">&amp;</span>state,
-				<span class="kw-2">&amp;mut </span>changes,
-				<span class="kw-2">&amp;</span>executor,
-				<span class="string">"GenesisBuilder_build_state"</span>,
-				<span class="kw-2">&amp;</span>json_pretty_str.encode(),
-				<span class="kw-2">&amp;mut </span>Extensions::default(),
-				<span class="kw-2">&amp;</span>runtime_code,
-				CallContext::Offchain,
-			),
-			<span class="string">"populate the genesis state"</span>,
-		)<span class="question-mark">?</span>;
-
-		<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = build_res {
-			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"GenesisBuilder::build_state failed: {}"</span>, e).into())
-		}
-
-		<span class="prelude-val">Ok</span>(changes)
+		<span class="prelude-val">Ok</span>(storage)
 	}
 
 	<span class="doccomment">/// Execute a state machine and decode its return value as `R`.
@@ -1951,19 +1854,10 @@ become a hard error any time after December 2024."</span>;
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		state: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>BenchmarkingState&lt;H&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;FetchedCode&lt;<span class="lifetime">'a</span>, BenchmarkingState&lt;H&gt;, H&gt;&gt; {
-		<span class="kw">if let </span><span class="prelude-val">Some</span>(runtime) = <span class="kw-2">&amp;</span><span class="self">self</span>.runtime {
-			<span class="macro">log::info!</span>(<span class="string">"Loading WASM from {}"</span>, runtime.display());
-			<span class="kw">let </span>code = fs::read(runtime)<span class="question-mark">?</span>;
-			<span class="kw">let </span>hash = sp_core::blake2_256(<span class="kw-2">&amp;</span>code).to_vec();
-			<span class="kw">let </span>wrapped_code = WrappedRuntimeCode(Cow::Owned(code));
+		<span class="macro">log::info!</span>(<span class="string">"Loading WASM from state"</span>);
+		<span class="kw">let </span>state = sp_state_machine::backend::BackendRuntimeCode::new(state);
 
-			<span class="prelude-val">Ok</span>(FetchedCode::FromFile { wrapped_code, heap_pages: <span class="self">self</span>.heap_pages, hash })
-		} <span class="kw">else </span>{
-			<span class="macro">log::info!</span>(<span class="string">"Loading WASM from genesis state"</span>);
-			<span class="kw">let </span>state = sp_state_machine::backend::BackendRuntimeCode::new(state);
-
-			<span class="prelude-val">Ok</span>(FetchedCode::FromGenesis { state })
-		}
+		<span class="prelude-val">Ok</span>(FetchedCode { state })
 	}
 
 	<span class="doccomment">/// Allocation strategy for pallet benchmarking.
@@ -2204,19 +2098,25 @@ become a hard error any time after December 2024."</span>;
 
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(output_path) = <span class="kw-2">&amp;</span><span class="self">self</span>.output {
 			<span class="kw">if </span>!output_path.is_dir() &amp;&amp; output_path.file_name().is_none() {
-				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Output file or path is invalid!"</span>.into())
+				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+					<span class="string">"Output path is neither a directory nor a file: {output_path:?}"
+				</span>)
+				.into())
 			}
 		}
 
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(header_file) = <span class="kw-2">&amp;</span><span class="self">self</span>.header {
 			<span class="kw">if </span>!header_file.is_file() {
-				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Header file is invalid!"</span>.into())
+				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"Header file could not be found: {header_file:?}"</span>).into())
 			};
 		}
 
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(handlebars_template_file) = <span class="kw-2">&amp;</span><span class="self">self</span>.template {
 			<span class="kw">if </span>!handlebars_template_file.is_file() {
-				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Handlebars template file is invalid!"</span>.into())
+				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+					<span class="string">"Handlebars template file could not be found: {handlebars_template_file:?}"
+				</span>)
+				.into())
 			};
 		}
 

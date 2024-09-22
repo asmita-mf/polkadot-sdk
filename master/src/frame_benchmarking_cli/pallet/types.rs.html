@@ -224,10 +224,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#72" id="72">72</a>
 <a href="#73" id="73">73</a>
 <a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
-<a href="#76" id="76">76</a>
-<a href="#77" id="77">77</a>
-<a href="#78" id="78">78</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -248,13 +244,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="doccomment">//! Various types used by this crate.
 
 </span><span class="kw">use </span>sc_cli::Result;
-<span class="kw">use </span>sp_core::traits::{RuntimeCode, WrappedRuntimeCode};
+<span class="kw">use </span>sp_core::traits::RuntimeCode;
 <span class="kw">use </span>sp_runtime::traits::Hash;
 
 <span class="doccomment">/// How the genesis state for benchmarking should be build.
 </span><span class="attr">#[derive(clap::ValueEnum, Debug, Eq, PartialEq, Clone, Copy)]
 #[clap(rename_all = <span class="string">"kebab-case"</span>)]
-</span><span class="kw">pub enum </span>GenesisBuilder {
+</span><span class="kw">pub enum </span>GenesisBuilderPolicy {
 	<span class="doccomment">/// Do not provide any genesis state.
 	///
 	/// Benchmarks are advised to function with this, since they should setup their own required
@@ -262,16 +258,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="prelude-val">None</span>,
 	<span class="doccomment">/// Let the runtime build the genesis state through its `BuildGenesisConfig` runtime API.
 	</span>Runtime,
+	<span class="comment">// Use the runtime from the Spec file to build the genesis state.
+	</span>SpecRuntime,
 	<span class="doccomment">/// Use the spec file to build the genesis state. This fails when there is no spec.
+	</span>SpecGenesis,
+	<span class="doccomment">/// Same as `SpecGenesis` - only here for backwards compatibility.
 	</span>Spec,
 }
 
 <span class="doccomment">/// A runtime blob that was either fetched from genesis storage or loaded from a file.
 </span><span class="comment">// NOTE: This enum is only needed for the annoying lifetime bounds on `RuntimeCode`. Otherwise we
 // could just directly return the blob.
-</span><span class="kw">pub enum </span>FetchedCode&lt;<span class="lifetime">'a</span>, B, H&gt; {
-	FromGenesis { state: sp_state_machine::backend::BackendRuntimeCode&lt;<span class="lifetime">'a</span>, B, H&gt; },
-	FromFile { wrapped_code: WrappedRuntimeCode&lt;<span class="lifetime">'a</span>&gt;, heap_pages: <span class="prelude-ty">Option</span>&lt;u64&gt;, hash: Vec&lt;u8&gt; },
+</span><span class="kw">pub struct </span>FetchedCode&lt;<span class="lifetime">'a</span>, B, H&gt; {
+	<span class="kw">pub </span>state: sp_state_machine::backend::BackendRuntimeCode&lt;<span class="lifetime">'a</span>, B, H&gt;,
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, B, H&gt; FetchedCode&lt;<span class="lifetime">'a</span>, B, H&gt;
@@ -281,14 +280,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 {
 	<span class="doccomment">/// The runtime blob.
 	</span><span class="kw">pub fn </span>code(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;RuntimeCode&lt;<span class="lifetime">'a</span>&gt;&gt; {
-		<span class="kw">match </span><span class="self">self </span>{
-			<span class="self">Self</span>::FromGenesis { state } =&gt; state.runtime_code().map_err(Into::into),
-			<span class="self">Self</span>::FromFile { wrapped_code, heap_pages, hash } =&gt; <span class="prelude-val">Ok</span>(RuntimeCode {
-				code_fetcher: wrapped_code,
-				heap_pages: <span class="kw-2">*</span>heap_pages,
-				hash: hash.clone(),
-			}),
-		}
+		<span class="self">self</span>.state.runtime_code().map_err(Into::into)
 	}
 }
 
