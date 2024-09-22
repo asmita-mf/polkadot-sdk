@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1726878563205,
+  "lastUpdate": 1727027168594,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -20891,6 +20891,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 11.744288622000003,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "bkontur@gmail.com",
+            "name": "Branislav Kontur",
+            "username": "bkontur"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8735c66393978fec6fd811ef7832b08355a2885a",
+          "message": "Moved presets to the testnet runtimes (#5327)\n\nIt is a first step for switching to the `frame-omni-bencher` for CI.\n\nThis PR includes several changes related to generating chain specs plus:\n\n- [x] pallet `assigned_slots` fix missing `#[serde(skip)]` for phantom\n- [x] pallet `paras_inherent` benchmark fix - cherry-picked from\nhttps://github.com/paritytech/polkadot-sdk/pull/5688\n- [x] migrates `get_preset` to the relevant runtimes\n- [x] fixes Rococo genesis presets - does not work\nhttps://gitlab.parity.io/parity/mirrors/polkadot-sdk/-/jobs/7317249\n- [x] fixes Rococo benchmarks for CI \n- [x] migrate westend genesis\n- [x] remove wococo stuff\n\nCloses: https://github.com/paritytech/polkadot-sdk/issues/5680\n\n## Follow-ups\n- Fix for frame-omni-bencher\nhttps://github.com/paritytech/polkadot-sdk/pull/5655\n- Enable new short-benchmarking CI -\nhttps://github.com/paritytech/polkadot-sdk/pull/5706\n- Remove gitlab pipelines for short benchmarking\n- refactor all Cumulus runtimes to use `get_preset` -\nhttps://github.com/paritytech/polkadot-sdk/issues/5704\n- https://github.com/paritytech/polkadot-sdk/issues/5705\n- https://github.com/paritytech/polkadot-sdk/issues/5700\n- [ ] Backport to the stable\n\n---------\n\nCo-authored-by: command-bot <>\nCo-authored-by: ordian <noreply@reusable.software>",
+          "timestamp": "2024-09-22T16:29:54Z",
+          "tree_id": "d3ef2bd293c4105f6b3aa5ad46d3d9efc2167cf5",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/8735c66393978fec6fd811ef7832b08355a2885a"
+        },
+        "date": 1727027140621,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 11.449570113433335,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.23135626176666668,
             "unit": "seconds"
           }
         ]
