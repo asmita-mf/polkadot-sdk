@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727043665911,
+  "lastUpdate": 1727048825552,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -11611,6 +11611,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "statement-distribution",
             "value": 0.03705750112599998,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "oliver.tale-yazdi@parity.io",
+            "name": "Oliver Tale-Yazdi",
+            "username": "ggwpez"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2e4e5bf2fd0ae19fa38951c7e5f495dd1453b2bb",
+          "message": "[benchmarking] Reset to genesis storage after each run (#5655)\n\nThe genesis state is currently partially provided via\n`OverlayedChanges`, but these changes are reset by the runtime after the\nfirst repetition, causing the second repitition to use an invalid\ngenesis state.\n\nChanges:\n- Provide the genesis state as a `Storage` without any\n`OverlayedChanges` to make it work correctly with repetitions.\n- Add `--genesis-builder-preset` option to use different genesis preset\nnames.\n- Improve error messages.\n\n---------\n\nSigned-off-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>\nCo-authored-by: ggwpez <ggwpez@users.noreply.github.com>\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: Branislav Kontur <bkontur@gmail.com>",
+          "timestamp": "2024-09-22T22:28:38Z",
+          "tree_id": "2dad110eb0c80dd13de3dbe708759b10001a9578",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/2e4e5bf2fd0ae19fa38951c7e5f495dd1453b2bb"
+        },
+        "date": 1727048797244,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.93799999999992,
+            "unit": "KiB"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.03716504986000001,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04533932410999993,
             "unit": "seconds"
           }
         ]
