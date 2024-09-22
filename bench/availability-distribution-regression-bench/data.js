@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727027202741,
+  "lastUpdate": 1727043594320,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -26269,6 +26269,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-distribution",
             "value": 0.016428350373333334,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "git@kchr.de",
+            "name": "Bastian Köcher",
+            "username": "bkchr"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "128f6c79fcbbc06bd3c507f6b08d0af98a492192",
+          "message": "Fix RPC relay chain interface (#5796)\n\nUse `sp_core::Bytes` as `payload` to encode the values correctly as\n`hex` string.",
+          "timestamp": "2024-09-22T21:04:33Z",
+          "tree_id": "4583adb114522869b3412feea15d97196918a5fe",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/128f6c79fcbbc06bd3c507f6b08d0af98a492192"
+        },
+        "date": 1727043565444,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016472822206666668,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02142495188666667,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18042723464000004,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008972799813333425,
             "unit": "seconds"
           }
         ]
