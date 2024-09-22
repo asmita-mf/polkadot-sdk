@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727043630162,
+  "lastUpdate": 1727048790676,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -18720,6 +18720,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-voting",
             "value": 2.6888987161000033,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "oliver.tale-yazdi@parity.io",
+            "name": "Oliver Tale-Yazdi",
+            "username": "ggwpez"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2e4e5bf2fd0ae19fa38951c7e5f495dd1453b2bb",
+          "message": "[benchmarking] Reset to genesis storage after each run (#5655)\n\nThe genesis state is currently partially provided via\n`OverlayedChanges`, but these changes are reset by the runtime after the\nfirst repetition, causing the second repitition to use an invalid\ngenesis state.\n\nChanges:\n- Provide the genesis state as a `Storage` without any\n`OverlayedChanges` to make it work correctly with repetitions.\n- Add `--genesis-builder-preset` option to use different genesis preset\nnames.\n- Improve error messages.\n\n---------\n\nSigned-off-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>\nCo-authored-by: ggwpez <ggwpez@users.noreply.github.com>\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: Branislav Kontur <bkontur@gmail.com>",
+          "timestamp": "2024-09-22T22:28:38Z",
+          "tree_id": "2dad110eb0c80dd13de3dbe708759b10001a9578",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/2e4e5bf2fd0ae19fa38951c7e5f495dd1453b2bb"
+        },
+        "date": 1727048762307,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63765.77,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52939.90000000001,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.563394788749994,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.6858810195800027,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.0770261456733894,
             "unit": "seconds"
           }
         ]
