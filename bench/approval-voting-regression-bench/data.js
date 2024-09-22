@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727027236882,
+  "lastUpdate": 1727043630162,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -18671,6 +18671,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "approval-distribution",
             "value": 11.498898162550004,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "git@kchr.de",
+            "name": "Bastian Köcher",
+            "username": "bkchr"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "128f6c79fcbbc06bd3c507f6b08d0af98a492192",
+          "message": "Fix RPC relay chain interface (#5796)\n\nUse `sp_core::Bytes` as `payload` to encode the values correctly as\n`hex` string.",
+          "timestamp": "2024-09-22T21:04:33Z",
+          "tree_id": "4583adb114522869b3412feea15d97196918a5fe",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/128f6c79fcbbc06bd3c507f6b08d0af98a492192"
+        },
+        "date": 1727043601348,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 63791.9,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 52945,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.077126163303323,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 11.524474295239994,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.6888987161000033,
             "unit": "seconds"
           }
         ]
