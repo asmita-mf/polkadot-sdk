@@ -1718,18 +1718,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1566" id="1566">1566</a>
 <a href="#1567" id="1567">1567</a>
 <a href="#1568" id="1568">1568</a>
-<a href="#1569" id="1569">1569</a>
-<a href="#1570" id="1570">1570</a>
-<a href="#1571" id="1571">1571</a>
-<a href="#1572" id="1572">1572</a>
-<a href="#1573" id="1573">1573</a>
-<a href="#1574" id="1574">1574</a>
-<a href="#1575" id="1575">1575</a>
-<a href="#1576" id="1576">1576</a>
-<a href="#1577" id="1577">1577</a>
-<a href="#1578" id="1578">1578</a>
-<a href="#1579" id="1579">1579</a>
-<a href="#1580" id="1580">1580</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -2022,9 +2010,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Returns if this is a configuration for the `Rococo` network.
 	</span><span class="kw">fn </span>is_rococo(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool;
 
-	<span class="doccomment">/// Returns if this is a configuration for the `Wococo` test network.
-	</span><span class="kw">fn </span>is_wococo(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool;
-
 	<span class="doccomment">/// Returns if this is a configuration for the `Versi` test network.
 	</span><span class="kw">fn </span>is_versi(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool;
 
@@ -2048,9 +2033,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">fn </span>is_rococo(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
 		<span class="self">self</span>.id().starts_with(<span class="string">"rococo"</span>) || <span class="self">self</span>.id().starts_with(<span class="string">"rco"</span>)
 	}
-	<span class="kw">fn </span>is_wococo(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-		<span class="self">self</span>.id().starts_with(<span class="string">"wococo"</span>) || <span class="self">self</span>.id().starts_with(<span class="string">"wco"</span>)
-	}
 	<span class="kw">fn </span>is_versi(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
 		<span class="self">self</span>.id().starts_with(<span class="string">"versi"</span>) || <span class="self">self</span>.id().starts_with(<span class="string">"vrs"</span>)
 	}
@@ -2064,7 +2046,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			Chain::Kusama
 		} <span class="kw">else if </span><span class="self">self</span>.is_westend() {
 			Chain::Westend
-		} <span class="kw">else if </span><span class="self">self</span>.is_rococo() || <span class="self">self</span>.is_versi() || <span class="self">self</span>.is_wococo() {
+		} <span class="kw">else if </span><span class="self">self</span>.is_rococo() || <span class="self">self</span>.is_versi() {
 			Chain::Rococo
 		} <span class="kw">else </span>{
 			Chain::Unknown
@@ -2510,7 +2492,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span><span class="kw-2">mut </span>backoff = sc_consensus_slots::BackoffAuthoringOnFinalizedHeadLagging::default();
 
 		<span class="kw">if </span>config.chain_spec.is_rococo() ||
-			config.chain_spec.is_wococo() ||
 			config.chain_spec.is_versi() ||
 			config.chain_spec.is_dev()
 		{
@@ -2532,8 +2513,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">let </span>overseer_connector = OverseerConnector::default();
 	<span class="kw">let </span>overseer_handle = Handle::new(overseer_connector.handle());
-
-	<span class="kw">let </span>chain_spec = config.chain_spec.cloned_box();
 
 	<span class="kw">let </span>keystore = basics.keystore_container.local_keystore();
 	<span class="kw">let </span>auth_or_collator = role.is_authority() || is_parachain_node.is_collator();
@@ -3059,7 +3038,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			runtime: client.clone(),
 			key_store: keystore_opt.clone(),
 			network_params,
-			min_block_delta: <span class="kw">if </span>chain_spec.is_wococo() { <span class="number">4 </span>} <span class="kw">else </span>{ <span class="number">8 </span>},
+			min_block_delta: <span class="number">8</span>,
 			prometheus_registry: prometheus_registry.clone(),
 			links: beefy_links,
 			on_demand_justifications_handler: beefy_on_demand_justifications_handler,
@@ -3190,10 +3169,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 {
 	config.keystore = sc_service::config::KeystoreConfig::InMemory;
 
-	<span class="kw">if </span>config.chain_spec.is_rococo() ||
-		config.chain_spec.is_wococo() ||
-		config.chain_spec.is_versi()
-	{
+	<span class="kw">if </span>config.chain_spec.is_rococo() || config.chain_spec.is_versi() {
 		<span class="macro">chain_ops!</span>(config, jaeger_agent, <span class="prelude-val">None</span>)
 	} <span class="kw">else if </span>config.chain_spec.is_kusama() {
 		<span class="macro">chain_ops!</span>(config, jaeger_agent, <span class="prelude-val">None</span>)

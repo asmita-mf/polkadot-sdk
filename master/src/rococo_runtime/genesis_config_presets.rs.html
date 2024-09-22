@@ -684,17 +684,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#532" id="532">532</a>
 <a href="#533" id="533">533</a>
 <a href="#534" id="534">534</a>
-<a href="#535" id="535">535</a>
-<a href="#536" id="536">536</a>
-<a href="#537" id="537">537</a>
-<a href="#538" id="538">538</a>
-<a href="#539" id="539">539</a>
-<a href="#540" id="540">540</a>
-<a href="#541" id="541">541</a>
-<a href="#542" id="542">542</a>
-<a href="#543" id="543">543</a>
-<a href="#544" id="544">544</a>
-<a href="#545" id="545">545</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -713,10 +702,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="doccomment">//! Genesis configs presets for the Rococo runtime
 
-</span><span class="kw">use crate</span>::{SessionKeys, BABE_GENESIS_EPOCH_CONFIG};
+</span><span class="kw">use crate</span>::{
+	BabeConfig, BalancesConfig, ConfigurationConfig, RegistrarConfig, RuntimeGenesisConfig,
+	SessionConfig, SessionKeys, SudoConfig, BABE_GENESIS_EPOCH_CONFIG,
+};
 <span class="attr">#[cfg(not(feature = <span class="string">"std"</span>))]
 </span><span class="kw">use </span>alloc::format;
-<span class="kw">use </span>alloc::vec::Vec;
+<span class="kw">use </span>alloc::{vec, vec::Vec};
 <span class="kw">use </span>polkadot_primitives::{AccountId, AccountPublic, AssignmentId, SchedulerParams, ValidatorId};
 <span class="kw">use </span>rococo_runtime_constants::currency::UNITS <span class="kw">as </span>ROC;
 <span class="kw">use </span>sp_authority_discovery::AuthorityId <span class="kw">as </span>AuthorityDiscoveryId;
@@ -724,6 +716,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>sp_consensus_beefy::ecdsa_crypto::AuthorityId <span class="kw">as </span>BeefyId;
 <span class="kw">use </span>sp_consensus_grandpa::AuthorityId <span class="kw">as </span>GrandpaId;
 <span class="kw">use </span>sp_core::{sr25519, Pair, Public};
+<span class="kw">use </span>sp_genesis_builder::PresetId;
 <span class="kw">use </span>sp_runtime::traits::IdentifyAccount;
 
 <span class="doccomment">/// Helper function to generate a crypto pair from seed
@@ -875,12 +868,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">const </span>ENDOWMENT: u128 = <span class="number">1_000_000 </span>* ROC;
 
-	<span class="macro">serde_json::json!</span>({
-		<span class="string">"balances"</span>: {
-			<span class="string">"balances"</span>: endowed_accounts.iter().map(|k| (k.clone(), ENDOWMENT)).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
+	<span class="kw">let </span>config = RuntimeGenesisConfig {
+		balances: BalancesConfig {
+			balances: endowed_accounts.iter().map(|k| (k.clone(), ENDOWMENT)).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
 		},
-		<span class="string">"session"</span>: {
-			<span class="string">"keys"</span>: initial_authorities
+		session: SessionConfig {
+			keys: initial_authorities
 				.iter()
 				.map(|x| {
 					(
@@ -897,13 +890,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					)
 				})
 				.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
+			..Default::default()
 		},
-		<span class="string">"babe"</span>: {
-			<span class="string">"epochConfig"</span>: <span class="prelude-val">Some</span>(BABE_GENESIS_EPOCH_CONFIG),
-		},
-		<span class="string">"sudo"</span>: { <span class="string">"key"</span>: <span class="prelude-val">Some</span>(root_key.clone()) },
-		<span class="string">"configuration"</span>: {
-			<span class="string">"config"</span>: polkadot_runtime_parachains::configuration::HostConfiguration {
+		babe: BabeConfig { epoch_config: BABE_GENESIS_EPOCH_CONFIG, ..Default::default() },
+		sudo: SudoConfig { key: <span class="prelude-val">Some</span>(root_key.clone()) },
+		configuration: ConfigurationConfig {
+			config: polkadot_runtime_parachains::configuration::HostConfiguration {
 				scheduler_params: SchedulerParams {
 					max_validators_per_core: <span class="prelude-val">Some</span>(<span class="number">1</span>),
 					..default_parachains_host_configuration().scheduler_params
@@ -911,10 +903,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				..default_parachains_host_configuration()
 			},
 		},
-		<span class="string">"registrar"</span>: {
-			<span class="string">"nextFreeParaId"</span>: polkadot_primitives::LOWEST_PUBLIC_ID,
-		}
-	})
+		registrar: RegistrarConfig {
+			next_free_para_id: polkadot_primitives::LOWEST_PUBLIC_ID,
+			..Default::default()
+		},
+		..Default::default()
+	};
+
+	serde_json::to_value(config).expect(<span class="string">"Could not build genesis config."</span>)
 }
 
 <span class="comment">// staging_testnet
@@ -1136,44 +1132,32 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">const </span>ENDOWMENT: u128 = <span class="number">1_000_000 </span>* ROC;
 	<span class="kw">const </span>STASH: u128 = <span class="number">100 </span>* ROC;
 
-	<span class="macro">serde_json::json!</span>({
-		<span class="string">"balances"</span>: {
-			<span class="string">"balances"</span>: endowed_accounts
+	<span class="kw">let </span>config = RuntimeGenesisConfig {
+		balances: BalancesConfig {
+			balances: endowed_accounts
 				.iter()
 				.map(|k: <span class="kw-2">&amp;</span>AccountId| (k.clone(), ENDOWMENT))
 				.chain(initial_authorities.iter().map(|x| (x.<span class="number">0</span>.clone(), STASH)))
 				.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
 		},
-		<span class="string">"session"</span>: {
-			<span class="string">"keys"</span>: initial_authorities
+		session: SessionConfig {
+			keys: initial_authorities
 				.into_iter()
-				.map(|x| {
-					(
-						x.<span class="number">0</span>.clone(),
-						x.<span class="number">0</span>,
-						rococo_session_keys(
-							x.<span class="number">2</span>,
-							x.<span class="number">3</span>,
-							x.<span class="number">4</span>,
-							x.<span class="number">5</span>,
-							x.<span class="number">6</span>,
-							x.<span class="number">7</span>,
-						),
-					)
-				})
+				.map(|x| (x.<span class="number">0</span>.clone(), x.<span class="number">0</span>, rococo_session_keys(x.<span class="number">2</span>, x.<span class="number">3</span>, x.<span class="number">4</span>, x.<span class="number">5</span>, x.<span class="number">6</span>, x.<span class="number">7</span>)))
 				.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
+			..Default::default()
 		},
-		<span class="string">"babe"</span>: {
-			<span class="string">"epochConfig"</span>: <span class="prelude-val">Some</span>(BABE_GENESIS_EPOCH_CONFIG),
+		babe: BabeConfig { epoch_config: BABE_GENESIS_EPOCH_CONFIG, ..Default::default() },
+		sudo: SudoConfig { key: <span class="prelude-val">Some</span>(endowed_accounts[<span class="number">0</span>].clone()) },
+		configuration: ConfigurationConfig { config: default_parachains_host_configuration() },
+		registrar: RegistrarConfig {
+			next_free_para_id: polkadot_primitives::LOWEST_PUBLIC_ID,
+			..Default::default()
 		},
-		<span class="string">"sudo"</span>: { <span class="string">"key"</span>: <span class="prelude-val">Some</span>(endowed_accounts[<span class="number">0</span>].clone()) },
-		<span class="string">"configuration"</span>: {
-			<span class="string">"config"</span>: default_parachains_host_configuration(),
-		},
-		<span class="string">"registrar"</span>: {
-			<span class="string">"nextFreeParaId"</span>: polkadot_primitives::LOWEST_PUBLIC_ID,
-		},
-	})
+		..Default::default()
+	};
+
+	serde_json::to_value(config).expect(<span class="string">"Could not build genesis config."</span>)
 }
 
 <span class="comment">//development
@@ -1209,28 +1193,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	)
 }
 
-<span class="doccomment">/// Wococo is a temporary testnet that uses almost the same runtime as rococo.
-</span><span class="comment">//wococo_local_testnet
-</span><span class="kw">fn </span>wococo_local_testnet_genesis() -&gt; serde_json::Value {
-	rococo_testnet_genesis(
-		Vec::from([
-			get_authority_keys_from_seed(<span class="string">"Alice"</span>),
-			get_authority_keys_from_seed(<span class="string">"Bob"</span>),
-			get_authority_keys_from_seed(<span class="string">"Charlie"</span>),
-			get_authority_keys_from_seed(<span class="string">"Dave"</span>),
-		]),
-		get_account_id_from_seed::&lt;sr25519::Public&gt;(<span class="string">"Alice"</span>),
-		<span class="prelude-val">None</span>,
-	)
-}
-
 <span class="doccomment">/// Provides the JSON representation of predefined genesis config for given `id`.
-</span><span class="kw">pub fn </span>get_preset(id: <span class="kw-2">&amp;</span>sp_genesis_builder::PresetId) -&gt; <span class="prelude-ty">Option</span>&lt;alloc::vec::Vec&lt;u8&gt;&gt; {
+</span><span class="kw">pub fn </span>get_preset(id: <span class="kw-2">&amp;</span>PresetId) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt; {
 	<span class="kw">let </span>patch = <span class="kw">match </span>id.try_into() {
-		<span class="prelude-val">Ok</span>(<span class="string">"local_testnet"</span>) =&gt; rococo_local_testnet_genesis(),
-		<span class="prelude-val">Ok</span>(<span class="string">"development"</span>) =&gt; rococo_development_config_genesis(),
+		<span class="prelude-val">Ok</span>(sp_genesis_builder::LOCAL_TESTNET_RUNTIME_PRESET) =&gt; rococo_local_testnet_genesis(),
+		<span class="prelude-val">Ok</span>(sp_genesis_builder::DEV_RUNTIME_PRESET) =&gt; rococo_development_config_genesis(),
 		<span class="prelude-val">Ok</span>(<span class="string">"staging_testnet"</span>) =&gt; rococo_staging_testnet_config_genesis(),
-		<span class="prelude-val">Ok</span>(<span class="string">"wococo_local_testnet"</span>) =&gt; wococo_local_testnet_genesis(),
 		<span class="prelude-val">Ok</span>(<span class="string">"versi_local_testnet"</span>) =&gt; versi_local_testnet_genesis(),
 		<span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
 	};
@@ -1239,6 +1207,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.expect(<span class="string">"serialization to json is expected to work. qed."</span>)
 			.into_bytes(),
 	)
+}
+
+<span class="doccomment">/// List of supported presets.
+</span><span class="kw">pub fn </span>preset_names() -&gt; Vec&lt;PresetId&gt; {
+	<span class="macro">vec!</span>[
+		PresetId::from(sp_genesis_builder::LOCAL_TESTNET_RUNTIME_PRESET),
+		PresetId::from(sp_genesis_builder::DEV_RUNTIME_PRESET),
+		PresetId::from(<span class="string">"staging_testnet"</span>),
+		PresetId::from(<span class="string">"versi_local_testnet"</span>),
+	]
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>
 

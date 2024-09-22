@@ -556,7 +556,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#404" id="404">404</a>
 <a href="#405" id="405">405</a>
 <a href="#406" id="406">406</a>
-<a href="#407" id="407">407</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -577,13 +576,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="kw">use </span>codec::Encode;
 <span class="kw">use </span>frame_support::{dispatch::GetDispatchInfo, weights::Weight};
-<span class="kw">use </span>polkadot_service::chain_spec::get_account_id_from_seed;
 <span class="kw">use </span>polkadot_test_client::{
 	BlockBuilderExt, ClientBlockImportExt, DefaultTestClientBuilderExt, InitPolkadotBlockBuilder,
 	TestClientBuilder, TestClientBuilderExt,
 };
 <span class="kw">use </span>polkadot_test_runtime::{pallet_test_notifier, xcm_config::XcmConfig};
-<span class="kw">use </span>polkadot_test_service::construct_extrinsic;
+<span class="kw">use </span>polkadot_test_service::{chain_spec::get_account_id_from_seed, construct_extrinsic};
 <span class="kw">use </span>sp_core::sr25519;
 <span class="kw">use </span>sp_runtime::traits::Block;
 <span class="kw">use </span>sp_state_machine::InspectState;

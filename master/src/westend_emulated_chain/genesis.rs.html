@@ -254,8 +254,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#102" id="102">102</a>
 <a href="#103" id="103">103</a>
 <a href="#104" id="104">104</a>
-<a href="#105" id="105">105</a>
-<a href="#106" id="106">106</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -342,9 +340,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			minimum_validator_count: <span class="number">1</span>,
 			stakers: validators::initial_authorities()
 				.iter()
-				.map(|x| {
-					(x.<span class="number">0</span>.clone(), x.<span class="number">1</span>.clone(), STASH, westend_runtime::StakerStatus::Validator)
-				})
+				.map(|x| (x.<span class="number">0</span>.clone(), x.<span class="number">1</span>.clone(), STASH, pallet_staking::StakerStatus::Validator))
 				.collect(),
 			invulnerables: validators::initial_authorities().iter().map(|x| x.<span class="number">0</span>.clone()).collect(),
 			force_era: pallet_staking::Forcing::ForceNone,

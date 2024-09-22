@@ -2961,7 +2961,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#2809" id="2809">2809</a>
 <a href="#2810" id="2810">2810</a>
 <a href="#2811" id="2811">2811</a>
-<a href="#2812" id="2812">2812</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -3084,8 +3083,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">pub use </span>frame_system::Call <span class="kw">as </span>SystemCall;
 <span class="kw">pub use </span>pallet_balances::Call <span class="kw">as </span>BalancesCall;
 <span class="kw">pub use </span>pallet_election_provider_multi_phase::{Call <span class="kw">as </span>EPMCall, GeometricDepositBase};
-<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-</span><span class="kw">pub use </span>pallet_staking::StakerStatus;
 <span class="kw">use </span>pallet_staking::UseValidatorsMap;
 <span class="kw">pub use </span>pallet_timestamp::Call <span class="kw">as </span>TimestampCall;
 <span class="kw">use </span>sp_runtime::traits::Get;
@@ -3101,6 +3098,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 };
 
 <span class="kw">mod </span>bag_thresholds;
+<span class="kw">mod </span>genesis_config_presets;
 <span class="kw">mod </span>weights;
 <span class="kw">pub mod </span>xcm_config;
 
@@ -5720,11 +5718,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 
 		<span class="kw">fn </span>get_preset(id: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;sp_genesis_builder::PresetId&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt; {
-			get_preset::&lt;RuntimeGenesisConfig&gt;(id, |<span class="kw">_</span>| <span class="prelude-val">None</span>)
+			get_preset::&lt;RuntimeGenesisConfig&gt;(id, <span class="kw-2">&amp;</span>genesis_config_presets::get_preset)
 		}
 
 		<span class="kw">fn </span>preset_names() -&gt; Vec&lt;sp_genesis_builder::PresetId&gt; {
-			<span class="macro">vec!</span>[]
+			genesis_config_presets::preset_names()
 		}
 	}
 }

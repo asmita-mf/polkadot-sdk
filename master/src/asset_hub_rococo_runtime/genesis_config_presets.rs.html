@@ -321,18 +321,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#169" id="169">169</a>
 <a href="#170" id="170">170</a>
 <a href="#171" id="171">171</a>
-<a href="#172" id="172">172</a>
-<a href="#173" id="173">173</a>
-<a href="#174" id="174">174</a>
-<a href="#175" id="175">175</a>
-<a href="#176" id="176">176</a>
-<a href="#177" id="177">177</a>
-<a href="#178" id="178">178</a>
-<a href="#179" id="179">179</a>
-<a href="#180" id="180">180</a>
-<a href="#181" id="181">181</a>
-<a href="#182" id="182">182</a>
-<a href="#183" id="183">183</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -350,70 +338,58 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="doccomment">//! # Asset Hub Rococo Runtime genesis config presets
 
-</span><span class="kw">use </span>alloc::{vec, vec::Vec};
+</span><span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>alloc::{vec, vec::Vec};
 <span class="kw">use </span>cumulus_primitives_core::ParaId;
 <span class="kw">use </span>hex_literal::hex;
-<span class="kw">use </span>parachains_common::{genesis_config_helpers::<span class="kw-2">*</span>, AccountId, AuraId, Balance <span class="kw">as </span>AssetHubBalance};
+<span class="kw">use </span>parachains_common::{genesis_config_helpers::<span class="kw-2">*</span>, AccountId, AuraId};
 <span class="kw">use </span>sp_core::{crypto::UncheckedInto, sr25519};
 <span class="kw">use </span>sp_genesis_builder::PresetId;
-<span class="kw">use </span>testnet_parachains_constants::rococo::xcm_version::SAFE_XCM_VERSION;
+<span class="kw">use </span>testnet_parachains_constants::rococo::{currency::UNITS <span class="kw">as </span>ROC, xcm_version::SAFE_XCM_VERSION};
 
-<span class="kw">const </span>ASSET_HUB_ROCOCO_ED: AssetHubBalance = <span class="kw">crate</span>::ExistentialDeposit::get();
-
-<span class="doccomment">/// Generate the session keys from individual elements.
-///
-/// The input must be a tuple of individual keys (a single arg for now since we have just one key).
-</span><span class="kw">pub fn </span>asset_hub_rococo_session_keys(keys: AuraId) -&gt; <span class="kw">crate</span>::SessionKeys {
-	<span class="kw">crate</span>::SessionKeys { aura: keys }
-}
+<span class="kw">const </span>ASSET_HUB_ROCOCO_ED: Balance = ExistentialDeposit::get();
 
 <span class="kw">fn </span>asset_hub_rococo_genesis(
 	invulnerables: Vec&lt;(AccountId, AuraId)&gt;,
 	endowed_accounts: Vec&lt;AccountId&gt;,
-	endowment: AssetHubBalance,
+	endowment: Balance,
 	id: ParaId,
 ) -&gt; serde_json::Value {
-	<span class="macro">serde_json::json!</span>({
-		<span class="string">"balances"</span>: <span class="kw">crate</span>::BalancesConfig {
-			balances: endowed_accounts
-				.iter()
-				.cloned()
-				.map(|k| (k, endowment))
-				.collect(),
+	<span class="kw">let </span>config = RuntimeGenesisConfig {
+		balances: BalancesConfig {
+			balances: endowed_accounts.iter().cloned().map(|k| (k, endowment)).collect(),
 		},
-		<span class="string">"parachainInfo"</span>: <span class="kw">crate</span>::ParachainInfoConfig {
-			parachain_id: id,
-			..Default::default()
-		},
-		<span class="string">"collatorSelection"</span>: <span class="kw">crate</span>::CollatorSelectionConfig {
+		parachain_info: ParachainInfoConfig { parachain_id: id, ..Default::default() },
+		collator_selection: CollatorSelectionConfig {
 			invulnerables: invulnerables.iter().cloned().map(|(acc, <span class="kw">_</span>)| acc).collect(),
 			candidacy_bond: ASSET_HUB_ROCOCO_ED * <span class="number">16</span>,
 			..Default::default()
 		},
-		<span class="string">"session"</span>: <span class="kw">crate</span>::SessionConfig {
+		session: SessionConfig {
 			keys: invulnerables
 				.into_iter()
 				.map(|(acc, aura)| {
 					(
-						acc.clone(),                         <span class="comment">// account id
-						</span>acc,                                 <span class="comment">// validator id
-						</span>asset_hub_rococo_session_keys(aura), <span class="comment">// session keys
+						acc.clone(),          <span class="comment">// account id
+						</span>acc,                  <span class="comment">// validator id
+						</span>SessionKeys { aura }, <span class="comment">// session keys
 					</span>)
 				})
 				.collect(),
 			..Default::default()
 		},
-		<span class="string">"polkadotXcm"</span>: <span class="kw">crate</span>::PolkadotXcmConfig {
+		polkadot_xcm: PolkadotXcmConfig {
 			safe_xcm_version: <span class="prelude-val">Some</span>(SAFE_XCM_VERSION),
 			..Default::default()
-		}
-	})
+		},
+		..Default::default()
+	};
+
+	serde_json::to_value(config).expect(<span class="string">"Could not build genesis config."</span>)
 }
 
 <span class="doccomment">/// Encapsulates names of predefined presets.
 </span><span class="kw">mod </span>preset_names {
-	<span class="kw">pub const </span>PRESET_DEVELOPMENT: <span class="kw-2">&amp;</span>str = <span class="string">"development"</span>;
-	<span class="kw">pub const </span>PRESET_LOCAL: <span class="kw-2">&amp;</span>str = <span class="string">"local"</span>;
 	<span class="kw">pub const </span>PRESET_GENESIS: <span class="kw-2">&amp;</span>str = <span class="string">"genesis"</span>;
 }
 
@@ -453,7 +429,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			ASSET_HUB_ROCOCO_ED * <span class="number">524_288</span>,
 			<span class="number">1000</span>.into(),
 		),
-		<span class="prelude-val">Ok</span>(PRESET_LOCAL) =&gt; asset_hub_rococo_genesis(
+		<span class="prelude-val">Ok</span>(sp_genesis_builder::LOCAL_TESTNET_RUNTIME_PRESET) =&gt; asset_hub_rococo_genesis(
 			<span class="comment">// initial collators.
 			</span><span class="macro">vec!</span>[
 				(
@@ -479,10 +455,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				get_account_id_from_seed::&lt;sr25519::Public&gt;(<span class="string">"Eve//stash"</span>),
 				get_account_id_from_seed::&lt;sr25519::Public&gt;(<span class="string">"Ferdie//stash"</span>),
 			],
-			testnet_parachains_constants::rococo::currency::UNITS * <span class="number">1_000_000</span>,
+			ROC * <span class="number">1_000_000</span>,
 			<span class="number">1000</span>.into(),
 		),
-		<span class="prelude-val">Ok</span>(PRESET_DEVELOPMENT) =&gt; asset_hub_rococo_genesis(
+		<span class="prelude-val">Ok</span>(sp_genesis_builder::DEV_RUNTIME_PRESET) =&gt; asset_hub_rococo_genesis(
 			<span class="comment">// initial collators.
 			</span><span class="macro">vec!</span>[(
 				get_account_id_from_seed::&lt;sr25519::Public&gt;(<span class="string">"Alice"</span>),
@@ -494,10 +470,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				get_account_id_from_seed::&lt;sr25519::Public&gt;(<span class="string">"Alice//stash"</span>),
 				get_account_id_from_seed::&lt;sr25519::Public&gt;(<span class="string">"Bob//stash"</span>),
 			],
-			testnet_parachains_constants::rococo::currency::UNITS * <span class="number">1_000_000</span>,
+			ROC * <span class="number">1_000_000</span>,
 			<span class="number">1000</span>.into(),
 		),
-		<span class="prelude-val">Err</span>(<span class="kw">_</span>) | <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
+		<span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
 	};
 
 	<span class="prelude-val">Some</span>(
@@ -512,8 +488,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">use </span>preset_names::<span class="kw-2">*</span>;
 	<span class="macro">vec!</span>[
 		PresetId::from(PRESET_GENESIS),
-		PresetId::from(PRESET_DEVELOPMENT),
-		PresetId::from(PRESET_LOCAL),
+		PresetId::from(sp_genesis_builder::DEV_RUNTIME_PRESET),
+		PresetId::from(sp_genesis_builder::LOCAL_TESTNET_RUNTIME_PRESET),
 	]
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>

@@ -2066,6 +2066,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1914" id="1914">1914</a>
 <a href="#1915" id="1915">1915</a>
 <a href="#1916" id="1916">1916</a>
+<a href="#1917" id="1917">1917</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -2092,6 +2093,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
 </span><span class="macro">include!</span>(<span class="macro">concat!</span>(<span class="macro">env!</span>(<span class="string">"OUT_DIR"</span>), <span class="string">"/wasm_binary.rs"</span>));
 
+<span class="kw">mod </span>genesis_config_presets;
 <span class="kw">mod </span>weights;
 <span class="kw">pub mod </span>xcm_config;
 
@@ -3928,11 +3930,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 
 		<span class="kw">fn </span>get_preset(id: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;sp_genesis_builder::PresetId&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt; {
-			get_preset::&lt;RuntimeGenesisConfig&gt;(id, |<span class="kw">_</span>| <span class="prelude-val">None</span>)
+			get_preset::&lt;RuntimeGenesisConfig&gt;(id, <span class="kw-2">&amp;</span>genesis_config_presets::get_preset)
 		}
 
 		<span class="kw">fn </span>preset_names() -&gt; Vec&lt;sp_genesis_builder::PresetId&gt; {
-			<span class="macro">vec!</span>[]
+			genesis_config_presets::preset_names()
 		}
 	}
 }

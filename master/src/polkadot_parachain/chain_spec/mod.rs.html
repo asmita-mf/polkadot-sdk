@@ -505,30 +505,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#353" id="353">353</a>
 <a href="#354" id="354">354</a>
 <a href="#355" id="355">355</a>
-<a href="#356" id="356">356</a>
-<a href="#357" id="357">357</a>
-<a href="#358" id="358">358</a>
-<a href="#359" id="359">359</a>
-<a href="#360" id="360">360</a>
-<a href="#361" id="361">361</a>
-<a href="#362" id="362">362</a>
-<a href="#363" id="363">363</a>
-<a href="#364" id="364">364</a>
-<a href="#365" id="365">365</a>
-<a href="#366" id="366">366</a>
-<a href="#367" id="367">367</a>
-<a href="#368" id="368">368</a>
-<a href="#369" id="369">369</a>
-<a href="#370" id="370">370</a>
-<a href="#371" id="371">371</a>
-<a href="#372" id="372">372</a>
-<a href="#373" id="373">373</a>
-<a href="#374" id="374">374</a>
-<a href="#375" id="375">375</a>
-<a href="#376" id="376">376</a>
-<a href="#377" id="377">377</a>
-<a href="#378" id="378">378</a>
-<a href="#379" id="379">379</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -546,7 +522,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 // along with Cumulus.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
 
 </span><span class="kw">use </span>cumulus_primitives_core::ParaId;
-<span class="kw">use </span>parachains_common::{AccountId, Signature};
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>parachains_common::genesis_config_helpers::{
+	get_account_id_from_seed, get_collator_keys_from_seed, get_from_seed,
+};
 <span class="kw">use </span>polkadot_parachain_lib::{
 	chain_spec::{GenericChainSpec, LoadSpec},
 	runtime::{
@@ -554,8 +532,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	},
 };
 <span class="kw">use </span>sc_chain_spec::ChainSpec;
-<span class="kw">use </span>sp_core::{Pair, Public};
-<span class="kw">use </span>sp_runtime::traits::{IdentifyAccount, Verify};
 
 <span class="kw">pub mod </span>asset_hubs;
 <span class="kw">pub mod </span>bridge_hubs;
@@ -570,30 +546,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// The default XCM version to set in genesis config.
 </span><span class="kw">const </span>SAFE_XCM_VERSION: u32 = xcm::prelude::XCM_VERSION;
-
-<span class="doccomment">/// Helper function to generate a crypto pair from seed
-</span><span class="kw">pub fn </span>get_from_seed&lt;TPublic: Public&gt;(seed: <span class="kw-2">&amp;</span>str) -&gt; &lt;TPublic::Pair <span class="kw">as </span>Pair&gt;::Public {
-	TPublic::Pair::from_string(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"//{}"</span>, seed), <span class="prelude-val">None</span>)
-		.expect(<span class="string">"static values are valid; qed"</span>)
-		.public()
-}
-
-<span class="kw">type </span>AccountPublic = &lt;Signature <span class="kw">as </span>Verify&gt;::Signer;
-
-<span class="doccomment">/// Helper function to generate an account ID from seed
-</span><span class="kw">pub fn </span>get_account_id_from_seed&lt;TPublic: Public&gt;(seed: <span class="kw-2">&amp;</span>str) -&gt; AccountId
-<span class="kw">where
-	</span>AccountPublic: From&lt;&lt;TPublic::Pair <span class="kw">as </span>Pair&gt;::Public&gt;,
-{
-	AccountPublic::from(get_from_seed::&lt;TPublic&gt;(seed)).into_account()
-}
-
-<span class="doccomment">/// Generate collator keys from seed.
-///
-/// This function's return type must always match the session keys of the chain in tuple format.
-</span><span class="kw">pub fn </span>get_collator_keys_from_seed&lt;AuraId: Public&gt;(seed: <span class="kw-2">&amp;</span>str) -&gt; &lt;AuraId::Pair <span class="kw">as </span>Pair&gt;::Public {
-	get_from_seed::&lt;AuraId&gt;(seed)
-}
 
 <span class="doccomment">/// Extracts the normalized chain id and parachain id from the input chain id.
 /// (H/T to Phala for the idea)

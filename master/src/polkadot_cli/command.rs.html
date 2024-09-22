@@ -638,18 +638,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#486" id="486">486</a>
 <a href="#487" id="487">487</a>
 <a href="#488" id="488">488</a>
-<a href="#489" id="489">489</a>
-<a href="#490" id="490">490</a>
-<a href="#491" id="491">491</a>
-<a href="#492" id="492">492</a>
-<a href="#493" id="493">493</a>
-<a href="#494" id="494">494</a>
-<a href="#495" id="495">495</a>
-<a href="#496" id="496">496</a>
-<a href="#497" id="497">497</a>
-<a href="#498" id="498">498</a>
-<a href="#499" id="499">499</a>
-<a href="#500" id="500">500</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -761,17 +749,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			</span><span class="string">"westend-local" </span>=&gt; Box::new(polkadot_service::chain_spec::westend_local_testnet_config()<span class="question-mark">?</span>),
 			<span class="attr">#[cfg(feature = <span class="string">"westend-native"</span>)]
 			</span><span class="string">"westend-staging" </span>=&gt; Box::new(polkadot_service::chain_spec::westend_staging_testnet_config()<span class="question-mark">?</span>),
-			<span class="attr">#[cfg(not(feature = <span class="string">"westend-native"</span>))]
-			</span>name <span class="kw">if </span>name.starts_with(<span class="string">"westend-"</span>) &amp;&amp; !name.ends_with(<span class="string">".json"</span>) =&gt;
-				<span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"`{}` only supported with `westend-native` feature enabled."</span>, name))<span class="question-mark">?</span>,
-			<span class="string">"wococo" </span>=&gt; Box::new(polkadot_service::chain_spec::wococo_config()<span class="question-mark">?</span>),
-			<span class="attr">#[cfg(feature = <span class="string">"rococo-native"</span>)]
-			</span><span class="string">"wococo-dev" </span>=&gt; Box::new(polkadot_service::chain_spec::wococo_development_config()<span class="question-mark">?</span>),
-			<span class="attr">#[cfg(feature = <span class="string">"rococo-native"</span>)]
-			</span><span class="string">"wococo-local" </span>=&gt; Box::new(polkadot_service::chain_spec::wococo_local_testnet_config()<span class="question-mark">?</span>),
-			<span class="attr">#[cfg(not(feature = <span class="string">"rococo-native"</span>))]
-			</span>name <span class="kw">if </span>name.starts_with(<span class="string">"wococo-"</span>) =&gt;
-				<span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"`{}` only supported with `rococo-native` feature enabled."</span>, name))<span class="question-mark">?</span>,
 			<span class="attr">#[cfg(feature = <span class="string">"rococo-native"</span>)]
 			</span><span class="string">"versi-dev" </span>=&gt; Box::new(polkadot_service::chain_spec::versi_development_config()<span class="question-mark">?</span>),
 			<span class="attr">#[cfg(feature = <span class="string">"rococo-native"</span>)]
@@ -791,7 +768,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				// chains, we use the chain spec for the specific chain.
 				</span><span class="kw">if </span><span class="self">self</span>.run.force_rococo ||
 					chain_spec.is_rococo() ||
-					chain_spec.is_wococo() ||
 					chain_spec.is_versi()
 				{
 					Box::new(polkadot_service::RococoChainSpec::from_json_file(path)<span class="question-mark">?</span>)

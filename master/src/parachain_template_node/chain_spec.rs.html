@@ -266,7 +266,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	.with_name(<span class="string">"Development"</span>)
 	.with_id(<span class="string">"dev"</span>)
 	.with_chain_type(ChainType::Development)
-	.with_genesis_config_preset_name(<span class="string">"development"</span>)
+	.with_genesis_config_preset_name(sp_genesis_builder::DEV_RUNTIME_PRESET)
 	.build()
 }
 
@@ -289,7 +289,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	.with_name(<span class="string">"Local Testnet"</span>)
 	.with_id(<span class="string">"local_testnet"</span>)
 	.with_chain_type(ChainType::Local)
-	.with_genesis_config_preset_name(<span class="string">"local_testnet"</span>)
+	.with_genesis_config_preset_name(sc_chain_spec::LOCAL_TESTNET_RUNTIME_PRESET)
 	.with_protocol_id(<span class="string">"template-local"</span>)
 	.with_properties(properties)
 	.build()

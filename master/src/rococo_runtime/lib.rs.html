@@ -2777,12 +2777,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#2625" id="2625">2625</a>
 <a href="#2626" id="2626">2626</a>
 <a href="#2627" id="2627">2627</a>
-<a href="#2628" id="2628">2628</a>
-<a href="#2629" id="2629">2629</a>
-<a href="#2630" id="2630">2630</a>
-<a href="#2631" id="2631">2631</a>
-<a href="#2632" id="2632">2632</a>
-<a href="#2633" id="2633">2633</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -5367,13 +5361,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 
 		<span class="kw">fn </span>preset_names() -&gt; Vec&lt;PresetId&gt; {
-			<span class="macro">vec!</span>[
-				PresetId::from(<span class="string">"local_testnet"</span>),
-				PresetId::from(<span class="string">"development"</span>),
-				PresetId::from(<span class="string">"staging_testnet"</span>),
-				PresetId::from(<span class="string">"wococo_local_testnet"</span>),
-				PresetId::from(<span class="string">"versi_local_testnet"</span>),
-			]
+			genesis_config_presets::preset_names()
 		}
 	}
 }

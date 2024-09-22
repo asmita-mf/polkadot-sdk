@@ -1602,6 +1602,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1450" id="1450">1450</a>
 <a href="#1451" id="1451">1451</a>
 <a href="#1452" id="1452">1452</a>
+<a href="#1453" id="1453">1453</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -1790,7 +1791,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub struct </span>GenesisConfig&lt;T: Config&gt; {
 		<span class="kw">pub </span>max_temporary_slots: u32,
 		<span class="kw">pub </span>max_permanent_slots: u32,
-		<span class="kw">pub </span>_config: PhantomData&lt;T&gt;,
+		<span class="attr">#[serde(skip)]
+		</span><span class="kw">pub </span>_config: PhantomData&lt;T&gt;,
 	}
 
 	<span class="attr">#[pallet::genesis_build]
