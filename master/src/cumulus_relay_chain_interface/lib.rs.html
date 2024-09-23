@@ -549,6 +549,24 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#397" id="397">397</a>
 <a href="#398" id="398">398</a>
 <a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -565,7 +583,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 // You should have received a copy of the GNU General Public License
 // along with Cumulus.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
 
-</span><span class="kw">use </span>std::{collections::BTreeMap, pin::Pin, sync::Arc};
+</span><span class="kw">use </span>std::{
+	collections::{BTreeMap, VecDeque},
+	pin::Pin,
+	sync::Arc,
+};
 
 <span class="kw">use </span>futures::Stream;
 <span class="kw">use </span>polkadot_overseer::prometheus::PrometheusError;
@@ -580,8 +602,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>cumulus_primitives_core::relay_chain::{BlockId, Hash <span class="kw">as </span>RelayHash};
 <span class="kw">pub use </span>cumulus_primitives_core::{
 	relay_chain::{
-		BlockNumber, CommittedCandidateReceipt, CoreState, Hash <span class="kw">as </span>PHash, Header <span class="kw">as </span>PHeader,
-		InboundHrmpMessage, OccupiedCoreAssumption, SessionIndex, ValidationCodeHash, ValidatorId,
+		BlockNumber, CommittedCandidateReceipt, CoreIndex, CoreState, Hash <span class="kw">as </span>PHash,
+		Header <span class="kw">as </span>PHeader, InboundHrmpMessage, OccupiedCoreAssumption, SessionIndex,
+		ValidationCodeHash, ValidatorId,
 	},
 	InboundDownwardMessage, ParaId, PersistedValidationData,
 };
@@ -784,6 +807,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		relay_parent: PHash,
 	) -&gt; RelayChainResult&lt;Vec&lt;CoreState&lt;PHash, BlockNumber&gt;&gt;&gt;;
+
+	<span class="doccomment">/// Fetch the claim queue.
+	</span><span class="kw">async fn </span>claim_queue(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		relay_parent: PHash,
+	) -&gt; RelayChainResult&lt;BTreeMap&lt;CoreIndex, VecDeque&lt;ParaId&gt;&gt;&gt;;
 }
 
 <span class="attr">#[async_trait]
@@ -930,6 +959,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">async fn </span>version(<span class="kw-2">&amp;</span><span class="self">self</span>, relay_parent: PHash) -&gt; RelayChainResult&lt;RuntimeVersion&gt; {
 		(<span class="kw-2">**</span><span class="self">self</span>).version(relay_parent).<span class="kw">await
+	</span>}
+
+	<span class="kw">async fn </span>claim_queue(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		relay_parent: PHash,
+	) -&gt; RelayChainResult&lt;BTreeMap&lt;CoreIndex, VecDeque&lt;ParaId&gt;&gt;&gt; {
+		(<span class="kw-2">**</span><span class="self">self</span>).claim_queue(relay_parent).<span class="kw">await
 	</span>}
 }
 

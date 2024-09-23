@@ -460,6 +460,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#308" id="308">308</a>
 <a href="#309" id="309">309</a>
 <a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
 </pre></div><pre class="rust"><code><span class="comment">// This is free and unencumbered software released into the public domain.
 //
 // Anyone is free to copy, modify, publish, use, compile, sell, or
@@ -660,6 +661,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>ReservedXcmpWeight = ReservedXcmpWeight;
 	<span class="kw">type </span>CheckAssociatedRelayNumber = RelayNumberMonotonicallyIncreases;
 	<span class="kw">type </span>ConsensusHook = ConsensusHook;
+	<span class="kw">type </span>SelectCore = cumulus_pallet_parachain_system::DefaultCoreSelector&lt;Runtime&gt;;
 }
 
 <span class="kw">impl </span>parachain_info::Config <span class="kw">for </span>Runtime {}

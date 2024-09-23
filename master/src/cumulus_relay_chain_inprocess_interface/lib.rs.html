@@ -690,6 +690,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#538" id="538">538</a>
 <a href="#539" id="539">539</a>
 <a href="#540" id="540">540</a>
+<a href="#541" id="541">541</a>
+<a href="#542" id="542">542</a>
+<a href="#543" id="543">543</a>
+<a href="#544" id="544">544</a>
+<a href="#545" id="545">545</a>
+<a href="#546" id="546">546</a>
+<a href="#547" id="547">547</a>
+<a href="#548" id="548">548</a>
+<a href="#549" id="549">549</a>
+<a href="#550" id="550">550</a>
+<a href="#551" id="551">551</a>
+<a href="#552" id="552">552</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -706,14 +718,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 // You should have received a copy of the GNU General Public License
 // along with Cumulus.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
 
-</span><span class="kw">use </span>std::{collections::btree_map::BTreeMap, pin::Pin, sync::Arc, time::Duration};
+</span><span class="kw">use </span>std::{
+	collections::{BTreeMap, VecDeque},
+	pin::Pin,
+	sync::Arc,
+	time::Duration,
+};
 
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>cumulus_primitives_core::{
 	relay_chain::{
 		runtime_api::ParachainHost, Block <span class="kw">as </span>PBlock, BlockId, BlockNumber,
-		CommittedCandidateReceipt, CoreState, Hash <span class="kw">as </span>PHash, Header <span class="kw">as </span>PHeader, InboundHrmpMessage,
-		OccupiedCoreAssumption, SessionIndex, ValidationCodeHash, ValidatorId,
+		CommittedCandidateReceipt, CoreIndex, CoreState, Hash <span class="kw">as </span>PHash, Header <span class="kw">as </span>PHeader,
+		InboundHrmpMessage, OccupiedCoreAssumption, SessionIndex, ValidationCodeHash, ValidatorId,
 	},
 	InboundDownwardMessage, ParaId, PersistedValidationData,
 };
@@ -994,6 +1011,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			</span>.into_iter()
 			.map(|receipt| receipt.into())
 			.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;())
+	}
+
+	<span class="kw">async fn </span>claim_queue(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		hash: PHash,
+	) -&gt; RelayChainResult&lt;BTreeMap&lt;CoreIndex, VecDeque&lt;ParaId&gt;&gt;&gt; {
+		<span class="prelude-val">Ok</span>(<span class="self">self</span>.full_client.runtime_api().claim_queue(hash)<span class="question-mark">?</span>)
 	}
 }
 

@@ -648,6 +648,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#496" id="496">496</a>
 <a href="#497" id="497">497</a>
 <a href="#498" id="498">498</a>
+<a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
+<a href="#503" id="503">503</a>
+<a href="#504" id="504">504</a>
+<a href="#505" id="505">505</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -714,7 +721,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">use </span>sp_version::NativeVersion;
 <span class="kw">use </span>sp_version::RuntimeVersion;
 
-<span class="kw">use </span>cumulus_primitives_core::AggregateMessageOrigin;
+<span class="kw">use </span>cumulus_primitives_core::{AggregateMessageOrigin, ClaimQueueOffset, CoreSelector};
 <span class="kw">pub use </span>frame_support::{
 	construct_runtime, derive_impl,
 	dispatch::DispatchClass,
@@ -822,8 +829,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">type </span>ConsensusHook = cumulus_pallet_aura_ext::FixedVelocityConsensusHook&lt;
 	Runtime,
 	RELAY_CHAIN_SLOT_DURATION_MILLIS,
-	BLOCK_PROCESSING_VELOCITY,
-	UNINCLUDED_SEGMENT_CAPACITY,
+	<span class="number">3</span>,
+	<span class="number">9</span>,
 &gt;;
 
 <span class="kw">impl </span>cumulus_pallet_parachain_system::Config <span class="kw">for </span>Runtime {
@@ -838,6 +845,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>CheckAssociatedRelayNumber = RelayNumberMonotonicallyIncreases;
 	<span class="kw">type </span>ConsensusHook = ConsensusHook;
 	<span class="kw">type </span>WeightInfo = weights::cumulus_pallet_parachain_system::WeightInfo&lt;Runtime&gt;;
+	<span class="kw">type </span>SelectCore = cumulus_pallet_parachain_system::DefaultCoreSelector&lt;Runtime&gt;;
 }
 
 <span class="macro">parameter_types! </span>{
@@ -884,7 +892,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>DisabledValidators = ();
 	<span class="kw">type </span>MaxAuthorities = ConstU32&lt;<span class="number">100_000</span>&gt;;
 	<span class="kw">type </span>AllowMultipleBlocksPerSlot = ConstBool&lt;<span class="bool-val">true</span>&gt;;
-	<span class="kw">type </span>SlotDuration = ConstU64&lt;SLOT_DURATION&gt;;
+	<span class="kw">type </span>SlotDuration = ConstU64&lt;<span class="number">2000</span>&gt;;
 }
 
 <span class="kw">impl </span>pallet_glutton::Config <span class="kw">for </span>Runtime {
@@ -1075,7 +1083,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 	}
 
-  <span class="kw">impl </span>frame_system_rpc_runtime_api::AccountNonceApi&lt;Block, AccountId, Nonce&gt; <span class="kw">for </span>Runtime {
+	<span class="kw">impl </span>cumulus_primitives_core::GetCoreSelectorApi&lt;Block&gt; <span class="kw">for </span>Runtime {
+		<span class="kw">fn </span>core_selector() -&gt; (CoreSelector, ClaimQueueOffset) {
+			ParachainSystem::core_selector()
+		}
+	}
+
+	<span class="kw">impl </span>frame_system_rpc_runtime_api::AccountNonceApi&lt;Block, AccountId, Nonce&gt; <span class="kw">for </span>Runtime {
 		<span class="kw">fn </span>account_nonce(account: AccountId) -&gt; Nonce {
 			System::account_nonce(account)
 		}

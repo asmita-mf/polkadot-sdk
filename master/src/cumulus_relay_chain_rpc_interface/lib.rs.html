@@ -425,6 +425,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#273" id="273">273</a>
 <a href="#274" id="274">274</a>
 <a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -698,6 +707,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		relay_parent: RelayHash,
 	) -&gt; RelayChainResult&lt;Vec&lt;CoreState&lt;RelayHash, BlockNumber&gt;&gt;&gt; {
 		<span class="self">self</span>.rpc_client.parachain_host_availability_cores(relay_parent).<span class="kw">await
+	</span>}
+
+	<span class="kw">async fn </span>claim_queue(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		relay_parent: RelayHash,
+	) -&gt; RelayChainResult&lt;
+		BTreeMap&lt;cumulus_relay_chain_interface::CoreIndex, std::collections::VecDeque&lt;ParaId&gt;&gt;,
+	&gt; {
+		<span class="self">self</span>.rpc_client.parachain_host_claim_queue(relay_parent).<span class="kw">await
 	</span>}
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>

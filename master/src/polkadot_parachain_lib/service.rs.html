@@ -701,7 +701,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#549" id="549">549</a>
 <a href="#550" id="550">550</a>
 <a href="#551" id="551">551</a>
-<a href="#552" id="552">552</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -1096,7 +1095,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		relay_chain_interface: Arc&lt;<span class="kw">dyn </span>RelayChainInterface&gt;,
 		transaction_pool: Arc&lt;FullPool&lt;Block, ParachainClient&lt;Block, RuntimeApi&gt;&gt;&gt;,
 		keystore: KeystorePtr,
-		relay_chain_slot_duration: Duration,
+		_relay_chain_slot_duration: Duration,
 		para_id: ParaId,
 		collator_key: CollatorPair,
 		_overseer_handle: OverseerHandle,
@@ -1133,7 +1132,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			keystore,
 			collator_key,
 			para_id,
-			relay_chain_slot_duration,
 			proposer,
 			collator_service,
 			authoring_duration: Duration::from_millis(<span class="number">2000</span>),

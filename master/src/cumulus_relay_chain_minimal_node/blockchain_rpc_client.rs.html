@@ -652,24 +652,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#500" id="500">500</a>
 <a href="#501" id="501">501</a>
 <a href="#502" id="502">502</a>
-<a href="#503" id="503">503</a>
-<a href="#504" id="504">504</a>
-<a href="#505" id="505">505</a>
-<a href="#506" id="506">506</a>
-<a href="#507" id="507">507</a>
-<a href="#508" id="508">508</a>
-<a href="#509" id="509">509</a>
-<a href="#510" id="510">510</a>
-<a href="#511" id="511">511</a>
-<a href="#512" id="512">512</a>
-<a href="#513" id="513">513</a>
-<a href="#514" id="514">514</a>
-<a href="#515" id="515">515</a>
-<a href="#516" id="516">516</a>
-<a href="#517" id="517">517</a>
-<a href="#518" id="518">518</a>
-<a href="#519" id="519">519</a>
-<a href="#520" id="520">520</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -691,6 +673,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	pin::Pin,
 };
 
+<span class="kw">use </span>cumulus_primitives_core::{InboundDownwardMessage, ParaId, PersistedValidationData};
 <span class="kw">use </span>cumulus_relay_chain_interface::{RelayChainError, RelayChainResult};
 <span class="kw">use </span>cumulus_relay_chain_rpc_interface::RelayChainRpcClient;
 <span class="kw">use </span>futures::{Stream, StreamExt};
@@ -804,7 +787,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	) -&gt; <span class="prelude-ty">Result</span>&lt;
 		(
 			Vec&lt;Vec&lt;polkadot_primitives::ValidatorIndex&gt;&gt;,
-			polkadot_primitives::GroupRotationInfo&lt;polkadot_core_primitives::BlockNumber&gt;,
+			polkadot_primitives::GroupRotationInfo&lt;BlockNumber&gt;,
 		),
 		sp_api::ApiError,
 	&gt; {
@@ -814,27 +797,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">async fn </span>availability_cores(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;
-		Vec&lt;polkadot_primitives::CoreState&lt;Hash, polkadot_core_primitives::BlockNumber&gt;&gt;,
-		sp_api::ApiError,
-	&gt; {
+	) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;polkadot_primitives::CoreState&lt;Hash, BlockNumber&gt;&gt;, sp_api::ApiError&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self</span>.rpc_client.parachain_host_availability_cores(at).<span class="kw">await</span><span class="question-mark">?</span>)
 	}
 
 	<span class="kw">async fn </span>persisted_validation_data(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-		para_id: cumulus_primitives_core::ParaId,
+		para_id: ParaId,
 		assumption: polkadot_primitives::OccupiedCoreAssumption,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;
-		<span class="prelude-ty">Option</span>&lt;
-			cumulus_primitives_core::PersistedValidationData&lt;
-				Hash,
-				polkadot_core_primitives::BlockNumber,
-			&gt;,
-		&gt;,
-		sp_api::ApiError,
-	&gt; {
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;PersistedValidationData&lt;Hash, BlockNumber&gt;&gt;, sp_api::ApiError&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self
 			</span>.rpc_client
 			.parachain_host_persisted_validation_data(at, para_id, assumption)
@@ -844,14 +816,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">async fn </span>assumed_validation_data(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-		para_id: cumulus_primitives_core::ParaId,
+		para_id: ParaId,
 		expected_persisted_validation_data_hash: Hash,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;
 		<span class="prelude-ty">Option</span>&lt;(
-			cumulus_primitives_core::PersistedValidationData&lt;
-				Hash,
-				polkadot_core_primitives::BlockNumber,
-			&gt;,
+			PersistedValidationData&lt;Hash, BlockNumber&gt;,
 			polkadot_primitives::ValidationCodeHash,
 		)&gt;,
 		sp_api::ApiError,
@@ -869,7 +838,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">async fn </span>check_validation_outputs(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-		para_id: cumulus_primitives_core::ParaId,
+		para_id: ParaId,
 		outputs: polkadot_primitives::CandidateCommitments,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;bool, sp_api::ApiError&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self
@@ -888,7 +857,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">async fn </span>validation_code(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-		para_id: cumulus_primitives_core::ParaId,
+		para_id: ParaId,
 		assumption: polkadot_primitives::OccupiedCoreAssumption,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;polkadot_primitives::ValidationCode&gt;, sp_api::ApiError&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self</span>.rpc_client.parachain_host_validation_code(at, para_id, assumption).<span class="kw">await</span><span class="question-mark">?</span>)
@@ -897,7 +866,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">async fn </span>candidate_pending_availability(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-		para_id: cumulus_primitives_core::ParaId,
+		para_id: ParaId,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;polkadot_primitives::CommittedCandidateReceipt&lt;Hash&gt;&gt;, sp_api::ApiError&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self
 			</span>.rpc_client
@@ -915,24 +884,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">async fn </span>dmq_contents(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-		recipient: cumulus_primitives_core::ParaId,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;
-		Vec&lt;cumulus_primitives_core::InboundDownwardMessage&lt;polkadot_core_primitives::BlockNumber&gt;&gt;,
-		sp_api::ApiError,
-	&gt; {
+		recipient: ParaId,
+	) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;InboundDownwardMessage&lt;BlockNumber&gt;&gt;, sp_api::ApiError&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self</span>.rpc_client.parachain_host_dmq_contents(recipient, at).<span class="kw">await</span><span class="question-mark">?</span>)
 	}
 
 	<span class="kw">async fn </span>inbound_hrmp_channels_contents(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-		recipient: cumulus_primitives_core::ParaId,
+		recipient: ParaId,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;
 		std::collections::BTreeMap&lt;
-			cumulus_primitives_core::ParaId,
-			Vec&lt;
-				polkadot_core_primitives::InboundHrmpMessage&lt;polkadot_core_primitives::BlockNumber&gt;,
-			&gt;,
+			ParaId,
+			Vec&lt;polkadot_core_primitives::InboundHrmpMessage&lt;BlockNumber&gt;&gt;,
 		&gt;,
 		sp_api::ApiError,
 	&gt; {
@@ -1001,7 +965,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">async fn </span>validation_code_hash(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-		para_id: cumulus_primitives_core::ParaId,
+		para_id: ParaId,
 		assumption: polkadot_primitives::OccupiedCoreAssumption,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;polkadot_primitives::ValidationCodeHash&gt;, sp_api::ApiError&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self
@@ -1096,7 +1060,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">async fn </span>para_backing_state(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-		para_id: cumulus_primitives_core::ParaId,
+		para_id: ParaId,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;BackingState&gt;, ApiError&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self</span>.rpc_client.parachain_host_para_backing_state(at, para_id).<span class="kw">await</span><span class="question-mark">?</span>)
 	}
@@ -1120,14 +1084,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">async fn </span>claim_queue(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;BTreeMap&lt;CoreIndex, VecDeque&lt;cumulus_primitives_core::ParaId&gt;&gt;, ApiError&gt; {
+	) -&gt; <span class="prelude-ty">Result</span>&lt;BTreeMap&lt;CoreIndex, VecDeque&lt;ParaId&gt;&gt;, ApiError&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self</span>.rpc_client.parachain_host_claim_queue(at).<span class="kw">await</span><span class="question-mark">?</span>)
 	}
 
 	<span class="kw">async fn </span>candidates_pending_availability(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		at: Hash,
-		para_id: cumulus_primitives_core::ParaId,
+		para_id: ParaId,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;polkadot_primitives::CommittedCandidateReceipt&lt;Hash&gt;&gt;, sp_api::ApiError&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self
 			</span>.rpc_client

@@ -548,6 +548,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#396" id="396">396</a>
 <a href="#397" id="397">397</a>
 <a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -582,6 +593,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	XcmpMessageHandler,
 };
 <span class="kw">pub use </span>polkadot_primitives::{
+	vstaging::{ClaimQueueOffset, CoreSelector},
 	AbridgedHostConfiguration, AbridgedHrmpChannel, PersistedValidationData,
 };
 
@@ -882,6 +894,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 }
 
+<span class="doccomment">/// The default claim queue offset to be used if it's not configured/accessible in the parachain
+/// runtime
+</span><span class="kw">pub const </span>DEFAULT_CLAIM_QUEUE_OFFSET: u8 = <span class="number">1</span>;
+
 <span class="doccomment">/// Information about a collation.
 ///
 /// This was used in version 1 of the [`CollectCollationInfo`] runtime api.
@@ -944,6 +960,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		/// The given `header` is the header of the built block for that
 		/// we are collecting the collation info for.
 		</span><span class="kw">fn </span>collect_collation_info(header: <span class="kw-2">&amp;</span>Block::Header) -&gt; CollationInfo;
+	}
+
+	<span class="doccomment">/// Runtime api used to select the core for which the next block will be built.
+	</span><span class="kw">pub trait </span>GetCoreSelectorApi {
+		<span class="doccomment">/// Retrieve core selector and claim queue offset for the next block.
+		</span><span class="kw">fn </span>core_selector() -&gt; (CoreSelector, ClaimQueueOffset);
 	}
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>

@@ -1857,6 +1857,35 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1705" id="1705">1705</a>
 <a href="#1706" id="1706">1706</a>
 <a href="#1707" id="1707">1707</a>
+<a href="#1708" id="1708">1708</a>
+<a href="#1709" id="1709">1709</a>
+<a href="#1710" id="1710">1710</a>
+<a href="#1711" id="1711">1711</a>
+<a href="#1712" id="1712">1712</a>
+<a href="#1713" id="1713">1713</a>
+<a href="#1714" id="1714">1714</a>
+<a href="#1715" id="1715">1715</a>
+<a href="#1716" id="1716">1716</a>
+<a href="#1717" id="1717">1717</a>
+<a href="#1718" id="1718">1718</a>
+<a href="#1719" id="1719">1719</a>
+<a href="#1720" id="1720">1720</a>
+<a href="#1721" id="1721">1721</a>
+<a href="#1722" id="1722">1722</a>
+<a href="#1723" id="1723">1723</a>
+<a href="#1724" id="1724">1724</a>
+<a href="#1725" id="1725">1725</a>
+<a href="#1726" id="1726">1726</a>
+<a href="#1727" id="1727">1727</a>
+<a href="#1728" id="1728">1728</a>
+<a href="#1729" id="1729">1729</a>
+<a href="#1730" id="1730">1730</a>
+<a href="#1731" id="1731">1731</a>
+<a href="#1732" id="1732">1732</a>
+<a href="#1733" id="1733">1733</a>
+<a href="#1734" id="1734">1734</a>
+<a href="#1735" id="1735">1735</a>
+<a href="#1736" id="1736">1736</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -1890,12 +1919,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>alloc::{collections::btree_map::BTreeMap, vec, vec::Vec};
 <span class="kw">use </span>codec::{Decode, Encode};
-<span class="kw">use </span>core::cmp;
+<span class="kw">use </span>core::{cmp, marker::PhantomData};
 <span class="kw">use </span>cumulus_primitives_core::{
-	relay_chain, AbridgedHostConfiguration, ChannelInfo, ChannelStatus, CollationInfo,
-	GetChannelInfo, InboundDownwardMessage, InboundHrmpMessage, ListChannelInfos, MessageSendError,
+	relay_chain::{
+		<span class="self">self</span>,
+		vstaging::{ClaimQueueOffset, CoreSelector},
+	},
+	AbridgedHostConfiguration, ChannelInfo, ChannelStatus, CollationInfo, GetChannelInfo,
+	InboundDownwardMessage, InboundHrmpMessage, ListChannelInfos, MessageSendError,
 	OutboundHrmpMessage, ParaId, PersistedValidationData, UpwardMessage, UpwardMessageSender,
-	XcmpMessageHandler, XcmpMessageSource,
+	XcmpMessageHandler, XcmpMessageSource, DEFAULT_CLAIM_QUEUE_OFFSET,
 };
 <span class="kw">use </span>cumulus_primitives_parachain_inherent::{MessageQueueChain, ParachainInherentData};
 <span class="kw">use </span>frame_support::{
@@ -1910,8 +1943,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>polkadot_parachain_primitives::primitives::RelayChainBlockNumber;
 <span class="kw">use </span>polkadot_runtime_parachains::FeeTracker;
 <span class="kw">use </span>scale_info::TypeInfo;
+<span class="kw">use </span>sp_core::U256;
 <span class="kw">use </span>sp_runtime::{
-	traits::{Block <span class="kw">as </span>BlockT, BlockNumberProvider, Hash},
+	traits::{Block <span class="kw">as </span>BlockT, BlockNumberProvider, Hash, One},
 	BoundedSlice, FixedU128, RuntimeDebug, Saturating,
 };
 <span class="kw">use </span>xcm::{latest::XcmHash, VersionedLocation, VersionedXcm};
@@ -2045,6 +2079,22 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub const </span>MESSAGE_SIZE_FEE_BASE: FixedU128 = FixedU128::from_rational(<span class="number">1</span>, <span class="number">1000</span>); <span class="comment">// 0.001
 </span>}
 
+<span class="doccomment">/// Trait for selecting the next core to build the candidate for.
+</span><span class="kw">pub trait </span>SelectCore {
+	<span class="kw">fn </span>select_core_for_child() -&gt; (CoreSelector, ClaimQueueOffset);
+}
+
+<span class="doccomment">/// The default core selection policy.
+</span><span class="kw">pub struct </span>DefaultCoreSelector&lt;T&gt;(PhantomData&lt;T&gt;);
+
+<span class="kw">impl</span>&lt;T: frame_system::Config&gt; SelectCore <span class="kw">for </span>DefaultCoreSelector&lt;T&gt; {
+	<span class="kw">fn </span>select_core_for_child() -&gt; (CoreSelector, ClaimQueueOffset) {
+		<span class="kw">let </span>core_selector: U256 = (frame_system::Pallet::&lt;T&gt;::block_number() + One::one()).into();
+
+		(CoreSelector(core_selector.byte(<span class="number">0</span>)), ClaimQueueOffset(DEFAULT_CLAIM_QUEUE_OFFSET))
+	}
+}
+
 <span class="attr">#[frame_support::pallet]
 </span><span class="kw">pub mod </span>pallet {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -2105,6 +2155,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		/// that collators aren't expected to have node versions that supply the included block
 		/// in the relay-chain state proof.
 		</span><span class="kw">type </span>ConsensusHook: ConsensusHook;
+
+		<span class="doccomment">/// Select core.
+		</span><span class="kw">type </span>SelectCore: SelectCore;
 	}
 
 	<span class="attr">#[pallet::hooks]
@@ -3229,6 +3282,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				.map_or_else(|| header.encode(), |v| v)
 				.into(),
 		}
+	}
+
+	<span class="doccomment">/// Returns the core selector.
+	</span><span class="kw">pub fn </span>core_selector() -&gt; (CoreSelector, ClaimQueueOffset) {
+		T::SelectCore::select_core_for_child()
 	}
 
 	<span class="doccomment">/// Set a custom head data that should be returned as result of `validate_block`.

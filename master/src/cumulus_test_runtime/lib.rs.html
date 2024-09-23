@@ -699,6 +699,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#547" id="547">547</a>
 <a href="#548" id="548">548</a>
 <a href="#549" id="549">549</a>
+<a href="#550" id="550">550</a>
+<a href="#551" id="551">551</a>
+<a href="#552" id="552">552</a>
+<a href="#553" id="553">553</a>
+<a href="#554" id="554">554</a>
+<a href="#555" id="555">555</a>
+<a href="#556" id="556">556</a>
+<a href="#557" id="557">557</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -743,6 +751,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">pub use </span>sp_consensus_aura::sr25519::AuthorityId <span class="kw">as </span>AuraId;
 <span class="kw">use </span>sp_core::{ConstBool, ConstU32, ConstU64, OpaqueMetadata};
 
+<span class="kw">use </span>cumulus_primitives_core::{ClaimQueueOffset, CoreSelector};
 <span class="kw">use </span>sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
 	traits::{BlakeTwo256, Block <span class="kw">as </span>BlockT, IdentifyAccount, IdentityLookup, Verify},
@@ -1012,6 +1021,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>CheckAssociatedRelayNumber =
 		cumulus_pallet_parachain_system::RelayNumberMonotonicallyIncreases;
 	<span class="kw">type </span>ConsensusHook = ConsensusHook;
+	<span class="kw">type </span>SelectCore = cumulus_pallet_parachain_system::DefaultCoreSelector&lt;Runtime&gt;;
 }
 
 <span class="kw">impl </span>parachain_info::Config <span class="kw">for </span>Runtime {}
@@ -1226,6 +1236,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">impl </span>cumulus_primitives_core::CollectCollationInfo&lt;Block&gt; <span class="kw">for </span>Runtime {
 		<span class="kw">fn </span>collect_collation_info(header: <span class="kw-2">&amp;</span>&lt;Block <span class="kw">as </span>BlockT&gt;::Header) -&gt; cumulus_primitives_core::CollationInfo {
 			ParachainSystem::collect_collation_info(header)
+		}
+	}
+
+	<span class="kw">impl </span>cumulus_primitives_core::GetCoreSelectorApi&lt;Block&gt; <span class="kw">for </span>Runtime {
+		<span class="kw">fn </span>core_selector() -&gt; (CoreSelector, ClaimQueueOffset) {
+			ParachainSystem::core_selector()
 		}
 	}
 

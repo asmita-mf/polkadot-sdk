@@ -256,6 +256,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#104" id="104">104</a>
 <a href="#105" id="105">105</a>
 <a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -284,7 +286,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">pub mod </span>spec;
 <span class="kw">pub mod </span>types;
 
-<span class="kw">use </span>cumulus_primitives_core::CollectCollationInfo;
+<span class="kw">use </span>cumulus_primitives_core::{CollectCollationInfo, GetCoreSelectorApi};
 <span class="kw">use </span>sc_client_db::DbHash;
 <span class="kw">use </span>sp_api::{ApiExt, CallApiAt, ConstructRuntimeApi, Metadata};
 <span class="kw">use </span>sp_block_builder::BlockBuilder;
@@ -324,6 +326,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	+ BlockBuilder&lt;Block&gt;
 	+ TaggedTransactionQueue&lt;Block&gt;
 	+ CollectCollationInfo&lt;Block&gt;
+	+ GetCoreSelectorApi&lt;Block&gt;
 	+ Sized
 {
 }
@@ -334,6 +337,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		+ SessionKeys&lt;Block&gt;
 		+ BlockBuilder&lt;Block&gt;
 		+ TaggedTransactionQueue&lt;Block&gt;
+		+ GetCoreSelectorApi&lt;Block&gt;
 		+ CollectCollationInfo&lt;Block&gt;
 {
 }

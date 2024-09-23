@@ -325,9 +325,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#173" id="173">173</a>
 <a href="#174" id="174">174</a>
 <a href="#175" id="175">175</a>
-<a href="#176" id="176">176</a>
-<a href="#177" id="177">177</a>
-<a href="#178" id="178">178</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -364,7 +361,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>cumulus_client_consensus_common::{<span class="self">self </span><span class="kw">as </span>consensus_common, ParachainBlockImportMarker};
 <span class="kw">use </span>cumulus_client_consensus_proposer::ProposerInterface;
 <span class="kw">use </span>cumulus_primitives_aura::AuraUnincludedSegmentApi;
-<span class="kw">use </span>cumulus_primitives_core::CollectCollationInfo;
+<span class="kw">use </span>cumulus_primitives_core::GetCoreSelectorApi;
 <span class="kw">use </span>cumulus_relay_chain_interface::RelayChainInterface;
 <span class="kw">use </span>polkadot_primitives::{
 	CollatorPair, CoreIndex, Hash <span class="kw">as </span>RelayHash, Id <span class="kw">as </span>ParaId, ValidationCodeHash,
@@ -412,8 +409,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>collator_key: CollatorPair,
 	<span class="doccomment">/// The para's ID.
 	</span><span class="kw">pub </span>para_id: ParaId,
-	<span class="doccomment">/// The length of slots in the relay chain.
-	</span><span class="kw">pub </span>relay_chain_slot_duration: Duration,
 	<span class="doccomment">/// The underlying block proposer this should call into.
 	</span><span class="kw">pub </span>proposer: Proposer,
 	<span class="doccomment">/// The generic collator service used to plug into this consensus engine.
@@ -443,7 +438,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		+ Sync
 		+ <span class="lifetime">'static</span>,
 	Client::Api:
-		AuraApi&lt;Block, P::Public&gt; + CollectCollationInfo&lt;Block&gt; + AuraUnincludedSegmentApi&lt;Block&gt;,
+		AuraApi&lt;Block, P::Public&gt; + GetCoreSelectorApi&lt;Block&gt; + AuraUnincludedSegmentApi&lt;Block&gt;,
 	Backend: sc_client_api::Backend&lt;Block&gt; + <span class="lifetime">'static</span>,
 	RClient: RelayChainInterface + Clone + <span class="lifetime">'static</span>,
 	CIDP: CreateInherentDataProviders&lt;Block, ()&gt; + <span class="lifetime">'static</span>,
@@ -481,7 +476,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		collator_service: params.collator_service,
 		authoring_duration: params.authoring_duration,
 		collator_sender: tx,
-		relay_chain_slot_duration: params.relay_chain_slot_duration,
 		slot_drift: params.slot_drift,
 	};
 
