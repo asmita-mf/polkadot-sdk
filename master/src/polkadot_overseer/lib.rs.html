@@ -1626,7 +1626,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	]</span>)]
 	bitfield_signing: BitfieldSigning,
 
-	<span class="attr">#[subsystem(BitfieldDistributionMessage, sends: [
+	<span class="attr">#[subsystem(blocking, message_capacity: <span class="number">8192</span>, BitfieldDistributionMessage, sends: [
 		RuntimeApiMessage,
 		NetworkBridgeTxMessage,
 		ProvisionerMessage,
