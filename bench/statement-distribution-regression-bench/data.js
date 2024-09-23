@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727048825552,
+  "lastUpdate": 1727076721365,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -11655,6 +11655,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.04533932410999993,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49718502+alexggh@users.noreply.github.com",
+            "name": "Alexandru Gheorghe",
+            "username": "alexggh"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "86dc1ab36cdaf0554fbf11ef9556759bcbdda38c",
+          "message": "bitfield_distribution: Move on blocking pool and use custom capacity (#5787)\n\n## Description\n\nDetails and rationale explained here:\nhttps://github.com/paritytech/polkadot-sdk/issues/5657#issuecomment-2363076080\n\nFixes: https://github.com/paritytech/polkadot-sdk/issues/5657\n\n---------\n\nSigned-off-by: Alexandru Gheorghe <alexandru.gheorghe@parity.io>",
+          "timestamp": "2024-09-23T06:10:40Z",
+          "tree_id": "a97a3ac20cd920faaf0351a1545c80b4c1ccadcf",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/86dc1ab36cdaf0554fbf11ef9556759bcbdda38c"
+        },
+        "date": 1727076692777,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.93999999999997,
+            "unit": "KiB"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.036931295069999995,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04459683228599995,
             "unit": "seconds"
           }
         ]
