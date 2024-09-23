@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727076721365,
+  "lastUpdate": 1727081968449,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -11699,6 +11699,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.04459683228599995,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "alin@parity.io",
+            "name": "Alin Dima",
+            "username": "alindima"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b9eb68bcb5ab93e58bcba4425975ad00374da2bc",
+          "message": "elastic scaling: add core selector to cumulus (#5372)\n\nPartially implements\nhttps://github.com/paritytech/polkadot-sdk/issues/5048\n\n- adds a core selection runtime API to cumulus and a generic way of\nconfiguring it for a parachain\n- modifies the slot based collator to utilise the claim queue and the\ngeneric core selection\n\nWhat's left to be implemented (in a follow-up PR):\n- add the UMP signal for core selection into the parachain-system pallet\n\nView the RFC for more context:\nhttps://github.com/polkadot-fellows/RFCs/pull/103\n\n---------\n\nCo-authored-by: command-bot <>",
+          "timestamp": "2024-09-23T07:42:50Z",
+          "tree_id": "e9ba566c27f6e3a896608a8142ae6b832b56b859",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/b9eb68bcb5ab93e58bcba4425975ad00374da2bc"
+        },
+        "date": 1727081941191,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.92399999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04431410172199997,
+            "unit": "seconds"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.037036433391999996,
             "unit": "seconds"
           }
         ]
