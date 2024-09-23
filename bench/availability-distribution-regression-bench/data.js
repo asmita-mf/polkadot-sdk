@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727048755859,
+  "lastUpdate": 1727076649769,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -26377,6 +26377,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-distribution",
             "value": 0.016501077000000006,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49718502+alexggh@users.noreply.github.com",
+            "name": "Alexandru Gheorghe",
+            "username": "alexggh"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "86dc1ab36cdaf0554fbf11ef9556759bcbdda38c",
+          "message": "bitfield_distribution: Move on blocking pool and use custom capacity (#5787)\n\n## Description\n\nDetails and rationale explained here:\nhttps://github.com/paritytech/polkadot-sdk/issues/5657#issuecomment-2363076080\n\nFixes: https://github.com/paritytech/polkadot-sdk/issues/5657\n\n---------\n\nSigned-off-by: Alexandru Gheorghe <alexandru.gheorghe@parity.io>",
+          "timestamp": "2024-09-23T06:10:40Z",
+          "tree_id": "a97a3ac20cd920faaf0351a1545c80b4c1ccadcf",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/86dc1ab36cdaf0554fbf11ef9556759bcbdda38c"
+        },
+        "date": 1727076621335,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.023397772240000007,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008848712506666764,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.01654117062666666,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.1821875685733333,
             "unit": "seconds"
           }
         ]
