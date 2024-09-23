@@ -1502,6 +1502,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1350" id="1350">1350</a>
 <a href="#1351" id="1351">1351</a>
 <a href="#1352" id="1352">1352</a>
+<a href="#1353" id="1353">1353</a>
+<a href="#1354" id="1354">1354</a>
+<a href="#1355" id="1355">1355</a>
+<a href="#1356" id="1356">1356</a>
+<a href="#1357" id="1357">1357</a>
+<a href="#1358" id="1358">1358</a>
+<a href="#1359" id="1359">1359</a>
+<a href="#1360" id="1360">1360</a>
+<a href="#1361" id="1361">1361</a>
+<a href="#1362" id="1362">1362</a>
+<a href="#1363" id="1363">1363</a>
+<a href="#1364" id="1364">1364</a>
+<a href="#1365" id="1365">1365</a>
+<a href="#1366" id="1366">1366</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1529,6 +1543,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			StorageEntryMetadataBuilder, TupleToEncodedIter,
 		},
 		KeyGenerator, PrefixIterator, StorageAppend, StorageDecodeLength, StoragePrefixedMap,
+		StorageTryAppend,
 	},
 	traits::{Get, GetDefault, StorageInfo, StorageInstance},
 };
@@ -1840,6 +1855,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		Value: StorageAppend&lt;Item&gt;,
 	{
 		&lt;<span class="self">Self </span><span class="kw">as </span><span class="kw">crate</span>::storage::StorageNMap&lt;Key, Value&gt;&gt;::append(key, item)
+	}
+
+	<span class="doccomment">/// Try and append the given item to the value in the storage.
+	///
+	/// Is only available if `Value` of the storage implements [`StorageTryAppend`].
+	</span><span class="kw">pub fn </span>try_append&lt;KArg, Item, EncodeLikeItem&gt;(key: KArg, item: EncodeLikeItem) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt;
+	<span class="kw">where
+		</span>KArg: EncodeLikeTuple&lt;Key::KArg&gt; + TupleToEncodedIter + Clone,
+		Item: Encode,
+		EncodeLikeItem: EncodeLike&lt;Item&gt;,
+		Value: StorageTryAppend&lt;Item&gt;,
+	{
+		&lt;<span class="self">Self </span><span class="kw">as </span><span class="kw">crate</span>::storage::TryAppendNMap&lt;Key, Value, Item&gt;&gt;::try_append(key, item)
 	}
 
 	<span class="doccomment">/// Read the length of the storage value without decoding the entire value under the
