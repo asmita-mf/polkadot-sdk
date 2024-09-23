@@ -2127,6 +2127,25 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1975" id="1975">1975</a>
 <a href="#1976" id="1976">1976</a>
 <a href="#1977" id="1977">1977</a>
+<a href="#1978" id="1978">1978</a>
+<a href="#1979" id="1979">1979</a>
+<a href="#1980" id="1980">1980</a>
+<a href="#1981" id="1981">1981</a>
+<a href="#1982" id="1982">1982</a>
+<a href="#1983" id="1983">1983</a>
+<a href="#1984" id="1984">1984</a>
+<a href="#1985" id="1985">1985</a>
+<a href="#1986" id="1986">1986</a>
+<a href="#1987" id="1987">1987</a>
+<a href="#1988" id="1988">1988</a>
+<a href="#1989" id="1989">1989</a>
+<a href="#1990" id="1990">1990</a>
+<a href="#1991" id="1991">1991</a>
+<a href="#1992" id="1992">1992</a>
+<a href="#1993" id="1993">1993</a>
+<a href="#1994" id="1994">1994</a>
+<a href="#1995" id="1995">1995</a>
+<a href="#1996" id="1996">1996</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2597,22 +2616,28 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			Terminate(locked_dependencies) =&gt; T::WeightInfo::seal_terminate(locked_dependencies),
 			DepositEvent { num_topic, len } =&gt; T::WeightInfo::seal_deposit_event(num_topic, len),
 			DebugMessage(len) =&gt; T::WeightInfo::seal_debug_message(len),
-			SetStorage { new_bytes, old_bytes } =&gt;
-				<span class="macro">cost_storage!</span>(write, seal_set_storage, new_bytes, old_bytes),
+			SetStorage { new_bytes, old_bytes } =&gt; {
+				<span class="macro">cost_storage!</span>(write, seal_set_storage, new_bytes, old_bytes)
+			},
 			ClearStorage(len) =&gt; <span class="macro">cost_storage!</span>(write, seal_clear_storage, len),
 			ContainsStorage(len) =&gt; <span class="macro">cost_storage!</span>(read, seal_contains_storage, len),
 			GetStorage(len) =&gt; <span class="macro">cost_storage!</span>(read, seal_get_storage, len),
 			TakeStorage(len) =&gt; <span class="macro">cost_storage!</span>(write, seal_take_storage, len),
-			SetTransientStorage { new_bytes, old_bytes } =&gt;
-				<span class="macro">cost_storage!</span>(write_transient, seal_set_transient_storage, new_bytes, old_bytes),
-			ClearTransientStorage(len) =&gt;
-				<span class="macro">cost_storage!</span>(write_transient, seal_clear_transient_storage, len),
-			ContainsTransientStorage(len) =&gt;
-				<span class="macro">cost_storage!</span>(read_transient, seal_contains_transient_storage, len),
-			GetTransientStorage(len) =&gt;
-				<span class="macro">cost_storage!</span>(read_transient, seal_get_transient_storage, len),
-			TakeTransientStorage(len) =&gt;
-				<span class="macro">cost_storage!</span>(write_transient, seal_take_transient_storage, len),
+			SetTransientStorage { new_bytes, old_bytes } =&gt; {
+				<span class="macro">cost_storage!</span>(write_transient, seal_set_transient_storage, new_bytes, old_bytes)
+			},
+			ClearTransientStorage(len) =&gt; {
+				<span class="macro">cost_storage!</span>(write_transient, seal_clear_transient_storage, len)
+			},
+			ContainsTransientStorage(len) =&gt; {
+				<span class="macro">cost_storage!</span>(read_transient, seal_contains_transient_storage, len)
+			},
+			GetTransientStorage(len) =&gt; {
+				<span class="macro">cost_storage!</span>(read_transient, seal_get_transient_storage, len)
+			},
+			TakeTransientStorage(len) =&gt; {
+				<span class="macro">cost_storage!</span>(write_transient, seal_take_transient_storage, len)
+			},
 			Transfer =&gt; T::WeightInfo::seal_transfer(),
 			CallBase =&gt; T::WeightInfo::seal_call(<span class="number">0</span>, <span class="number">0</span>),
 			DelegateCallBase =&gt; T::WeightInfo::seal_delegate_call(),
@@ -2700,7 +2725,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(Step) =&gt; <span class="prelude-val">None</span>,
 			<span class="prelude-val">Ok</span>(Ecalli(idx)) =&gt; {
 				<span class="kw">let </span><span class="prelude-val">Some</span>(syscall_symbol) = module.imports().get(idx) <span class="kw">else </span>{
-					<span class="kw">return </span><span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(&lt;Error&lt;E::T&gt;&gt;::InvalidSyscall.into()))
+					<span class="kw">return </span><span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(&lt;Error&lt;E::T&gt;&gt;::InvalidSyscall.into()));
 				};
 				<span class="kw">match </span><span class="self">self</span>.handle_ecall(instance, syscall_symbol.as_bytes(), api_version) {
 					<span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; <span class="prelude-val">None</span>,
@@ -2808,7 +2833,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		create_token: <span class="kw">impl </span>FnOnce(u32) -&gt; <span class="prelude-ty">Option</span>&lt;RuntimeCosts&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(), DispatchError&gt; {
 		<span class="kw">if </span>allow_skip &amp;&amp; out_ptr == SENTINEL {
-			<span class="kw">return </span><span class="prelude-val">Ok</span>(())
+			<span class="kw">return </span><span class="prelude-val">Ok</span>(());
 		}
 
 		<span class="kw">let </span>len = memory.read_u32(out_len_ptr)<span class="question-mark">?</span>;
@@ -2832,7 +2857,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		create_token: <span class="kw">impl </span>FnOnce(u32) -&gt; <span class="prelude-ty">Option</span>&lt;RuntimeCosts&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(), DispatchError&gt; {
 		<span class="kw">if </span>allow_skip &amp;&amp; out_ptr == SENTINEL {
-			<span class="kw">return </span><span class="prelude-val">Ok</span>(())
+			<span class="kw">return </span><span class="prelude-val">Ok</span>(());
 		}
 
 		<span class="kw">let </span>buf_len = buf.len() <span class="kw">as </span>u32;
@@ -2949,7 +2974,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>max_size = <span class="self">self</span>.ext.max_value_size();
 		<span class="kw">let </span>charged = <span class="self">self</span>.charge_gas(costs(value_len, <span class="self">self</span>.ext.max_value_size()))<span class="question-mark">?</span>;
 		<span class="kw">if </span>value_len &gt; max_size {
-			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::&lt;E::T&gt;::ValueTooLarge.into())
+			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::&lt;E::T&gt;::ValueTooLarge.into());
 		}
 		<span class="kw">let </span>key = <span class="self">self</span>.decode_key(memory, key_ptr, key_len)<span class="question-mark">?</span>;
 		<span class="kw">let </span>value = <span class="prelude-val">Some</span>(memory.read(value_ptr, value_len)<span class="question-mark">?</span>);
@@ -3151,7 +3176,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			},
 			CallType::DelegateCall { code_hash_ptr } =&gt; {
 				<span class="kw">if </span>flags.intersects(CallFlags::ALLOW_REENTRY | CallFlags::READ_ONLY) {
-					<span class="kw">return </span><span class="prelude-val">Err</span>(Error::&lt;E::T&gt;::InvalidCallFlags.into())
+					<span class="kw">return </span><span class="prelude-val">Err</span>(Error::&lt;E::T&gt;::InvalidCallFlags.into());
 				}
 
 				<span class="kw">let </span>code_hash = memory.read_h256(code_hash_ptr)<span class="question-mark">?</span>;
@@ -3166,7 +3191,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="kw">return </span><span class="prelude-val">Err</span>(TrapReason::Return(ReturnData {
 					flags: return_value.flags.bits(),
 					data: return_value.data,
-				}))
+				}));
 			}
 		}
 
@@ -3662,6 +3687,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw-2">&amp;</span>as_bytes(<span class="self">self</span>.ext.balance_of(<span class="kw-2">&amp;</span>address)),
 			<span class="bool-val">false</span>,
 			already_charged,
+		)<span class="question-mark">?</span>)
+	}
+
+	<span class="doccomment">/// Returns the chain ID.
+	/// See [`pallet_revive_uapi::HostFn::chain_id`].
+	</span><span class="attr">#[api_version(<span class="number">0</span>)]
+	</span><span class="kw">fn </span>chain_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, memory: <span class="kw-2">&amp;mut </span>M, out_ptr: u32) -&gt; <span class="prelude-ty">Result</span>&lt;(), TrapReason&gt; {
+		<span class="prelude-val">Ok</span>(<span class="self">self</span>.write_fixed_sandbox_output(
+			memory,
+			out_ptr,
+			<span class="kw-2">&amp;</span>as_bytes(U256::from(&lt;E::T <span class="kw">as </span>Config&gt;::ChainId::get())),
+			<span class="bool-val">false</span>,
+			|<span class="kw">_</span>| <span class="prelude-val">Some</span>(RuntimeCosts::CopyToContract(<span class="number">32</span>)),
 		)<span class="question-mark">?</span>)
 	}
 

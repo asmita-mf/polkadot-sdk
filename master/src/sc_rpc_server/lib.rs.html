@@ -458,7 +458,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#306" id="306">306</a>
 <a href="#307" id="307">307</a>
 <a href="#308" id="308">308</a>
-<a href="#309" id="309">309</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -493,7 +492,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	},
 	Methods, RpcModule,
 };
-<span class="kw">use </span>middleware::NodeHealthProxyLayer;
 <span class="kw">use </span>tower::Service;
 <span class="kw">use </span>utils::{
 	build_rpc_api, deny_unsafe, format_listen_addrs, get_proxy_ip, ListenAddrError, RpcSettings,
@@ -504,7 +502,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	core::id_providers::{RandomIntegerIdProvider, RandomStringIdProvider},
 	server::{middleware::rpc::RpcServiceBuilder, BatchRequestConfig},
 };
-<span class="kw">pub use </span>middleware::{Metrics, MiddlewareLayer, RpcMetrics};
+<span class="kw">pub use </span>middleware::{Metrics, MiddlewareLayer, NodeHealthProxyLayer, RpcMetrics};
 <span class="kw">pub use </span>utils::{RpcEndpoint, RpcMethods};
 
 <span class="kw">const </span>MEGABYTE: u32 = <span class="number">1024 </span>* <span class="number">1024</span>;
