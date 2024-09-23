@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727104644946,
+  "lastUpdate": 1727117211961,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -26539,6 +26539,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.008723226553333428,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "cyrill@parity.io",
+            "name": "Cyrill Leutwiler",
+            "username": "xermicus"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "71c768a9e1a467c629adc68423e47e37c855cd77",
+          "message": "[pallet-revive] Add chain ID to config an runtime API (#5807)\n\nThis PR adds the EVM chain ID to Config as well as a corresponding\nruntime API so contracts can query it.\n\nRelated issue: https://github.com/paritytech/revive/issues/44\n\n---------\n\nSigned-off-by: xermicus <cyrill@parity.io>\nCo-authored-by: command-bot <>",
+          "timestamp": "2024-09-23T17:26:13Z",
+          "tree_id": "10cb01fcf83462f4e4ff3ac9c6c16150e5302979",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/71c768a9e1a467c629adc68423e47e37c855cd77"
+        },
+        "date": 1727117182881,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02332907311999999,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.17913045687333326,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.009234124713333423,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.016247371820000002,
             "unit": "seconds"
           }
         ]
