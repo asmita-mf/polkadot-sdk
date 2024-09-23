@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727081900438,
+  "lastUpdate": 1727104644946,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -26485,6 +26485,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.008477152233333419,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e8dad101634748a164a26ed8f404f218af29789e",
+          "message": "Bump k256 from 0.13.3 to 0.13.4 (#5802)\n\nBumps [k256](https://github.com/RustCrypto/elliptic-curves) from 0.13.3\nto 0.13.4.\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a\nhref=\"https://github.com/RustCrypto/elliptic-curves/commit/5ac8f5d77f11399ff48d87b0554935f6eddda342\"><code>5ac8f5d</code></a>\nk256 v0.13.4</li>\n<li><a\nhref=\"https://github.com/RustCrypto/elliptic-curves/commit/613cbafd63763c579922ad2b79fa041b4a0dde50\"><code>613cbaf</code></a>\nk256: add support for non-32-byte BIP340 signatures (<a\nhref=\"https://redirect.github.com/RustCrypto/elliptic-curves/issues/1041\">#1041</a>)</li>\n<li><a\nhref=\"https://github.com/RustCrypto/elliptic-curves/commit/3787e4cd5b4223cae8bed05d087d6ff2f1d9430b\"><code>3787e4c</code></a>\nk256 v0.13.3</li>\n<li>See full diff in <a\nhref=\"https://github.com/RustCrypto/elliptic-curves/compare/k256/v0.13.3...k256/v0.13.4\">compare\nview</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility\nscore](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=k256&package-manager=cargo&previous-version=0.13.3&new-version=0.13.4)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't\nalter it yourself. You can also trigger a rebase manually by commenting\n`@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits\nthat have been made to it\n- `@dependabot merge` will merge this PR after your CI passes on it\n- `@dependabot squash and merge` will squash and merge this PR after\nyour CI passes on it\n- `@dependabot cancel merge` will cancel a previously requested merge\nand block automerging\n- `@dependabot reopen` will reopen this PR if it is closed\n- `@dependabot close` will close this PR and stop Dependabot recreating\nit. You can achieve the same result by closing it manually\n- `@dependabot show <dependency name> ignore conditions` will show all\nof the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop\nDependabot creating any more for this major version (unless you reopen\nthe PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop\nDependabot creating any more for this minor version (unless you reopen\nthe PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop\nDependabot creating any more for this dependency (unless you reopen the\nPR or upgrade to it yourself)\n\n\n</details>\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>",
+          "timestamp": "2024-09-23T13:45:41Z",
+          "tree_id": "7543d1baf5c1bfc643c30504d3dd1de8923060a6",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/e8dad101634748a164a26ed8f404f218af29789e"
+        },
+        "date": 1727104616916,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.17873834386666668,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.01616987062000001,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02325335608000001,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008723226553333428,
             "unit": "seconds"
           }
         ]
