@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727136572308,
+  "lastUpdate": 1727186244901,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -26701,6 +26701,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-store",
             "value": 0.1794668960866666,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "evgeny@parity.io",
+            "name": "Evgeny Snitko",
+            "username": "AndWeHaveAPlan"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "c987da33935898cd5b2f8605d548bc48727c1815",
+          "message": "Preflight workflow update (#5771)\n\n- New and updated vars\n- New runner vars\n- Runners rename (see https://github.com/paritytech/ci_cd/issues/1039)\n\n---------\n\nCo-authored-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>",
+          "timestamp": "2024-09-24T12:18:46Z",
+          "tree_id": "1628ea979224d3f97a24d966b90cdd64b824f324",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/c987da33935898cd5b2f8605d548bc48727c1815"
+        },
+        "date": 1727186218185,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02388528844666666,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.013953307013333334,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.011458478420000006,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18398468201999993,
             "unit": "seconds"
           }
         ]
