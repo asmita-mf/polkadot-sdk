@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727136538168,
+  "lastUpdate": 1727186209991,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -21287,6 +21287,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.2348676985,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "evgeny@parity.io",
+            "name": "Evgeny Snitko",
+            "username": "AndWeHaveAPlan"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "c987da33935898cd5b2f8605d548bc48727c1815",
+          "message": "Preflight workflow update (#5771)\n\n- New and updated vars\n- New runner vars\n- Runners rename (see https://github.com/paritytech/ci_cd/issues/1039)\n\n---------\n\nCo-authored-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>",
+          "timestamp": "2024-09-24T12:18:46Z",
+          "tree_id": "1628ea979224d3f97a24d966b90cdd64b824f324",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/c987da33935898cd5b2f8605d548bc48727c1815"
+        },
+        "date": 1727186183124,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 13.208888524733334,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.25772874903333337,
             "unit": "seconds"
           }
         ]
