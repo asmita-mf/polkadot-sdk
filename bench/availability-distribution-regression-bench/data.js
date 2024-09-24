@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727129597690,
+  "lastUpdate": 1727136572308,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -26647,6 +26647,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-store",
             "value": 0.1805270307,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "Jan-Jan@users.noreply.github.com",
+            "name": "Jan-Jan",
+            "username": "Jan-Jan"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "08498f5473351c3d2f8eacbe1bfd7bc6d3a2ef8d",
+          "message": "update solochain to use #[runtime] (#5772)\n\n# Description\n\n* This is part of [issue\n5242](https://github.com/paritytech/polkadot-sdk/issues/5242),\nspecifically getting solochain to use `#[frame::runtime]`\n* Furthermore, reinforced the convention of `Template` instead of\n`TemplateModule`\n\n\n## Integration\n\n* Should be integrated into the `solochain` template and documentation\n\n## Review Notes\n\n* Refactored `solochain` template from\n[construct_runtime!](https://paritytech.github.io/polkadot-sdk/master/frame_support/macro.construct_runtime.html)\nto\n[#[runtime]](https://paritytech.github.io/polkadot-sdk/master/frame_support/attr.runtime.html).\n* AFAIU `Template` is our new convention, and preferred over\n`TemplateModule`.\n\n# Out of scope\n\n* The\n[#[runtime]](https://paritytech.github.io/polkadot-sdk/master/frame_support/attr.runtime.html)\ndocumentation is still very rudimentary, and should ideally be expanded\nto explain the macro, both what it does and the input options.\n* Furthermore, suggest update\n[#[runtime]](https://paritytech.github.io/polkadot-sdk/master/frame_support/attr.runtime.html)\ndocumentation to replace `#[crate::runtime]` with\n`#[frame_support::runtime]`\n\n---------\n\nCo-authored-by: Jan-Jan <111935+Jan-Jan@users.noreply.github.com>\nCo-authored-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>\nCo-authored-by: Shawn Tabrizi <shawntabrizi@gmail.com>\nCo-authored-by: command-bot <>",
+          "timestamp": "2024-09-23T22:52:47Z",
+          "tree_id": "0fc4d510163aa5f60f3a8a4eb91372f5bca36b95",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/08498f5473351c3d2f8eacbe1bfd7bc6d3a2ef8d"
+        },
+        "date": 1727136545019,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.01635040794,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.023408050793333333,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.008841787866666753,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.1794668960866666,
             "unit": "seconds"
           }
         ]
