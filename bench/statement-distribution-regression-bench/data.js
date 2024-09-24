@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727212511088,
+  "lastUpdate": 1727219059173,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -12007,6 +12007,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.046929043846000024,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "bkontur@gmail.com",
+            "name": "Branislav Kontur",
+            "username": "bkontur"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "710e74ddefdff1e36b77ba65abe54feb0ac15040",
+          "message": "Bridges lane id agnostic for backwards compatibility (#5649)\n\nThis PR primarily fixes the issue with\n`zombienet-bridges-0001-asset-transfer-works` (see:\nhttps://gitlab.parity.io/parity/mirrors/polkadot-sdk/-/jobs/7404903).\n\nThe PR looks large, but most of the changes involve splitting `LaneId`\ninto `LegacyLaneId` and `HashedLaneId`. All pallets now use `LaneId` as\na generic parameter.\n\nThe actual bridging pallets are now backward compatible and work with\nactual **substrate-relay v1.6.10**, which does not even known anything\nabout permissionless lanes or the new pallet changes.\n\n\n\n## Important\n\n- [x] added migration for `pallet_bridge_relayers` and\n`RewardsAccountParams` change order of params, which generates different\naccounts\n\n## Deployment follow ups\n- [ ] fix monitoring for\n`at_{}_relay_{}_reward_for_msgs_from_{}_on_lane_{}`\n- [ ] check sovereign reward accounts - because of changed\n`RewardsAccountParams`\n- [ ] deploy another messages instances for permissionless lanes - on\nBHs or AHs?\n- [ ] return back `open_and_close_bridge_works` for another\n`pallet-bridge-messages` instance\n\n---------\n\nSigned-off-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>\nCo-authored-by: Adrian Catangiu <adrian@parity.io>\nCo-authored-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>",
+          "timestamp": "2024-09-24T21:21:25Z",
+          "tree_id": "a033cc5d88d5be7f42622ec78e94ce2de2af1427",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/710e74ddefdff1e36b77ba65abe54feb0ac15040"
+        },
+        "date": 1727219031759,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 127.90599999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.041788873635999986,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.05298781707200004,
             "unit": "seconds"
           }
         ]
