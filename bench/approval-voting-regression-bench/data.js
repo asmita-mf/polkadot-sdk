@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727186279076,
+  "lastUpdate": 1727212477450,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -19112,6 +19112,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 3.6746270917639103,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "9294572aa3a0cf3bde3b8b7ac5d48d2b1df113c2",
+          "message": "Fix parachain-template-test (#5821)\n\nFix `parachain-template-test` (bump `zombienet` version).\nThx!",
+          "timestamp": "2024-09-24T17:01:35Z",
+          "tree_id": "fc403dfd30e67ae2dafe4ebad00adba7ee47346a",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/9294572aa3a0cf3bde3b8b7ac5d48d2b1df113c2"
+        },
+        "date": 1727212450304,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52937.7,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63833.49000000001,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.327204259141405,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.6812633162300097,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 12.190040560060005,
             "unit": "seconds"
           }
         ]
