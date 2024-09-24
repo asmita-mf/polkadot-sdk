@@ -917,6 +917,28 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#765" id="765">765</a>
 <a href="#766" id="766">766</a>
 <a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -979,9 +1001,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		DeliveryPayments, DispatchMessage, FromBridgedChainMessagesProof, MessageDispatch,
 		ProvedLaneMessages, ProvedMessages,
 	},
-	ChainWithMessages, DeliveredMessages, InboundLaneData, InboundMessageDetails, LaneId,
-	MessageKey, MessageNonce, MessagePayload, MessagesOperatingMode, OutboundLaneData,
-	OutboundMessageDetails, UnrewardedRelayersState, VerificationError,
+	ChainWithMessages, DeliveredMessages, InboundLaneData, InboundMessageDetails, MessageKey,
+	MessageNonce, MessagePayload, MessagesOperatingMode, OutboundLaneData, OutboundMessageDetails,
+	UnrewardedRelayersState, VerificationError,
 };
 <span class="kw">use </span>bp_runtime::{
 	AccountIdOf, BasicOperatingMode, HashOf, OwnedBridgeModule, PreComputedSize, RangeInclusiveExt,
@@ -1016,7 +1038,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="attr">#[frame_support::pallet]
 </span><span class="kw">pub mod </span>pallet {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
-	<span class="kw">use </span>bp_messages::{ReceivedMessages, ReceptionResult};
+	<span class="kw">use </span>bp_messages::{LaneIdType, ReceivedMessages, ReceptionResult};
 	<span class="kw">use </span>bp_runtime::RangeInclusiveExt;
 	<span class="kw">use </span>frame_support::pallet_prelude::<span class="kw-2">*</span>;
 	<span class="kw">use </span>frame_system::pallet_prelude::<span class="kw-2">*</span>;
@@ -1042,17 +1064,25 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">type </span>OutboundPayload: Parameter + Size;
 		<span class="doccomment">/// Payload type of inbound messages. This payload is dispatched on this chain.
 		</span><span class="kw">type </span>InboundPayload: Decode;
+		<span class="doccomment">/// Lane identifier type.
+		</span><span class="kw">type </span>LaneId: LaneIdType;
 
 		<span class="doccomment">/// Handler for relayer payments that happen during message delivery transaction.
 		</span><span class="kw">type </span>DeliveryPayments: DeliveryPayments&lt;<span class="self">Self</span>::AccountId&gt;;
 		<span class="doccomment">/// Handler for relayer payments that happen during message delivery confirmation
 		/// transaction.
-		</span><span class="kw">type </span>DeliveryConfirmationPayments: DeliveryConfirmationPayments&lt;<span class="self">Self</span>::AccountId&gt;;
+		</span><span class="kw">type </span>DeliveryConfirmationPayments: DeliveryConfirmationPayments&lt;
+			<span class="self">Self</span>::AccountId,
+			<span class="self">Self</span>::LaneId,
+		&gt;;
 		<span class="doccomment">/// Delivery confirmation callback.
-		</span><span class="kw">type </span>OnMessagesDelivered: OnMessagesDelivered;
+		</span><span class="kw">type </span>OnMessagesDelivered: OnMessagesDelivered&lt;<span class="self">Self</span>::LaneId&gt;;
 
 		<span class="doccomment">/// Message dispatch handler.
-		</span><span class="kw">type </span>MessageDispatch: MessageDispatch&lt;DispatchPayload = <span class="self">Self</span>::InboundPayload&gt;;
+		</span><span class="kw">type </span>MessageDispatch: MessageDispatch&lt;
+			DispatchPayload = <span class="self">Self</span>::InboundPayload,
+			LaneId = <span class="self">Self</span>::LaneId,
+		&gt;;
 	}
 
 	<span class="doccomment">/// Shortcut to this chain type for Config.
@@ -1061,6 +1091,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub type </span>BridgedChainOf&lt;T, I&gt; = &lt;T <span class="kw">as </span>Config&lt;I&gt;&gt;::BridgedChain;
 	<span class="doccomment">/// Shortcut to bridged header chain type for Config.
 	</span><span class="kw">pub type </span>BridgedHeaderChainOf&lt;T, I&gt; = &lt;T <span class="kw">as </span>Config&lt;I&gt;&gt;::BridgedHeaderChain;
+	<span class="doccomment">/// Shortcut to lane identifier type for Config.
+	</span><span class="kw">pub type </span>LaneIdOf&lt;T, I&gt; = &lt;T <span class="kw">as </span>Config&lt;I&gt;&gt;::LaneId;
 
 	<span class="attr">#[pallet::pallet]
 	#[pallet::storage_version(migration::STORAGE_VERSION)]
@@ -1122,7 +1154,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">pub fn </span>receive_messages_proof(
 			origin: OriginFor&lt;T&gt;,
 			relayer_id_at_bridged_chain: AccountIdOf&lt;BridgedChainOf&lt;T, I&gt;&gt;,
-			proof: Box&lt;FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChainOf&lt;T, I&gt;&gt;&gt;&gt;,
+			proof: Box&lt;FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChainOf&lt;T, I&gt;&gt;, T::LaneId&gt;&gt;,
 			messages_count: u32,
 			dispatch_weight: Weight,
 		) -&gt; DispatchResultWithPostInfo {
@@ -1269,7 +1301,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		))]
 		</span><span class="kw">pub fn </span>receive_messages_delivery_proof(
 			origin: OriginFor&lt;T&gt;,
-			proof: FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;BridgedChainOf&lt;T, I&gt;&gt;&gt;,
+			proof: FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;BridgedChainOf&lt;T, I&gt;&gt;, T::LaneId&gt;,
 			<span class="kw-2">mut </span>relayers_state: UnrewardedRelayersState,
 		) -&gt; DispatchResultWithPostInfo {
 			<span class="self">Self</span>::ensure_not_halted().map_err(Error::&lt;T, I&gt;::BridgeModule)<span class="question-mark">?</span>;
@@ -1306,7 +1338,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="comment">// emit 'delivered' event
 				</span><span class="kw">let </span>received_range = confirmed_messages.begin..=confirmed_messages.end;
 				<span class="self">Self</span>::deposit_event(Event::MessagesDelivered {
-					lane_id,
+					lane_id: lane_id.into(),
 					messages: confirmed_messages,
 				});
 
@@ -1360,19 +1392,22 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="doccomment">/// Message has been accepted and is waiting to be delivered.
 		</span>MessageAccepted {
 			<span class="doccomment">/// Lane, which has accepted the message.
-			</span>lane_id: LaneId,
+			</span>lane_id: T::LaneId,
 			<span class="doccomment">/// Nonce of accepted message.
 			</span>nonce: MessageNonce,
 		},
 		<span class="doccomment">/// Messages have been received from the bridged chain.
 		</span>MessagesReceived(
 			<span class="doccomment">/// Result of received messages dispatch.
-			</span>ReceivedMessages&lt;&lt;T::MessageDispatch <span class="kw">as </span>MessageDispatch&gt;::DispatchLevelResult&gt;,
+			</span>ReceivedMessages&lt;
+				&lt;T::MessageDispatch <span class="kw">as </span>MessageDispatch&gt;::DispatchLevelResult,
+				T::LaneId,
+			&gt;,
 		),
 		<span class="doccomment">/// Messages in the inclusive range have been delivered to the bridged chain.
 		</span>MessagesDelivered {
 			<span class="doccomment">/// Lane for which the delivery has been confirmed.
-			</span>lane_id: LaneId,
+			</span>lane_id: T::LaneId,
 			<span class="doccomment">/// Delivered messages.
 			</span>messages: DeliveredMessages,
 		},
@@ -1429,13 +1464,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="doccomment">/// Map of lane id =&gt; inbound lane data.
 	</span><span class="attr">#[pallet::storage]
 	</span><span class="kw">pub type </span>InboundLanes&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static </span>= ()&gt; =
-		StorageMap&lt;<span class="kw">_</span>, Blake2_128Concat, LaneId, StoredInboundLaneData&lt;T, I&gt;, OptionQuery&gt;;
+		StorageMap&lt;<span class="kw">_</span>, Blake2_128Concat, T::LaneId, StoredInboundLaneData&lt;T, I&gt;, OptionQuery&gt;;
 
 	<span class="doccomment">/// Map of lane id =&gt; outbound lane data.
 	</span><span class="attr">#[pallet::storage]
 	</span><span class="kw">pub type </span>OutboundLanes&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static </span>= ()&gt; = StorageMap&lt;
 		Hasher = Blake2_128Concat,
-		Key = LaneId,
+		Key = T::LaneId,
 		Value = OutboundLaneData,
 		QueryKind = OptionQuery,
 	&gt;;
@@ -1443,7 +1478,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// All queued outbound messages.
 	</span><span class="attr">#[pallet::storage]
 	</span><span class="kw">pub type </span>OutboundMessages&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static </span>= ()&gt; =
-		StorageMap&lt;<span class="kw">_</span>, Blake2_128Concat, MessageKey, StoredMessagePayload&lt;T, I&gt;&gt;;
+		StorageMap&lt;<span class="kw">_</span>, Blake2_128Concat, MessageKey&lt;T::LaneId&gt;, StoredMessagePayload&lt;T, I&gt;&gt;;
 
 	<span class="attr">#[pallet::genesis_config]
 	#[derive(DefaultNoBound)]
@@ -1453,7 +1488,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="doccomment">/// Initial pallet owner.
 		</span><span class="kw">pub </span>owner: <span class="prelude-ty">Option</span>&lt;T::AccountId&gt;,
 		<span class="doccomment">/// Opened lanes.
-		</span><span class="kw">pub </span>opened_lanes: Vec&lt;LaneId&gt;,
+		</span><span class="kw">pub </span>opened_lanes: Vec&lt;T::LaneId&gt;,
 		<span class="doccomment">/// Dummy marker.
 		</span><span class="attr">#[serde(skip)]
 		</span><span class="kw">pub </span>_phantom: sp_std::marker::PhantomData&lt;I&gt;,
@@ -1484,13 +1519,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">impl</span>&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt; Pallet&lt;T, I&gt; {
 		<span class="doccomment">/// Get stored data of the outbound message with given nonce.
-		</span><span class="kw">pub fn </span>outbound_message_data(lane: LaneId, nonce: MessageNonce) -&gt; <span class="prelude-ty">Option</span>&lt;MessagePayload&gt; {
+		</span><span class="kw">pub fn </span>outbound_message_data(
+			lane: T::LaneId,
+			nonce: MessageNonce,
+		) -&gt; <span class="prelude-ty">Option</span>&lt;MessagePayload&gt; {
 			OutboundMessages::&lt;T, I&gt;::get(MessageKey { lane_id: lane, nonce }).map(Into::into)
 		}
 
 		<span class="doccomment">/// Prepare data, related to given inbound message.
 		</span><span class="kw">pub fn </span>inbound_message_data(
-			lane: LaneId,
+			lane: T::LaneId,
 			payload: MessagePayload,
 			outbound_details: OutboundMessageDetails,
 		) -&gt; InboundMessageDetails {
@@ -1504,13 +1542,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 
 		<span class="doccomment">/// Return outbound lane data.
-		</span><span class="kw">pub fn </span>outbound_lane_data(lane: LaneId) -&gt; <span class="prelude-ty">Option</span>&lt;OutboundLaneData&gt; {
+		</span><span class="kw">pub fn </span>outbound_lane_data(lane: T::LaneId) -&gt; <span class="prelude-ty">Option</span>&lt;OutboundLaneData&gt; {
 			OutboundLanes::&lt;T, I&gt;::get(lane)
 		}
 
 		<span class="doccomment">/// Return inbound lane data.
 		</span><span class="kw">pub fn </span>inbound_lane_data(
-			lane: LaneId,
+			lane: T::LaneId,
 		) -&gt; <span class="prelude-ty">Option</span>&lt;InboundLaneData&lt;AccountIdOf&lt;BridgedChainOf&lt;T, I&gt;&gt;&gt;&gt; {
 			InboundLanes::&lt;T, I&gt;::get(lane).map(|lane| lane.<span class="number">0</span>)
 		}
@@ -1573,12 +1611,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 /// to send it on the bridge.
 </span><span class="attr">#[derive(Debug, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>SendMessageArgs&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt; {
-	lane_id: LaneId,
+	lane_id: T::LaneId,
 	lane: OutboundLane&lt;RuntimeOutboundLaneStorage&lt;T, I&gt;&gt;,
 	payload: StoredMessagePayload&lt;T, I&gt;,
 }
 
-<span class="kw">impl</span>&lt;T, I&gt; bp_messages::source_chain::MessagesBridge&lt;T::OutboundPayload&gt; <span class="kw">for </span>Pallet&lt;T, I&gt;
+<span class="kw">impl</span>&lt;T, I&gt; bp_messages::source_chain::MessagesBridge&lt;T::OutboundPayload, T::LaneId&gt; <span class="kw">for </span>Pallet&lt;T, I&gt;
 <span class="kw">where
 	</span>T: Config&lt;I&gt;,
 	I: <span class="lifetime">'static</span>,
@@ -1587,7 +1625,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>SendMessageArgs = SendMessageArgs&lt;T, I&gt;;
 
 	<span class="kw">fn </span>validate_message(
-		lane_id: LaneId,
+		lane_id: T::LaneId,
 		message: <span class="kw-2">&amp;</span>T::OutboundPayload,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;SendMessageArgs&lt;T, I&gt;, <span class="self">Self</span>::Error&gt; {
 		<span class="comment">// we can't accept any messages if the pallet is halted
@@ -1622,7 +1660,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			message_len,
 		);
 
-		Pallet::&lt;T, I&gt;::deposit_event(Event::MessageAccepted { lane_id: args.lane_id, nonce });
+		Pallet::&lt;T, I&gt;::deposit_event(Event::MessageAccepted {
+			lane_id: args.lane_id.into(),
+			nonce,
+		});
 
 		SendMessageArtifacts { nonce, enqueued_messages }
 	}
@@ -1641,7 +1682,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Creates new inbound lane object, backed by runtime storage. Lane must be active.
 </span><span class="kw">fn </span>active_inbound_lane&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt;(
-	lane_id: LaneId,
+	lane_id: T::LaneId,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;InboundLane&lt;RuntimeInboundLaneStorage&lt;T, I&gt;&gt;, Error&lt;T, I&gt;&gt; {
 	LanesManager::&lt;T, I&gt;::new()
 		.active_inbound_lane(lane_id)
@@ -1650,7 +1691,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Creates new outbound lane object, backed by runtime storage. Lane must be active.
 </span><span class="kw">fn </span>active_outbound_lane&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt;(
-	lane_id: LaneId,
+	lane_id: T::LaneId,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;OutboundLane&lt;RuntimeOutboundLaneStorage&lt;T, I&gt;&gt;, Error&lt;T, I&gt;&gt; {
 	LanesManager::&lt;T, I&gt;::new()
 		.active_outbound_lane(lane_id)
@@ -1659,7 +1700,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Creates new outbound lane object, backed by runtime storage.
 </span><span class="kw">fn </span>any_state_outbound_lane&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt;(
-	lane_id: LaneId,
+	lane_id: T::LaneId,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;OutboundLane&lt;RuntimeOutboundLaneStorage&lt;T, I&gt;&gt;, Error&lt;T, I&gt;&gt; {
 	LanesManager::&lt;T, I&gt;::new()
 		.any_state_outbound_lane(lane_id)
@@ -1668,9 +1709,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Verify messages proof and return proved messages with decoded payload.
 </span><span class="kw">fn </span>verify_and_decode_messages_proof&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt;(
-	proof: FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChainOf&lt;T, I&gt;&gt;&gt;,
+	proof: FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChainOf&lt;T, I&gt;&gt;, T::LaneId&gt;,
 	messages_count: u32,
-) -&gt; <span class="prelude-ty">Result</span>&lt;ProvedMessages&lt;DispatchMessage&lt;T::InboundPayload&gt;&gt;, VerificationError&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;
+	ProvedMessages&lt;T::LaneId, DispatchMessage&lt;T::InboundPayload, T::LaneId&gt;&gt;,
+	VerificationError,
+&gt; {
 	<span class="comment">// `receive_messages_proof` weight formula and `MAX_UNCONFIRMED_MESSAGES_IN_CONFIRMATION_TX`
 	// check guarantees that the `message_count` is sane and Vec&lt;Message&gt; may be allocated.
 	// (tx with too many messages will either be rejected from the pool, or will fail earlier)

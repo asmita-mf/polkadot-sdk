@@ -313,6 +313,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#161" id="161">161</a>
 <a href="#162" id="162">162</a>
 <a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -332,8 +340,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="doccomment">//! Helpers for generating message storage proofs, that are used by tests and by benchmarks.
 
 </span><span class="kw">use </span>bp_messages::{
-	storage_keys, ChainWithMessages, InboundLaneData, LaneId, MessageKey, MessageNonce,
-	MessagePayload, OutboundLaneData,
+	storage_keys, ChainWithMessages, InboundLaneData, MessageKey, MessageNonce, MessagePayload,
+	OutboundLaneData,
 };
 <span class="kw">use </span>bp_runtime::{
 	grow_storage_value, record_all_trie_keys, AccountIdOf, Chain, HashOf, HasherOf,
@@ -362,7 +370,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ///
 /// Returns state trie root and nodes with prepared messages.
 </span><span class="attr">#[allow(clippy::too_many_arguments)]
-</span><span class="kw">pub fn </span>prepare_messages_storage_proof&lt;BridgedChain: Chain, ThisChain: ChainWithMessages&gt;(
+</span><span class="kw">pub fn </span>prepare_messages_storage_proof&lt;
+	BridgedChain: Chain,
+	ThisChain: ChainWithMessages,
+	LaneId: Encode + Copy,
+&gt;(
 	lane: LaneId,
 	message_nonces: RangeInclusive&lt;MessageNonce&gt;,
 	outbound_lane_data: <span class="prelude-ty">Option</span>&lt;OutboundLaneData&gt;,
@@ -447,7 +459,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Prepare storage proof of given messages delivery.
 ///
 /// Returns state trie root and nodes with prepared messages.
-</span><span class="kw">pub fn </span>prepare_message_delivery_storage_proof&lt;BridgedChain: Chain, ThisChain: ChainWithMessages&gt;(
+</span><span class="kw">pub fn </span>prepare_message_delivery_storage_proof&lt;
+	BridgedChain: Chain,
+	ThisChain: ChainWithMessages,
+	LaneId: Encode,
+&gt;(
 	lane: LaneId,
 	inbound_lane_data: InboundLaneData&lt;AccountIdOf&lt;ThisChain&gt;&gt;,
 	proof_params: UnverifiedStorageProofParams,

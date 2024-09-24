@@ -164,7 +164,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Utility for delivering a message to a system under a different (non-local) consensus with a
 spoofed origin. This essentially defines the behaviour of the <code>ExportMessage</code> XCM instruction.</p>
 <p>This is quite different to <code>SendXcm</code>; <code>SendXcm</code> assumes that the local side’s location will be
-preserved to be represented as the value of the Origin register in the messages execution.</p>
+preserved to be represented as the value of the Origin register during the message’s execution.</p>
 <p>This trait on the other hand assumes that we do not necessarily want the Origin register to
 contain the local (i.e. the caller chain’s) location, since it will generally be exporting a
 message on behalf of another consensus system. Therefore in addition to the message, the
@@ -186,8 +186,8 @@ this chain to do so, returning a <code>Ticket</code> token which can be used to 
 be provided.</p>
 <p>The <code>destination</code> and <code>message</code> must be <code>Some</code> (or else an error will be returned) and they
 may only be consumed if the <code>Err</code> is not <code>NotApplicable</code>.</p>
-<p>If it is not a destination which can be reached with this type but possibly could by others,
-then this <em>MUST</em> return <code>NotApplicable</code>. Any other error will cause the tuple
+<p>If it is not a destination that can be reached with this type, but possibly could be with
+others, then this <em>MUST</em> return <code>NotApplicable</code>. Any other error will cause the tuple
 implementation (used to compose routing systems from different delivery agents) to exit
 early without trying alternative means of delivery.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="tymethod.deliver" class="method"><a class="src rightside" href="../../src/staging_xcm_executor/traits/export.rs.html#64">source</a><h4 class="code-header">fn <a href="#tymethod.deliver" class="fn">deliver</a>(ticket: Self::<a class="associatedtype" href="trait.ExportXcm.html#associatedtype.Ticket" title="type staging_xcm_executor::traits::ExportXcm::Ticket">Ticket</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.77.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;XcmHash, SendError&gt;</h4></section></summary><div class="docblock"><p>Actually carry out the delivery operation for a previously validated message sending.</p>

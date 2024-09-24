@@ -1302,8 +1302,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">pub fn </span>execute_as_origin_xcm&lt;Call: GetDispatchInfo + Encode&gt;(
-		call: Call,
 		origin: Location,
+		call: Call,
 		buy_execution_fee: Asset,
 	) -&gt; Outcome {
 		<span class="comment">// prepare `Transact` xcm

@@ -1851,24 +1851,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1699" id="1699">1699</a>
 <a href="#1700" id="1700">1700</a>
 <a href="#1701" id="1701">1701</a>
-<a href="#1702" id="1702">1702</a>
-<a href="#1703" id="1703">1703</a>
-<a href="#1704" id="1704">1704</a>
-<a href="#1705" id="1705">1705</a>
-<a href="#1706" id="1706">1706</a>
-<a href="#1707" id="1707">1707</a>
-<a href="#1708" id="1708">1708</a>
-<a href="#1709" id="1709">1709</a>
-<a href="#1710" id="1710">1710</a>
-<a href="#1711" id="1711">1711</a>
-<a href="#1712" id="1712">1712</a>
-<a href="#1713" id="1713">1713</a>
-<a href="#1714" id="1714">1714</a>
-<a href="#1715" id="1715">1715</a>
-<a href="#1716" id="1716">1716</a>
-<a href="#1717" id="1717">1717</a>
-<a href="#1718" id="1718">1718</a>
-<a href="#1719" id="1719">1719</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -2014,7 +1996,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="attr">#![warn(missing_docs)]
 #![cfg_attr(not(feature = <span class="string">"std"</span>), no_std)]
 
-</span><span class="kw">use </span>bp_messages::{LaneId, LaneState, MessageNonce};
+</span><span class="kw">use </span>bp_messages::{LaneState, MessageNonce};
 <span class="kw">use </span>bp_runtime::{AccountIdOf, BalanceOf, RangeInclusiveExt};
 <span class="kw">pub use </span>bp_xcm_bridge_hub::{Bridge, BridgeId, BridgeState};
 <span class="kw">use </span>bp_xcm_bridge_hub::{BridgeLocations, BridgeLocationsError, LocalXcmChannelManager};
@@ -2084,9 +2066,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">type </span>DestinationVersion: GetVersion;
 
 		<span class="doccomment">/// The origin that is allowed to call privileged operations on the pallet, e.g. open/close
-		/// bridge for location that coresponds to `Self::BridgeOriginAccountIdConverter` and
-		/// `Self::BridgedNetwork`.
-		</span><span class="kw">type </span>AdminOrigin: EnsureOrigin&lt;&lt;<span class="self">Self </span><span class="kw">as </span>SystemConfig&gt;::RuntimeOrigin&gt;;
+		/// bridge for locations.
+		</span><span class="kw">type </span>ForceOrigin: EnsureOrigin&lt;&lt;<span class="self">Self </span><span class="kw">as </span>SystemConfig&gt;::RuntimeOrigin&gt;;
 		<span class="doccomment">/// A set of XCM locations within local consensus system that are allowed to open
 		/// bridges with remote destinations.
 		</span><span class="kw">type </span>OpenBridgeOrigin: EnsureOrigin&lt;
@@ -2119,10 +2100,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="doccomment">/// An alias for the bridge metadata.
-	</span><span class="kw">pub type </span>BridgeOf&lt;T, I&gt; = Bridge&lt;ThisChainOf&lt;T, I&gt;&gt;;
+	</span><span class="kw">pub type </span>BridgeOf&lt;T, I&gt; = Bridge&lt;ThisChainOf&lt;T, I&gt;, LaneIdOf&lt;T, I&gt;&gt;;
 	<span class="doccomment">/// An alias for this chain.
 	</span><span class="kw">pub type </span>ThisChainOf&lt;T, I&gt; =
 		pallet_bridge_messages::ThisChainOf&lt;T, &lt;T <span class="kw">as </span>Config&lt;I&gt;&gt;::BridgeMessagesPalletInstance&gt;;
+	<span class="doccomment">/// An alias for lane identifier type.
+	</span><span class="kw">pub type </span>LaneIdOf&lt;T, I&gt; =
+		&lt;T <span class="kw">as </span>BridgeMessagesConfig&lt;&lt;T <span class="kw">as </span>Config&lt;I&gt;&gt;::BridgeMessagesPalletInstance&gt;&gt;::LaneId;
 	<span class="doccomment">/// An alias for the associated lanes manager.
 	</span><span class="kw">pub type </span>LanesManagerOf&lt;T, I&gt; =
 		pallet_bridge_messages::LanesManager&lt;T, &lt;T <span class="kw">as </span>Config&lt;I&gt;&gt;::BridgeMessagesPalletInstance&gt;;
@@ -2263,7 +2247,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="comment">// deposit the `ClosingBridge` event
 				</span><span class="self">Self</span>::deposit_event(Event::&lt;T, I&gt;::ClosingBridge {
 					bridge_id: <span class="kw-2">*</span>locations.bridge_id(),
-					lane_id: bridge.lane_id,
+					lane_id: bridge.lane_id.into(),
 					pruned_messages,
 					enqueued_messages,
 				});
@@ -2310,7 +2294,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="comment">// deposit the `BridgePruned` event
 			</span><span class="self">Self</span>::deposit_event(Event::&lt;T, I&gt;::BridgePruned {
 				bridge_id: <span class="kw-2">*</span>locations.bridge_id(),
-				lane_id: bridge.lane_id,
+				lane_id: bridge.lane_id.into(),
 				bridge_deposit: released_deposit,
 				pruned_messages,
 			});
@@ -2320,9 +2304,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">impl</span>&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt; Pallet&lt;T, I&gt; {
-		<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>do_open_bridge(
+		<span class="doccomment">/// Open bridge for lane.
+		</span><span class="kw">pub fn </span>do_open_bridge(
 			locations: Box&lt;BridgeLocations&gt;,
-			lane_id: LaneId,
+			lane_id: T::LaneId,
 			create_lanes: bool,
 		) -&gt; <span class="prelude-ty">Result</span>&lt;(), DispatchError&gt; {
 			<span class="comment">// reserve balance on the origin's sovereign account (if needed)
@@ -2413,7 +2398,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				remote_endpoint: Box::new(
 					locations.bridge_destination_universal_location().clone(),
 				),
-				lane_id,
+				lane_id: lane_id.into(),
 			});
 
 			<span class="prelude-val">Ok</span>(())
@@ -2456,10 +2441,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			})
 		}
 
+		<span class="doccomment">/// Return bridge metadata by bridge_id
+		</span><span class="kw">pub fn </span>bridge(bridge_id: <span class="kw-2">&amp;</span>BridgeId) -&gt; <span class="prelude-ty">Option</span>&lt;BridgeOf&lt;T, I&gt;&gt; {
+			Bridges::&lt;T, I&gt;::get(bridge_id)
+		}
+
 		<span class="doccomment">/// Return bridge metadata by lane_id
-		</span><span class="kw">pub fn </span>bridge_by_lane_id(lane_id: <span class="kw-2">&amp;</span>LaneId) -&gt; <span class="prelude-ty">Option</span>&lt;(BridgeId, BridgeOf&lt;T, I&gt;)&gt; {
+		</span><span class="kw">pub fn </span>bridge_by_lane_id(lane_id: <span class="kw-2">&amp;</span>T::LaneId) -&gt; <span class="prelude-ty">Option</span>&lt;(BridgeId, BridgeOf&lt;T, I&gt;)&gt; {
 			LaneToBridge::&lt;T, I&gt;::get(lane_id)
-				.and_then(|bridge_id| <span class="self">Self</span>::bridge(bridge_id).map(|bridge| (bridge_id, bridge)))
+				.and_then(|bridge_id| <span class="self">Self</span>::bridge(<span class="kw-2">&amp;</span>bridge_id).map(|bridge| (bridge_id, bridge)))
 		}
 	}
 
@@ -2505,7 +2495,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">pub fn </span>do_try_state_for_bridge(
 			bridge_id: BridgeId,
 			bridge: BridgeOf&lt;T, I&gt;,
-		) -&gt; <span class="prelude-ty">Result</span>&lt;LaneId, sp_runtime::TryRuntimeError&gt; {
+		) -&gt; <span class="prelude-ty">Result</span>&lt;T::LaneId, sp_runtime::TryRuntimeError&gt; {
 			<span class="macro">log::info!</span>(target: LOG_TARGET, <span class="string">"Checking `do_try_state_for_bridge` for bridge_id: {bridge_id:?} and bridge: {bridge:?}"</span>);
 
 			<span class="comment">// check `BridgeId` points to the same `LaneId` and vice versa.
@@ -2578,13 +2568,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="doccomment">/// All registered bridges.
 	</span><span class="attr">#[pallet::storage]
-	#[pallet::getter(<span class="kw">fn </span>bridge)]
 	</span><span class="kw">pub type </span>Bridges&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static </span>= ()&gt; =
 		StorageMap&lt;<span class="kw">_</span>, Identity, BridgeId, BridgeOf&lt;T, I&gt;&gt;;
 	<span class="doccomment">/// All registered `lane_id` and `bridge_id` mappings.
 	</span><span class="attr">#[pallet::storage]
 	</span><span class="kw">pub type </span>LaneToBridge&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static </span>= ()&gt; =
-		StorageMap&lt;<span class="kw">_</span>, Identity, LaneId, BridgeId&gt;;
+		StorageMap&lt;<span class="kw">_</span>, Identity, T::LaneId, BridgeId&gt;;
 
 	<span class="attr">#[pallet::genesis_config]
 	#[derive(DefaultNoBound)]
@@ -2594,7 +2583,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		/// Keep in mind that we are **NOT** reserving any amount for the bridges opened at
 		/// genesis. We are **NOT** opening lanes, used by this bridge. It all must be done using
 		/// other pallets genesis configuration or some other means.
-		</span><span class="kw">pub </span>opened_bridges: Vec&lt;(Location, InteriorLocation)&gt;,
+		</span><span class="kw">pub </span>opened_bridges: Vec&lt;(Location, InteriorLocation, <span class="prelude-ty">Option</span>&lt;T::LaneId&gt;)&gt;,
 		<span class="doccomment">/// Dummy marker.
 		</span><span class="attr">#[serde(skip)]
 		</span><span class="kw">pub </span>_phantom: sp_std::marker::PhantomData&lt;(T, I)&gt;,
@@ -2606,48 +2595,26 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span>T: frame_system::Config&lt;AccountId = AccountIdOf&lt;ThisChainOf&lt;T, I&gt;&gt;&gt;,
 	{
 		<span class="kw">fn </span>build(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-			<span class="kw">for </span>(bridge_origin_relative_location, bridge_destination_universal_location) <span class="kw">in
-				</span><span class="kw-2">&amp;</span><span class="self">self</span>.opened_bridges
+			<span class="kw">for </span>(
+				bridge_origin_relative_location,
+				bridge_destination_universal_location,
+				maybe_lane_id,
+			) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.opened_bridges
 			{
 				<span class="kw">let </span>locations = Pallet::&lt;T, I&gt;::bridge_locations(
 					bridge_origin_relative_location.clone(),
 					bridge_destination_universal_location.clone().into(),
 				)
 				.expect(<span class="string">"Invalid genesis configuration"</span>);
-				<span class="kw">let </span>lane_id =
-					locations.calculate_lane_id(xcm::latest::VERSION).expect(<span class="string">"Valid locations"</span>);
-				<span class="kw">let </span>bridge_owner_account = T::BridgeOriginAccountIdConverter::convert_location(
-					locations.bridge_origin_relative_location(),
-				)
-				.expect(<span class="string">"Invalid genesis configuration"</span>);
 
-				Bridges::&lt;T, I&gt;::insert(
-					locations.bridge_id(),
-					Bridge {
-						bridge_origin_relative_location: Box::new(
-							locations.bridge_origin_relative_location().clone().into(),
-						),
-						bridge_origin_universal_location: Box::new(
-							locations.bridge_origin_universal_location().clone().into(),
-						),
-						bridge_destination_universal_location: Box::new(
-							locations.bridge_destination_universal_location().clone().into(),
-						),
-						state: BridgeState::Opened,
-						bridge_owner_account,
-						deposit: Zero::zero(),
-						lane_id,
-					},
-				);
-				LaneToBridge::&lt;T, I&gt;::insert(lane_id, locations.bridge_id());
+				<span class="kw">let </span>lane_id = <span class="kw">match </span>maybe_lane_id {
+					<span class="prelude-val">Some</span>(lane_id) =&gt; <span class="kw-2">*</span>lane_id,
+					<span class="prelude-val">None </span>=&gt;
+						locations.calculate_lane_id(xcm::latest::VERSION).expect(<span class="string">"Valid locations"</span>),
+				};
 
-				<span class="kw">let </span>lanes_manager = LanesManagerOf::&lt;T, I&gt;::new();
-				lanes_manager
-					.create_inbound_lane(lane_id)
-					.expect(<span class="string">"Invalid genesis configuration"</span>);
-				lanes_manager
-					.create_outbound_lane(lane_id)
-					.expect(<span class="string">"Invalid genesis configuration"</span>);
+				Pallet::&lt;T, I&gt;::do_open_bridge(locations, lane_id, <span class="bool-val">true</span>)
+					.expect(<span class="string">"Valid opened bridge!"</span>);
 			}
 		}
 	}
@@ -2667,14 +2634,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="doccomment">/// Universal location of remote bridge endpoint.
 			</span>remote_endpoint: Box&lt;InteriorLocation&gt;,
 			<span class="doccomment">/// Lane identifier.
-			</span>lane_id: LaneId,
+			</span>lane_id: T::LaneId,
 		},
 		<span class="doccomment">/// Bridge is going to be closed, but not yet fully pruned from the runtime storage.
 		</span>ClosingBridge {
 			<span class="doccomment">/// Bridge identifier.
 			</span>bridge_id: BridgeId,
 			<span class="doccomment">/// Lane identifier.
-			</span>lane_id: LaneId,
+			</span>lane_id: T::LaneId,
 			<span class="doccomment">/// Number of pruned messages during the close call.
 			</span>pruned_messages: MessageNonce,
 			<span class="doccomment">/// Number of enqueued messages that need to be pruned in follow up calls.
@@ -2686,7 +2653,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="doccomment">/// Bridge identifier.
 			</span>bridge_id: BridgeId,
 			<span class="doccomment">/// Lane identifier.
-			</span>lane_id: LaneId,
+			</span>lane_id: T::LaneId,
 			<span class="doccomment">/// Amount of deposit released.
 			</span>bridge_deposit: BalanceOf&lt;ThisChainOf&lt;T, I&gt;&gt;,
 			<span class="doccomment">/// Number of pruned messages during the close call.
@@ -2720,12 +2687,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
+	<span class="kw">use </span>bp_messages::LaneIdType;
 	<span class="kw">use </span>mock::<span class="kw-2">*</span>;
 
-	<span class="kw">use </span>bp_messages::LaneId;
 	<span class="kw">use </span>frame_support::{assert_err, assert_noop, assert_ok, traits::fungible::Mutate, BoundedVec};
 	<span class="kw">use </span>frame_system::{EventRecord, Phase};
-	<span class="kw">use </span>sp_core::H256;
 	<span class="kw">use </span>sp_runtime::TryRuntimeError;
 
 	<span class="kw">fn </span>fund_origin_sovereign_account(locations: <span class="kw-2">&amp;</span>BridgeLocations, balance: Balance) -&gt; AccountId {
@@ -2782,7 +2748,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		mock_open_bridge_from_with(origin, deposit, bridged_asset_hub_universal_location())
 	}
 
-	<span class="kw">fn </span>enqueue_message(lane: LaneId) {
+	<span class="kw">fn </span>enqueue_message(lane: TestLaneIdType) {
 		<span class="kw">let </span>lanes_manager = LanesManagerOf::&lt;TestRuntime, ()&gt;::new();
 		lanes_manager
 			.active_outbound_lane(lane)
@@ -3083,7 +3049,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							remote_endpoint: Box::new(
 								locations.bridge_destination_universal_location().clone()
 							),
-							lane_id
+							lane_id: lane_id.into()
 						}),
 						topics: <span class="macro">vec!</span>[],
 					}),
@@ -3226,7 +3192,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					phase: Phase::Initialization,
 					event: RuntimeEvent::XcmOverBridge(Event::ClosingBridge {
 						bridge_id: <span class="kw-2">*</span>locations.bridge_id(),
-						lane_id: bridge.lane_id,
+						lane_id: bridge.lane_id.into(),
 						pruned_messages: <span class="number">16</span>,
 						enqueued_messages: <span class="number">16</span>,
 					}),
@@ -3274,7 +3240,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					phase: Phase::Initialization,
 					event: RuntimeEvent::XcmOverBridge(Event::ClosingBridge {
 						bridge_id: <span class="kw-2">*</span>locations.bridge_id(),
-						lane_id: bridge.lane_id,
+						lane_id: bridge.lane_id.into(),
 						pruned_messages: <span class="number">8</span>,
 						enqueued_messages: <span class="number">8</span>,
 					}),
@@ -3315,7 +3281,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					phase: Phase::Initialization,
 					event: RuntimeEvent::XcmOverBridge(Event::BridgePruned {
 						bridge_id: <span class="kw-2">*</span>locations.bridge_id(),
-						lane_id: bridge.lane_id,
+						lane_id: bridge.lane_id.into(),
 						bridge_deposit: expected_deposit,
 						pruned_messages: <span class="number">8</span>,
 					}),
@@ -3327,8 +3293,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>do_try_state_works() {
-		<span class="kw">use </span>sp_runtime::Either;
-
 		<span class="kw">let </span>bridge_origin_relative_location = SiblingLocation::get();
 		<span class="kw">let </span>bridge_origin_universal_location = SiblingUniversalLocation::get();
 		<span class="kw">let </span>bridge_destination_universal_location = BridgedUniversalDestination::get();
@@ -3342,8 +3306,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw-2">&amp;</span>bridge_destination_universal_location,
 		);
 		<span class="kw">let </span>bridge_id_mismatch = BridgeId::new(<span class="kw-2">&amp;</span>InteriorLocation::Here, <span class="kw-2">&amp;</span>InteriorLocation::Here);
-		<span class="kw">let </span>lane_id = LaneId::from_inner(Either::Left(H256::default()));
-		<span class="kw">let </span>lane_id_mismatch = LaneId::from_inner(Either::Left(H256::from([<span class="number">1u8</span>; <span class="number">32</span>])));
+		<span class="kw">let </span>lane_id = TestLaneIdType::try_new(<span class="number">1</span>, <span class="number">2</span>).unwrap();
+		<span class="kw">let </span>lane_id_mismatch = TestLaneIdType::try_new(<span class="number">3</span>, <span class="number">4</span>).unwrap();
 
 		<span class="kw">let </span>test_bridge_state = |id,
 		                         bridge,

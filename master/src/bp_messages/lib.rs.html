@@ -795,10 +795,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>sp_std::{collections::vec_deque::VecDeque, ops::RangeInclusive, prelude::<span class="kw-2">*</span>};
 
 <span class="kw">pub use </span>call_info::{
-	BaseMessagesProofInfo, BridgeMessagesCall, BridgeMessagesCallOf, MessagesCallInfo,
-	ReceiveMessagesDeliveryProofInfo, ReceiveMessagesProofInfo, UnrewardedRelayerOccupation,
+	BaseMessagesProofInfo, BridgeMessagesCall, MessagesCallInfo, ReceiveMessagesDeliveryProofInfo,
+	ReceiveMessagesProofInfo, UnrewardedRelayerOccupation,
 };
-<span class="kw">pub use </span>lane::{LaneId, LaneState};
+<span class="kw">pub use </span>lane::{HashedLaneId, LaneIdType, LaneState, LegacyLaneId};
 
 <span class="kw">mod </span>call_info;
 <span class="kw">mod </span>lane;
@@ -941,7 +941,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Message key (unique message identifier) as it is stored in the storage.
 </span><span class="attr">#[derive(Encode, Decode, Clone, PartialEq, Eq, RuntimeDebug, TypeInfo, MaxEncodedLen)]
-</span><span class="kw">pub struct </span>MessageKey {
+</span><span class="kw">pub struct </span>MessageKey&lt;LaneId: Encode&gt; {
 	<span class="doccomment">/// ID of the message lane.
 	</span><span class="kw">pub </span>lane_id: LaneId,
 	<span class="doccomment">/// Message nonce.
@@ -950,9 +950,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Message as it is stored in the storage.
 </span><span class="attr">#[derive(Encode, Decode, Clone, PartialEq, Eq, RuntimeDebug, TypeInfo)]
-</span><span class="kw">pub struct </span>Message {
+</span><span class="kw">pub struct </span>Message&lt;LaneId: Encode&gt; {
 	<span class="doccomment">/// Message key.
-	</span><span class="kw">pub </span>key: MessageKey,
+	</span><span class="kw">pub </span>key: MessageKey&lt;LaneId&gt;,
 	<span class="doccomment">/// Message payload.
 	</span><span class="kw">pub </span>payload: MessagePayload,
 }
@@ -960,11 +960,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Inbound lane data.
 </span><span class="attr">#[derive(Encode, Decode, Clone, RuntimeDebug, PartialEq, Eq, TypeInfo)]
 </span><span class="kw">pub struct </span>InboundLaneData&lt;RelayerId&gt; {
-	<span class="doccomment">/// Inbound lane state.
-	///
-	/// If state is `Closed`, then all attempts to deliver messages to this end will fail.
-	</span><span class="kw">pub </span>state: LaneState,
-
 	<span class="doccomment">/// Identifiers of relayers and messages that they have delivered to this lane (ordered by
 	/// message nonce).
 	///
@@ -993,6 +988,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	/// This value is updated indirectly when an `OutboundLane` state of the source
 	/// chain is received alongside with new messages delivery.
 	</span><span class="kw">pub </span>last_confirmed_nonce: MessageNonce,
+
+	<span class="doccomment">/// Inbound lane state.
+	///
+	/// If state is `Closed`, then all attempts to deliver messages to this end will fail.
+	</span><span class="kw">pub </span>state: LaneState,
 }
 
 <span class="kw">impl</span>&lt;RelayerId&gt; Default <span class="kw">for </span>InboundLaneData&lt;RelayerId&gt; {
@@ -1097,20 +1097,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Received messages with their dispatch result.
 </span><span class="attr">#[derive(Clone, Encode, Decode, RuntimeDebug, PartialEq, Eq, TypeInfo)]
-</span><span class="kw">pub struct </span>ReceivedMessages&lt;DispatchLevelResult&gt; {
+</span><span class="kw">pub struct </span>ReceivedMessages&lt;DispatchLevelResult, LaneId&gt; {
 	<span class="doccomment">/// Id of the lane which is receiving messages.
 	</span><span class="kw">pub </span>lane: LaneId,
 	<span class="doccomment">/// Result of messages which we tried to dispatch
 	</span><span class="kw">pub </span>receive_results: Vec&lt;(MessageNonce, ReceptionResult&lt;DispatchLevelResult&gt;)&gt;,
 }
 
-<span class="kw">impl</span>&lt;DispatchLevelResult&gt; ReceivedMessages&lt;DispatchLevelResult&gt; {
+<span class="kw">impl</span>&lt;DispatchLevelResult, LaneId&gt; ReceivedMessages&lt;DispatchLevelResult, LaneId&gt; {
 	<span class="doccomment">/// Creates new `ReceivedMessages` structure from given results.
 	</span><span class="kw">pub fn </span>new(
 		lane: LaneId,
 		receive_results: Vec&lt;(MessageNonce, ReceptionResult&lt;DispatchLevelResult&gt;)&gt;,
 	) -&gt; <span class="self">Self </span>{
-		ReceivedMessages { lane, receive_results }
+		ReceivedMessages { lane: lane.into(), receive_results }
 	}
 
 	<span class="doccomment">/// Push `result` of the `message` delivery onto `receive_results` vector.
@@ -1209,10 +1209,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Outbound lane data.
 </span><span class="attr">#[derive(Encode, Decode, Clone, RuntimeDebug, PartialEq, Eq, TypeInfo, MaxEncodedLen)]
 </span><span class="kw">pub struct </span>OutboundLaneData {
-	<span class="doccomment">/// Lane state.
-	///
-	/// If state is `Closed`, then all attempts to send messages messages at this end will fail.
-	</span><span class="kw">pub </span>state: LaneState,
 	<span class="doccomment">/// Nonce of the oldest message that we haven't yet pruned. May point to not-yet-generated
 	/// message if all sent messages are already pruned.
 	</span><span class="kw">pub </span>oldest_unpruned_nonce: MessageNonce,
@@ -1220,6 +1216,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>latest_received_nonce: MessageNonce,
 	<span class="doccomment">/// Nonce of the latest message, generated by us.
 	</span><span class="kw">pub </span>latest_generated_nonce: MessageNonce,
+	<span class="doccomment">/// Lane state.
+	///
+	/// If state is `Closed`, then all attempts to send messages at this end will fail.
+	</span><span class="kw">pub </span>state: LaneState,
 }
 
 <span class="kw">impl </span>OutboundLaneData {

@@ -327,6 +327,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#175" id="175">175</a>
 <a href="#176" id="176">176</a>
 <a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -359,7 +364,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	SubmitFinalityProofHelper,
 };
 <span class="kw">use </span>pallet_bridge_messages::{
-	CallSubType <span class="kw">as </span>BridgeMessagesCallSubType, Config <span class="kw">as </span>BridgeMessagesConfig,
+	CallSubType <span class="kw">as </span>BridgeMessagesCallSubType, Config <span class="kw">as </span>BridgeMessagesConfig, LaneIdOf,
 };
 <span class="kw">use </span>sp_runtime::{
 	traits::{Dispatchable, Get},
@@ -383,6 +388,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span>BridgeGrandpaPalletInstance,
 	<span class="comment">// instance of BridgedChain `pallet-bridge-messages`, tracked by this extension
 	</span>BridgeMessagesPalletInstance,
+	<span class="comment">// instance of `pallet-bridge-relayers`, tracked by this extension
+	</span>BridgeRelayersPalletInstance,
 	<span class="comment">// message delivery transaction priority boost for every additional message
 	</span>PriorityBoostPerMessage,
 &gt;(
@@ -392,20 +399,22 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		BatchCallUnpacker,
 		BridgeGrandpaPalletInstance,
 		BridgeMessagesPalletInstance,
+		BridgeRelayersPalletInstance,
 		PriorityBoostPerMessage,
 	)&gt;,
 );
 
-<span class="kw">impl</span>&lt;ID, R, BCU, GI, MI, P&gt; ExtensionConfig
-	<span class="kw">for </span>WithGrandpaChainExtensionConfig&lt;ID, R, BCU, GI, MI, P&gt;
+<span class="kw">impl</span>&lt;ID, R, BCU, GI, MI, RI, P&gt; ExtensionConfig
+	<span class="kw">for </span>WithGrandpaChainExtensionConfig&lt;ID, R, BCU, GI, MI, RI, P&gt;
 <span class="kw">where
 	</span>ID: StaticStrProvider,
-	R: BridgeRelayersConfig
+	R: BridgeRelayersConfig&lt;RI&gt;
 		+ BridgeMessagesConfig&lt;MI, BridgedChain = pallet_bridge_grandpa::BridgedChain&lt;R, GI&gt;&gt;
 		+ BridgeGrandpaConfig&lt;GI&gt;,
 	BCU: BatchCallUnpacker&lt;R&gt;,
 	GI: <span class="lifetime">'static</span>,
 	MI: <span class="lifetime">'static</span>,
+	RI: <span class="lifetime">'static</span>,
 	P: Get&lt;TransactionPriority&gt;,
 	R::RuntimeCall: Dispatchable&lt;Info = DispatchInfo, PostInfo = PostDispatchInfo&gt;
 		+ BridgeGrandpaCallSubtype&lt;R, GI&gt;
@@ -414,14 +423,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>IdProvider = ID;
 	<span class="kw">type </span>Runtime = R;
 	<span class="kw">type </span>BridgeMessagesPalletInstance = MI;
+	<span class="kw">type </span>BridgeRelayersPalletInstance = RI;
 	<span class="kw">type </span>PriorityBoostPerMessage = P;
-	<span class="kw">type </span>Reward = R::Reward;
 	<span class="kw">type </span>RemoteGrandpaChainBlockNumber = pallet_bridge_grandpa::BridgedBlockNumber&lt;R, GI&gt;;
+	<span class="kw">type </span>LaneId = LaneIdOf&lt;R, <span class="self">Self</span>::BridgeMessagesPalletInstance&gt;;
 
 	<span class="kw">fn </span>parse_and_check_for_obsolete_call(
 		call: <span class="kw-2">&amp;</span>R::RuntimeCall,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;
-		<span class="prelude-ty">Option</span>&lt;ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber&gt;&gt;,
+		<span class="prelude-ty">Option</span>&lt;ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber, <span class="self">Self</span>::LaneId&gt;&gt;,
 		TransactionValidityError,
 	&gt; {
 		<span class="kw">let </span>calls = BCU::unpack(call, <span class="number">2</span>);
@@ -449,12 +459,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>check_call_result(
-		call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber&gt;,
+		call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber, <span class="self">Self</span>::LaneId&gt;,
 		call_data: <span class="kw-2">&amp;mut </span>ExtensionCallData,
 		relayer: <span class="kw-2">&amp;</span>R::AccountId,
 	) -&gt; bool {
 		verify_submit_finality_proof_succeeded::&lt;<span class="self">Self</span>, GI&gt;(call_info, call_data, relayer) &amp;&amp;
-			verify_messages_call_succeeded::&lt;<span class="self">Self</span>, MI&gt;(call_info, call_data, relayer)
+			verify_messages_call_succeeded::&lt;<span class="self">Self</span>&gt;(call_info, call_data, relayer)
 	}
 }
 
@@ -463,7 +473,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ///
 /// Only returns false when GRANDPA chain state update call has failed.
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>verify_submit_finality_proof_succeeded&lt;C, GI&gt;(
-	call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;C::RemoteGrandpaChainBlockNumber&gt;,
+	call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;C::RemoteGrandpaChainBlockNumber, C::LaneId&gt;,
 	call_data: <span class="kw-2">&amp;mut </span>ExtensionCallData,
 	relayer: <span class="kw-2">&amp;</span>&lt;C::Runtime <span class="kw">as </span>SystemConfig&gt;::AccountId,
 ) -&gt; bool

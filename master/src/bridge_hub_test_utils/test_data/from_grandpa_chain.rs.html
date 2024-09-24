@@ -436,6 +436,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#284" id="284">284</a>
 <a href="#285" id="285">285</a>
 <a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -458,8 +469,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>bp_messages::{
 	source_chain::FromBridgedChainMessagesDeliveryProof,
-	target_chain::FromBridgedChainMessagesProof, ChainWithMessages, LaneId, LaneState,
-	MessageNonce, UnrewardedRelayersState,
+	target_chain::FromBridgedChainMessagesProof, ChainWithMessages, LaneState, MessageNonce,
+	UnrewardedRelayersState,
 };
 <span class="kw">use </span>bp_runtime::{AccountIdOf, BlockNumberOf, Chain, HeaderOf, UnverifiedStorageProofParams};
 <span class="kw">use </span>bp_test_utils::make_default_justification;
@@ -478,7 +489,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		encode_all_messages, encode_lane_data, prepare_message_delivery_storage_proof,
 		prepare_messages_storage_proof,
 	},
-	BridgedChainOf,
+	BridgedChainOf, LaneIdOf,
 };
 <span class="kw">use </span>sp_runtime::DigestItem;
 
@@ -486,7 +497,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub fn </span>make_complex_relayer_delivery_batch&lt;Runtime, GPI, MPI&gt;(
 	bridged_header: BridgedHeader&lt;Runtime, GPI&gt;,
 	bridged_justification: GrandpaJustification&lt;BridgedHeader&lt;Runtime, GPI&gt;&gt;,
-	message_proof: FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChain&lt;Runtime, GPI&gt;&gt;&gt;,
+	message_proof: FromBridgedChainMessagesProof&lt;
+		HashOf&lt;BridgedChain&lt;Runtime, GPI&gt;&gt;,
+		LaneIdOf&lt;Runtime, MPI&gt;,
+	&gt;,
 	relayer_id_at_bridged_chain: InboundRelayerId&lt;Runtime, MPI&gt;,
 ) -&gt; pallet_utility::Call&lt;Runtime&gt;
 <span class="kw">where
@@ -520,6 +534,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	bridged_justification: GrandpaJustification&lt;BridgedHeader&lt;Runtime, GPI&gt;&gt;,
 	message_delivery_proof: FromBridgedChainMessagesDeliveryProof&lt;
 		HashOf&lt;BridgedChain&lt;Runtime, GPI&gt;&gt;,
+		LaneIdOf&lt;Runtime, MPI&gt;,
 	&gt;,
 	relayers_state: UnrewardedRelayersState,
 ) -&gt; pallet_utility::Call&lt;Runtime&gt;
@@ -549,7 +564,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Prepare a call with message proof.
 </span><span class="kw">pub fn </span>make_standalone_relayer_delivery_call&lt;Runtime, GPI, MPI&gt;(
-	message_proof: FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChain&lt;Runtime, GPI&gt;&gt;&gt;,
+	message_proof: FromBridgedChainMessagesProof&lt;
+		HashOf&lt;BridgedChain&lt;Runtime, GPI&gt;&gt;,
+		LaneIdOf&lt;Runtime, MPI&gt;,
+	&gt;,
 	relayer_id_at_bridged_chain: InboundRelayerId&lt;Runtime, MPI&gt;,
 ) -&gt; Runtime::RuntimeCall
 <span class="kw">where
@@ -572,6 +590,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub fn </span>make_standalone_relayer_confirmation_call&lt;Runtime, GPI, MPI&gt;(
 	message_delivery_proof: FromBridgedChainMessagesDeliveryProof&lt;
 		HashOf&lt;BridgedChain&lt;Runtime, GPI&gt;&gt;,
+		LaneIdOf&lt;Runtime, MPI&gt;,
 	&gt;,
 	relayers_state: UnrewardedRelayersState,
 ) -&gt; Runtime::RuntimeCall
@@ -590,7 +609,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="doccomment">/// Prepare storage proofs of messages, stored at the (bridged) source GRANDPA chain.
-</span><span class="kw">pub fn </span>make_complex_relayer_delivery_proofs&lt;BridgedChain, ThisChainWithMessages&gt;(
+</span><span class="kw">pub fn </span>make_complex_relayer_delivery_proofs&lt;BridgedChain, ThisChainWithMessages, LaneId&gt;(
 	lane_id: LaneId,
 	xcm_message: Xcm&lt;()&gt;,
 	message_nonce: MessageNonce,
@@ -600,17 +619,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ) -&gt; (
 	HeaderOf&lt;BridgedChain&gt;,
 	GrandpaJustification&lt;HeaderOf&lt;BridgedChain&gt;&gt;,
-	FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChain&gt;&gt;,
+	FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChain&gt;, LaneId&gt;,
 )
 <span class="kw">where
 	</span>BridgedChain: ChainWithGrandpa,
 	ThisChainWithMessages: ChainWithMessages,
+	LaneId: Copy + Encode,
 {
 	<span class="comment">// prepare message
 	</span><span class="kw">let </span>message_payload = prepare_inbound_xcm(xcm_message, message_destination);
 	<span class="comment">// prepare storage proof containing message
 	</span><span class="kw">let </span>(state_root, storage_proof) =
-		prepare_messages_storage_proof::&lt;BridgedChain, ThisChainWithMessages&gt;(
+		prepare_messages_storage_proof::&lt;BridgedChain, ThisChainWithMessages, LaneId&gt;(
 			lane_id,
 			message_nonce..=message_nonce,
 			<span class="prelude-val">None</span>,
@@ -644,6 +664,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	BridgedChain,
 	ThisChainWithMessages,
 	InnerXcmRuntimeCall,
+	LaneId,
 &gt;(
 	lane_id: LaneId,
 	header_number: BlockNumberOf&lt;BridgedChain&gt;,
@@ -652,15 +673,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ) -&gt; (
 	HeaderOf&lt;BridgedChain&gt;,
 	GrandpaJustification&lt;HeaderOf&lt;BridgedChain&gt;&gt;,
-	FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;BridgedChain&gt;&gt;,
+	FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;BridgedChain&gt;, LaneId&gt;,
 )
 <span class="kw">where
 	</span>BridgedChain: ChainWithGrandpa,
 	ThisChainWithMessages: ChainWithMessages,
+	LaneId: Copy + Encode,
 {
 	<span class="comment">// prepare storage proof containing message delivery proof
 	</span><span class="kw">let </span>(state_root, storage_proof) =
-		prepare_message_delivery_storage_proof::&lt;BridgedChain, ThisChainWithMessages&gt;(
+		prepare_message_delivery_storage_proof::&lt;BridgedChain, ThisChainWithMessages, LaneId&gt;(
 			lane_id,
 			InboundLaneData {
 				state: LaneState::Opened,

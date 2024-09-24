@@ -450,6 +450,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#298" id="298">298</a>
 <a href="#299" id="299">299</a>
 <a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -472,13 +479,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 //! are reusing Polkadot Bulletin chain primitives everywhere here.
 
 </span><span class="kw">use crate</span>::{
-	weights, xcm_config::UniversalLocation, AccountId, Balance, Balances,
-	BridgeRococoBulletinGrandpa, BridgeRococoBulletinMessages, PolkadotXcm, Runtime, RuntimeEvent,
-	RuntimeHoldReason, XcmOverRococoBulletin, XcmRouter,
+	bridge_common_config::RelayersForPermissionlessLanesInstance, weights,
+	xcm_config::UniversalLocation, AccountId, Balance, Balances, BridgeRococoBulletinGrandpa,
+	BridgeRococoBulletinMessages, PolkadotXcm, Runtime, RuntimeEvent, RuntimeHoldReason,
+	XcmOverRococoBulletin, XcmRouter,
 };
 <span class="kw">use </span>bp_messages::{
 	source_chain::FromBridgedChainMessagesDeliveryProof,
-	target_chain::FromBridgedChainMessagesProof,
+	target_chain::FromBridgedChainMessagesProof, HashedLaneId,
 };
 <span class="kw">use </span>bridge_hub_common::xcm_version::XcmVersionOfDestAndRemoteBridge;
 
@@ -486,11 +494,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	parameter_types,
 	traits::{Equals, PalletInfoAccess},
 };
-<span class="kw">use </span>frame_system::EnsureRoot;
+<span class="kw">use </span>frame_system::{EnsureNever, EnsureRoot};
+<span class="kw">use </span>pallet_bridge_messages::LaneIdOf;
 <span class="kw">use </span>pallet_bridge_relayers::extension::{
 	BridgeRelayersSignedExtension, WithMessagesExtensionConfig,
 };
-<span class="kw">use </span>pallet_xcm::EnsureXcm;
 <span class="kw">use </span>pallet_xcm_bridge_hub::XcmAsPlainPayload;
 <span class="kw">use </span>polkadot_parachain_primitives::primitives::Sibling;
 <span class="kw">use </span>testnet_parachains_constants::rococo::currency::UNITS <span class="kw">as </span>ROC;
@@ -530,11 +538,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="doccomment">/// Proof of messages, coming from Rococo Bulletin chain.
-</span><span class="kw">pub type </span>FromRococoBulletinMessagesProof =
-	FromBridgedChainMessagesProof&lt;bp_polkadot_bulletin::Hash&gt;;
+</span><span class="kw">pub type </span>FromRococoBulletinMessagesProof&lt;MI&gt; =
+	FromBridgedChainMessagesProof&lt;bp_polkadot_bulletin::Hash, LaneIdOf&lt;Runtime, MI&gt;&gt;;
 <span class="doccomment">/// Messages delivery proof for Rococo Bridge Hub -&gt; Rococo Bulletin messages.
-</span><span class="kw">pub type </span>ToRococoBulletinMessagesDeliveryProof =
-	FromBridgedChainMessagesDeliveryProof&lt;bp_polkadot_bulletin::Hash&gt;;
+</span><span class="kw">pub type </span>ToRococoBulletinMessagesDeliveryProof&lt;MI&gt; =
+	FromBridgedChainMessagesDeliveryProof&lt;bp_polkadot_bulletin::Hash, LaneIdOf&lt;Runtime, MI&gt;&gt;;
 
 <span class="doccomment">/// Dispatches received XCM messages from other bridge.
 </span><span class="kw">type </span>FromRococoBulletinMessageBlobDispatcher = BridgeBlobDispatcher&lt;
@@ -551,8 +559,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		StrOnBridgeHubRococoRefundRococoBulletinMessages,
 		Runtime,
 		WithRococoBulletinMessagesInstance,
+		RelayersForPermissionlessLanesInstance,
 		PriorityBoostPerMessage,
 	&gt;,
+	LaneIdOf&lt;Runtime, WithRococoBulletinMessagesInstance&gt;,
 &gt;;
 <span class="macro">bp_runtime::generate_static_str_provider!</span>(OnBridgeHubRococoRefundRococoBulletinMessages);
 
@@ -568,10 +578,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>BridgedHeaderChain = BridgeRococoBulletinGrandpa;
 
 	<span class="kw">type </span>OutboundPayload = XcmAsPlainPayload;
-
 	<span class="kw">type </span>InboundPayload = XcmAsPlainPayload;
-	<span class="kw">type </span>DeliveryPayments = ();
+	<span class="kw">type </span>LaneId = HashedLaneId;
 
+	<span class="kw">type </span>DeliveryPayments = ();
 	<span class="kw">type </span>DeliveryConfirmationPayments = ();
 
 	<span class="kw">type </span>MessageDispatch = XcmOverRococoBulletin;
@@ -591,9 +601,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>DestinationVersion =
 		XcmVersionOfDestAndRemoteBridge&lt;PolkadotXcm, RococoBulletinGlobalConsensusNetworkLocation&gt;;
 
-	<span class="kw">type </span>AdminOrigin = EnsureRoot&lt;AccountId&gt;;
-	<span class="comment">// Only allow calls from sibling People parachain to directly open the bridge.
-	</span><span class="kw">type </span>OpenBridgeOrigin = EnsureXcm&lt;Equals&lt;PeopleRococoLocation&gt;&gt;;
+	<span class="kw">type </span>ForceOrigin = EnsureRoot&lt;AccountId&gt;;
+	<span class="comment">// We don't want to allow creating bridges for this instance.
+	</span><span class="kw">type </span>OpenBridgeOrigin = EnsureNever&lt;Location&gt;;
 	<span class="comment">// Converter aligned with `OpenBridgeOrigin`.
 	</span><span class="kw">type </span>BridgeOriginAccountIdConverter =
 		(ParentIsPreset&lt;AccountId&gt;, SiblingParachainConvertsVia&lt;Sibling, AccountId&gt;);
@@ -682,14 +692,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="attr">#[cfg(feature = <span class="string">"runtime-benchmarks"</span>)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>open_bridge_for_benchmarks(
-	with: bp_messages::LaneId,
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>open_bridge_for_benchmarks&lt;R, XBHI, C&gt;(
+	with: pallet_xcm_bridge_hub::LaneIdOf&lt;R, XBHI&gt;,
 	sibling_para_id: u32,
-) -&gt; InteriorLocation {
+) -&gt; InteriorLocation
+<span class="kw">where
+	</span>R: pallet_xcm_bridge_hub::Config&lt;XBHI&gt;,
+	XBHI: <span class="lifetime">'static</span>,
+	C: xcm_executor::traits::ConvertLocation&lt;
+		bp_runtime::AccountIdOf&lt;pallet_xcm_bridge_hub::ThisChainOf&lt;R, XBHI&gt;&gt;,
+	&gt;,
+{
 	<span class="kw">use </span>pallet_xcm_bridge_hub::{Bridge, BridgeId, BridgeState};
 	<span class="kw">use </span>sp_runtime::traits::Zero;
 	<span class="kw">use </span>xcm::VersionedInteriorLocation;
-	<span class="kw">use </span>xcm_executor::traits::ConvertLocation;
 
 	<span class="comment">// insert bridge metadata
 	</span><span class="kw">let </span>lane_id = with;
@@ -700,7 +716,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>bridge_id = BridgeId::new(<span class="kw-2">&amp;</span>universal_source, <span class="kw-2">&amp;</span>universal_destination);
 
 	<span class="comment">// insert only bridge metadata, because the benchmarks create lanes
-	</span>pallet_xcm_bridge_hub::Bridges::&lt;Runtime, XcmOverPolkadotBulletinInstance&gt;::insert(
+	</span>pallet_xcm_bridge_hub::Bridges::&lt;R, XBHI&gt;::insert(
 		bridge_id,
 		Bridge {
 			bridge_origin_relative_location: alloc::boxed::Box::new(
@@ -713,17 +729,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				VersionedInteriorLocation::from(universal_destination),
 			),
 			state: BridgeState::Opened,
-			bridge_owner_account: <span class="kw">crate</span>::xcm_config::LocationToAccountId::convert_location(
-				<span class="kw-2">&amp;</span>sibling_parachain,
-			)
-			.expect(<span class="string">"valid AccountId"</span>),
-			deposit: Balance::zero(),
+			bridge_owner_account: C::convert_location(<span class="kw-2">&amp;</span>sibling_parachain).expect(<span class="string">"valid AccountId"</span>),
+			deposit: Zero::zero(),
 			lane_id,
 		},
 	);
-	pallet_xcm_bridge_hub::LaneToBridge::&lt;Runtime, XcmOverPolkadotBulletinInstance&gt;::insert(
-		lane_id, bridge_id,
-	);
+	pallet_xcm_bridge_hub::LaneToBridge::&lt;R, XBHI&gt;::insert(lane_id, bridge_id);
 
 	universal_source
 }
@@ -731,13 +742,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Contains the migration for the PeopleRococo&lt;&gt;RococoBulletin bridge.
 </span><span class="kw">pub mod </span>migration {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
-	<span class="kw">use </span>bp_messages::LaneId;
 	<span class="kw">use </span>frame_support::traits::ConstBool;
-	<span class="kw">use </span>sp_runtime::Either;
 
 	<span class="macro">parameter_types! </span>{
-		<span class="kw">pub </span>RococoPeopleToRococoBulletinMessagesLane: LaneId = LaneId::from_inner(Either::Right([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]));
 		<span class="kw">pub </span>BulletinRococoLocation: InteriorLocation = [GlobalConsensus(RococoBulletinGlobalConsensusNetwork::get())].into();
+		<span class="kw">pub </span>RococoPeopleToRococoBulletinMessagesLane: HashedLaneId = pallet_xcm_bridge_hub::Pallet::&lt; Runtime, XcmOverPolkadotBulletinInstance &gt;::bridge_locations(
+				PeopleRococoLocation::get(),
+				BulletinRococoLocation::get()
+			)
+			.unwrap()
+			.calculate_lane_id(xcm::latest::VERSION).expect(<span class="string">"Valid locations"</span>);
 	}
 
 	<span class="doccomment">/// Ensure that the existing lanes for the People&lt;&gt;Bulletin bridge are correctly configured.

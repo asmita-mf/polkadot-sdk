@@ -511,7 +511,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>bp_messages::{
 	source_chain::FromBridgedChainMessagesDeliveryProof, storage_keys::inbound_lane_data_key,
-	ChainWithMessages <span class="kw">as _</span>, InboundLaneData, LaneId, MessageNonce, UnrewardedRelayersState,
+	ChainWithMessages <span class="kw">as _</span>, InboundLaneData, MessageNonce, UnrewardedRelayersState,
 };
 <span class="kw">use </span>messages_relay::{
 	message_lane::{MessageLane, SourceHeaderIdOf, TargetHeaderIdOf},
@@ -526,14 +526,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>std::{convert::TryFrom, ops::RangeInclusive};
 
 <span class="doccomment">/// Message receiving proof returned by the target Substrate node.
-</span><span class="kw">pub type </span>SubstrateMessagesDeliveryProof&lt;C&gt; =
-	(UnrewardedRelayersState, FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;C&gt;&gt;);
+</span><span class="kw">pub type </span>SubstrateMessagesDeliveryProof&lt;C, L&gt; =
+	(UnrewardedRelayersState, FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;C&gt;, L&gt;);
 
 <span class="doccomment">/// Substrate client as Substrate messages target.
 </span><span class="kw">pub struct </span>SubstrateMessagesTarget&lt;P: SubstrateMessageLane, SourceClnt, TargetClnt&gt; {
 	target_client: TargetClnt,
 	source_client: SourceClnt,
-	lane_id: LaneId,
+	lane_id: P::LaneId,
 	relayer_id_at_source: AccountIdOf&lt;P::SourceChain&gt;,
 	transaction_params: <span class="prelude-ty">Option</span>&lt;TransactionParams&lt;AccountKeyPairOf&lt;P::TargetChain&gt;&gt;&gt;,
 	source_to_target_headers_relay: <span class="prelude-ty">Option</span>&lt;Arc&lt;<span class="kw">dyn </span>OnDemandRelay&lt;P::SourceChain, P::TargetChain&gt;&gt;&gt;,
@@ -548,7 +548,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub fn </span>new(
 		target_client: TargetClnt,
 		source_client: SourceClnt,
-		lane_id: LaneId,
+		lane_id: P::LaneId,
 		relayer_id_at_source: AccountIdOf&lt;P::SourceChain&gt;,
 		transaction_params: <span class="prelude-ty">Option</span>&lt;TransactionParams&lt;AccountKeyPairOf&lt;P::TargetChain&gt;&gt;&gt;,
 		source_to_target_headers_relay: <span class="prelude-ty">Option</span>&lt;
@@ -783,7 +783,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">fn </span>make_messages_delivery_call&lt;P: SubstrateMessageLane&gt;(
 	relayer_id_at_source: AccountIdOf&lt;P::SourceChain&gt;,
 	nonces: RangeInclusive&lt;MessageNonce&gt;,
-	proof: SubstrateMessagesProof&lt;P::SourceChain&gt;,
+	proof: SubstrateMessagesProof&lt;P::SourceChain, P::LaneId&gt;,
 	trace_call: bool,
 ) -&gt; CallOf&lt;P::TargetChain&gt; {
 	<span class="kw">let </span>messages_count = nonces.end() - nonces.start() + <span class="number">1</span>;

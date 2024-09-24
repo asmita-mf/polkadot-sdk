@@ -313,7 +313,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>bp_messages::{
 	target_chain::{DispatchMessage, DispatchMessageData},
-	LaneId, MessageKey,
+	MessageKey,
 };
 <span class="kw">use </span>codec::Encode;
 <span class="kw">use </span>frame_support::traits::Get;
@@ -357,11 +357,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="macro">vec!</span>[Trap(<span class="number">42</span>)].into()
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>dispatch_message(
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>dispatch_message&lt;LaneId: Encode&gt;(
 	lane_id: LaneId,
 	nonce: MessageNonce,
 	payload: Vec&lt;u8&gt;,
-) -&gt; DispatchMessage&lt;Vec&lt;u8&gt;&gt; {
+) -&gt; DispatchMessage&lt;Vec&lt;u8&gt;, LaneId&gt; {
 	DispatchMessage {
 		key: MessageKey { lane_id, nonce },
 		data: DispatchMessageData { payload: <span class="prelude-val">Ok</span>(payload) },

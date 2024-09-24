@@ -704,7 +704,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">pub use </span>chain::{
 	AccountIdOf, AccountPublicOf, BalanceOf, BlockNumberOf, Chain, EncodedOrDecodedCall, HashOf,
 	HasherOf, HeaderOf, NonceOf, Parachain, ParachainIdOf, SignatureOf, TransactionEraOf,
-	UnderlyingChainOf, UnderlyingChainProvider,
+	UnderlyingChainOf, UnderlyingChainProvider, __private,
 };
 <span class="kw">pub use </span>frame_support::storage::storage_prefix <span class="kw">as </span>storage_value_final_key;
 <span class="kw">use </span>num_traits::{CheckedAdd, CheckedSub, One, SaturatingAdd, Zero};
@@ -940,7 +940,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 }
 
-<span class="doccomment">/// Can be use to access the runtime storage key of a `StorageDoubleMap`.
+<span class="doccomment">/// Can be used to access the runtime storage key of a `StorageDoubleMap`.
 </span><span class="kw">pub trait </span>StorageDoubleMapKeyProvider {
 	<span class="doccomment">/// The name of the variable that holds the `StorageDoubleMap`.
 	</span><span class="kw">const </span>MAP_NAME: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str;

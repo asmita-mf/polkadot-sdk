@@ -442,10 +442,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="kw">use crate</span>::{Config, Pallet, LOG_TARGET};
 
-<span class="kw">use </span>bp_messages::{
-	target_chain::{DispatchMessage, MessageDispatch},
-	LaneId,
-};
+<span class="kw">use </span>bp_messages::target_chain::{DispatchMessage, MessageDispatch};
 <span class="kw">use </span>bp_runtime::messages::MessageDispatchResult;
 <span class="kw">use </span>bp_xcm_bridge_hub::{LocalXcmChannelManager, XcmAsPlainPayload};
 <span class="kw">use </span>codec::{Decode, Encode};
@@ -477,15 +474,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 {
 	<span class="kw">type </span>DispatchPayload = XcmAsPlainPayload;
 	<span class="kw">type </span>DispatchLevelResult = XcmBlobMessageDispatchResult;
+	<span class="kw">type </span>LaneId = T::LaneId;
 
-	<span class="kw">fn </span>is_active(lane: LaneId) -&gt; bool {
+	<span class="kw">fn </span>is_active(lane: <span class="self">Self</span>::LaneId) -&gt; bool {
 		Pallet::&lt;T, I&gt;::bridge_by_lane_id(<span class="kw-2">&amp;</span>lane)
 			.and_then(|(<span class="kw">_</span>, bridge)| bridge.bridge_origin_relative_location.try_as().cloned().ok())
 			.map(|recipient: Location| !T::LocalXcmChannelManager::is_congested(<span class="kw-2">&amp;</span>recipient))
 			.unwrap_or(<span class="bool-val">false</span>)
 	}
 
-	<span class="kw">fn </span>dispatch_weight(message: <span class="kw-2">&amp;mut </span>DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload&gt;) -&gt; Weight {
+	<span class="kw">fn </span>dispatch_weight(
+		message: <span class="kw-2">&amp;mut </span>DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload, <span class="self">Self</span>::LaneId&gt;,
+	) -&gt; Weight {
 		<span class="kw">match </span>message.data.payload {
 			<span class="prelude-val">Ok</span>(<span class="kw-2">ref </span>payload) =&gt; {
 				<span class="kw">let </span>payload_size = payload.encoded_size().saturated_into();
@@ -496,14 +496,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>dispatch(
-		message: DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload&gt;,
+		message: DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload, <span class="self">Self</span>::LaneId&gt;,
 	) -&gt; MessageDispatchResult&lt;<span class="self">Self</span>::DispatchLevelResult&gt; {
 		<span class="kw">let </span>payload = <span class="kw">match </span>message.data.payload {
 			<span class="prelude-val">Ok</span>(payload) =&gt; payload,
 			<span class="prelude-val">Err</span>(e) =&gt; {
 				<span class="macro">log::error!</span>(
 					target: LOG_TARGET,
-					<span class="string">"dispatch - payload error: {e:?} for lane_id: {} and message_nonce: {:?}"</span>,
+					<span class="string">"dispatch - payload error: {e:?} for lane_id: {:?} and message_nonce: {:?}"</span>,
 					message.key.lane_id,
 					message.key.nonce
 				);
@@ -517,7 +517,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
 				<span class="macro">log::debug!</span>(
 					target: LOG_TARGET,
-					<span class="string">"dispatch - `DispatchBlob::dispatch_blob` was ok for lane_id: {} and message_nonce: {:?}"</span>,
+					<span class="string">"dispatch - `DispatchBlob::dispatch_blob` was ok for lane_id: {:?} and message_nonce: {:?}"</span>,
 					message.key.lane_id,
 					message.key.nonce
 				);
@@ -526,7 +526,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="prelude-val">Err</span>(e) =&gt; {
 				<span class="macro">log::error!</span>(
 					target: LOG_TARGET,
-					<span class="string">"dispatch - `DispatchBlob::dispatch_blob` failed with error: {e:?} for lane_id: {} and message_nonce: {:?}"</span>,
+					<span class="string">"dispatch - `DispatchBlob::dispatch_blob` failed with error: {e:?} for lane_id: {:?} and message_nonce: {:?}"</span>,
 					message.key.lane_id,
 					message.key.nonce
 				);
@@ -542,13 +542,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 	<span class="kw">use crate</span>::{mock::<span class="kw-2">*</span>, Bridges, LaneToBridge, LanesManagerOf};
 
-	<span class="kw">use </span>bp_messages::{target_chain::DispatchMessageData, MessageKey};
+	<span class="kw">use </span>bp_messages::{target_chain::DispatchMessageData, LaneIdType, MessageKey};
 	<span class="kw">use </span>bp_xcm_bridge_hub::{Bridge, BridgeLocations, BridgeState};
 	<span class="kw">use </span>frame_support::assert_ok;
 	<span class="kw">use </span>pallet_bridge_messages::InboundLaneStorage;
 	<span class="kw">use </span>xcm_executor::traits::ConvertLocation;
 
-	<span class="kw">fn </span>bridge() -&gt; (Box&lt;BridgeLocations&gt;, LaneId) {
+	<span class="kw">fn </span>bridge() -&gt; (Box&lt;BridgeLocations&gt;, TestLaneIdType) {
 		<span class="kw">let </span>origin = OpenBridgeOrigin::sibling_parachain_origin();
 		<span class="kw">let </span>with = bridged_asset_hub_universal_location();
 		<span class="kw">let </span>locations =
@@ -613,16 +613,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		});
 	}
 
-	<span class="kw">fn </span>invalid_message() -&gt; DispatchMessage&lt;Vec&lt;u8&gt;&gt; {
+	<span class="kw">fn </span>invalid_message() -&gt; DispatchMessage&lt;Vec&lt;u8&gt;, TestLaneIdType&gt; {
 		DispatchMessage {
-			key: MessageKey { lane_id: LaneId::new(<span class="number">1</span>, <span class="number">2</span>), nonce: <span class="number">1 </span>},
+			key: MessageKey { lane_id: TestLaneIdType::try_new(<span class="number">1</span>, <span class="number">2</span>).unwrap(), nonce: <span class="number">1 </span>},
 			data: DispatchMessageData { payload: <span class="prelude-val">Err</span>(codec::Error::from(<span class="string">"test"</span>)) },
 		}
 	}
 
-	<span class="kw">fn </span>valid_message() -&gt; DispatchMessage&lt;Vec&lt;u8&gt;&gt; {
+	<span class="kw">fn </span>valid_message() -&gt; DispatchMessage&lt;Vec&lt;u8&gt;, TestLaneIdType&gt; {
 		DispatchMessage {
-			key: MessageKey { lane_id: LaneId::new(<span class="number">1</span>, <span class="number">2</span>), nonce: <span class="number">1 </span>},
+			key: MessageKey { lane_id: TestLaneIdType::try_new(<span class="number">1</span>, <span class="number">2</span>).unwrap(), nonce: <span class="number">1 </span>},
 			data: DispatchMessageData { payload: <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[<span class="number">42</span>]) },
 		}
 	}

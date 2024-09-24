@@ -525,6 +525,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#373" id="373">373</a>
 <a href="#374" id="374">374</a>
 <a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -547,7 +551,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>bp_messages::{
 	source_chain::FromBridgedChainMessagesDeliveryProof,
-	target_chain::FromBridgedChainMessagesProof, ChainWithMessages, LaneId, LaneState,
+	target_chain::FromBridgedChainMessagesProof, ChainWithMessages, LaneState,
 	UnrewardedRelayersState, Weight,
 };
 <span class="kw">use </span>bp_parachains::{RelayBlockHash, RelayBlockNumber};
@@ -570,7 +574,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		encode_all_messages, encode_lane_data, prepare_message_delivery_storage_proof,
 		prepare_messages_storage_proof,
 	},
-	BridgedChainOf,
+	BridgedChainOf, LaneIdOf,
 };
 <span class="kw">use </span>sp_runtime::SaturatedConversion;
 
@@ -580,7 +584,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	grandpa_justification: GrandpaJustification&lt;BridgedHeader&lt;Runtime, GPI&gt;&gt;,
 	parachain_heads: Vec&lt;(ParaId, ParaHash)&gt;,
 	para_heads_proof: ParaHeadsProof,
-	message_proof: FromBridgedChainMessagesProof&lt;ParaHash&gt;,
+	message_proof: FromBridgedChainMessagesProof&lt;ParaHash, LaneIdOf&lt;Runtime, MPI&gt;&gt;,
 	relayer_id_at_bridged_chain: InboundRelayerId&lt;Runtime, MPI&gt;,
 ) -&gt; pallet_utility::Call&lt;Runtime&gt;
 <span class="kw">where
@@ -633,7 +637,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	grandpa_justification: GrandpaJustification&lt;BridgedHeader&lt;Runtime, GPI&gt;&gt;,
 	parachain_heads: Vec&lt;(ParaId, ParaHash)&gt;,
 	para_heads_proof: ParaHeadsProof,
-	message_delivery_proof: FromBridgedChainMessagesDeliveryProof&lt;ParaHash&gt;,
+	message_delivery_proof: FromBridgedChainMessagesDeliveryProof&lt;ParaHash, LaneIdOf&lt;Runtime, MPI&gt;&gt;,
 	relayers_state: UnrewardedRelayersState,
 ) -&gt; pallet_utility::Call&lt;Runtime&gt;
 <span class="kw">where
@@ -681,7 +685,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Prepare a call with message proof.
 </span><span class="kw">pub fn </span>make_standalone_relayer_delivery_call&lt;Runtime, MPI&gt;(
-	message_proof: FromBridgedChainMessagesProof&lt;ParaHash&gt;,
+	message_proof: FromBridgedChainMessagesProof&lt;ParaHash, LaneIdOf&lt;Runtime, MPI&gt;&gt;,
 	relayer_id_at_bridged_chain: InboundRelayerId&lt;Runtime, MPI&gt;,
 ) -&gt; Runtime::RuntimeCall
 <span class="kw">where
@@ -701,7 +705,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Prepare a call with message delivery proof.
 </span><span class="kw">pub fn </span>make_standalone_relayer_confirmation_call&lt;Runtime, MPI&gt;(
-	message_delivery_proof: FromBridgedChainMessagesDeliveryProof&lt;ParaHash&gt;,
+	message_delivery_proof: FromBridgedChainMessagesDeliveryProof&lt;ParaHash, LaneIdOf&lt;Runtime, MPI&gt;&gt;,
 	relayers_state: UnrewardedRelayersState,
 ) -&gt; Runtime::RuntimeCall
 <span class="kw">where
@@ -722,6 +726,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	BridgedRelayChain,
 	BridgedParachain,
 	ThisChainWithMessages,
+	LaneId,
 &gt;(
 	lane_id: LaneId,
 	xcm_message: Xcm&lt;()&gt;,
@@ -737,19 +742,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	ParaHead,
 	Vec&lt;(ParaId, ParaHash)&gt;,
 	ParaHeadsProof,
-	FromBridgedChainMessagesProof&lt;ParaHash&gt;,
+	FromBridgedChainMessagesProof&lt;ParaHash, LaneId&gt;,
 )
 <span class="kw">where
 	</span>BridgedRelayChain:
 		bp_runtime::Chain&lt;Hash = RelayBlockHash, BlockNumber = RelayBlockNumber&gt; + ChainWithGrandpa,
 	BridgedParachain: bp_runtime::Chain&lt;Hash = ParaHash&gt; + Parachain,
 	ThisChainWithMessages: ChainWithMessages,
+	LaneId: Copy + Encode,
 {
 	<span class="comment">// prepare message
 	</span><span class="kw">let </span>message_payload = prepare_inbound_xcm(xcm_message, message_destination);
 	<span class="comment">// prepare para storage proof containing message
 	</span><span class="kw">let </span>(para_state_root, para_storage_proof) =
-		prepare_messages_storage_proof::&lt;BridgedParachain, ThisChainWithMessages&gt;(
+		prepare_messages_storage_proof::&lt;BridgedParachain, ThisChainWithMessages, LaneId&gt;(
 			lane_id,
 			message_nonce..=message_nonce,
 			<span class="prelude-val">None</span>,
@@ -793,6 +799,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	BridgedRelayChain,
 	BridgedParachain,
 	ThisChainWithMessages,
+	LaneId,
 &gt;(
 	lane_id: LaneId,
 	para_header_number: u32,
@@ -806,17 +813,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	ParaHead,
 	Vec&lt;(ParaId, ParaHash)&gt;,
 	ParaHeadsProof,
-	FromBridgedChainMessagesDeliveryProof&lt;ParaHash&gt;,
+	FromBridgedChainMessagesDeliveryProof&lt;ParaHash, LaneId&gt;,
 )
 <span class="kw">where
 	</span>BridgedRelayChain:
 		bp_runtime::Chain&lt;Hash = RelayBlockHash, BlockNumber = RelayBlockNumber&gt; + ChainWithGrandpa,
 	BridgedParachain: bp_runtime::Chain&lt;Hash = ParaHash&gt; + Parachain,
 	ThisChainWithMessages: ChainWithMessages,
+	LaneId: Copy + Encode,
 {
 	<span class="comment">// prepare para storage proof containing message delivery proof
 	</span><span class="kw">let </span>(para_state_root, para_storage_proof) =
-		prepare_message_delivery_storage_proof::&lt;BridgedParachain, ThisChainWithMessages&gt;(
+		prepare_message_delivery_storage_proof::&lt;BridgedParachain, ThisChainWithMessages, LaneId&gt;(
 			lane_id,
 			InboundLaneData {
 				state: LaneState::Opened,

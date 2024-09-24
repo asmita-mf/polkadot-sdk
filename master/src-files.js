@@ -157,7 +157,7 @@ var srcIndex = new Map(JSON.parse('[\
 ["pallet_bridge_grandpa",["",[],["benchmarking.rs","call_ext.rs","lib.rs","storage_types.rs","weights.rs","weights_ext.rs"]]],\
 ["pallet_bridge_messages",["",[["tests",[],["messages_generation.rs","mod.rs"]]],["benchmarking.rs","call_ext.rs","inbound_lane.rs","lanes_manager.rs","lib.rs","migration.rs","outbound_lane.rs","proofs.rs","weights.rs","weights_ext.rs"]]],\
 ["pallet_bridge_parachains",["",[],["benchmarking.rs","call_ext.rs","lib.rs","proofs.rs","weights.rs","weights_ext.rs"]]],\
-["pallet_bridge_relayers",["",[["extension",[],["grandpa_adapter.rs","messages_adapter.rs","mod.rs","parachain_adapter.rs","priority.rs"]]],["benchmarking.rs","lib.rs","payment_adapter.rs","stake_adapter.rs","weights.rs","weights_ext.rs"]]],\
+["pallet_bridge_relayers",["",[["extension",[],["grandpa_adapter.rs","messages_adapter.rs","mod.rs","parachain_adapter.rs","priority.rs"]]],["benchmarking.rs","lib.rs","migration.rs","payment_adapter.rs","stake_adapter.rs","weights.rs","weights_ext.rs"]]],\
 ["pallet_broker",["",[],["adapt_price.rs","benchmarking.rs","core_mask.rs","coretime_interface.rs","dispatchable_impls.rs","lib.rs","migration.rs","nonfungible_impl.rs","runtime_api.rs","tick_impls.rs","types.rs","utility_impls.rs","weights.rs"]]],\
 ["pallet_child_bounties",["",[],["benchmarking.rs","lib.rs","weights.rs"]]],\
 ["pallet_collator_selection",["",[],["benchmarking.rs","lib.rs","migration.rs","weights.rs"]]],\

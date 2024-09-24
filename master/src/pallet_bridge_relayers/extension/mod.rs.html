@@ -2494,6 +2494,34 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#2342" id="2342">2342</a>
 <a href="#2343" id="2343">2343</a>
 <a href="#2344" id="2344">2344</a>
+<a href="#2345" id="2345">2345</a>
+<a href="#2346" id="2346">2346</a>
+<a href="#2347" id="2347">2347</a>
+<a href="#2348" id="2348">2348</a>
+<a href="#2349" id="2349">2349</a>
+<a href="#2350" id="2350">2350</a>
+<a href="#2351" id="2351">2351</a>
+<a href="#2352" id="2352">2352</a>
+<a href="#2353" id="2353">2353</a>
+<a href="#2354" id="2354">2354</a>
+<a href="#2355" id="2355">2355</a>
+<a href="#2356" id="2356">2356</a>
+<a href="#2357" id="2357">2357</a>
+<a href="#2358" id="2358">2358</a>
+<a href="#2359" id="2359">2359</a>
+<a href="#2360" id="2360">2360</a>
+<a href="#2361" id="2361">2361</a>
+<a href="#2362" id="2362">2362</a>
+<a href="#2363" id="2363">2363</a>
+<a href="#2364" id="2364">2364</a>
+<a href="#2365" id="2365">2365</a>
+<a href="#2366" id="2366">2366</a>
+<a href="#2367" id="2367">2367</a>
+<a href="#2368" id="2368">2368</a>
+<a href="#2369" id="2369">2369</a>
+<a href="#2370" id="2370">2370</a>
+<a href="#2371" id="2371">2371</a>
+<a href="#2372" id="2372">2372</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -2532,7 +2560,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	CloneNoBound, DefaultNoBound, EqNoBound, PartialEqNoBound, RuntimeDebugNoBound,
 };
 <span class="kw">use </span>frame_system::Config <span class="kw">as </span>SystemConfig;
-<span class="kw">use </span>pallet_bridge_messages::{CallHelper <span class="kw">as </span>MessagesCallHelper, Config <span class="kw">as </span>BridgeMessagesConfig};
+<span class="kw">use </span>pallet_bridge_messages::{
+	CallHelper <span class="kw">as </span>MessagesCallHelper, Config <span class="kw">as </span>BridgeMessagesConfig, LaneIdOf,
+};
 <span class="kw">use </span>pallet_transaction_payment::{
 	Config <span class="kw">as </span>TransactionPaymentConfig, OnChargeTransaction, Pallet <span class="kw">as </span>TransactionPaymentPallet,
 };
@@ -2558,15 +2588,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Data that is crafted in `pre_dispatch` method and used at `post_dispatch`.
 </span><span class="attr">#[cfg_attr(test, derive(Debug, PartialEq))]
-</span><span class="kw">pub struct </span>PreDispatchData&lt;AccountId, RemoteGrandpaChainBlockNumber: Debug&gt; {
+</span><span class="kw">pub struct </span>PreDispatchData&lt;
+	AccountId,
+	RemoteGrandpaChainBlockNumber: Debug,
+	LaneId: Clone + Copy + Debug,
+&gt; {
 	<span class="doccomment">/// Transaction submitter (relayer) account.
 	</span>relayer: AccountId,
 	<span class="doccomment">/// Type of the call.
-	</span>call_info: ExtensionCallInfo&lt;RemoteGrandpaChainBlockNumber&gt;,
+	</span>call_info: ExtensionCallInfo&lt;RemoteGrandpaChainBlockNumber, LaneId&gt;,
 }
 
-<span class="kw">impl</span>&lt;AccountId, RemoteGrandpaChainBlockNumber: Debug&gt;
-	PreDispatchData&lt;AccountId, RemoteGrandpaChainBlockNumber&gt;
+<span class="kw">impl</span>&lt;AccountId, RemoteGrandpaChainBlockNumber: Debug, LaneId: Clone + Copy + Debug&gt;
+	PreDispatchData&lt;AccountId, RemoteGrandpaChainBlockNumber, LaneId&gt;
 {
 	<span class="doccomment">/// Returns mutable reference to pre-dispatch `finality_target` sent to the
 	/// `SubmitFinalityProof` call.
@@ -2584,13 +2618,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// The actions on relayer account that need to be performed because of his actions.
 </span><span class="attr">#[derive(RuntimeDebug, PartialEq)]
-</span><span class="kw">pub enum </span>RelayerAccountAction&lt;AccountId, Reward&gt; {
+</span><span class="kw">pub enum </span>RelayerAccountAction&lt;AccountId, Reward, LaneId&gt; {
 	<span class="doccomment">/// Do nothing with relayer account.
 	</span><span class="prelude-val">None</span>,
 	<span class="doccomment">/// Reward the relayer.
-	</span>Reward(AccountId, RewardsAccountParams, Reward),
+	</span>Reward(AccountId, RewardsAccountParams&lt;LaneId&gt;, Reward),
 	<span class="doccomment">/// Slash the relayer.
-	</span>Slash(AccountId, RewardsAccountParams),
+	</span>Slash(AccountId, RewardsAccountParams&lt;LaneId&gt;),
 }
 
 <span class="doccomment">/// A signed extension, built around `pallet-bridge-relayers`.
@@ -2608,19 +2642,22 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	RuntimeDebugNoBound,
 	TypeInfo,
 )]
-#[scale_info(skip_type_params(Runtime, Config))]
-</span><span class="kw">pub struct </span>BridgeRelayersSignedExtension&lt;Runtime, Config&gt;(PhantomData&lt;(Runtime, Config)&gt;);
+#[scale_info(skip_type_params(Runtime, Config, LaneId))]
+</span><span class="kw">pub struct </span>BridgeRelayersSignedExtension&lt;Runtime, Config, LaneId&gt;(
+	PhantomData&lt;(Runtime, Config, LaneId)&gt;,
+);
 
-<span class="kw">impl</span>&lt;R, C&gt; BridgeRelayersSignedExtension&lt;R, C&gt;
+<span class="kw">impl</span>&lt;R, C, LaneId&gt; BridgeRelayersSignedExtension&lt;R, C, LaneId&gt;
 <span class="kw">where
 	</span><span class="self">Self</span>: <span class="lifetime">'static </span>+ Send + Sync,
-	R: RelayersConfig
-		+ BridgeMessagesConfig&lt;C::BridgeMessagesPalletInstance&gt;
+	R: RelayersConfig&lt;LaneId = LaneId&gt;
+		+ BridgeMessagesConfig&lt;C::BridgeMessagesPalletInstance, LaneId = LaneId&gt;
 		+ TransactionPaymentConfig,
-	C: ExtensionConfig&lt;Runtime = R, Reward = R::Reward&gt;,
+	C: ExtensionConfig&lt;Runtime = R, LaneId = LaneId&gt;,
 	R::RuntimeCall: Dispatchable&lt;Info = DispatchInfo, PostInfo = PostDispatchInfo&gt;,
 	&lt;R <span class="kw">as </span>TransactionPaymentConfig&gt;::OnChargeTransaction:
 		OnChargeTransaction&lt;R, Balance = R::Reward&gt;,
+	LaneId: Clone + Copy + Decode + Encode + Debug + TypeInfo,
 {
 	<span class="doccomment">/// Returns number of bundled messages `Some(_)`, if the given call info is a:
 	///
@@ -2632,7 +2669,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	/// virtually boosted. The relayer registration (we only boost priority for registered
 	/// relayer transactions) must be checked outside.
 	</span><span class="kw">fn </span>bundled_messages_for_priority_boost(
-		call_info: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>ExtensionCallInfo&lt;C::RemoteGrandpaChainBlockNumber&gt;&gt;,
+		call_info: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>ExtensionCallInfo&lt;C::RemoteGrandpaChainBlockNumber, LaneId&gt;&gt;,
 	) -&gt; <span class="prelude-ty">Option</span>&lt;MessageNonce&gt; {
 		<span class="comment">// we only boost priority of message delivery transactions
 		</span><span class="kw">let </span>parsed_call = <span class="kw">match </span>call_info {
@@ -2656,12 +2693,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Given post-dispatch information, analyze the outcome of relayer call and return
 	/// actions that need to be performed on relayer account.
 	</span><span class="kw">fn </span>analyze_call_result(
-		pre: <span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;R::AccountId, C::RemoteGrandpaChainBlockNumber&gt;&gt;&gt;,
+		pre: <span class="prelude-ty">Option</span>&lt;
+			<span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;R::AccountId, C::RemoteGrandpaChainBlockNumber, LaneId&gt;&gt;,
+		&gt;,
 		info: <span class="kw-2">&amp;</span>DispatchInfo,
 		post_info: <span class="kw-2">&amp;</span>PostDispatchInfo,
 		len: usize,
 		result: <span class="kw-2">&amp;</span>DispatchResult,
-	) -&gt; RelayerAccountAction&lt;R::AccountId, R::Reward&gt; {
+	) -&gt; RelayerAccountAction&lt;R::AccountId, R::Reward, LaneId&gt; {
 		<span class="comment">// We don't refund anything for transactions that we don't support.
 		</span><span class="kw">let </span>(relayer, call_info) = <span class="kw">match </span>pre {
 			<span class="prelude-val">Some</span>(<span class="prelude-val">Some</span>(pre)) =&gt; (pre.relayer, pre.call_info),
@@ -2759,22 +2798,23 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 }
 
-<span class="kw">impl</span>&lt;R, C&gt; SignedExtension <span class="kw">for </span>BridgeRelayersSignedExtension&lt;R, C&gt;
+<span class="kw">impl</span>&lt;R, C, LaneId&gt; SignedExtension <span class="kw">for </span>BridgeRelayersSignedExtension&lt;R, C, LaneId&gt;
 <span class="kw">where
 	</span><span class="self">Self</span>: <span class="lifetime">'static </span>+ Send + Sync,
-	R: RelayersConfig
-		+ BridgeMessagesConfig&lt;C::BridgeMessagesPalletInstance&gt;
+	R: RelayersConfig&lt;LaneId = LaneId&gt;
+		+ BridgeMessagesConfig&lt;C::BridgeMessagesPalletInstance, LaneId = LaneId&gt;
 		+ TransactionPaymentConfig,
-	C: ExtensionConfig&lt;Runtime = R, Reward = R::Reward&gt;,
+	C: ExtensionConfig&lt;Runtime = R, LaneId = LaneId&gt;,
 	R::RuntimeCall: Dispatchable&lt;Info = DispatchInfo, PostInfo = PostDispatchInfo&gt;,
 	&lt;R <span class="kw">as </span>TransactionPaymentConfig&gt;::OnChargeTransaction:
 		OnChargeTransaction&lt;R, Balance = R::Reward&gt;,
+	LaneId: Clone + Copy + Decode + Encode + Debug + TypeInfo,
 {
 	<span class="kw">const </span>IDENTIFIER: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = C::IdProvider::STR;
 	<span class="kw">type </span>AccountId = R::AccountId;
 	<span class="kw">type </span>Call = R::RuntimeCall;
 	<span class="kw">type </span>AdditionalSigned = ();
-	<span class="kw">type </span>Pre = <span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;R::AccountId, C::RemoteGrandpaChainBlockNumber&gt;&gt;;
+	<span class="kw">type </span>Pre = <span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;R::AccountId, C::RemoteGrandpaChainBlockNumber, LaneId&gt;&gt;;
 
 	<span class="kw">fn </span>additional_signed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), TransactionValidityError&gt; {
 		<span class="prelude-val">Ok</span>(())
@@ -2888,19 +2928,23 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="doccomment">/// Verify that the messages pallet call, supported by extension has succeeded.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>verify_messages_call_succeeded&lt;C, MI&gt;(
-	call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;C::RemoteGrandpaChainBlockNumber&gt;,
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>verify_messages_call_succeeded&lt;C&gt;(
+	call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;
+		C::RemoteGrandpaChainBlockNumber,
+		LaneIdOf&lt;C::Runtime, C::BridgeMessagesPalletInstance&gt;,
+	&gt;,
 	_call_data: <span class="kw-2">&amp;mut </span>ExtensionCallData,
 	relayer: <span class="kw-2">&amp;</span>&lt;C::Runtime <span class="kw">as </span>SystemConfig&gt;::AccountId,
 ) -&gt; bool
 <span class="kw">where
 	</span>C: ExtensionConfig,
-	MI: <span class="lifetime">'static</span>,
-	C::Runtime: BridgeMessagesConfig&lt;MI&gt;,
+	C::Runtime: BridgeMessagesConfig&lt;C::BridgeMessagesPalletInstance&gt;,
 {
 	<span class="kw">let </span>messages_call = call_info.messages_call_info();
 
-	<span class="kw">if </span>!MessagesCallHelper::&lt;C::Runtime, MI&gt;::was_successful(messages_call) {
+	<span class="kw">if </span>!MessagesCallHelper::&lt;C::Runtime, C::BridgeMessagesPalletInstance&gt;::was_successful(
+		messages_call,
+	) {
 		<span class="macro">log::trace!</span>(
 			target: LOG_TARGET,
 			<span class="string">"{}.{:?}: relayer {:?} has submitted invalid messages call"</span>,
@@ -2923,9 +2967,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">use </span>bp_messages::{
 		source_chain::FromBridgedChainMessagesDeliveryProof,
 		target_chain::FromBridgedChainMessagesProof, BaseMessagesProofInfo, DeliveredMessages,
-		InboundLaneData, LaneId, MessageNonce, MessagesCallInfo, MessagesOperatingMode,
-		OutboundLaneData, ReceiveMessagesDeliveryProofInfo, ReceiveMessagesProofInfo,
-		UnrewardedRelayer, UnrewardedRelayerOccupation, UnrewardedRelayersState,
+		InboundLaneData, MessageNonce, MessagesCallInfo, MessagesOperatingMode, OutboundLaneData,
+		ReceiveMessagesDeliveryProofInfo, ReceiveMessagesProofInfo, UnrewardedRelayer,
+		UnrewardedRelayerOccupation, UnrewardedRelayersState,
 	};
 	<span class="kw">use </span>bp_parachains::{BestParaHeadHash, ParaInfo, SubmitParachainHeadsInfo};
 	<span class="kw">use </span>bp_polkadot_core::parachains::{ParaHeadsProof, ParaId};
@@ -2950,17 +2994,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="macro">parameter_types! </span>{
 		TestParachain: u32 = BridgedUnderlyingParachain::PARACHAIN_ID;
-		<span class="kw">pub </span>MsgProofsRewardsAccount: RewardsAccountParams = RewardsAccountParams::new(
+		<span class="kw">pub </span>MsgProofsRewardsAccount: RewardsAccountParams&lt;TestLaneIdType&gt; = RewardsAccountParams::new(
 			test_lane_id(),
 			TEST_BRIDGED_CHAIN_ID,
 			RewardsAccountOwner::ThisChain,
 		);
-		<span class="kw">pub </span>MsgDeliveryProofsRewardsAccount: RewardsAccountParams = RewardsAccountParams::new(
+		<span class="kw">pub </span>MsgDeliveryProofsRewardsAccount: RewardsAccountParams&lt;TestLaneIdType&gt; = RewardsAccountParams::new(
 			test_lane_id(),
 			TEST_BRIDGED_CHAIN_ID,
 			RewardsAccountOwner::BridgedChain,
 		);
-		<span class="kw">pub </span>TestLaneId: LaneId = test_lane_id();
 	}
 
 	<span class="macro">bp_runtime::generate_static_str_provider!</span>(TestGrandpaExtension);
@@ -2973,31 +3016,31 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		RuntimeWithUtilityPallet&lt;TestRuntime&gt;,
 		(),
 		(),
+		(),
 		ConstU64&lt;<span class="number">1</span>&gt;,
 	&gt;;
 	<span class="kw">type </span>TestGrandpaExtension =
-		BridgeRelayersSignedExtension&lt;TestRuntime, TestGrandpaExtensionConfig&gt;;
+		BridgeRelayersSignedExtension&lt;TestRuntime, TestGrandpaExtensionConfig, TestLaneIdType&gt;;
 	<span class="kw">type </span>TestExtensionConfig = parachain_adapter::WithParachainExtensionConfig&lt;
 		StrTestExtension,
 		TestRuntime,
 		RuntimeWithUtilityPallet&lt;TestRuntime&gt;,
 		(),
 		(),
+		(),
 		ConstU64&lt;<span class="number">1</span>&gt;,
 	&gt;;
-	<span class="kw">type </span>TestExtension = BridgeRelayersSignedExtension&lt;TestRuntime, TestExtensionConfig&gt;;
+	<span class="kw">type </span>TestExtension =
+		BridgeRelayersSignedExtension&lt;TestRuntime, TestExtensionConfig, TestLaneIdType&gt;;
 	<span class="kw">type </span>TestMessagesExtensionConfig = messages_adapter::WithMessagesExtensionConfig&lt;
 		StrTestMessagesExtension,
 		TestRuntime,
 		(),
+		(),
 		ConstU64&lt;<span class="number">1</span>&gt;,
 	&gt;;
 	<span class="kw">type </span>TestMessagesExtension =
-		BridgeRelayersSignedExtension&lt;TestRuntime, TestMessagesExtensionConfig&gt;;
-
-	<span class="kw">fn </span>test_lane_id() -&gt; LaneId {
-		LaneId::new(<span class="number">1</span>, <span class="number">2</span>)
-	}
+		BridgeRelayersSignedExtension&lt;TestRuntime, TestMessagesExtensionConfig, TestLaneIdType&gt;;
 
 	<span class="kw">fn </span>initial_balance_of_relayer_account_at_this_chain() -&gt; ThisChainBalance {
 		<span class="kw">let </span>test_stake: ThisChainBalance = Stake::get();
@@ -3291,7 +3334,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>all_finality_pre_dispatch_data(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		PreDispatchData {
 			relayer: relayer_account_at_this_chain(),
 			call_info: ExtensionCallInfo::AllFinalityAndMsgs(
@@ -3328,14 +3371,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="attr">#[cfg(test)]
 	</span><span class="kw">fn </span>all_finality_pre_dispatch_data_ex(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		<span class="kw">let </span><span class="kw-2">mut </span>data = all_finality_pre_dispatch_data();
 		data.submit_finality_proof_info_mut().unwrap().current_set_id = <span class="prelude-val">Some</span>(TEST_GRANDPA_SET_ID);
 		data
 	}
 
 	<span class="kw">fn </span>all_finality_confirmation_pre_dispatch_data(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		PreDispatchData {
 			relayer: relayer_account_at_this_chain(),
 			call_info: ExtensionCallInfo::AllFinalityAndMsgs(
@@ -3365,14 +3408,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>all_finality_confirmation_pre_dispatch_data_ex(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		<span class="kw">let </span><span class="kw-2">mut </span>data = all_finality_confirmation_pre_dispatch_data();
 		data.submit_finality_proof_info_mut().unwrap().current_set_id = <span class="prelude-val">Some</span>(TEST_GRANDPA_SET_ID);
 		data
 	}
 
 	<span class="kw">fn </span>relay_finality_pre_dispatch_data(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		PreDispatchData {
 			relayer: relayer_account_at_this_chain(),
 			call_info: ExtensionCallInfo::RelayFinalityAndMsgs(
@@ -3402,14 +3445,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>relay_finality_pre_dispatch_data_ex(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		<span class="kw">let </span><span class="kw-2">mut </span>data = relay_finality_pre_dispatch_data();
 		data.submit_finality_proof_info_mut().unwrap().current_set_id = <span class="prelude-val">Some</span>(TEST_GRANDPA_SET_ID);
 		data
 	}
 
 	<span class="kw">fn </span>relay_finality_confirmation_pre_dispatch_data(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		PreDispatchData {
 			relayer: relayer_account_at_this_chain(),
 			call_info: ExtensionCallInfo::RelayFinalityAndMsgs(
@@ -3433,14 +3476,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>relay_finality_confirmation_pre_dispatch_data_ex(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		<span class="kw">let </span><span class="kw-2">mut </span>data = relay_finality_confirmation_pre_dispatch_data();
 		data.submit_finality_proof_info_mut().unwrap().current_set_id = <span class="prelude-val">Some</span>(TEST_GRANDPA_SET_ID);
 		data
 	}
 
 	<span class="kw">fn </span>parachain_finality_pre_dispatch_data(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		PreDispatchData {
 			relayer: relayer_account_at_this_chain(),
 			call_info: ExtensionCallInfo::ParachainFinalityAndMsgs(
@@ -3468,7 +3511,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>parachain_finality_confirmation_pre_dispatch_data(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		PreDispatchData {
 			relayer: relayer_account_at_this_chain(),
 			call_info: ExtensionCallInfo::ParachainFinalityAndMsgs(
@@ -3490,7 +3533,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>delivery_pre_dispatch_data&lt;RemoteGrandpaChainBlockNumber: Debug&gt;(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, RemoteGrandpaChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, RemoteGrandpaChainBlockNumber, TestLaneIdType&gt; {
 		PreDispatchData {
 			relayer: relayer_account_at_this_chain(),
 			call_info: ExtensionCallInfo::Msgs(MessagesCallInfo::ReceiveMessagesProof(
@@ -3512,7 +3555,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>confirmation_pre_dispatch_data&lt;RemoteGrandpaChainBlockNumber: Debug&gt;(
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, RemoteGrandpaChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, RemoteGrandpaChainBlockNumber, TestLaneIdType&gt; {
 		PreDispatchData {
 			relayer: relayer_account_at_this_chain(),
 			call_info: ExtensionCallInfo::Msgs(MessagesCallInfo::ReceiveMessagesDeliveryProof(
@@ -3526,9 +3569,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>set_bundled_range_end(
-		<span class="kw-2">mut </span>pre_dispatch_data: PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt;,
+		<span class="kw-2">mut </span>pre_dispatch_data: PreDispatchData&lt;
+			ThisChainAccountId,
+			BridgedChainBlockNumber,
+			TestLaneIdType,
+		&gt;,
 		end: MessageNonce,
-	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt; {
+	) -&gt; PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt; {
 		<span class="kw">let </span>msg_info = <span class="kw">match </span>pre_dispatch_data.call_info {
 			ExtensionCallInfo::AllFinalityAndMsgs(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw-2">ref mut </span>info) =&gt; info,
 			ExtensionCallInfo::RelayFinalityAndMsgs(<span class="kw">_</span>, <span class="kw-2">ref mut </span>info) =&gt; info,
@@ -3568,7 +3615,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">fn </span>run_pre_dispatch(
 		call: RuntimeCall,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;
-		<span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt;&gt;,
+		<span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt;&gt;,
 		TransactionValidityError,
 	&gt; {
 		sp_tracing::try_init_simple();
@@ -3579,7 +3626,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">fn </span>run_grandpa_pre_dispatch(
 		call: RuntimeCall,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;
-		<span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt;&gt;,
+		<span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt;&gt;,
 		TransactionValidityError,
 	&gt; {
 		<span class="kw">let </span>extension: TestGrandpaExtension = BridgeRelayersSignedExtension(PhantomData);
@@ -3588,7 +3635,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">fn </span>run_messages_pre_dispatch(
 		call: RuntimeCall,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;ThisChainAccountId, ()&gt;&gt;, TransactionValidityError&gt; {
+	) -&gt; <span class="prelude-ty">Result</span>&lt;
+		<span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;ThisChainAccountId, (), TestLaneIdType&gt;&gt;,
+		TransactionValidityError,
+	&gt; {
 		<span class="kw">let </span>extension: TestMessagesExtension = BridgeRelayersSignedExtension(PhantomData);
 		extension.pre_dispatch(<span class="kw-2">&amp;</span>relayer_account_at_this_chain(), <span class="kw-2">&amp;</span>call, <span class="kw-2">&amp;</span>DispatchInfo::default(), <span class="number">0</span>)
 	}
@@ -3609,7 +3659,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>run_post_dispatch(
-		pre_dispatch_data: <span class="prelude-ty">Option</span>&lt;PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt;&gt;,
+		pre_dispatch_data: <span class="prelude-ty">Option</span>&lt;
+			PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber, TestLaneIdType&gt;,
+		&gt;,
 		dispatch_result: DispatchResult,
 	) {
 		<span class="kw">let </span>post_dispatch_result = TestExtension::post_dispatch(
@@ -4382,9 +4434,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>run_analyze_call_result(
-		pre_dispatch_data: PreDispatchData&lt;ThisChainAccountId, BridgedChainBlockNumber&gt;,
+		pre_dispatch_data: PreDispatchData&lt;
+			ThisChainAccountId,
+			BridgedChainBlockNumber,
+			TestLaneIdType,
+		&gt;,
 		dispatch_result: DispatchResult,
-	) -&gt; RelayerAccountAction&lt;ThisChainAccountId, ThisChainBalance&gt; {
+	) -&gt; RelayerAccountAction&lt;ThisChainAccountId, ThisChainBalance, TestLaneIdType&gt; {
 		TestExtension::analyze_call_result(
 			<span class="prelude-val">Some</span>(<span class="prelude-val">Some</span>(pre_dispatch_data)),
 			<span class="kw-2">&amp;</span>dispatch_info(),
@@ -4814,7 +4870,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				.unwrap();
 
 			<span class="comment">// allow empty message delivery transactions
-			</span><span class="kw">let </span>lane_id = TestLaneId::get();
+			</span><span class="kw">let </span>lane_id = test_lane_id();
 			<span class="kw">let </span>in_lane_data = InboundLaneData {
 				last_confirmed_nonce: <span class="number">0</span>,
 				relayers: <span class="macro">vec!</span>[UnrewardedRelayer {

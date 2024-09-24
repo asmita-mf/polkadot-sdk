@@ -846,6 +846,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#694" id="694">694</a>
 <a href="#695" id="695">695</a>
 <a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -867,7 +877,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="attr">#![warn(missing_docs)]
 #![cfg_attr(not(feature = <span class="string">"std"</span>), no_std)]
 
-</span><span class="kw">use </span>bp_messages::LaneId;
+</span><span class="kw">use </span>bp_messages::LaneIdType;
 <span class="kw">use </span>bp_runtime::{AccountIdOf, BalanceOf, Chain};
 <span class="kw">pub use </span>call_info::XcmBridgeHubCall;
 <span class="kw">use </span>codec::{Decode, Encode, MaxEncodedLen};
@@ -911,7 +921,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	Ord,
 	PartialOrd,
 	PartialEq,
-	RuntimeDebug,
 	TypeInfo,
 	MaxEncodedLen,
 	Serialize,
@@ -935,6 +944,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				.using_encoded(blake2_256)
 				.into(),
 		)
+	}
+}
+
+<span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span>BridgeId {
+	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; core::fmt::Result {
+		core::fmt::Debug::fmt(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, f)
 	}
 }
 
@@ -997,8 +1012,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="attr">#[derive(
 	CloneNoBound, Decode, Encode, Eq, PartialEqNoBound, TypeInfo, MaxEncodedLen, RuntimeDebugNoBound,
 )]
-#[scale_info(skip_type_params(ThisChain))]
-</span><span class="kw">pub struct </span>Bridge&lt;ThisChain: Chain&gt; {
+#[scale_info(skip_type_params(ThisChain, LaneId))]
+</span><span class="kw">pub struct </span>Bridge&lt;ThisChain: Chain, LaneId: LaneIdType&gt; {
 	<span class="doccomment">/// Relative location of the bridge origin chain. This is expected to be **convertible** to the
 	/// `latest` XCM, so the check and migration needs to be ensured.
 	</span><span class="kw">pub </span>bridge_origin_relative_location: Box&lt;VersionedLocation&gt;,
@@ -1052,6 +1067,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span>UnsupportedDestinationLocation,
 	<span class="doccomment">/// The version of XCM location argument is unsupported.
 	</span>UnsupportedXcmVersion,
+	<span class="doccomment">/// The `LaneIdType` generator is not supported.
+	</span>UnsupportedLaneIdType,
 }
 
 <span class="kw">impl </span>BridgeLocations {
@@ -1166,7 +1183,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Generates the exact same `LaneId` on the both bridge hubs.
 	///
 	/// Note: Use this **only** when opening a new bridge.
-	</span><span class="kw">pub fn </span>calculate_lane_id(
+	</span><span class="kw">pub fn </span>calculate_lane_id&lt;LaneId: LaneIdType&gt;(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		xcm_version: XcmVersion,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;LaneId, BridgeLocationsError&gt; {
@@ -1189,10 +1206,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				.into_version(xcm_version)
 				.map_err(|<span class="kw">_</span>| BridgeLocationsError::UnsupportedXcmVersion);
 
-		<span class="prelude-val">Ok</span>(LaneId::new(
+		LaneId::try_new(
 			EncodedVersionedInteriorLocation(universal_location1.encode()),
 			EncodedVersionedInteriorLocation(universal_location2.encode()),
-		))
+		)
+		.map_err(|<span class="kw">_</span>| BridgeLocationsError::UnsupportedLaneIdType)
 	}
 }
 
@@ -1438,6 +1456,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>calculate_lane_id_works() {
+		<span class="kw">type </span>TestLaneId = bp_messages::HashedLaneId;
+
 		<span class="kw">let </span>from_local_to_remote = run_successful_test(SuccessfulTest {
 			here_universal_location: [GlobalConsensus(LOCAL_NETWORK), Parachain(LOCAL_BRIDGE_HUB)]
 				.into(),
@@ -1479,12 +1499,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		});
 
 		<span class="macro">assert_ne!</span>(
-			from_local_to_remote.calculate_lane_id(xcm::latest::VERSION),
-			from_remote_to_local.calculate_lane_id(xcm::latest::VERSION - <span class="number">1</span>),
+			from_local_to_remote.calculate_lane_id::&lt;TestLaneId&gt;(xcm::latest::VERSION),
+			from_remote_to_local.calculate_lane_id::&lt;TestLaneId&gt;(xcm::latest::VERSION - <span class="number">1</span>),
 		);
 		<span class="macro">assert_eq!</span>(
-			from_local_to_remote.calculate_lane_id(xcm::latest::VERSION),
-			from_remote_to_local.calculate_lane_id(xcm::latest::VERSION),
+			from_local_to_remote.calculate_lane_id::&lt;TestLaneId&gt;(xcm::latest::VERSION),
+			from_remote_to_local.calculate_lane_id::&lt;TestLaneId&gt;(xcm::latest::VERSION),
 		);
 	}
 

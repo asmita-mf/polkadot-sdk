@@ -341,6 +341,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#189" id="189">189</a>
 <a href="#190" id="190">190</a>
 <a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -364,6 +370,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>bp_messages::MessagesCallInfo;
 <span class="kw">use </span>bp_parachains::SubmitParachainHeadsInfo;
 <span class="kw">use </span>bp_runtime::StaticStrProvider;
+<span class="kw">use </span>codec::{Decode, Encode};
 <span class="kw">use </span>frame_support::{
 	dispatch::CallableCallFor, traits::IsSubType, weights::Weight, RuntimeDebugNoBound,
 };
@@ -378,25 +385,28 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Type of the call that the signed extension recognizes.
 </span><span class="attr">#[derive(PartialEq, RuntimeDebugNoBound)]
-</span><span class="kw">pub enum </span>ExtensionCallInfo&lt;RemoteGrandpaChainBlockNumber: Debug&gt; {
+</span><span class="kw">pub enum </span>ExtensionCallInfo&lt;RemoteGrandpaChainBlockNumber: Debug, LaneId: Clone + Copy + Debug&gt; {
 	<span class="doccomment">/// Relay chain finality + parachain finality + message delivery/confirmation calls.
 	</span>AllFinalityAndMsgs(
 		SubmitFinalityProofInfo&lt;RemoteGrandpaChainBlockNumber&gt;,
 		SubmitParachainHeadsInfo,
-		MessagesCallInfo,
+		MessagesCallInfo&lt;LaneId&gt;,
 	),
 	<span class="doccomment">/// Relay chain finality + message delivery/confirmation calls.
-	</span>RelayFinalityAndMsgs(SubmitFinalityProofInfo&lt;RemoteGrandpaChainBlockNumber&gt;, MessagesCallInfo),
+	</span>RelayFinalityAndMsgs(
+		SubmitFinalityProofInfo&lt;RemoteGrandpaChainBlockNumber&gt;,
+		MessagesCallInfo&lt;LaneId&gt;,
+	),
 	<span class="doccomment">/// Parachain finality + message delivery/confirmation calls.
 	///
 	/// This variant is used only when bridging with parachain.
-	</span>ParachainFinalityAndMsgs(SubmitParachainHeadsInfo, MessagesCallInfo),
+	</span>ParachainFinalityAndMsgs(SubmitParachainHeadsInfo, MessagesCallInfo&lt;LaneId&gt;),
 	<span class="doccomment">/// Standalone message delivery/confirmation call.
-	</span>Msgs(MessagesCallInfo),
+	</span>Msgs(MessagesCallInfo&lt;LaneId&gt;),
 }
 
-<span class="kw">impl</span>&lt;RemoteGrandpaChainBlockNumber: Clone + Copy + Debug&gt;
-	ExtensionCallInfo&lt;RemoteGrandpaChainBlockNumber&gt;
+<span class="kw">impl</span>&lt;RemoteGrandpaChainBlockNumber: Clone + Copy + Debug, LaneId: Clone + Copy + Debug&gt;
+	ExtensionCallInfo&lt;RemoteGrandpaChainBlockNumber, LaneId&gt;
 {
 	<span class="doccomment">/// Returns true if call is a message delivery call (with optional finality calls).
 	</span><span class="kw">pub fn </span>is_receive_messages_proof_call(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
@@ -427,7 +437,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="doccomment">/// Returns the pre-dispatch `ReceiveMessagesProofInfo`.
-	</span><span class="kw">pub fn </span>messages_call_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>MessagesCallInfo {
+	</span><span class="kw">pub fn </span>messages_call_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>MessagesCallInfo&lt;LaneId&gt; {
 		<span class="kw">match </span><span class="self">self </span>{
 			<span class="self">Self</span>::AllFinalityAndMsgs(<span class="kw">_</span>, <span class="kw">_</span>, info) =&gt; info,
 			<span class="self">Self</span>::RelayFinalityAndMsgs(<span class="kw">_</span>, info) =&gt; info,
@@ -462,25 +472,27 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Runtime that optionally supports batched calls. We assume that batched call
 	/// succeeds if and only if all of its nested calls succeed.
 	</span><span class="kw">type </span>Runtime: frame_system::Config;
+	<span class="doccomment">/// Relayers pallet instance.
+	</span><span class="kw">type </span>BridgeRelayersPalletInstance: <span class="lifetime">'static</span>;
 	<span class="doccomment">/// Messages pallet instance.
 	</span><span class="kw">type </span>BridgeMessagesPalletInstance: <span class="lifetime">'static</span>;
 	<span class="doccomment">/// Additional priority that is added to base message delivery transaction priority
 	/// for every additional bundled message.
 	</span><span class="kw">type </span>PriorityBoostPerMessage: Get&lt;TransactionPriority&gt;;
-	<span class="doccomment">/// Type of reward, that the `pallet-bridge-relayers` is using.
-	</span><span class="kw">type </span>Reward;
 	<span class="doccomment">/// Block number for the remote **GRANDPA chain**. Mind that this chain is not
 	/// necessarily the chain that we are bridging with. If we are bridging with
 	/// parachain, it must be its parent relay chain. If we are bridging with the
 	/// GRANDPA chain, it must be it.
 	</span><span class="kw">type </span>RemoteGrandpaChainBlockNumber: Clone + Copy + Debug;
+	<span class="doccomment">/// Lane identifier type.
+	</span><span class="kw">type </span>LaneId: Clone + Copy + Decode + Encode + Debug;
 
 	<span class="doccomment">/// Given runtime call, check if it is supported by the signed extension. Additionally,
 	/// check if call (or any of batched calls) are obsolete.
 	</span><span class="kw">fn </span>parse_and_check_for_obsolete_call(
 		call: <span class="kw-2">&amp;</span>&lt;<span class="self">Self</span>::Runtime <span class="kw">as </span>SystemConfig&gt;::RuntimeCall,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;
-		<span class="prelude-ty">Option</span>&lt;ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber&gt;&gt;,
+		<span class="prelude-ty">Option</span>&lt;ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber, <span class="self">Self</span>::LaneId&gt;&gt;,
 		TransactionValidityError,
 	&gt;;
 
@@ -492,7 +504,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Given runtime call info, check that this call has been successful and has updated
 	/// runtime storage accordingly.
 	</span><span class="kw">fn </span>check_call_result(
-		call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber&gt;,
+		call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber, <span class="self">Self</span>::LaneId&gt;,
 		call_data: <span class="kw-2">&amp;mut </span>ExtensionCallData,
 		relayer: <span class="kw-2">&amp;</span>&lt;<span class="self">Self</span>::Runtime <span class="kw">as </span>SystemConfig&gt;::AccountId,
 	) -&gt; bool;

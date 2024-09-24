@@ -313,6 +313,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#161" id="161">161</a>
 <a href="#162" id="162">162</a>
 <a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -346,6 +357,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	id: ParaId,
 	bridges_pallet_owner: <span class="prelude-ty">Option</span>&lt;AccountId&gt;,
 	asset_hub_para_id: ParaId,
+	opened_bridges: Vec&lt;(Location, InteriorLocation, <span class="prelude-ty">Option</span>&lt;bp_messages::LegacyLaneId&gt;)&gt;,
 ) -&gt; serde_json::Value {
 	<span class="kw">let </span>config = RuntimeGenesisConfig {
 		balances: BalancesConfig {
@@ -384,6 +396,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		},
 		bridge_westend_messages: BridgeWestendMessagesConfig {
 			owner: bridges_pallet_owner.clone(),
+			..Default::default()
+		},
+		xcm_over_bridge_hub_westend: XcmOverBridgeHubWestendConfig {
+			opened_bridges,
 			..Default::default()
 		},
 		ethereum_system: EthereumSystemConfig {
@@ -429,6 +445,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="number">1013</span>.into(),
 			<span class="prelude-val">Some</span>(get_account_id_from_seed::&lt;sr25519::Public&gt;(<span class="string">"Bob"</span>)),
 			rococo_runtime_constants::system_parachain::ASSET_HUB_ID.into(),
+			<span class="macro">vec!</span>[(
+				Location::new(<span class="number">1</span>, [Parachain(<span class="number">1000</span>)]),
+				Junctions::from([Westend.into(), Parachain(<span class="number">1000</span>)]),
+				<span class="prelude-val">Some</span>(bp_messages::LegacyLaneId([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>])),
+			)],
 		),
 		<span class="prelude-val">Ok</span>(sp_genesis_builder::DEV_RUNTIME_PRESET) =&gt; bridge_hub_rococo_genesis(
 			<span class="comment">// initial collators.
@@ -459,6 +480,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="number">1013</span>.into(),
 			<span class="prelude-val">Some</span>(get_account_id_from_seed::&lt;sr25519::Public&gt;(<span class="string">"Bob"</span>)),
 			rococo_runtime_constants::system_parachain::ASSET_HUB_ID.into(),
+			<span class="macro">vec!</span>[],
 		),
 		<span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
 	};

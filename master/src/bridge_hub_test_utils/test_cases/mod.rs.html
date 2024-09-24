@@ -927,6 +927,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#775" id="775">775</a>
 <a href="#776" id="776">776</a>
 <a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -958,7 +964,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>asset_test_utils::BasicParachainRuntime;
 <span class="kw">use </span>bp_messages::{
 	target_chain::{DispatchMessage, DispatchMessageData, MessageDispatch},
-	LaneId, LaneState, MessageKey, MessagesOperatingMode, OutboundLaneData,
+	LaneState, MessageKey, MessagesOperatingMode, OutboundLaneData,
 };
 <span class="kw">use </span>bp_runtime::BasicOperatingMode;
 <span class="kw">use </span>bp_xcm_bridge_hub::{Bridge, BridgeState, XcmAsPlainPayload};
@@ -1000,12 +1006,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="comment">// Re-export test_case from assets
 </span><span class="kw">pub use </span>asset_test_utils::include_teleports_for_native_asset_works;
+<span class="kw">use </span>pallet_bridge_messages::LaneIdOf;
 
 <span class="kw">pub type </span>RuntimeHelper&lt;Runtime, AllPalletsWithoutSystem = ()&gt; =
 	parachains_runtimes_test_utils::RuntimeHelper&lt;Runtime, AllPalletsWithoutSystem&gt;;
 
 <span class="comment">// Re-export test_case from `parachains-runtimes-test-utils`
-</span><span class="kw">pub use </span>parachains_runtimes_test_utils::test_cases::{
+</span><span class="kw">use </span><span class="kw">crate</span>::test_cases::helpers::open_bridge_with_extrinsic;
+<span class="kw">pub use </span>parachains_runtimes_test_utils::test_cases::{
 	change_storage_constant_by_governance_works, set_storage_keys_by_governance_works,
 };
 
@@ -1255,7 +1263,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	export_message_instruction: <span class="kw">fn</span>() -&gt; Instruction&lt;XcmConfig::RuntimeCall&gt;,
 	existential_deposit: <span class="prelude-ty">Option</span>&lt;Asset&gt;,
 	maybe_paid_export_message: <span class="prelude-ty">Option</span>&lt;Asset&gt;,
-	prepare_configuration: <span class="kw">impl </span>Fn() -&gt; LaneId,
+	prepare_configuration: <span class="kw">impl </span>Fn() -&gt; LaneIdOf&lt;Runtime, MessagesPalletInstance&gt;,
 ) <span class="kw">where
 	</span>Runtime: BasicParachainRuntime + BridgeMessagesConfig&lt;MessagesPalletInstance&gt;,
 	XcmConfig: xcm_executor::Config,
@@ -1398,7 +1406,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	run_test::&lt;Runtime, <span class="kw">_</span>&gt;(collator_session_key, runtime_para_id, <span class="macro">vec!</span>[], || {
 		prepare_configuration();
 
-		<span class="kw">let </span>dummy_lane_id = LaneId::new(<span class="number">1</span>, <span class="number">2</span>);
+		<span class="kw">let </span>dummy_lane_id = LaneIdOf::&lt;Runtime, MessagesPalletInstance&gt;::default();
 		<span class="kw">let </span><span class="kw-2">mut </span>alice = [<span class="number">0u8</span>; <span class="number">32</span>];
 		alice[<span class="number">0</span>] = <span class="number">1</span>;
 
@@ -1643,7 +1651,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				XcmOverBridgePalletInstance,
 				LocationToAccountId,
 				TokenLocation,
-			&gt;(source.clone(), destination.clone())
+			&gt;(
+				source.clone(),
+				destination.clone(),
+				open_bridge_with_extrinsic::&lt;Runtime, XcmOverBridgePalletInstance&gt;
+			)
 			.<span class="number">0
 			</span>.bridge_id(),
 			locations.bridge_id()

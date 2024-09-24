@@ -1526,6 +1526,26 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1374" id="1374">1374</a>
 <a href="#1375" id="1375">1375</a>
 <a href="#1376" id="1376">1376</a>
+<a href="#1377" id="1377">1377</a>
+<a href="#1378" id="1378">1378</a>
+<a href="#1379" id="1379">1379</a>
+<a href="#1380" id="1380">1380</a>
+<a href="#1381" id="1381">1381</a>
+<a href="#1382" id="1382">1382</a>
+<a href="#1383" id="1383">1383</a>
+<a href="#1384" id="1384">1384</a>
+<a href="#1385" id="1385">1385</a>
+<a href="#1386" id="1386">1386</a>
+<a href="#1387" id="1387">1387</a>
+<a href="#1388" id="1388">1388</a>
+<a href="#1389" id="1389">1389</a>
+<a href="#1390" id="1390">1390</a>
+<a href="#1391" id="1391">1391</a>
+<a href="#1392" id="1392">1392</a>
+<a href="#1393" id="1393">1393</a>
+<a href="#1394" id="1394">1394</a>
+<a href="#1395" id="1395">1395</a>
+<a href="#1396" id="1396">1396</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -1610,6 +1630,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 };
 
 <span class="kw">use </span>bp_runtime::HeaderId;
+<span class="kw">use </span>pallet_bridge_messages::LaneIdOf;
 <span class="attr">#[cfg(any(feature = <span class="string">"std"</span>, test))]
 </span><span class="kw">pub use </span>sp_runtime::BuildStorage;
 
@@ -1675,12 +1696,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		Runtime,
 		bridge_to_rococo_config::WithBridgeHubRococoMessagesInstance,
 	&gt;,
+	bridge_to_rococo_config::migration::FixMessagesV1Migration&lt;
+		Runtime,
+		bridge_to_rococo_config::WithBridgeHubRococoMessagesInstance,
+	&gt;,
 	bridge_to_rococo_config::migration::StaticToDynamicLanes,
 	frame_support::migrations::RemoveStorage&lt;
 		BridgeRococoMessagesPalletName,
 		OutboundLanesCongestedSignalsKey,
 		RocksDbWeight,
 	&gt;,
+	pallet_bridge_relayers::migration::v1::MigrationToV1&lt;Runtime, ()&gt;,
 	<span class="comment">// permanent
 	</span>pallet_xcm::migration::MigrateToLatestXcmVersion&lt;Runtime&gt;,
 	snowbridge_pallet_system::migration::v0::InitializeOnUpgrade&lt;
@@ -2379,7 +2405,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">impl </span>bp_bridge_hub_rococo::FromBridgeHubRococoInboundLaneApi&lt;Block&gt; <span class="kw">for </span>Runtime {
 		<span class="kw">fn </span>message_details(
-			lane: bp_messages::LaneId,
+			lane: LaneIdOf&lt;Runtime, bridge_to_rococo_config::WithBridgeHubRococoMessagesInstance&gt;,
 			messages: Vec&lt;(bp_messages::MessagePayload, bp_messages::OutboundMessageDetails)&gt;,
 		) -&gt; Vec&lt;bp_messages::InboundMessageDetails&gt; {
 			bridge_runtime_common::messages_api::inbound_message_details::&lt;
@@ -2391,7 +2417,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">impl </span>bp_bridge_hub_rococo::ToBridgeHubRococoOutboundLaneApi&lt;Block&gt; <span class="kw">for </span>Runtime {
 		<span class="kw">fn </span>message_details(
-			lane: bp_messages::LaneId,
+			lane: LaneIdOf&lt;Runtime, bridge_to_rococo_config::WithBridgeHubRococoMessagesInstance&gt;,
 			begin: bp_messages::MessageNonce,
 			end: bp_messages::MessageNonce,
 		) -&gt; Vec&lt;bp_messages::OutboundMessageDetails&gt; {
@@ -2669,15 +2695,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					);
 
 					<span class="comment">// open bridge
-					</span><span class="kw">let </span>origin = RuntimeOrigin::from(pallet_xcm::Origin::Xcm(sibling_parachain_location.clone()));
-					XcmOverBridgeHubRococo::open_bridge(
-						origin.clone(),
-						alloc::boxed::Box::new(VersionedInteriorLocation::from([GlobalConsensus(NetworkId::Rococo), Parachain(<span class="number">8765</span>)])),
+					</span><span class="kw">let </span>bridge_destination_universal_location: InteriorLocation = [GlobalConsensus(NetworkId::Rococo), Parachain(<span class="number">8765</span>)].into();
+					<span class="kw">let </span>locations = XcmOverBridgeHubRococo::bridge_locations(
+						sibling_parachain_location.clone(),
+						bridge_destination_universal_location.clone(),
+					)<span class="question-mark">?</span>;
+					XcmOverBridgeHubRococo::do_open_bridge(
+						locations,
+						bp_messages::LegacyLaneId([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
+						<span class="bool-val">true</span>,
 					).map_err(|e| {
 						<span class="macro">log::error!</span>(
 							<span class="string">"Failed to `XcmOverBridgeHubRococo::open_bridge`({:?}, {:?})`, error: {:?}"</span>,
-							origin,
-							[GlobalConsensus(NetworkId::Rococo), Parachain(<span class="number">8765</span>)],
+							sibling_parachain_location,
+							bridge_destination_universal_location,
 							e
 						);
 						BenchmarkError::Stop(<span class="string">"Bridge was not opened!"</span>)
@@ -2731,12 +2762,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				}
 
 				<span class="kw">fn </span>prepare_message_proof(
-					params: MessageProofParams,
-				) -&gt; (bridge_to_rococo_config::FromRococoBridgeHubMessagesProof, Weight) {
+					params: MessageProofParams&lt;LaneIdOf&lt;Runtime, bridge_to_rococo_config::WithBridgeHubRococoMessagesInstance&gt;&gt;,
+				) -&gt; (bridge_to_rococo_config::FromRococoBridgeHubMessagesProof&lt;bridge_to_rococo_config::WithBridgeHubRococoMessagesInstance&gt;, Weight) {
 					<span class="kw">use </span>cumulus_primitives_core::XcmpMessageSource;
 					<span class="macro">assert!</span>(XcmpQueue::take_outbound_messages(usize::MAX).is_empty());
 					ParachainSystem::open_outbound_hrmp_channel_for_benchmarks_or_tests(<span class="number">42</span>.into());
-					<span class="kw">let </span>universal_source = bridge_to_rococo_config::open_bridge_for_benchmarks(params.lane, <span class="number">42</span>);
+					<span class="kw">let </span>universal_source = bridge_to_rococo_config::open_bridge_for_benchmarks::&lt;
+						Runtime,
+						bridge_to_rococo_config::XcmOverBridgeHubRococoInstance,
+						xcm_config::LocationToAccountId,
+					&gt;(params.lane, <span class="number">42</span>);
 					prepare_message_proof_from_parachain::&lt;
 						Runtime,
 						bridge_to_rococo_config::BridgeGrandpaRococoInstance,
@@ -2745,9 +2780,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				}
 
 				<span class="kw">fn </span>prepare_message_delivery_proof(
-					params: MessageDeliveryProofParams&lt;AccountId&gt;,
-				) -&gt; bridge_to_rococo_config::ToRococoBridgeHubMessagesDeliveryProof {
-					<span class="kw">let _ </span>= bridge_to_rococo_config::open_bridge_for_benchmarks(params.lane, <span class="number">42</span>);
+					params: MessageDeliveryProofParams&lt;AccountId, LaneIdOf&lt;Runtime, bridge_to_rococo_config::WithBridgeHubRococoMessagesInstance&gt;&gt;,
+				) -&gt; bridge_to_rococo_config::ToRococoBridgeHubMessagesDeliveryProof&lt;bridge_to_rococo_config::WithBridgeHubRococoMessagesInstance&gt; {
+					<span class="kw">let _ </span>= bridge_to_rococo_config::open_bridge_for_benchmarks::&lt;
+						Runtime,
+						bridge_to_rococo_config::XcmOverBridgeHubRococoInstance,
+						xcm_config::LocationToAccountId,
+					&gt;(params.lane, <span class="number">42</span>);
 					prepare_message_delivery_proof_from_parachain::&lt;
 						Runtime,
 						bridge_to_rococo_config::BridgeGrandpaRococoInstance,
@@ -2792,14 +2831,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				}
 			}
 
-			<span class="kw">impl </span>BridgeRelayersConfig <span class="kw">for </span>Runtime {
+			<span class="kw">impl </span>BridgeRelayersConfig&lt;bridge_common_config::RelayersForLegacyLaneIdsMessagesInstance&gt; <span class="kw">for </span>Runtime {
 				<span class="kw">fn </span>prepare_rewards_account(
-					account_params: bp_relayers::RewardsAccountParams,
+					account_params: bp_relayers::RewardsAccountParams&lt;&lt;<span class="self">Self </span><span class="kw">as </span>pallet_bridge_relayers::Config&lt;bridge_common_config::RelayersForLegacyLaneIdsMessagesInstance&gt;&gt;::LaneId&gt;,
 					reward: Balance,
 				) {
 					<span class="kw">let </span>rewards_account = bp_relayers::PayRewardFromAccount::&lt;
 						Balances,
-						AccountId
+						AccountId,
+						&lt;<span class="self">Self </span><span class="kw">as </span>pallet_bridge_relayers::Config&lt;bridge_common_config::RelayersForLegacyLaneIdsMessagesInstance&gt;&gt;::LaneId,
 					&gt;::rewards_account(account_params);
 					<span class="self">Self</span>::deposit_account(rewards_account, reward);
 				}

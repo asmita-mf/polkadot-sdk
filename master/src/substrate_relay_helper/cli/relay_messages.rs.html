@@ -359,6 +359,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#207" id="207">207</a>
 <a href="#208" id="208">208</a>
 <a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -394,6 +404,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	ChainWithTransactions, Client,
 };
 <span class="kw">use </span>relay_utils::UniqueSaturatedInto;
+<span class="kw">use </span>sp_runtime::traits::TryConvert;
 
 <span class="doccomment">/// Messages relaying params.
 </span><span class="attr">#[derive(StructOpt)]
@@ -477,6 +488,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>target_client = data.target.into_client::&lt;<span class="self">Self</span>::Target&gt;().<span class="kw">await</span><span class="question-mark">?</span>;
 		<span class="kw">let </span>target_sign = data.target_sign.to_keypair::&lt;<span class="self">Self</span>::Target&gt;()<span class="question-mark">?</span>;
 		<span class="kw">let </span>target_transactions_mortality = data.target_sign.transactions_mortality()<span class="question-mark">?</span>;
+		<span class="kw">let </span>lane_id = HexLaneId::try_convert(data.lane).map_err(|invalid_lane_id| {
+			<span class="macro">anyhow::format_err!</span>(<span class="string">"Invalid laneId: {:?}!"</span>, invalid_lane_id)
+		})<span class="question-mark">?</span>;
 
 		<span class="kw">crate</span>::messages::run::&lt;<span class="self">Self</span>::MessagesLane, <span class="kw">_</span>, <span class="kw">_</span>&gt;(MessagesRelayParams {
 			source_client,
@@ -491,7 +505,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			},
 			source_to_target_headers_relay: <span class="prelude-val">None</span>,
 			target_to_source_headers_relay: <span class="prelude-val">None</span>,
-			lane_id: data.lane.into(),
+			lane_id,
 			limits: <span class="self">Self</span>::maybe_messages_limits(),
 			metrics_params: data.prometheus_params.into_metrics_params()<span class="question-mark">?</span>,
 		})
@@ -507,6 +521,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>source_transactions_mortality = data.source_sign.transactions_mortality()<span class="question-mark">?</span>;
 		<span class="kw">let </span>target_sign = data.target_sign.to_keypair::&lt;<span class="self">Self</span>::Target&gt;()<span class="question-mark">?</span>;
 		<span class="kw">let </span>target_transactions_mortality = data.target_sign.transactions_mortality()<span class="question-mark">?</span>;
+		<span class="kw">let </span>lane_id = HexLaneId::try_convert(data.lane).map_err(|invalid_lane_id| {
+			<span class="macro">anyhow::format_err!</span>(<span class="string">"Invalid laneId: {:?}!"</span>, invalid_lane_id)
+		})<span class="question-mark">?</span>;
 
 		<span class="kw">let </span>at_source_block = source_client
 			.header_by_number(data.at_source_block.unique_saturated_into())
@@ -528,7 +545,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			TransactionParams { signer: source_sign, mortality: source_transactions_mortality },
 			TransactionParams { signer: target_sign, mortality: target_transactions_mortality },
 			at_source_block,
-			data.lane.into(),
+			lane_id,
 			data.messages_start..=data.messages_end,
 			data.outbound_state_proof_required,
 		)
@@ -543,6 +560,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>target_client = data.target.into_client::&lt;<span class="self">Self</span>::Target&gt;().<span class="kw">await</span><span class="question-mark">?</span>;
 		<span class="kw">let </span>source_sign = data.source_sign.to_keypair::&lt;<span class="self">Self</span>::Source&gt;()<span class="question-mark">?</span>;
 		<span class="kw">let </span>source_transactions_mortality = data.source_sign.transactions_mortality()<span class="question-mark">?</span>;
+		<span class="kw">let </span>lane_id = HexLaneId::try_convert(data.lane).map_err(|invalid_lane_id| {
+			<span class="macro">anyhow::format_err!</span>(<span class="string">"Invalid laneId: {:?}!"</span>, invalid_lane_id)
+		})<span class="question-mark">?</span>;
 
 		<span class="kw">let </span>at_target_block = target_client
 			.header_by_number(data.at_target_block.unique_saturated_into())
@@ -563,7 +583,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			target_client,
 			TransactionParams { signer: source_sign, mortality: source_transactions_mortality },
 			at_target_block,
-			data.lane.into(),
+			lane_id,
 		)
 		.<span class="kw">await
 	</span>}

@@ -281,6 +281,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#129" id="129">129</a>
 <a href="#130" id="130">130</a>
 <a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -303,9 +309,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use </span>bp_messages::LaneId;
 <span class="kw">use </span>bp_relayers::RewardsAccountOwner;
-<span class="kw">use </span>frame_benchmarking::{benchmarks, whitelisted_caller};
+<span class="kw">use </span>frame_benchmarking::{benchmarks_instance_pallet, whitelisted_caller};
 <span class="kw">use </span>frame_system::RawOrigin;
 <span class="kw">use </span>sp_runtime::traits::One;
 
@@ -313,27 +318,34 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">const </span>REWARD_AMOUNT: u32 = u32::MAX;
 
 <span class="doccomment">/// Pallet we're benchmarking here.
-</span><span class="kw">pub struct </span>Pallet&lt;T: Config&gt;(<span class="kw">crate</span>::Pallet&lt;T&gt;);
+</span><span class="kw">pub struct </span>Pallet&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static </span>= ()&gt;(<span class="kw">crate</span>::Pallet&lt;T, I&gt;);
 
 <span class="doccomment">/// Trait that must be implemented by runtime.
-</span><span class="kw">pub trait </span>Config: <span class="kw">crate</span>::Config {
+</span><span class="kw">pub trait </span>Config&lt;I: <span class="lifetime">'static </span>= ()&gt;: <span class="kw">crate</span>::Config&lt;I&gt; {
+	<span class="doccomment">/// Lane id to use in benchmarks.
+	</span><span class="kw">fn </span>bench_lane_id() -&gt; <span class="self">Self</span>::LaneId {
+		<span class="self">Self</span>::LaneId::default()
+	}
 	<span class="doccomment">/// Prepare environment for paying given reward for serving given lane.
-	</span><span class="kw">fn </span>prepare_rewards_account(account_params: RewardsAccountParams, reward: <span class="self">Self</span>::Reward);
+	</span><span class="kw">fn </span>prepare_rewards_account(
+		account_params: RewardsAccountParams&lt;<span class="self">Self</span>::LaneId&gt;,
+		reward: <span class="self">Self</span>::Reward,
+	);
 	<span class="doccomment">/// Give enough balance to given account.
 	</span><span class="kw">fn </span>deposit_account(account: <span class="self">Self</span>::AccountId, balance: <span class="self">Self</span>::Reward);
 }
 
-<span class="macro">benchmarks! </span>{
+<span class="macro">benchmarks_instance_pallet! </span>{
 	<span class="comment">// Benchmark `claim_rewards` call.
 	</span>claim_rewards {
-		<span class="kw">let </span>lane = LaneId::new(<span class="number">1</span>, <span class="number">2</span>);
+		<span class="kw">let </span>lane = T::bench_lane_id();
 		<span class="kw">let </span>account_params =
 			RewardsAccountParams::new(lane, <span class="kw-2">*</span><span class="string">b"test"</span>, RewardsAccountOwner::ThisChain);
 		<span class="kw">let </span>relayer: T::AccountId = whitelisted_caller();
 		<span class="kw">let </span>reward = T::Reward::from(REWARD_AMOUNT);
 
 		T::prepare_rewards_account(account_params, reward);
-		RelayerRewards::&lt;T&gt;::insert(<span class="kw-2">&amp;</span>relayer, account_params, reward);
+		RelayerRewards::&lt;T, I&gt;::insert(<span class="kw-2">&amp;</span>relayer, account_params, reward);
 	}: <span class="kw">_</span>(RawOrigin::Signed(relayer), account_params)
 	verify {
 		<span class="comment">// we can't check anything here, because `PaymentProcedure` is responsible for
@@ -345,30 +357,30 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span>register {
 		<span class="kw">let </span>relayer: T::AccountId = whitelisted_caller();
 		<span class="kw">let </span>valid_till = frame_system::Pallet::&lt;T&gt;::block_number()
-			.saturating_add(<span class="kw">crate</span>::Pallet::&lt;T&gt;::required_registration_lease())
+			.saturating_add(<span class="kw">crate</span>::Pallet::&lt;T, I&gt;::required_registration_lease())
 			.saturating_add(One::one())
 			.saturating_add(One::one());
 
-		T::deposit_account(relayer.clone(), <span class="kw">crate</span>::Pallet::&lt;T&gt;::required_stake());
+		T::deposit_account(relayer.clone(), <span class="kw">crate</span>::Pallet::&lt;T, I&gt;::required_stake());
 	}: <span class="kw">_</span>(RawOrigin::Signed(relayer.clone()), valid_till)
 	verify {
-		<span class="macro">assert!</span>(<span class="kw">crate</span>::Pallet::&lt;T&gt;::is_registration_active(<span class="kw-2">&amp;</span>relayer));
+		<span class="macro">assert!</span>(<span class="kw">crate</span>::Pallet::&lt;T, I&gt;::is_registration_active(<span class="kw-2">&amp;</span>relayer));
 	}
 
 	<span class="comment">// Benchmark `deregister` call.
 	</span>deregister {
 		<span class="kw">let </span>relayer: T::AccountId = whitelisted_caller();
 		<span class="kw">let </span>valid_till = frame_system::Pallet::&lt;T&gt;::block_number()
-			.saturating_add(<span class="kw">crate</span>::Pallet::&lt;T&gt;::required_registration_lease())
+			.saturating_add(<span class="kw">crate</span>::Pallet::&lt;T, I&gt;::required_registration_lease())
 			.saturating_add(One::one())
 			.saturating_add(One::one());
-		T::deposit_account(relayer.clone(), <span class="kw">crate</span>::Pallet::&lt;T&gt;::required_stake());
-		<span class="kw">crate</span>::Pallet::&lt;T&gt;::register(RawOrigin::Signed(relayer.clone()).into(), valid_till).unwrap();
+		T::deposit_account(relayer.clone(), <span class="kw">crate</span>::Pallet::&lt;T, I&gt;::required_stake());
+		<span class="kw">crate</span>::Pallet::&lt;T, I&gt;::register(RawOrigin::Signed(relayer.clone()).into(), valid_till).unwrap();
 
 		frame_system::Pallet::&lt;T&gt;::set_block_number(valid_till.saturating_add(One::one()));
 	}: <span class="kw">_</span>(RawOrigin::Signed(relayer.clone()))
 	verify {
-		<span class="macro">assert!</span>(!<span class="kw">crate</span>::Pallet::&lt;T&gt;::is_registration_active(<span class="kw-2">&amp;</span>relayer));
+		<span class="macro">assert!</span>(!<span class="kw">crate</span>::Pallet::&lt;T, I&gt;::is_registration_active(<span class="kw-2">&amp;</span>relayer));
 	}
 
 	<span class="comment">// Benchmark `slash_and_deregister` method of the pallet. We are adding this weight to
@@ -378,36 +390,36 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="comment">// prepare and register relayer account
 		</span><span class="kw">let </span>relayer: T::AccountId = whitelisted_caller();
 		<span class="kw">let </span>valid_till = frame_system::Pallet::&lt;T&gt;::block_number()
-			.saturating_add(<span class="kw">crate</span>::Pallet::&lt;T&gt;::required_registration_lease())
+			.saturating_add(<span class="kw">crate</span>::Pallet::&lt;T, I&gt;::required_registration_lease())
 			.saturating_add(One::one())
 			.saturating_add(One::one());
-		T::deposit_account(relayer.clone(), <span class="kw">crate</span>::Pallet::&lt;T&gt;::required_stake());
-		<span class="kw">crate</span>::Pallet::&lt;T&gt;::register(RawOrigin::Signed(relayer.clone()).into(), valid_till).unwrap();
+		T::deposit_account(relayer.clone(), <span class="kw">crate</span>::Pallet::&lt;T, I&gt;::required_stake());
+		<span class="kw">crate</span>::Pallet::&lt;T, I&gt;::register(RawOrigin::Signed(relayer.clone()).into(), valid_till).unwrap();
 
 		<span class="comment">// create slash destination account
-		</span><span class="kw">let </span>lane = LaneId::new(<span class="number">1</span>, <span class="number">2</span>);
+		</span><span class="kw">let </span>lane = T::bench_lane_id();
 		<span class="kw">let </span>slash_destination = RewardsAccountParams::new(lane, <span class="kw-2">*</span><span class="string">b"test"</span>, RewardsAccountOwner::ThisChain);
 		T::prepare_rewards_account(slash_destination, Zero::zero());
 	}: {
-		<span class="kw">crate</span>::Pallet::&lt;T&gt;::slash_and_deregister(<span class="kw-2">&amp;</span>relayer, slash_destination.into())
+		<span class="kw">crate</span>::Pallet::&lt;T, I&gt;::slash_and_deregister(<span class="kw-2">&amp;</span>relayer, slash_destination.into())
 	}
 	verify {
-		<span class="macro">assert!</span>(!<span class="kw">crate</span>::Pallet::&lt;T&gt;::is_registration_active(<span class="kw-2">&amp;</span>relayer));
+		<span class="macro">assert!</span>(!<span class="kw">crate</span>::Pallet::&lt;T, I&gt;::is_registration_active(<span class="kw-2">&amp;</span>relayer));
 	}
 
 	<span class="comment">// Benchmark `register_relayer_reward` method of the pallet. We are adding this weight to
 	// the weight of message delivery call if `RefundBridgedParachainMessages` signed extension
 	// is deployed at runtime level.
 	</span>register_relayer_reward {
-		<span class="kw">let </span>lane = LaneId::new(<span class="number">1</span>, <span class="number">2</span>);
+		<span class="kw">let </span>lane = T::bench_lane_id();
 		<span class="kw">let </span>relayer: T::AccountId = whitelisted_caller();
 		<span class="kw">let </span>account_params =
 			RewardsAccountParams::new(lane, <span class="kw-2">*</span><span class="string">b"test"</span>, RewardsAccountOwner::ThisChain);
 	}: {
-		<span class="kw">crate</span>::Pallet::&lt;T&gt;::register_relayer_reward(account_params, <span class="kw-2">&amp;</span>relayer, One::one());
+		<span class="kw">crate</span>::Pallet::&lt;T, I&gt;::register_relayer_reward(account_params, <span class="kw-2">&amp;</span>relayer, One::one());
 	}
 	verify {
-		<span class="macro">assert_eq!</span>(RelayerRewards::&lt;T&gt;::get(relayer, <span class="kw-2">&amp;</span>account_params), <span class="prelude-val">Some</span>(One::one()));
+		<span class="macro">assert_eq!</span>(RelayerRewards::&lt;T, I&gt;::get(relayer, <span class="kw-2">&amp;</span>account_params), <span class="prelude-val">Some</span>(One::one()));
 	}
 
 	<span class="macro">impl_benchmark_test_suite!</span>(Pallet, <span class="kw">crate</span>::mock::new_test_ext(), <span class="kw">crate</span>::mock::TestRuntime)

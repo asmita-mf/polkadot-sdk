@@ -232,6 +232,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#80" id="80">80</a>
 <a href="#81" id="81">81</a>
 <a href="#82" id="82">82</a>
+<a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -255,6 +267,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	accounts, build_genesis_storage, collators, get_account_id_from_seed, SAFE_XCM_VERSION,
 };
 <span class="kw">use </span>parachains_common::Balance;
+<span class="kw">use </span>xcm::latest::prelude::<span class="kw-2">*</span>;
 
 <span class="kw">pub const </span>PARA_ID: u32 = <span class="number">1002</span>;
 <span class="kw">pub const </span>ASSETHUB_PARA_ID: u32 = <span class="number">1000</span>;
@@ -298,6 +311,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		},
 		bridge_rococo_messages: bridge_hub_westend_runtime::BridgeRococoMessagesConfig {
 			owner: <span class="prelude-val">Some</span>(get_account_id_from_seed::&lt;sr25519::Public&gt;(accounts::BOB)),
+			..Default::default()
+		},
+		xcm_over_bridge_hub_rococo: bridge_hub_westend_runtime::XcmOverBridgeHubRococoConfig {
+			opened_bridges: <span class="macro">vec!</span>[
+				<span class="comment">// open AHW -&gt; AHR bridge
+				</span>(
+					Location::new(<span class="number">1</span>, [Parachain(<span class="number">1000</span>)]),
+					Junctions::from([Rococo.into(), Parachain(<span class="number">1000</span>)]),
+					<span class="prelude-val">Some</span>(bp_messages::LegacyLaneId([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>])),
+				),
+			],
 			..Default::default()
 		},
 		ethereum_system: bridge_hub_westend_runtime::EthereumSystemConfig {

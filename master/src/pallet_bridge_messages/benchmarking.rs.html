@@ -730,7 +730,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>bp_messages::{
 	source_chain::FromBridgedChainMessagesDeliveryProof,
 	target_chain::FromBridgedChainMessagesProof, ChainWithMessages, DeliveredMessages,
-	InboundLaneData, LaneId, LaneState, MessageNonce, OutboundLaneData, UnrewardedRelayer,
+	InboundLaneData, LaneState, MessageNonce, OutboundLaneData, UnrewardedRelayer,
 	UnrewardedRelayersState,
 };
 <span class="kw">use </span>bp_runtime::{AccountIdOf, HashOf, UnverifiedStorageProofParams};
@@ -748,7 +748,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Benchmark-specific message proof parameters.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>MessageProofParams {
+</span><span class="kw">pub struct </span>MessageProofParams&lt;LaneId&gt; {
 	<span class="doccomment">/// Id of the lane.
 	</span><span class="kw">pub </span>lane: LaneId,
 	<span class="doccomment">/// Range of messages to include in the proof.
@@ -766,7 +766,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Benchmark-specific message delivery proof parameters.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>MessageDeliveryProofParams&lt;ThisChainAccountId&gt; {
+</span><span class="kw">pub struct </span>MessageDeliveryProofParams&lt;ThisChainAccountId, LaneId&gt; {
 	<span class="doccomment">/// Id of the lane.
 	</span><span class="kw">pub </span>lane: LaneId,
 	<span class="doccomment">/// The proof needs to include this inbound lane data.
@@ -778,8 +778,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Trait that must be implemented by runtime.
 </span><span class="kw">pub trait </span>Config&lt;I: <span class="lifetime">'static</span>&gt;: <span class="kw">crate</span>::Config&lt;I&gt; {
 	<span class="doccomment">/// Lane id to use in benchmarks.
-	</span><span class="kw">fn </span>bench_lane_id() -&gt; LaneId {
-		LaneId::new(<span class="number">1</span>, <span class="number">2</span>)
+	</span><span class="kw">fn </span>bench_lane_id() -&gt; <span class="self">Self</span>::LaneId {
+		<span class="self">Self</span>::LaneId::default()
 	}
 
 	<span class="doccomment">/// Return id of relayer account at the bridged chain.
@@ -798,12 +798,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="doccomment">/// Prepare messages proof to receive by the module.
 	</span><span class="kw">fn </span>prepare_message_proof(
-		params: MessageProofParams,
-	) -&gt; (FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChainOf&lt;<span class="self">Self</span>, I&gt;&gt;&gt;, Weight);
+		params: MessageProofParams&lt;<span class="self">Self</span>::LaneId&gt;,
+	) -&gt; (FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChainOf&lt;<span class="self">Self</span>, I&gt;&gt;, <span class="self">Self</span>::LaneId&gt;, Weight);
 	<span class="doccomment">/// Prepare messages delivery proof to receive by the module.
 	</span><span class="kw">fn </span>prepare_message_delivery_proof(
-		params: MessageDeliveryProofParams&lt;<span class="self">Self</span>::AccountId&gt;,
-	) -&gt; FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;BridgedChainOf&lt;<span class="self">Self</span>, I&gt;&gt;&gt;;
+		params: MessageDeliveryProofParams&lt;<span class="self">Self</span>::AccountId, <span class="self">Self</span>::LaneId&gt;,
+	) -&gt; FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;BridgedChainOf&lt;<span class="self">Self</span>, I&gt;&gt;, <span class="self">Self</span>::LaneId&gt;;
 
 	<span class="doccomment">/// Returns true if message has been successfully dispatched or not.
 	</span><span class="kw">fn </span>is_message_successfully_dispatched(_nonce: MessageNonce) -&gt; bool {

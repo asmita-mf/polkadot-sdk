@@ -1675,6 +1675,57 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1523" id="1523">1523</a>
 <a href="#1524" id="1524">1524</a>
 <a href="#1525" id="1525">1525</a>
+<a href="#1526" id="1526">1526</a>
+<a href="#1527" id="1527">1527</a>
+<a href="#1528" id="1528">1528</a>
+<a href="#1529" id="1529">1529</a>
+<a href="#1530" id="1530">1530</a>
+<a href="#1531" id="1531">1531</a>
+<a href="#1532" id="1532">1532</a>
+<a href="#1533" id="1533">1533</a>
+<a href="#1534" id="1534">1534</a>
+<a href="#1535" id="1535">1535</a>
+<a href="#1536" id="1536">1536</a>
+<a href="#1537" id="1537">1537</a>
+<a href="#1538" id="1538">1538</a>
+<a href="#1539" id="1539">1539</a>
+<a href="#1540" id="1540">1540</a>
+<a href="#1541" id="1541">1541</a>
+<a href="#1542" id="1542">1542</a>
+<a href="#1543" id="1543">1543</a>
+<a href="#1544" id="1544">1544</a>
+<a href="#1545" id="1545">1545</a>
+<a href="#1546" id="1546">1546</a>
+<a href="#1547" id="1547">1547</a>
+<a href="#1548" id="1548">1548</a>
+<a href="#1549" id="1549">1549</a>
+<a href="#1550" id="1550">1550</a>
+<a href="#1551" id="1551">1551</a>
+<a href="#1552" id="1552">1552</a>
+<a href="#1553" id="1553">1553</a>
+<a href="#1554" id="1554">1554</a>
+<a href="#1555" id="1555">1555</a>
+<a href="#1556" id="1556">1556</a>
+<a href="#1557" id="1557">1557</a>
+<a href="#1558" id="1558">1558</a>
+<a href="#1559" id="1559">1559</a>
+<a href="#1560" id="1560">1560</a>
+<a href="#1561" id="1561">1561</a>
+<a href="#1562" id="1562">1562</a>
+<a href="#1563" id="1563">1563</a>
+<a href="#1564" id="1564">1564</a>
+<a href="#1565" id="1565">1565</a>
+<a href="#1566" id="1566">1566</a>
+<a href="#1567" id="1567">1567</a>
+<a href="#1568" id="1568">1568</a>
+<a href="#1569" id="1569">1569</a>
+<a href="#1570" id="1570">1570</a>
+<a href="#1571" id="1571">1571</a>
+<a href="#1572" id="1572">1572</a>
+<a href="#1573" id="1573">1573</a>
+<a href="#1574" id="1574">1574</a>
+<a href="#1575" id="1575">1575</a>
+<a href="#1576" id="1576">1576</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -1720,6 +1771,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	CheckAndBoostBridgeGrandpaTransactions, CheckAndBoostBridgeParachainsTransactions,
 };
 <span class="kw">use </span>cumulus_pallet_parachain_system::RelayNumberMonotonicallyIncreases;
+<span class="kw">use </span>pallet_bridge_messages::LaneIdOf;
 <span class="kw">use </span>sp_api::impl_runtime_apis;
 <span class="kw">use </span>sp_core::{crypto::KeyTypeId, OpaqueMetadata};
 <span class="kw">use </span>sp_runtime::{
@@ -1807,10 +1859,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	frame_system::CheckWeight&lt;Runtime&gt;,
 	pallet_transaction_payment::ChargeTransactionPayment&lt;Runtime&gt;,
 	BridgeRejectObsoleteHeadersAndMessages,
-	(
-		bridge_to_westend_config::OnBridgeHubRococoRefundBridgeHubWestendMessages,
-		bridge_to_bulletin_config::OnBridgeHubRococoRefundRococoBulletinMessages,
-	),
+	(bridge_to_westend_config::OnBridgeHubRococoRefundBridgeHubWestendMessages,),
 	cumulus_primitives_storage_weight_reclaim::StorageWeightReclaim&lt;Runtime&gt;,
 	frame_metadata_hash_extension::CheckMetadataHash&lt;Runtime&gt;,
 );
@@ -1840,6 +1889,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		Runtime,
 		bridge_to_bulletin_config::WithRococoBulletinMessagesInstance,
 	&gt;,
+	bridge_to_westend_config::migration::FixMessagesV1Migration&lt;
+		Runtime,
+		bridge_to_westend_config::WithBridgeHubWestendMessagesInstance,
+	&gt;,
 	bridge_to_westend_config::migration::StaticToDynamicLanes,
 	bridge_to_bulletin_config::migration::StaticToDynamicLanes,
 	frame_support::migrations::RemoveStorage&lt;
@@ -1852,6 +1905,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		OutboundLanesCongestedSignalsKey,
 		RocksDbWeight,
 	&gt;,
+	pallet_bridge_relayers::migration::v1::MigrationToV1&lt;Runtime, ()&gt;,
 	<span class="comment">// permanent
 	</span>pallet_xcm::migration::MigrateToLatestXcmVersion&lt;Runtime&gt;,
 );
@@ -2270,6 +2324,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="comment">// With-Rococo Bulletin bridge hub pallet.
 		</span>XcmOverPolkadotBulletin: pallet_xcm_bridge_hub::&lt;Instance2&gt; = <span class="number">62</span>,
 
+		<span class="comment">// Bridge relayers pallet, used by several bridges here (another instance).
+		</span>BridgeRelayersForPermissionlessLanes: pallet_bridge_relayers::&lt;Instance2&gt; = <span class="number">63</span>,
+
 		EthereumInboundQueue: snowbridge_pallet_inbound_queue = <span class="number">80</span>,
 		EthereumOutboundQueue: snowbridge_pallet_outbound_queue = <span class="number">81</span>,
 		EthereumBeaconClient: snowbridge_pallet_ethereum_client = <span class="number">82</span>,
@@ -2339,13 +2396,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		[pallet_bridge_parachains, WithinWestend]
 		[pallet_bridge_messages, RococoToWestend]
 		[pallet_bridge_messages, RococoToRococoBulletin]
-		[pallet_bridge_relayers, BridgeRelayersBench::&lt;Runtime&gt;]
+		[pallet_bridge_relayers, Legacy]
+		[pallet_bridge_relayers, PermissionlessLanes]
 		<span class="comment">// Ethereum Bridge
 		</span>[snowbridge_pallet_inbound_queue, EthereumInboundQueue]
 		[snowbridge_pallet_outbound_queue, EthereumOutboundQueue]
 		[snowbridge_pallet_system, EthereumSystem]
 		[snowbridge_pallet_ethereum_client, EthereumBeaconClient]
 	);
+}
+
+<span class="macro">cumulus_pallet_parachain_system::register_validate_block! </span>{
+	Runtime = Runtime,
+	BlockExecutor = cumulus_pallet_aura_ext::BlockExecutor::&lt;Runtime, Executive&gt;,
 }
 
 <span class="macro">impl_runtime_apis! </span>{
@@ -2591,7 +2654,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="comment">// This is exposed by BridgeHubRococo
 	</span><span class="kw">impl </span>bp_bridge_hub_westend::FromBridgeHubWestendInboundLaneApi&lt;Block&gt; <span class="kw">for </span>Runtime {
 		<span class="kw">fn </span>message_details(
-			lane: bp_messages::LaneId,
+			lane: LaneIdOf&lt;Runtime, bridge_to_westend_config::WithBridgeHubWestendMessagesInstance&gt;,
 			messages: Vec&lt;(bp_messages::MessagePayload, bp_messages::OutboundMessageDetails)&gt;,
 		) -&gt; Vec&lt;bp_messages::InboundMessageDetails&gt; {
 			bridge_runtime_common::messages_api::inbound_message_details::&lt;
@@ -2604,7 +2667,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="comment">// This is exposed by BridgeHubRococo
 	</span><span class="kw">impl </span>bp_bridge_hub_westend::ToBridgeHubWestendOutboundLaneApi&lt;Block&gt; <span class="kw">for </span>Runtime {
 		<span class="kw">fn </span>message_details(
-			lane: bp_messages::LaneId,
+			lane: LaneIdOf&lt;Runtime, bridge_to_westend_config::WithBridgeHubWestendMessagesInstance&gt;,
 			begin: bp_messages::MessageNonce,
 			end: bp_messages::MessageNonce,
 		) -&gt; Vec&lt;bp_messages::OutboundMessageDetails&gt; {
@@ -2634,7 +2697,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">impl </span>bp_polkadot_bulletin::FromPolkadotBulletinInboundLaneApi&lt;Block&gt; <span class="kw">for </span>Runtime {
 		<span class="kw">fn </span>message_details(
-			lane: bp_messages::LaneId,
+			lane: LaneIdOf&lt;Runtime, bridge_to_bulletin_config::WithRococoBulletinMessagesInstance&gt;,
 			messages: Vec&lt;(bp_messages::MessagePayload, bp_messages::OutboundMessageDetails)&gt;,
 		) -&gt; Vec&lt;bp_messages::InboundMessageDetails&gt; {
 			bridge_runtime_common::messages_api::inbound_message_details::&lt;
@@ -2646,7 +2709,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">impl </span>bp_polkadot_bulletin::ToPolkadotBulletinOutboundLaneApi&lt;Block&gt; <span class="kw">for </span>Runtime {
 		<span class="kw">fn </span>message_details(
-			lane: bp_messages::LaneId,
+			lane: LaneIdOf&lt;Runtime, bridge_to_bulletin_config::WithRococoBulletinMessagesInstance&gt;,
 			begin: bp_messages::MessageNonce,
 			end: bp_messages::MessageNonce,
 		) -&gt; Vec&lt;bp_messages::OutboundMessageDetails&gt; {
@@ -2716,6 +2779,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">type </span>WithinWestend = pallet_bridge_parachains::benchmarking::Pallet::&lt;Runtime, bridge_common_config::BridgeParachainWestendInstance&gt;;
 			<span class="kw">type </span>RococoToWestend = pallet_bridge_messages::benchmarking::Pallet ::&lt;Runtime, bridge_to_westend_config::WithBridgeHubWestendMessagesInstance&gt;;
 			<span class="kw">type </span>RococoToRococoBulletin = pallet_bridge_messages::benchmarking::Pallet ::&lt;Runtime, bridge_to_bulletin_config::WithRococoBulletinMessagesInstance&gt;;
+			<span class="kw">type </span>Legacy = BridgeRelayersBench::&lt;Runtime, bridge_common_config::RelayersForLegacyLaneIdsMessagesInstance&gt;;
+			<span class="kw">type </span>PermissionlessLanes = BridgeRelayersBench::&lt;Runtime, bridge_common_config::RelayersForPermissionlessLanesInstance&gt;;
 
 			<span class="kw">let </span><span class="kw-2">mut </span>list = Vec::&lt;BenchmarkList&gt;::new();
 			<span class="macro">list_benchmarks!</span>(list, extra);
@@ -2925,15 +2990,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					);
 
 					<span class="comment">// open bridge
-					</span><span class="kw">let </span>origin = RuntimeOrigin::from(pallet_xcm::Origin::Xcm(sibling_parachain_location.clone()));
-					XcmOverBridgeHubWestend::open_bridge(
-						origin.clone(),
-						Box::new(VersionedInteriorLocation::from([GlobalConsensus(NetworkId::Westend), Parachain(<span class="number">8765</span>)])),
+					</span><span class="kw">let </span>bridge_destination_universal_location: InteriorLocation = [GlobalConsensus(NetworkId::Westend), Parachain(<span class="number">8765</span>)].into();
+					<span class="kw">let </span>locations = XcmOverBridgeHubWestend::bridge_locations(
+						sibling_parachain_location.clone(),
+						bridge_destination_universal_location.clone(),
+					)<span class="question-mark">?</span>;
+					XcmOverBridgeHubWestend::do_open_bridge(
+						locations,
+						bp_messages::LegacyLaneId([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
+						<span class="bool-val">true</span>,
 					).map_err(|e| {
 						<span class="macro">log::error!</span>(
 							<span class="string">"Failed to `XcmOverBridgeHubWestend::open_bridge`({:?}, {:?})`, error: {:?}"</span>,
-							origin,
-							[GlobalConsensus(NetworkId::Westend), Parachain(<span class="number">8765</span>)],
+							sibling_parachain_location,
+							bridge_destination_universal_location,
 							e
 						);
 						BenchmarkError::Stop(<span class="string">"Bridge was not opened!"</span>)
@@ -2960,6 +3030,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">type </span>WithinWestend = pallet_bridge_parachains::benchmarking::Pallet::&lt;Runtime, bridge_common_config::BridgeParachainWestendInstance&gt;;
 			<span class="kw">type </span>RococoToWestend = pallet_bridge_messages::benchmarking::Pallet ::&lt;Runtime, bridge_to_westend_config::WithBridgeHubWestendMessagesInstance&gt;;
 			<span class="kw">type </span>RococoToRococoBulletin = pallet_bridge_messages::benchmarking::Pallet ::&lt;Runtime, bridge_to_bulletin_config::WithRococoBulletinMessagesInstance&gt;;
+			<span class="kw">type </span>Legacy = BridgeRelayersBench::&lt;Runtime, bridge_common_config::RelayersForLegacyLaneIdsMessagesInstance&gt;;
+			<span class="kw">type </span>PermissionlessLanes = BridgeRelayersBench::&lt;Runtime, bridge_common_config::RelayersForPermissionlessLanesInstance&gt;;
 
 			<span class="kw">use </span>bridge_runtime_common::messages_benchmarking::{
 				prepare_message_delivery_proof_from_grandpa_chain,
@@ -2990,12 +3062,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				}
 
 				<span class="kw">fn </span>prepare_message_proof(
-					params: MessageProofParams,
-				) -&gt; (bridge_to_westend_config::FromWestendBridgeHubMessagesProof, Weight) {
+					params: MessageProofParams&lt;LaneIdOf&lt;Runtime, bridge_to_westend_config::WithBridgeHubWestendMessagesInstance&gt;&gt;,
+				) -&gt; (bridge_to_westend_config::FromWestendBridgeHubMessagesProof&lt;bridge_to_westend_config::WithBridgeHubWestendMessagesInstance&gt;, Weight) {
 					<span class="kw">use </span>cumulus_primitives_core::XcmpMessageSource;
 					<span class="macro">assert!</span>(XcmpQueue::take_outbound_messages(usize::MAX).is_empty());
 					ParachainSystem::open_outbound_hrmp_channel_for_benchmarks_or_tests(<span class="number">42</span>.into());
-					<span class="kw">let </span>universal_source = bridge_to_westend_config::open_bridge_for_benchmarks(params.lane, <span class="number">42</span>);
+					<span class="kw">let </span>universal_source = bridge_to_westend_config::open_bridge_for_benchmarks::&lt;
+						Runtime,
+						bridge_to_westend_config::XcmOverBridgeHubWestendInstance,
+						xcm_config::LocationToAccountId,
+					&gt;(params.lane, <span class="number">42</span>);
 					prepare_message_proof_from_parachain::&lt;
 						Runtime,
 						bridge_common_config::BridgeGrandpaWestendInstance,
@@ -3004,9 +3080,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				}
 
 				<span class="kw">fn </span>prepare_message_delivery_proof(
-					params: MessageDeliveryProofParams&lt;AccountId&gt;,
-				) -&gt; bridge_to_westend_config::ToWestendBridgeHubMessagesDeliveryProof {
-					<span class="kw">let _ </span>= bridge_to_westend_config::open_bridge_for_benchmarks(params.lane, <span class="number">42</span>);
+					params: MessageDeliveryProofParams&lt;AccountId, LaneIdOf&lt;Runtime, bridge_to_westend_config::WithBridgeHubWestendMessagesInstance&gt;&gt;,
+				) -&gt; bridge_to_westend_config::ToWestendBridgeHubMessagesDeliveryProof&lt;bridge_to_westend_config::WithBridgeHubWestendMessagesInstance&gt; {
+					<span class="kw">let _ </span>= bridge_to_westend_config::open_bridge_for_benchmarks::&lt;
+						Runtime,
+						bridge_to_westend_config::XcmOverBridgeHubWestendInstance,
+						xcm_config::LocationToAccountId,
+					&gt;(params.lane, <span class="number">42</span>);
 					prepare_message_delivery_proof_from_parachain::&lt;
 						Runtime,
 						bridge_common_config::BridgeGrandpaWestendInstance,
@@ -3027,12 +3107,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				</span>}
 
 				<span class="kw">fn </span>prepare_message_proof(
-					params: MessageProofParams,
-				) -&gt; (bridge_to_bulletin_config::FromRococoBulletinMessagesProof, Weight) {
+					params: MessageProofParams&lt;LaneIdOf&lt;Runtime, bridge_to_bulletin_config::WithRococoBulletinMessagesInstance&gt;&gt;,
+				) -&gt; (bridge_to_bulletin_config::FromRococoBulletinMessagesProof&lt;bridge_to_bulletin_config::WithRococoBulletinMessagesInstance&gt;, Weight) {
 					<span class="kw">use </span>cumulus_primitives_core::XcmpMessageSource;
 					<span class="macro">assert!</span>(XcmpQueue::take_outbound_messages(usize::MAX).is_empty());
 					ParachainSystem::open_outbound_hrmp_channel_for_benchmarks_or_tests(<span class="number">42</span>.into());
-					<span class="kw">let </span>universal_source = bridge_to_bulletin_config::open_bridge_for_benchmarks(params.lane, <span class="number">42</span>);
+					<span class="kw">let </span>universal_source = bridge_to_bulletin_config::open_bridge_for_benchmarks::&lt;
+						Runtime,
+						bridge_to_bulletin_config::XcmOverPolkadotBulletinInstance,
+						xcm_config::LocationToAccountId,
+					&gt;(params.lane, <span class="number">42</span>);
 					prepare_message_proof_from_grandpa_chain::&lt;
 						Runtime,
 						bridge_common_config::BridgeGrandpaRococoBulletinInstance,
@@ -3041,9 +3125,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				}
 
 				<span class="kw">fn </span>prepare_message_delivery_proof(
-					params: MessageDeliveryProofParams&lt;AccountId&gt;,
-				) -&gt; bridge_to_bulletin_config::ToRococoBulletinMessagesDeliveryProof {
-					<span class="kw">let _ </span>= bridge_to_bulletin_config::open_bridge_for_benchmarks(params.lane, <span class="number">42</span>);
+					params: MessageDeliveryProofParams&lt;AccountId, LaneIdOf&lt;Runtime, bridge_to_bulletin_config::WithRococoBulletinMessagesInstance&gt;&gt;,
+				) -&gt; bridge_to_bulletin_config::ToRococoBulletinMessagesDeliveryProof&lt;bridge_to_bulletin_config::WithRococoBulletinMessagesInstance&gt; {
+					<span class="kw">let _ </span>= bridge_to_bulletin_config::open_bridge_for_benchmarks::&lt;
+						Runtime,
+						bridge_to_bulletin_config::XcmOverPolkadotBulletinInstance,
+						xcm_config::LocationToAccountId,
+					&gt;(params.lane, <span class="number">42</span>);
 					prepare_message_delivery_proof_from_grandpa_chain::&lt;
 						Runtime,
 						bridge_common_config::BridgeGrandpaRococoBulletinInstance,
@@ -3088,16 +3176,36 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				}
 			}
 
-			<span class="kw">impl </span>BridgeRelayersConfig <span class="kw">for </span>Runtime {
+			<span class="kw">impl </span>BridgeRelayersConfig&lt;bridge_common_config::RelayersForLegacyLaneIdsMessagesInstance&gt; <span class="kw">for </span>Runtime {
 				<span class="kw">fn </span>prepare_rewards_account(
-					account_params: bp_relayers::RewardsAccountParams,
+					account_params: bp_relayers::RewardsAccountParams&lt;&lt;<span class="self">Self </span><span class="kw">as </span>pallet_bridge_relayers::Config&lt;bridge_common_config::RelayersForLegacyLaneIdsMessagesInstance&gt;&gt;::LaneId&gt;,
 					reward: Balance,
 				) {
 					<span class="kw">let </span>rewards_account = bp_relayers::PayRewardFromAccount::&lt;
 						Balances,
-						AccountId
+						AccountId,
+						&lt;<span class="self">Self </span><span class="kw">as </span>pallet_bridge_relayers::Config&lt;bridge_common_config::RelayersForLegacyLaneIdsMessagesInstance&gt;&gt;::LaneId,
 					&gt;::rewards_account(account_params);
-					<span class="self">Self</span>::deposit_account(rewards_account, reward);
+					&lt;Runtime <span class="kw">as </span>BridgeRelayersConfig&lt;bridge_common_config::RelayersForLegacyLaneIdsMessagesInstance&gt;&gt;::deposit_account(rewards_account, reward);
+				}
+
+				<span class="kw">fn </span>deposit_account(account: AccountId, balance: Balance) {
+					<span class="kw">use </span>frame_support::traits::fungible::Mutate;
+					Balances::mint_into(<span class="kw-2">&amp;</span>account, balance.saturating_add(ExistentialDeposit::get())).unwrap();
+				}
+			}
+
+			<span class="kw">impl </span>BridgeRelayersConfig&lt;bridge_common_config::RelayersForPermissionlessLanesInstance&gt; <span class="kw">for </span>Runtime {
+				<span class="kw">fn </span>prepare_rewards_account(
+					account_params: bp_relayers::RewardsAccountParams&lt;&lt;<span class="self">Self </span><span class="kw">as </span>pallet_bridge_relayers::Config&lt;bridge_common_config::RelayersForPermissionlessLanesInstance&gt;&gt;::LaneId&gt;,
+					reward: Balance,
+				) {
+					<span class="kw">let </span>rewards_account = bp_relayers::PayRewardFromAccount::&lt;
+						Balances,
+						AccountId,
+						&lt;<span class="self">Self </span><span class="kw">as </span>pallet_bridge_relayers::Config&lt;bridge_common_config::RelayersForPermissionlessLanesInstance&gt;&gt;::LaneId,
+					&gt;::rewards_account(account_params);
+					&lt;Runtime <span class="kw">as </span>BridgeRelayersConfig&lt;bridge_common_config::RelayersForPermissionlessLanesInstance&gt;&gt;::deposit_account(rewards_account, reward);
 				}
 
 				<span class="kw">fn </span>deposit_account(account: AccountId, balance: Balance) {
@@ -3142,11 +3250,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 }
 
-<span class="macro">cumulus_pallet_parachain_system::register_validate_block! </span>{
-	Runtime = Runtime,
-	BlockExecutor = cumulus_pallet_aura_ext::BlockExecutor::&lt;Runtime, Executive&gt;,
-}
-
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -3174,7 +3277,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
                 BridgeRejectObsoleteHeadersAndMessages,
                 (
                     bridge_to_westend_config::OnBridgeHubRococoRefundBridgeHubWestendMessages::default(),
-                    bridge_to_bulletin_config::OnBridgeHubRococoRefundRococoBulletinMessages::default(),
                 ),
                 cumulus_primitives_storage_weight_reclaim::StorageWeightReclaim::new(),
                 frame_metadata_hash_extension::CheckMetadataHash::new(<span class="bool-val">false</span>),

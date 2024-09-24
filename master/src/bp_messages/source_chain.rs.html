@@ -305,6 +305,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#153" id="153">153</a>
 <a href="#154" id="154">154</a>
 <a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -323,7 +325,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="doccomment">//! Primitives of messages module, that are used on the source chain.
 
-</span><span class="kw">use crate</span>::{LaneId, MessageNonce, UnrewardedRelayer};
+</span><span class="kw">use crate</span>::{MessageNonce, UnrewardedRelayer};
 
 <span class="kw">use </span>bp_runtime::{raw_storage_proof_size, RawStorageProof, Size};
 <span class="kw">use </span>codec::{Decode, Encode};
@@ -346,7 +348,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ///
 /// - lane id.
 </span><span class="attr">#[derive(Clone, Decode, Encode, Eq, PartialEq, RuntimeDebug, TypeInfo)]
-</span><span class="kw">pub struct </span>FromBridgedChainMessagesDeliveryProof&lt;BridgedHeaderHash&gt; {
+</span><span class="kw">pub struct </span>FromBridgedChainMessagesDeliveryProof&lt;BridgedHeaderHash, LaneId&gt; {
 	<span class="doccomment">/// Hash of the bridge header the proof is for.
 	</span><span class="kw">pub </span>bridged_header_hash: BridgedHeaderHash,
 	<span class="doccomment">/// Storage trie proof generated for [`Self::bridged_header_hash`].
@@ -355,7 +357,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>lane: LaneId,
 }
 
-<span class="kw">impl</span>&lt;BridgedHeaderHash&gt; Size <span class="kw">for </span>FromBridgedChainMessagesDeliveryProof&lt;BridgedHeaderHash&gt; {
+<span class="kw">impl</span>&lt;BridgedHeaderHash, LaneId&gt; Size
+	<span class="kw">for </span>FromBridgedChainMessagesDeliveryProof&lt;BridgedHeaderHash, LaneId&gt;
+{
 	<span class="kw">fn </span>size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
 		<span class="kw">use </span>frame_support::sp_runtime::SaturatedConversion;
 		raw_storage_proof_size(<span class="kw-2">&amp;</span><span class="self">self</span>.storage_proof).saturated_into()
@@ -367,7 +371,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Manages payments that are happening at the source chain during delivery confirmation
 /// transaction.
-</span><span class="kw">pub trait </span>DeliveryConfirmationPayments&lt;AccountId&gt; {
+</span><span class="kw">pub trait </span>DeliveryConfirmationPayments&lt;AccountId, LaneId&gt; {
 	<span class="doccomment">/// Error type.
 	</span><span class="kw">type </span>Error: Debug + Into&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;;
 
@@ -385,7 +389,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	) -&gt; MessageNonce;
 }
 
-<span class="kw">impl</span>&lt;AccountId&gt; DeliveryConfirmationPayments&lt;AccountId&gt; <span class="kw">for </span>() {
+<span class="kw">impl</span>&lt;AccountId, LaneId&gt; DeliveryConfirmationPayments&lt;AccountId, LaneId&gt; <span class="kw">for </span>() {
 	<span class="kw">type </span>Error = <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str;
 
 	<span class="kw">fn </span>pay_reward(
@@ -401,14 +405,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Callback that is called at the source chain (bridge hub) when we get delivery confirmation
 /// for new messages.
-</span><span class="kw">pub trait </span>OnMessagesDelivered {
+</span><span class="kw">pub trait </span>OnMessagesDelivered&lt;LaneId&gt; {
 	<span class="doccomment">/// New messages delivery has been confirmed.
 	///
 	/// The only argument of the function is the number of yet undelivered messages
 	</span><span class="kw">fn </span>on_messages_delivered(lane: LaneId, enqueued_messages: MessageNonce);
 }
 
-<span class="kw">impl </span>OnMessagesDelivered <span class="kw">for </span>() {
+<span class="kw">impl</span>&lt;LaneId&gt; OnMessagesDelivered&lt;LaneId&gt; <span class="kw">for </span>() {
 	<span class="kw">fn </span>on_messages_delivered(_lane: LaneId, _enqueued_messages: MessageNonce) {}
 }
 
@@ -422,7 +426,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="doccomment">/// Messages bridge API to be used from other pallets.
-</span><span class="kw">pub trait </span>MessagesBridge&lt;Payload&gt; {
+</span><span class="kw">pub trait </span>MessagesBridge&lt;Payload, LaneId&gt; {
 	<span class="doccomment">/// Error type.
 	</span><span class="kw">type </span>Error: Debug;
 
@@ -448,7 +452,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 /// where outbound messages are forbidden.
 </span><span class="kw">pub struct </span>ForbidOutboundMessages;
 
-<span class="kw">impl</span>&lt;AccountId&gt; DeliveryConfirmationPayments&lt;AccountId&gt; <span class="kw">for </span>ForbidOutboundMessages {
+<span class="kw">impl</span>&lt;AccountId, LaneId&gt; DeliveryConfirmationPayments&lt;AccountId, LaneId&gt; <span class="kw">for </span>ForbidOutboundMessages {
 	<span class="kw">type </span>Error = <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str;
 
 	<span class="kw">fn </span>pay_reward(

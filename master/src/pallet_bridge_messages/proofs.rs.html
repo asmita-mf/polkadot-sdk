@@ -710,6 +710,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#558" id="558">558</a>
 <a href="#559" id="559">559</a>
 <a href="#560" id="560">560</a>
+<a href="#561" id="561">561</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -734,7 +735,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>bp_messages::{
 	source_chain::FromBridgedChainMessagesDeliveryProof,
 	target_chain::{FromBridgedChainMessagesProof, ProvedLaneMessages, ProvedMessages},
-	ChainWithMessages, InboundLaneData, LaneId, Message, MessageKey, MessageNonce, MessagePayload,
+	ChainWithMessages, InboundLaneData, Message, MessageKey, MessageNonce, MessagePayload,
 	OutboundLaneData, VerificationError,
 };
 <span class="kw">use </span>bp_runtime::{
@@ -744,8 +745,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>sp_std::vec::Vec;
 
 <span class="doccomment">/// 'Parsed' message delivery proof - inbound lane id and its state.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>ParsedMessagesDeliveryProofFromBridgedChain&lt;T&gt; =
-	(LaneId, InboundLaneData&lt;&lt;T <span class="kw">as </span>frame_system::Config&gt;::AccountId&gt;);
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>ParsedMessagesDeliveryProofFromBridgedChain&lt;T, I&gt; =
+	(&lt;T <span class="kw">as </span>Config&lt;I&gt;&gt;::LaneId, InboundLaneData&lt;&lt;T <span class="kw">as </span>frame_system::Config&gt;::AccountId&gt;);
 
 <span class="doccomment">/// Verify proof of Bridged -&gt; This chain messages.
 ///
@@ -756,9 +757,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 /// outside of this function. This function only verifies that the proof declares exactly
 /// `messages_count` messages.
 </span><span class="kw">pub fn </span>verify_messages_proof&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt;(
-	proof: FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChainOf&lt;T, I&gt;&gt;&gt;,
+	proof: FromBridgedChainMessagesProof&lt;HashOf&lt;BridgedChainOf&lt;T, I&gt;&gt;, T::LaneId&gt;,
 	messages_count: u32,
-) -&gt; <span class="prelude-ty">Result</span>&lt;ProvedMessages&lt;Message&gt;, VerificationError&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;ProvedMessages&lt;T::LaneId, Message&lt;T::LaneId&gt;&gt;, VerificationError&gt; {
 	<span class="kw">let </span>FromBridgedChainMessagesProof {
 		bridged_header_hash,
 		storage_proof,
@@ -815,8 +816,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Verify proof of This -&gt; Bridged chain messages delivery.
 </span><span class="kw">pub fn </span>verify_messages_delivery_proof&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt;(
-	proof: FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;BridgedChainOf&lt;T, I&gt;&gt;&gt;,
-) -&gt; <span class="prelude-ty">Result</span>&lt;ParsedMessagesDeliveryProofFromBridgedChain&lt;T&gt;, VerificationError&gt; {
+	proof: FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;BridgedChainOf&lt;T, I&gt;&gt;, T::LaneId&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;ParsedMessagesDeliveryProofFromBridgedChain&lt;T, I&gt;, VerificationError&gt; {
 	<span class="kw">let </span>FromBridgedChainMessagesDeliveryProof { bridged_header_hash, storage_proof, lane } = proof;
 	<span class="kw">let </span><span class="kw-2">mut </span>parser: MessagesStorageProofAdapter&lt;T, I&gt; =
 		MessagesStorageProofAdapter::try_new_with_verified_storage_proof(
@@ -855,7 +856,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">fn </span>read_and_decode_outbound_lane_data(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-		lane_id: <span class="kw-2">&amp;</span>LaneId,
+		lane_id: <span class="kw-2">&amp;</span>T::LaneId,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;OutboundLaneData&gt;, StorageProofError&gt; {
 		<span class="kw">let </span>storage_outbound_lane_data_key = bp_messages::storage_keys::outbound_lane_data_key(
 			T::ThisChain::WITH_CHAIN_MESSAGES_PALLET_NAME,
@@ -866,7 +867,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">fn </span>read_and_decode_message_payload(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-		message_key: <span class="kw-2">&amp;</span>MessageKey,
+		message_key: <span class="kw-2">&amp;</span>MessageKey&lt;T::LaneId&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;MessagePayload, StorageProofError&gt; {
 		<span class="kw">let </span>storage_message_key = bp_messages::storage_keys::message_key(
 			T::ThisChain::WITH_CHAIN_MESSAGES_PALLET_NAME,
@@ -941,19 +942,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		encode_outbound_lane_data: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>OutboundLaneData) -&gt; Vec&lt;u8&gt;,
 		add_duplicate_key: bool,
 		add_unused_key: bool,
-		test: <span class="kw">impl </span>Fn(FromBridgedChainMessagesProof&lt;BridgedHeaderHash&gt;) -&gt; R,
+		test: <span class="kw">impl </span>Fn(FromBridgedChainMessagesProof&lt;BridgedHeaderHash, TestLaneIdType&gt;) -&gt; R,
 	) -&gt; R {
-		<span class="kw">let </span>(state_root, storage_proof) = prepare_messages_storage_proof::&lt;BridgedChain, ThisChain&gt;(
-			test_lane_id(),
-			<span class="number">1</span>..=nonces_end,
-			outbound_lane_data,
-			bp_runtime::UnverifiedStorageProofParams::default(),
-			generate_dummy_message,
-			encode_message,
-			encode_outbound_lane_data,
-			add_duplicate_key,
-			add_unused_key,
-		);
+		<span class="kw">let </span>(state_root, storage_proof) =
+			prepare_messages_storage_proof::&lt;BridgedChain, ThisChain, TestLaneIdType&gt;(
+				test_lane_id(),
+				<span class="number">1</span>..=nonces_end,
+				outbound_lane_data,
+				bp_runtime::UnverifiedStorageProofParams::default(),
+				generate_dummy_message,
+				encode_message,
+				encode_outbound_lane_data,
+				add_duplicate_key,
+				add_unused_key,
+			);
 
 		sp_io::TestExternalities::new(Default::default()).execute_with(<span class="kw">move </span>|| {
 			<span class="kw">let </span>bridged_header = BridgedChainHeader::new(

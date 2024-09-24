@@ -354,7 +354,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub const </span>WITH_BRIDGE_WESTEND_TO_ROCOCO_MESSAGES_PALLET_INDEX: u8 = <span class="number">44</span>;
 
 <span class="macro">decl_bridge_finality_runtime_apis!</span>(bridge_hub_westend);
-<span class="macro">decl_bridge_messages_runtime_apis!</span>(bridge_hub_westend);
+<span class="macro">decl_bridge_messages_runtime_apis!</span>(bridge_hub_westend, LegacyLaneId);
 
 <span class="macro">frame_support::parameter_types! </span>{
 	<span class="doccomment">/// The XCM fee that is paid for executing XCM program (with `ExportMessage` instruction) at the Westend

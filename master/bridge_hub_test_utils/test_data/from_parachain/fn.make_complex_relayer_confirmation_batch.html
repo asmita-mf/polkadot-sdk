@@ -154,7 +154,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
     grandpa_justification: GrandpaJustification&lt;BridgedHeader&lt;Runtime, GPI&gt;&gt;,
     parachain_heads: <a class="struct" href="https://doc.rust-lang.org/1.77.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;(ParaId, ParaHash)&gt;,
     para_heads_proof: ParaHeadsProof,
-    message_delivery_proof: FromBridgedChainMessagesDeliveryProof&lt;ParaHash&gt;,
+    message_delivery_proof: FromBridgedChainMessagesDeliveryProof&lt;ParaHash, LaneIdOf&lt;Runtime, MPI&gt;&gt;,
     relayers_state: UnrewardedRelayersState
 ) -&gt; Call&lt;Runtime&gt;<div class="where">where
     Runtime: Config&lt;GPI&gt; + Config&lt;PPI&gt; + Config&lt;MPI, OutboundPayload = XcmAsPlainPayload&gt; + Config,

@@ -332,6 +332,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#180" id="180">180</a>
 <a href="#181" id="181">181</a>
 <a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -366,7 +372,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	CallSubType <span class="kw">as </span>BridgeGrandpaCallSubtype, Config <span class="kw">as </span>BridgeGrandpaConfig,
 };
 <span class="kw">use </span>pallet_bridge_messages::{
-	CallSubType <span class="kw">as </span>BridgeMessagesCallSubType, Config <span class="kw">as </span>BridgeMessagesConfig,
+	CallSubType <span class="kw">as </span>BridgeMessagesCallSubType, Config <span class="kw">as </span>BridgeMessagesConfig, LaneIdOf,
 };
 <span class="kw">use </span>pallet_bridge_parachains::{
 	CallSubType <span class="kw">as </span>BridgeParachainsCallSubtype, Config <span class="kw">as </span>BridgeParachainsConfig,
@@ -392,6 +398,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span>BridgeParachainsPalletInstance,
 	<span class="comment">// instance of BridgedChain `pallet-bridge-messages`, tracked by this extension
 	</span>BridgeMessagesPalletInstance,
+	<span class="comment">// instance of `pallet-bridge-relayers`, tracked by this extension
+	</span>BridgeRelayersPalletInstance,
 	<span class="comment">// message delivery transaction priority boost for every additional message
 	</span>PriorityBoostPerMessage,
 &gt;(
@@ -401,20 +409,23 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		BatchCallUnpacker,
 		BridgeParachainsPalletInstance,
 		BridgeMessagesPalletInstance,
+		BridgeRelayersPalletInstance,
 		PriorityBoostPerMessage,
 	)&gt;,
 );
 
-<span class="kw">impl</span>&lt;ID, R, BCU, PI, MI, P&gt; ExtensionConfig <span class="kw">for </span>WithParachainExtensionConfig&lt;ID, R, BCU, PI, MI, P&gt;
+<span class="kw">impl</span>&lt;ID, R, BCU, PI, MI, RI, P&gt; ExtensionConfig
+	<span class="kw">for </span>WithParachainExtensionConfig&lt;ID, R, BCU, PI, MI, RI, P&gt;
 <span class="kw">where
 	</span>ID: StaticStrProvider,
-	R: BridgeRelayersConfig
+	R: BridgeRelayersConfig&lt;RI&gt;
 		+ BridgeMessagesConfig&lt;MI&gt;
 		+ BridgeParachainsConfig&lt;PI&gt;
 		+ BridgeGrandpaConfig&lt;R::BridgesGrandpaPalletInstance&gt;,
 	BCU: BatchCallUnpacker&lt;R&gt;,
 	PI: <span class="lifetime">'static</span>,
 	MI: <span class="lifetime">'static</span>,
+	RI: <span class="lifetime">'static</span>,
 	P: Get&lt;TransactionPriority&gt;,
 	R::RuntimeCall: Dispatchable&lt;Info = DispatchInfo, PostInfo = PostDispatchInfo&gt;
 		+ BridgeGrandpaCallSubtype&lt;R, R::BridgesGrandpaPalletInstance&gt;
@@ -425,15 +436,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>IdProvider = ID;
 	<span class="kw">type </span>Runtime = R;
 	<span class="kw">type </span>BridgeMessagesPalletInstance = MI;
+	<span class="kw">type </span>BridgeRelayersPalletInstance = RI;
 	<span class="kw">type </span>PriorityBoostPerMessage = P;
-	<span class="kw">type </span>Reward = R::Reward;
 	<span class="kw">type </span>RemoteGrandpaChainBlockNumber =
 		pallet_bridge_grandpa::BridgedBlockNumber&lt;R, R::BridgesGrandpaPalletInstance&gt;;
+	<span class="kw">type </span>LaneId = LaneIdOf&lt;R, <span class="self">Self</span>::BridgeMessagesPalletInstance&gt;;
 
 	<span class="kw">fn </span>parse_and_check_for_obsolete_call(
 		call: <span class="kw-2">&amp;</span>R::RuntimeCall,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;
-		<span class="prelude-ty">Option</span>&lt;ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber&gt;&gt;,
+		<span class="prelude-ty">Option</span>&lt;ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber, <span class="self">Self</span>::LaneId&gt;&gt;,
 		TransactionValidityError,
 	&gt; {
 		<span class="kw">let </span>calls = BCU::unpack(call, <span class="number">3</span>);
@@ -443,7 +455,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>msgs_call = calls.next().transpose()<span class="question-mark">?</span>.and_then(|c| c.call_info());
 		<span class="kw">let </span>para_finality_call = calls.next().transpose()<span class="question-mark">?</span>.and_then(|c| {
 			<span class="kw">let </span>r = c.submit_parachain_heads_info_for(
-				&lt;R <span class="kw">as </span>BridgeMessagesConfig&lt;MI&gt;&gt;::BridgedChain::PARACHAIN_ID,
+				&lt;R <span class="kw">as </span>BridgeMessagesConfig&lt;<span class="self">Self</span>::BridgeMessagesPalletInstance&gt;&gt;::BridgedChain::PARACHAIN_ID,
 			);
 			r
 		});
@@ -473,14 +485,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>check_call_result(
-		call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber&gt;,
+		call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;<span class="self">Self</span>::RemoteGrandpaChainBlockNumber, <span class="self">Self</span>::LaneId&gt;,
 		call_data: <span class="kw-2">&amp;mut </span>ExtensionCallData,
 		relayer: <span class="kw-2">&amp;</span>R::AccountId,
 	) -&gt; bool {
 		verify_submit_finality_proof_succeeded::&lt;<span class="self">Self</span>, R::BridgesGrandpaPalletInstance&gt;(
 			call_info, call_data, relayer,
 		) &amp;&amp; verify_submit_parachain_head_succeeded::&lt;<span class="self">Self</span>, PI&gt;(call_info, call_data, relayer) &amp;&amp;
-			verify_messages_call_succeeded::&lt;<span class="self">Self</span>, MI&gt;(call_info, call_data, relayer)
+			verify_messages_call_succeeded::&lt;<span class="self">Self</span>&gt;(call_info, call_data, relayer)
 	}
 }
 
@@ -489,7 +501,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ///
 /// Only returns false when parachain state update call has failed.
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>verify_submit_parachain_head_succeeded&lt;C, PI&gt;(
-	call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;C::RemoteGrandpaChainBlockNumber&gt;,
+	call_info: <span class="kw-2">&amp;</span>ExtensionCallInfo&lt;C::RemoteGrandpaChainBlockNumber, C::LaneId&gt;,
 	_call_data: <span class="kw-2">&amp;mut </span>ExtensionCallData,
 	relayer: <span class="kw-2">&amp;</span>&lt;C::Runtime <span class="kw">as </span>SystemConfig&gt;::AccountId,
 ) -&gt; bool

@@ -832,6 +832,107 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#680" id="680">680</a>
 <a href="#681" id="681">681</a>
 <a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
+<a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
+<a href="#708" id="708">708</a>
+<a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
+<a href="#718" id="718">718</a>
+<a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+<a href="#723" id="723">723</a>
+<a href="#724" id="724">724</a>
+<a href="#725" id="725">725</a>
+<a href="#726" id="726">726</a>
+<a href="#727" id="727">727</a>
+<a href="#728" id="728">728</a>
+<a href="#729" id="729">729</a>
+<a href="#730" id="730">730</a>
+<a href="#731" id="731">731</a>
+<a href="#732" id="732">732</a>
+<a href="#733" id="733">733</a>
+<a href="#734" id="734">734</a>
+<a href="#735" id="735">735</a>
+<a href="#736" id="736">736</a>
+<a href="#737" id="737">737</a>
+<a href="#738" id="738">738</a>
+<a href="#739" id="739">739</a>
+<a href="#740" id="740">740</a>
+<a href="#741" id="741">741</a>
+<a href="#742" id="742">742</a>
+<a href="#743" id="743">743</a>
+<a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a>
+<a href="#746" id="746">746</a>
+<a href="#747" id="747">747</a>
+<a href="#748" id="748">748</a>
+<a href="#749" id="749">749</a>
+<a href="#750" id="750">750</a>
+<a href="#751" id="751">751</a>
+<a href="#752" id="752">752</a>
+<a href="#753" id="753">753</a>
+<a href="#754" id="754">754</a>
+<a href="#755" id="755">755</a>
+<a href="#756" id="756">756</a>
+<a href="#757" id="757">757</a>
+<a href="#758" id="758">758</a>
+<a href="#759" id="759">759</a>
+<a href="#760" id="760">760</a>
+<a href="#761" id="761">761</a>
+<a href="#762" id="762">762</a>
+<a href="#763" id="763">763</a>
+<a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -860,7 +961,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>bp_messages::{
 	source_chain::{MessagesBridge, OnMessagesDelivered},
-	LaneId, MessageNonce,
+	MessageNonce,
 };
 <span class="kw">use </span>bp_xcm_bridge_hub::{BridgeId, BridgeState, LocalXcmChannelManager, XcmAsPlainPayload};
 <span class="kw">use </span>frame_support::{ensure, traits::Get};
@@ -896,7 +997,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>Ticket = (
 		BridgeId,
 		BridgeOf&lt;T, I&gt;,
-		&lt;MessagesPallet&lt;T, I&gt; <span class="kw">as </span>MessagesBridge&lt;T::OutboundPayload&gt;&gt;::SendMessageArgs,
+		&lt;MessagesPallet&lt;T, I&gt; <span class="kw">as </span>MessagesBridge&lt;T::OutboundPayload, T::LaneId&gt;&gt;::SendMessageArgs,
 		XcmHash,
 	);
 
@@ -928,7 +1029,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						<span class="string">"Destination: {dest:?} is already universal, checking dest_network: {dest_network:?} and network: {network:?} if matches: {:?}"</span>,
 						dest_network == network
 					);
-					<span class="macro">ensure!</span>(dest_network == network, SendError::Unroutable);
+					<span class="macro">ensure!</span>(dest_network == network, SendError::NotApplicable);
 					<span class="comment">// ok, `dest` looks like a universal location, so let's use it
 					</span>dest
 				},
@@ -942,22 +1043,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							error_data.<span class="number">0</span>,
 							error_data.<span class="number">1</span>,
 						);
-						SendError::Unroutable
+						SendError::NotApplicable
 					})<span class="question-mark">?
 				</span>},
 			}
 		};
-
-		<span class="comment">// check if we are able to route the message. We use existing `HaulBlobExporter` for that.
-		// It will make all required changes and will encode message properly, so that the
-		// `DispatchBlob` at the bridged bridge hub will be able to decode it
-		</span><span class="kw">let </span>((blob, id), price) = PalletAsHaulBlobExporter::&lt;T, I&gt;::validate(
-			network,
-			channel,
-			universal_source,
-			destination,
-			message,
-		)<span class="question-mark">?</span>;
 
 		<span class="comment">// prepare the origin relative location
 		</span><span class="kw">let </span>bridge_origin_relative_location =
@@ -973,9 +1063,28 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				target: LOG_TARGET,
 				<span class="string">"Validate `bridge_locations` with error: {e:?}"</span>,
 			);
-			SendError::Unroutable
+			SendError::NotApplicable
 		})<span class="question-mark">?</span>;
-		<span class="kw">let </span>bridge = <span class="self">Self</span>::bridge(locations.bridge_id()).ok_or(SendError::Unroutable)<span class="question-mark">?</span>;
+		<span class="kw">let </span>bridge = <span class="self">Self</span>::bridge(locations.bridge_id()).ok_or_else(|| {
+			<span class="macro">log::error!</span>(
+				target: LOG_TARGET,
+				<span class="string">"No opened bridge for requested bridge_origin_relative_location: {:?} and bridge_destination_universal_location: {:?}"</span>,
+				locations.bridge_origin_relative_location(),
+				locations.bridge_destination_universal_location(),
+			);
+			SendError::NotApplicable
+		})<span class="question-mark">?</span>;
+
+		<span class="comment">// check if we are able to route the message. We use existing `HaulBlobExporter` for that.
+		// It will make all required changes and will encode message properly, so that the
+		// `DispatchBlob` at the bridged bridge hub will be able to decode it
+		</span><span class="kw">let </span>((blob, id), price) = PalletAsHaulBlobExporter::&lt;T, I&gt;::validate(
+			network,
+			channel,
+			universal_source,
+			destination,
+			message,
+		)<span class="question-mark">?</span>;
 
 		<span class="kw">let </span>bridge_message = MessagesPallet::&lt;T, I&gt;::validate_message(bridge.lane_id, <span class="kw-2">&amp;</span>blob)
 			.map_err(|e| {
@@ -1024,8 +1133,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 }
 
-<span class="kw">impl</span>&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt; OnMessagesDelivered <span class="kw">for </span>Pallet&lt;T, I&gt; {
-	<span class="kw">fn </span>on_messages_delivered(lane_id: LaneId, enqueued_messages: MessageNonce) {
+<span class="kw">impl</span>&lt;T: Config&lt;I&gt;, I: <span class="lifetime">'static</span>&gt; OnMessagesDelivered&lt;T::LaneId&gt; <span class="kw">for </span>Pallet&lt;T, I&gt; {
+	<span class="kw">fn </span>on_messages_delivered(lane_id: T::LaneId, enqueued_messages: MessageNonce) {
 		<span class="self">Self</span>::on_bridge_messages_delivered(lane_id, enqueued_messages);
 	}
 }
@@ -1099,7 +1208,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="doccomment">/// Must be called whenever we receive a message delivery confirmation.
-	</span><span class="kw">fn </span>on_bridge_messages_delivered(lane_id: LaneId, enqueued_messages: MessageNonce) {
+	</span><span class="kw">fn </span>on_bridge_messages_delivered(lane_id: T::LaneId, enqueued_messages: MessageNonce) {
 		<span class="comment">// if the bridge queue is still congested, we don't want to do anything
 		</span><span class="kw">let </span>is_congested = enqueued_messages &gt; OUTBOUND_LANE_UNCONGESTED_THRESHOLD;
 		<span class="kw">if </span>is_congested {
@@ -1207,7 +1316,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		BridgedUniversalDestination::get()
 	}
 
-	<span class="kw">fn </span>open_lane() -&gt; (BridgeLocations, LaneId) {
+	<span class="kw">fn </span>open_lane() -&gt; (BridgeLocations, TestLaneIdType) {
 		<span class="comment">// open expected outbound lane
 		</span><span class="kw">let </span>origin = OpenBridgeOrigin::sibling_parachain_origin();
 		<span class="kw">let </span>with = bridged_asset_hub_universal_location();
@@ -1264,7 +1373,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		(<span class="kw-2">*</span>locations, lane_id)
 	}
 
-	<span class="kw">fn </span>open_lane_and_send_regular_message() -&gt; (BridgeId, LaneId) {
+	<span class="kw">fn </span>open_lane_and_send_regular_message() -&gt; (BridgeId, TestLaneIdType) {
 		<span class="kw">let </span>(locations, lane_id) = open_lane();
 
 		<span class="comment">// now let's try to enqueue message using our `ExportXcm` implementation
@@ -1300,7 +1409,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		run_test(|| {
 			<span class="kw">let </span>(bridge_id, <span class="kw">_</span>) = open_lane_and_send_regular_message();
 			<span class="macro">assert!</span>(!TestLocalXcmChannelManager::is_bridge_suspened());
-			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(bridge_id).unwrap().state, BridgeState::Opened);
+			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(<span class="kw-2">&amp;</span>bridge_id).unwrap().state, BridgeState::Opened);
 		});
 	}
 
@@ -1329,11 +1438,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			}
 
 			<span class="macro">assert!</span>(!TestLocalXcmChannelManager::is_bridge_suspened());
-			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(bridge_id).unwrap().state, BridgeState::Opened);
+			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(<span class="kw-2">&amp;</span>bridge_id).unwrap().state, BridgeState::Opened);
 
 			open_lane_and_send_regular_message();
 			<span class="macro">assert!</span>(TestLocalXcmChannelManager::is_bridge_suspened());
-			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(bridge_id).unwrap().state, BridgeState::Suspended);
+			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(<span class="kw-2">&amp;</span>bridge_id).unwrap().state, BridgeState::Suspended);
 		});
 	}
 
@@ -1350,7 +1459,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			);
 
 			<span class="macro">assert!</span>(!TestLocalXcmChannelManager::is_bridge_resumed());
-			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(bridge_id).unwrap().state, BridgeState::Suspended);
+			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(<span class="kw-2">&amp;</span>bridge_id).unwrap().state, BridgeState::Suspended);
 		});
 	}
 
@@ -1364,7 +1473,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			);
 
 			<span class="macro">assert!</span>(!TestLocalXcmChannelManager::is_bridge_resumed());
-			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(bridge_id).unwrap().state, BridgeState::Opened);
+			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(<span class="kw-2">&amp;</span>bridge_id).unwrap().state, BridgeState::Opened);
 		});
 	}
 
@@ -1381,7 +1490,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			);
 
 			<span class="macro">assert!</span>(TestLocalXcmChannelManager::is_bridge_resumed());
-			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(bridge_id).unwrap().state, BridgeState::Opened);
+			<span class="macro">assert_eq!</span>(XcmOverBridge::bridge(<span class="kw-2">&amp;</span>bridge_id).unwrap().state, BridgeState::Opened);
 		});
 	}
 
@@ -1512,6 +1621,99 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="number">2
 			</span>);
 		})
+	}
+
+	<span class="attr">#[test]
+	</span><span class="kw">fn </span>validate_works() {
+		run_test(|| {
+			<span class="kw">let </span>xcm: Xcm&lt;()&gt; = <span class="macro">vec!</span>[ClearOrigin].into();
+
+			<span class="comment">// check that router does not consume when `NotApplicable`
+			</span><span class="kw">let </span><span class="kw-2">mut </span>xcm_wrapper = <span class="prelude-val">Some</span>(xcm.clone());
+			<span class="kw">let </span><span class="kw-2">mut </span>universal_source_wrapper = <span class="prelude-val">Some</span>(universal_source());
+
+			<span class="comment">// wrong `NetworkId`
+			</span><span class="kw">let </span><span class="kw-2">mut </span>dest_wrapper = <span class="prelude-val">Some</span>(bridged_relative_destination());
+			<span class="macro">assert_eq!</span>(
+				XcmOverBridge::validate(
+					NetworkId::ByGenesis([<span class="number">0</span>; <span class="number">32</span>]),
+					<span class="number">0</span>,
+					<span class="kw-2">&amp;mut </span>universal_source_wrapper,
+					<span class="kw-2">&amp;mut </span>dest_wrapper,
+					<span class="kw-2">&amp;mut </span>xcm_wrapper,
+				),
+				<span class="prelude-val">Err</span>(SendError::NotApplicable),
+			);
+			<span class="comment">// dest and xcm is NOT consumed and untouched
+			</span><span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(xcm.clone()), <span class="kw-2">&amp;</span>xcm_wrapper);
+			<span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(universal_source()), <span class="kw-2">&amp;</span>universal_source_wrapper);
+			<span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(bridged_relative_destination()), <span class="kw-2">&amp;</span>dest_wrapper);
+
+			<span class="comment">// dest starts with wrong `NetworkId`
+			</span><span class="kw">let </span><span class="kw-2">mut </span>invalid_dest_wrapper = <span class="prelude-val">Some</span>(
+				[GlobalConsensus(NetworkId::ByGenesis([<span class="number">0</span>; <span class="number">32</span>])), Parachain(BRIDGED_ASSET_HUB_ID)]
+					.into(),
+			);
+			<span class="macro">assert_eq!</span>(
+				XcmOverBridge::validate(
+					BridgedRelayNetwork::get(),
+					<span class="number">0</span>,
+					<span class="kw-2">&amp;mut </span><span class="prelude-val">Some</span>(universal_source()),
+					<span class="kw-2">&amp;mut </span>invalid_dest_wrapper,
+					<span class="kw-2">&amp;mut </span>xcm_wrapper,
+				),
+				<span class="prelude-val">Err</span>(SendError::NotApplicable),
+			);
+			<span class="comment">// dest and xcm is NOT consumed and untouched
+			</span><span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(xcm.clone()), <span class="kw-2">&amp;</span>xcm_wrapper);
+			<span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(universal_source()), <span class="kw-2">&amp;</span>universal_source_wrapper);
+			<span class="macro">assert_eq!</span>(
+				<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(
+					[
+						GlobalConsensus(NetworkId::ByGenesis([<span class="number">0</span>; <span class="number">32</span>]),),
+						Parachain(BRIDGED_ASSET_HUB_ID)
+					]
+					.into()
+				),
+				<span class="kw-2">&amp;</span>invalid_dest_wrapper
+			);
+
+			<span class="comment">// no opened lane for dest
+			</span><span class="kw">let </span><span class="kw-2">mut </span>dest_without_lane_wrapper =
+				<span class="prelude-val">Some</span>([GlobalConsensus(BridgedRelayNetwork::get()), Parachain(<span class="number">5679</span>)].into());
+			<span class="macro">assert_eq!</span>(
+				XcmOverBridge::validate(
+					BridgedRelayNetwork::get(),
+					<span class="number">0</span>,
+					<span class="kw-2">&amp;mut </span><span class="prelude-val">Some</span>(universal_source()),
+					<span class="kw-2">&amp;mut </span>dest_without_lane_wrapper,
+					<span class="kw-2">&amp;mut </span>xcm_wrapper,
+				),
+				<span class="prelude-val">Err</span>(SendError::NotApplicable),
+			);
+			<span class="comment">// dest and xcm is NOT consumed and untouched
+			</span><span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(xcm.clone()), <span class="kw-2">&amp;</span>xcm_wrapper);
+			<span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(universal_source()), <span class="kw-2">&amp;</span>universal_source_wrapper);
+			<span class="macro">assert_eq!</span>(
+				<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>([GlobalConsensus(BridgedRelayNetwork::get(),), Parachain(<span class="number">5679</span>)].into()),
+				<span class="kw-2">&amp;</span>dest_without_lane_wrapper
+			);
+
+			<span class="comment">// ok
+			</span><span class="kw">let _ </span>= open_lane();
+			<span class="kw">let </span><span class="kw-2">mut </span>dest_wrapper = <span class="prelude-val">Some</span>(bridged_relative_destination());
+			<span class="macro">assert_ok!</span>(XcmOverBridge::validate(
+				BridgedRelayNetwork::get(),
+				<span class="number">0</span>,
+				<span class="kw-2">&amp;mut </span><span class="prelude-val">Some</span>(universal_source()),
+				<span class="kw-2">&amp;mut </span>dest_wrapper,
+				<span class="kw-2">&amp;mut </span>xcm_wrapper,
+			));
+			<span class="comment">// dest and xcm IS consumed
+			</span><span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, xcm_wrapper);
+			<span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(universal_source()), <span class="kw-2">&amp;</span>universal_source_wrapper);
+			<span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, dest_wrapper);
+		});
 	}
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>

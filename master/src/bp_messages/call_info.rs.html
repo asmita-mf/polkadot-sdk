@@ -314,14 +314,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#162" id="162">162</a>
 <a href="#163" id="163">163</a>
 <a href="#164" id="164">164</a>
-<a href="#165" id="165">165</a>
-<a href="#166" id="166">166</a>
-<a href="#167" id="167">167</a>
-<a href="#168" id="168">168</a>
-<a href="#169" id="169">169</a>
-<a href="#170" id="170">170</a>
-<a href="#171" id="171">171</a>
-<a href="#172" id="172">172</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -340,21 +332,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="doccomment">//! Defines structures related to calls of the `pallet-bridge-messages` pallet.
 
-</span><span class="kw">use crate</span>::{source_chain, target_chain, LaneId, MessageNonce, UnrewardedRelayersState};
+</span><span class="kw">use crate</span>::{MessageNonce, UnrewardedRelayersState};
 
-<span class="kw">use </span>bp_runtime::{AccountIdOf, HashOf};
 <span class="kw">use </span>codec::{Decode, Encode};
 <span class="kw">use </span>frame_support::weights::Weight;
 <span class="kw">use </span>scale_info::TypeInfo;
 <span class="kw">use </span>sp_core::RuntimeDebug;
 <span class="kw">use </span>sp_std::ops::RangeInclusive;
-
-<span class="doccomment">/// The `BridgeMessagesCall` used to bridge with a given chain.
-</span><span class="kw">pub type </span>BridgeMessagesCallOf&lt;C&gt; = BridgeMessagesCall&lt;
-	AccountIdOf&lt;C&gt;,
-	target_chain::FromBridgedChainMessagesProof&lt;HashOf&lt;C&gt;&gt;,
-	source_chain::FromBridgedChainMessagesDeliveryProof&lt;HashOf&lt;C&gt;&gt;,
-&gt;;
 
 <span class="doccomment">/// A minimized version of `pallet-bridge-messages::Call` that can be used without a runtime.
 </span><span class="attr">#[derive(Encode, Decode, Debug, PartialEq, Eq, Clone, TypeInfo)]
@@ -384,7 +368,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Generic info about a messages delivery/confirmation proof.
 </span><span class="attr">#[derive(PartialEq, RuntimeDebug)]
-</span><span class="kw">pub struct </span>BaseMessagesProofInfo {
+</span><span class="kw">pub struct </span>BaseMessagesProofInfo&lt;LaneId&gt; {
 	<span class="doccomment">/// Message lane, used by the call.
 	</span><span class="kw">pub </span>lane_id: LaneId,
 	<span class="doccomment">/// Nonces of messages, included in the call.
@@ -399,7 +383,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>best_stored_nonce: MessageNonce,
 }
 
-<span class="kw">impl </span>BaseMessagesProofInfo {
+<span class="kw">impl</span>&lt;LaneId&gt; BaseMessagesProofInfo&lt;LaneId&gt; {
 	<span class="doccomment">/// Returns true if `bundled_range` continues the `0..=best_stored_nonce` range.
 	</span><span class="kw">pub fn </span>appends_to_stored_nonce(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
 		<span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="self">self</span>.bundled_range.start()) == <span class="self">self</span>.best_stored_nonce.checked_add(<span class="number">1</span>)
@@ -418,14 +402,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Info about a `ReceiveMessagesProof` call which tries to update a single lane.
 </span><span class="attr">#[derive(PartialEq, RuntimeDebug)]
-</span><span class="kw">pub struct </span>ReceiveMessagesProofInfo {
+</span><span class="kw">pub struct </span>ReceiveMessagesProofInfo&lt;LaneId&gt; {
 	<span class="doccomment">/// Base messages proof info
-	</span><span class="kw">pub </span>base: BaseMessagesProofInfo,
+	</span><span class="kw">pub </span>base: BaseMessagesProofInfo&lt;LaneId&gt;,
 	<span class="doccomment">/// State of unrewarded relayers vector.
 	</span><span class="kw">pub </span>unrewarded_relayers: UnrewardedRelayerOccupation,
 }
 
-<span class="kw">impl </span>ReceiveMessagesProofInfo {
+<span class="kw">impl</span>&lt;LaneId&gt; ReceiveMessagesProofInfo&lt;LaneId&gt; {
 	<span class="doccomment">/// Returns true if:
 	///
 	/// - either inbound lane is ready to accept bundled messages;
@@ -458,9 +442,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Info about a `ReceiveMessagesDeliveryProof` call which tries to update a single lane.
 </span><span class="attr">#[derive(PartialEq, RuntimeDebug)]
-</span><span class="kw">pub struct </span>ReceiveMessagesDeliveryProofInfo(<span class="kw">pub </span>BaseMessagesProofInfo);
+</span><span class="kw">pub struct </span>ReceiveMessagesDeliveryProofInfo&lt;LaneId&gt;(<span class="kw">pub </span>BaseMessagesProofInfo&lt;LaneId&gt;);
 
-<span class="kw">impl </span>ReceiveMessagesDeliveryProofInfo {
+<span class="kw">impl</span>&lt;LaneId&gt; ReceiveMessagesDeliveryProofInfo&lt;LaneId&gt; {
 	<span class="doccomment">/// Returns true if outbound lane is ready to accept confirmations of bundled messages.
 	</span><span class="kw">pub fn </span>is_obsolete(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
 		<span class="self">self</span>.<span class="number">0</span>.bundled_range.is_empty() || !<span class="self">self</span>.<span class="number">0</span>.appends_to_stored_nonce()
@@ -470,14 +454,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Info about a `ReceiveMessagesProof` or a `ReceiveMessagesDeliveryProof` call
 /// which tries to update a single lane.
 </span><span class="attr">#[derive(PartialEq, RuntimeDebug)]
-</span><span class="kw">pub enum </span>MessagesCallInfo {
+</span><span class="kw">pub enum </span>MessagesCallInfo&lt;LaneId: Clone + Copy&gt; {
 	<span class="doccomment">/// Messages delivery call info.
-	</span>ReceiveMessagesProof(ReceiveMessagesProofInfo),
+	</span>ReceiveMessagesProof(ReceiveMessagesProofInfo&lt;LaneId&gt;),
 	<span class="doccomment">/// Messages delivery confirmation call info.
-	</span>ReceiveMessagesDeliveryProof(ReceiveMessagesDeliveryProofInfo),
+	</span>ReceiveMessagesDeliveryProof(ReceiveMessagesDeliveryProofInfo&lt;LaneId&gt;),
 }
 
-<span class="kw">impl </span>MessagesCallInfo {
+<span class="kw">impl</span>&lt;LaneId: Clone + Copy&gt; MessagesCallInfo&lt;LaneId&gt; {
 	<span class="doccomment">/// Returns lane, used by the call.
 	</span><span class="kw">pub fn </span>lane_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; LaneId {
 		<span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{

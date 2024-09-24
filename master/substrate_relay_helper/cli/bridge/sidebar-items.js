@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":["CliBridgeBase","MessagesCliBridge","ParachainToRelayHeadersCliBridge","RelayToRelayEquivocationDetectionCliBridge","RelayToRelayEquivocationDetectionCliBridgeBase","RelayToRelayHeadersCliBridge"]};
+window.SIDEBAR_ITEMS = {"trait":["CliBridgeBase","MessagesCliBridge","ParachainToRelayHeadersCliBridge","RelayToRelayEquivocationDetectionCliBridge","RelayToRelayEquivocationDetectionCliBridgeBase","RelayToRelayHeadersCliBridge"],"type":["MessagesLaneIdOf"]};

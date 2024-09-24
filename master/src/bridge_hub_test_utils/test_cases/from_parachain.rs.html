@@ -907,6 +907,34 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#755" id="755">755</a>
 <a href="#756" id="756">756</a>
 <a href="#757" id="757">757</a>
+<a href="#758" id="758">758</a>
+<a href="#759" id="759">759</a>
+<a href="#760" id="760">760</a>
+<a href="#761" id="761">761</a>
+<a href="#762" id="762">762</a>
+<a href="#763" id="763">763</a>
+<a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -933,14 +961,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>alloc::{boxed::Box, vec};
 <span class="kw">use </span>bp_header_chain::ChainWithGrandpa;
-<span class="kw">use </span>bp_messages::{LaneId, UnrewardedRelayersState};
+<span class="kw">use </span>bp_messages::UnrewardedRelayersState;
 <span class="kw">use </span>bp_polkadot_core::parachains::ParaHash;
 <span class="kw">use </span>bp_relayers::{RewardsAccountOwner, RewardsAccountParams};
 <span class="kw">use </span>bp_runtime::{Chain, Parachain};
 <span class="kw">use </span>bp_xcm_bridge_hub::XcmAsPlainPayload;
 <span class="kw">use </span>frame_support::traits::{OnFinalize, OnInitialize};
 <span class="kw">use </span>frame_system::pallet_prelude::BlockNumberFor;
-<span class="kw">use </span>pallet_bridge_messages::{BridgedChainOf, ThisChainOf};
+<span class="kw">use </span>pallet_bridge_messages::{BridgedChainOf, LaneIdOf, ThisChainOf};
 <span class="kw">use </span>parachains_runtimes_test_utils::{
 	AccountIdOf, BasicParachainRuntime, CollatorSessionKeys, RuntimeCallOf, SlotDurations,
 };
@@ -962,7 +990,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="self">Self</span>::MPI,
 			InboundPayload = XcmAsPlainPayload,
 			OutboundPayload = XcmAsPlainPayload,
-		&gt; + pallet_bridge_relayers::Config;
+		&gt; + pallet_bridge_relayers::Config&lt;<span class="self">Self</span>::RPI, LaneId = LaneIdOf&lt;<span class="self">Self</span>::Runtime, <span class="self">Self</span>::MPI&gt;&gt;;
 	<span class="doccomment">/// All pallets of this chain, excluding system pallet.
 	</span><span class="kw">type </span>AllPalletsWithoutSystem: OnInitialize&lt;BlockNumberFor&lt;<span class="self">Self</span>::Runtime&gt;&gt;
 		+ OnFinalize&lt;BlockNumberFor&lt;<span class="self">Self</span>::Runtime&gt;&gt;;
@@ -972,15 +1000,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">type </span>PPI: <span class="lifetime">'static</span>;
 	<span class="doccomment">/// Instance of the `pallet-bridge-messages`, used to bridge with remote parachain.
 	</span><span class="kw">type </span>MPI: <span class="lifetime">'static</span>;
+	<span class="doccomment">/// Instance of the `pallet-bridge-relayers`, used to collect rewards from messages `MPI`
+	/// instance.
+	</span><span class="kw">type </span>RPI: <span class="lifetime">'static</span>;
 }
 
 <span class="doccomment">/// Adapter struct that implements `WithRemoteParachainHelper`.
-</span><span class="kw">pub struct </span>WithRemoteParachainHelperAdapter&lt;Runtime, AllPalletsWithoutSystem, GPI, PPI, MPI&gt;(
-	core::marker::PhantomData&lt;(Runtime, AllPalletsWithoutSystem, GPI, PPI, MPI)&gt;,
+</span><span class="kw">pub struct </span>WithRemoteParachainHelperAdapter&lt;Runtime, AllPalletsWithoutSystem, GPI, PPI, MPI, RPI&gt;(
+	core::marker::PhantomData&lt;(Runtime, AllPalletsWithoutSystem, GPI, PPI, MPI, RPI)&gt;,
 );
 
-<span class="kw">impl</span>&lt;Runtime, AllPalletsWithoutSystem, GPI, PPI, MPI&gt; WithRemoteParachainHelper
-	<span class="kw">for </span>WithRemoteParachainHelperAdapter&lt;Runtime, AllPalletsWithoutSystem, GPI, PPI, MPI&gt;
+<span class="kw">impl</span>&lt;Runtime, AllPalletsWithoutSystem, GPI, PPI, MPI, RPI&gt; WithRemoteParachainHelper
+	<span class="kw">for </span>WithRemoteParachainHelperAdapter&lt;Runtime, AllPalletsWithoutSystem, GPI, PPI, MPI, RPI&gt;
 <span class="kw">where
 	</span>Runtime: BasicParachainRuntime
 		+ cumulus_pallet_xcmp_queue::Config
@@ -990,19 +1021,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			MPI,
 			InboundPayload = XcmAsPlainPayload,
 			OutboundPayload = XcmAsPlainPayload,
-		&gt; + pallet_bridge_relayers::Config,
+		&gt; + pallet_bridge_relayers::Config&lt;RPI, LaneId = LaneIdOf&lt;Runtime, MPI&gt;&gt;,
 	AllPalletsWithoutSystem:
 		OnInitialize&lt;BlockNumberFor&lt;Runtime&gt;&gt; + OnFinalize&lt;BlockNumberFor&lt;Runtime&gt;&gt;,
 	GPI: <span class="lifetime">'static</span>,
 	PPI: <span class="lifetime">'static</span>,
 	MPI: <span class="lifetime">'static</span>,
-	<span class="comment">// MB: MessageBridge,
-</span>{
+	RPI: <span class="lifetime">'static</span>,
+{
 	<span class="kw">type </span>Runtime = Runtime;
 	<span class="kw">type </span>AllPalletsWithoutSystem = AllPalletsWithoutSystem;
 	<span class="kw">type </span>GPI = GPI;
 	<span class="kw">type </span>PPI = PPI;
 	<span class="kw">type </span>MPI = MPI;
+	<span class="kw">type </span>RPI = RPI;
 }
 
 <span class="doccomment">/// Test-case makes sure that Runtime can dispatch XCM messages submitted by relayer,
@@ -1015,11 +1047,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	bridged_para_id: u32,
 	sibling_parachain_id: u32,
 	local_relay_chain_id: NetworkId,
-	prepare_configuration: <span class="kw">impl </span>Fn() -&gt; LaneId,
+	prepare_configuration: <span class="kw">impl </span>Fn() -&gt; LaneIdOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 	construct_and_apply_extrinsic: <span class="kw">fn</span>(
 		sp_keyring::AccountKeyring,
 		&lt;RuntimeHelper::Runtime <span class="kw">as </span>frame_system::Config&gt;::RuntimeCall,
 	) -&gt; sp_runtime::DispatchOutcome,
+	expect_rewards: bool,
 ) <span class="kw">where
 	</span>RuntimeHelper: WithRemoteParachainHelper,
 	AccountIdOf&lt;RuntimeHelper::Runtime&gt;: From&lt;AccountId32&gt;,
@@ -1070,6 +1103,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				&lt;RuntimeHelper::Runtime <span class="kw">as </span>BridgeGrandpaConfig&lt;RuntimeHelper::GPI&gt;&gt;::BridgedChain,
 				BridgedChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 				ThisChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
+				LaneIdOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 			&gt;(
 				lane_id,
 				xcm.into(),
@@ -1117,14 +1151,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							lane_id,
 							<span class="number">1</span>,
 						),
-						helpers::VerifyRelayerRewarded::&lt;RuntimeHelper::Runtime&gt;::expect_relayer_reward(
-							relayer_id_at_this_chain,
-							RewardsAccountParams::new(
-								lane_id,
-								bridged_chain_id,
-								RewardsAccountOwner::ThisChain,
-							),
-						),
+						<span class="kw">if </span>expect_rewards {
+                            helpers::VerifyRelayerRewarded::&lt;RuntimeHelper::Runtime, RuntimeHelper::RPI&gt;::expect_relayer_reward(
+                                relayer_id_at_this_chain,
+                                RewardsAccountParams::new(
+                                    lane_id,
+                                    bridged_chain_id,
+                                    RewardsAccountOwner::ThisChain,
+                                ),
+                            )
+						} <span class="kw">else </span>{
+							Box::new(())
+						}
 					)),
 				),
 			]
@@ -1143,11 +1181,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	bridged_para_id: u32,
 	sibling_parachain_id: u32,
 	local_relay_chain_id: NetworkId,
-	prepare_configuration: <span class="kw">impl </span>Fn() -&gt; LaneId,
+	prepare_configuration: <span class="kw">impl </span>Fn() -&gt; LaneIdOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 	construct_and_apply_extrinsic: <span class="kw">fn</span>(
 		sp_keyring::AccountKeyring,
 		&lt;RuntimeHelper::Runtime <span class="kw">as </span>frame_system::Config&gt;::RuntimeCall,
 	) -&gt; sp_runtime::DispatchOutcome,
+	expect_rewards: bool,
 ) <span class="kw">where
 	</span>RuntimeHelper: WithRemoteParachainHelper,
 	RuntimeHelper::Runtime: pallet_balances::Config,
@@ -1221,6 +1260,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				&lt;RuntimeHelper::Runtime <span class="kw">as </span>BridgeGrandpaConfig&lt;RuntimeHelper::GPI&gt;&gt;::BridgedChain,
 				BridgedChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 				ThisChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
+				LaneIdOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 			&gt;(
 				lane_id,
 				xcm.into(),
@@ -1262,11 +1302,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							bridged_para_id,
 							parachain_head_hash,
 						),
-						<span class="comment">/*helpers::VerifyRelayerBalance::&lt;RuntimeHelper::Runtime&gt;::expect_relayer_balance(
+						helpers::VerifyRelayerBalance::&lt;RuntimeHelper::Runtime&gt;::expect_relayer_balance(
 							relayer_id_at_this_chain.clone(),
 							initial_relayer_balance,
-						),*/
-					</span>)),
+						),
+					)),
 				),
 				(
 					BridgeMessagesCall::&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;::receive_messages_proof {
@@ -1280,14 +1320,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							lane_id,
 							<span class="number">1</span>,
 						),
-						helpers::VerifyRelayerRewarded::&lt;RuntimeHelper::Runtime&gt;::expect_relayer_reward(
-							relayer_id_at_this_chain,
-							RewardsAccountParams::new(
-								lane_id,
-								bridged_chain_id,
-								RewardsAccountOwner::ThisChain,
-							),
-						),
+						<span class="kw">if </span>expect_rewards {
+                            helpers::VerifyRelayerRewarded::&lt;RuntimeHelper::Runtime, RuntimeHelper::RPI&gt;::expect_relayer_reward(
+                                relayer_id_at_this_chain,
+                                RewardsAccountParams::new(
+                                    lane_id,
+                                    bridged_chain_id,
+                                    RewardsAccountOwner::ThisChain,
+                                ),
+                            )
+						} <span class="kw">else </span>{
+							Box::new(())
+						}
 					)),
 				),
 			]
@@ -1305,7 +1349,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	bridged_para_id: u32,
 	sibling_parachain_id: u32,
 	local_relay_chain_id: NetworkId,
-	prepare_configuration: <span class="kw">impl </span>Fn() -&gt; LaneId,
+	prepare_configuration: <span class="kw">impl </span>Fn() -&gt; LaneIdOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 	construct_and_apply_extrinsic: <span class="kw">fn</span>(
 		sp_keyring::AccountKeyring,
 		&lt;RuntimeHelper::Runtime <span class="kw">as </span>frame_system::Config&gt;::RuntimeCall,
@@ -1363,6 +1407,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				&lt;RuntimeHelper::Runtime <span class="kw">as </span>BridgeGrandpaConfig&lt;RuntimeHelper::GPI&gt;&gt;::BridgedChain,
 				BridgedChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 				ThisChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
+				LaneIdOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 			&gt;(
 				lane_id,
 				xcm.into(),
@@ -1377,9 +1422,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>parachain_head_hash = parachain_head.hash();
 			<span class="kw">let </span>relay_chain_header_hash = relay_chain_header.hash();
 			<span class="kw">let </span>relay_chain_header_number = <span class="kw-2">*</span>relay_chain_header.number();
-			<span class="macro">vec!</span>[(
-				pallet_utility::Call::&lt;RuntimeHelper::Runtime&gt;::batch_all {
-					calls: <span class="macro">vec!</span>[
+			<span class="macro">vec!</span>[
+				(
+					pallet_utility::Call::&lt;RuntimeHelper::Runtime&gt;::batch_all {
+						calls: <span class="macro">vec!</span>[
 						BridgeGrandpaCall::&lt;RuntimeHelper::Runtime, RuntimeHelper::GPI&gt;::submit_finality_proof {
 							finality_target: Box::new(relay_chain_header),
 							justification: grandpa_justification,
@@ -1396,31 +1442,37 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							dispatch_weight: Weight::from_parts(<span class="number">1000000000</span>, <span class="number">0</span>),
 						}.into(),
 					],
-				}
-				.into(),
-				Box::new((
-					helpers::VerifySubmitGrandpaFinalityProofOutcome::&lt;
-						RuntimeHelper::Runtime,
-						RuntimeHelper::GPI,
-					&gt;::expect_best_header_hash(relay_chain_header_hash),
-					helpers::VerifySubmitParachainHeaderProofOutcome::&lt;
-						RuntimeHelper::Runtime,
-						RuntimeHelper::PPI,
-					&gt;::expect_best_header_hash(bridged_para_id, parachain_head_hash),
-					helpers::VerifySubmitMessagesProofOutcome::&lt;
-						RuntimeHelper::Runtime,
-						RuntimeHelper::MPI,
-					&gt;::expect_last_delivered_nonce(lane_id, <span class="number">1</span>),
-					helpers::VerifyRelayerRewarded::&lt;RuntimeHelper::Runtime&gt;::expect_relayer_reward(
-						relayer_id_at_this_chain,
-						RewardsAccountParams::new(
-							lane_id,
-							bridged_chain_id,
-							RewardsAccountOwner::ThisChain,
+					}
+					.into(),
+					Box::new(
+						(
+							helpers::VerifySubmitGrandpaFinalityProofOutcome::&lt;
+								RuntimeHelper::Runtime,
+								RuntimeHelper::GPI,
+							&gt;::expect_best_header_hash(relay_chain_header_hash),
+							helpers::VerifySubmitParachainHeaderProofOutcome::&lt;
+								RuntimeHelper::Runtime,
+								RuntimeHelper::PPI,
+							&gt;::expect_best_header_hash(bridged_para_id, parachain_head_hash),
+							helpers::VerifySubmitMessagesProofOutcome::&lt;
+								RuntimeHelper::Runtime,
+								RuntimeHelper::MPI,
+							&gt;::expect_last_delivered_nonce(lane_id, <span class="number">1</span>),
+							helpers::VerifyRelayerRewarded::&lt;
+								RuntimeHelper::Runtime,
+								RuntimeHelper::RPI,
+							&gt;::expect_relayer_reward(
+								relayer_id_at_this_chain,
+								RewardsAccountParams::new(
+									lane_id,
+									bridged_chain_id,
+									RewardsAccountOwner::ThisChain,
+								),
+							),
 						),
 					),
-				)),
-			)]
+				),
+			]
 		},
 	);
 }
@@ -1460,8 +1512,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			&lt;RuntimeHelper::Runtime <span class="kw">as </span>pallet_bridge_grandpa::Config&lt;RuntimeHelper::GPI&gt;&gt;::BridgedChain,
 			BridgedChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 			ThisChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
+			LaneIdOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;
 		&gt;(
-			LaneId::new(<span class="number">1</span>, <span class="number">2</span>),
+			LaneIdOf::&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;::default(),
 			<span class="macro">vec!</span>[Instruction::&lt;()&gt;::ClearOrigin; <span class="number">1_024</span>].into(),
 			<span class="number">1</span>,
 			[GlobalConsensus(Polkadot), Parachain(<span class="number">1_000</span>)].into(),
@@ -1530,8 +1583,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			&lt;RuntimeHelper::Runtime <span class="kw">as </span>BridgeGrandpaConfig&lt;RuntimeHelper::GPI&gt;&gt;::BridgedChain,
 			BridgedChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 			ThisChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
+			LaneIdOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 		&gt;(
-			LaneId::new(<span class="number">1</span>, <span class="number">2</span>),
+			LaneIdOf::&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;::default(),
 			<span class="number">1</span>,
 			<span class="number">5</span>,
 			<span class="number">1_000</span>,
@@ -1592,8 +1646,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			&lt;RuntimeHelper::Runtime <span class="kw">as </span>pallet_bridge_grandpa::Config&lt;RuntimeHelper::GPI&gt;&gt;::BridgedChain,
 			BridgedChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 			ThisChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
+			LaneIdOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 		&gt;(
-			LaneId::new(<span class="number">1</span>, <span class="number">2</span>),
+			LaneIdOf::&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;::default(),
 			<span class="macro">vec!</span>[Instruction::&lt;()&gt;::ClearOrigin; <span class="number">1_024</span>].into(),
 			<span class="number">1</span>,
 			[GlobalConsensus(Polkadot), Parachain(<span class="number">1_000</span>)].into(),
@@ -1647,8 +1702,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				&lt;RuntimeHelper::Runtime <span class="kw">as </span>BridgeGrandpaConfig&lt;RuntimeHelper::GPI&gt;&gt;::BridgedChain,
 				BridgedChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 				ThisChainOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
+				LaneIdOf&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;,
 			&gt;(
-				LaneId::new(<span class="number">1</span>, <span class="number">2</span>),
+				LaneIdOf::&lt;RuntimeHelper::Runtime, RuntimeHelper::MPI&gt;::default(),
 				<span class="number">1</span>,
 				<span class="number">5</span>,
 				<span class="number">1_000</span>,

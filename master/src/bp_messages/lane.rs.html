@@ -431,6 +431,59 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#279" id="279">279</a>
 <a href="#280" id="280">280</a>
 <a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -449,12 +502,88 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="doccomment">//! Primitives of messages module, that represents lane id.
 
-</span><span class="kw">use </span>codec::{Decode, Encode, Error <span class="kw">as </span>CodecError, Input, MaxEncodedLen};
-<span class="kw">use </span>frame_support::sp_runtime::Either;
+</span><span class="kw">use </span>codec::{Codec, Decode, Encode, EncodeLike, MaxEncodedLen};
 <span class="kw">use </span>scale_info::TypeInfo;
-<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>serde::{de::DeserializeOwned, Deserialize, Serialize};
 <span class="kw">use </span>sp_core::{RuntimeDebug, TypeId, H256};
 <span class="kw">use </span>sp_io::hashing::blake2_256;
+<span class="kw">use </span>sp_std::fmt::Debug;
+
+<span class="doccomment">/// Trait representing a generic `LaneId` type.
+</span><span class="kw">pub trait </span>LaneIdType:
+	Clone
+	+ Copy
+	+ Codec
+	+ EncodeLike
+	+ Debug
+	+ Default
+	+ PartialEq
+	+ Eq
+	+ Ord
+	+ TypeInfo
+	+ MaxEncodedLen
+	+ Serialize
+	+ DeserializeOwned
+{
+	<span class="doccomment">/// Creates a new `LaneId` type (if supported).
+	</span><span class="kw">fn </span>try_new&lt;E: Ord + Encode&gt;(endpoint1: E, endpoint2: E) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ()&gt;;
+}
+
+<span class="doccomment">/// Bridge lane identifier (legacy).
+///
+/// Note: For backwards compatibility reasons, we also handle the older format `[u8; 4]`.
+</span><span class="attr">#[derive(
+	Clone,
+	Copy,
+	Decode,
+	Default,
+	Encode,
+	Eq,
+	Ord,
+	PartialOrd,
+	PartialEq,
+	TypeInfo,
+	MaxEncodedLen,
+	Serialize,
+	Deserialize,
+)]
+</span><span class="kw">pub struct </span>LegacyLaneId(<span class="kw">pub </span>[u8; <span class="number">4</span>]);
+
+<span class="kw">impl </span>LaneIdType <span class="kw">for </span>LegacyLaneId {
+	<span class="doccomment">/// Create lane identifier from two locations.
+	</span><span class="kw">fn </span>try_new&lt;T: Ord + Encode&gt;(_endpoint1: T, _endpoint2: T) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ()&gt; {
+		<span class="comment">// we don't support this for `LegacyLaneId`, because it was hard-coded before
+		</span><span class="prelude-val">Err</span>(())
+	}
+}
+
+<span class="attr">#[cfg(any(feature = <span class="string">"std"</span>, feature = <span class="string">"runtime-benchmarks"</span>, test))]
+</span><span class="kw">impl </span>TryFrom&lt;Vec&lt;u8&gt;&gt; <span class="kw">for </span>LegacyLaneId {
+	<span class="kw">type </span>Error = ();
+
+	<span class="kw">fn </span>try_from(value: Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+		<span class="kw">if </span>value.len() == <span class="number">4 </span>{
+			<span class="kw">return </span>&lt;[u8; <span class="number">4</span>]&gt;::try_from(value).map(<span class="self">Self</span>).map_err(|<span class="kw">_</span>| ());
+		}
+		<span class="prelude-val">Err</span>(())
+	}
+}
+
+<span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span>LegacyLaneId {
+	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
+		<span class="self">self</span>.<span class="number">0</span>.fmt(fmt)
+	}
+}
+
+<span class="kw">impl </span>AsRef&lt;[u8]&gt; <span class="kw">for </span>LegacyLaneId {
+	<span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
+		<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
+	</span>}
+}
+
+<span class="kw">impl </span>TypeId <span class="kw">for </span>LegacyLaneId {
+	<span class="kw">const </span>TYPE_ID: [u8; <span class="number">4</span>] = <span class="kw-2">*</span><span class="string">b"blan"</span>;
+}
 
 <span class="doccomment">/// Bridge lane identifier.
 ///
@@ -474,12 +603,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ///     (endpoint2, VALUES_SEPARATOR, endpoint1)
 /// }.using_encoded(blake2_256);
 /// ```
-///
-/// Note: For backwards compatibility reasons, we also handle the older format `[u8; 4]`.
 </span><span class="attr">#[derive(
 	Clone,
 	Copy,
 	Decode,
+	Default,
 	Encode,
 	Eq,
 	Ord,
@@ -490,14 +618,47 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	Serialize,
 	Deserialize,
 )]
-</span><span class="kw">pub struct </span>LaneId(InnerLaneId);
+</span><span class="kw">pub struct </span>HashedLaneId(H256);
 
-<span class="kw">impl </span>LaneId {
+<span class="kw">impl </span>HashedLaneId {
+	<span class="doccomment">/// Create lane identifier from given hash.
+	///
+	/// There's no `From&lt;H256&gt;` implementation for the `LaneId`, because using this conversion
+	/// in a wrong way (i.e. computing hash of endpoints manually) may lead to issues. So we
+	/// want the call to be explicit.
+	</span><span class="attr">#[cfg(any(feature = <span class="string">"std"</span>, feature = <span class="string">"runtime-benchmarks"</span>, test))]
+	</span><span class="kw">pub const fn </span>from_inner(inner: H256) -&gt; <span class="self">Self </span>{
+		<span class="self">Self</span>(inner)
+	}
+
+	<span class="doccomment">/// Access the inner lane representation.
+	</span><span class="kw">pub fn </span>inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>H256 {
+		<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
+	</span>}
+}
+
+<span class="kw">impl </span>core::fmt::Display <span class="kw">for </span>HashedLaneId {
+	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
+		core::fmt::Display::fmt(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, f)
+	}
+}
+
+<span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span>HashedLaneId {
+	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
+		core::fmt::Debug::fmt(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, f)
+	}
+}
+
+<span class="kw">impl </span>TypeId <span class="kw">for </span>HashedLaneId {
+	<span class="kw">const </span>TYPE_ID: [u8; <span class="number">4</span>] = <span class="kw-2">*</span><span class="string">b"hlan"</span>;
+}
+
+<span class="kw">impl </span>LaneIdType <span class="kw">for </span>HashedLaneId {
 	<span class="doccomment">/// Create lane identifier from two locations.
-	</span><span class="kw">pub fn </span>new&lt;T: Ord + Encode&gt;(endpoint1: T, endpoint2: T) -&gt; <span class="self">Self </span>{
+	</span><span class="kw">fn </span>try_new&lt;T: Ord + Encode&gt;(endpoint1: T, endpoint2: T) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ()&gt; {
 		<span class="kw">const </span>VALUES_SEPARATOR: [u8; <span class="number">31</span>] = <span class="kw-2">*</span><span class="string">b"bridges-lane-id-value-separator"</span>;
 
-		LaneId(InnerLaneId::Hash(
+		<span class="prelude-val">Ok</span>(<span class="self">Self</span>(
 			<span class="kw">if </span>endpoint1 &lt; endpoint2 {
 				(endpoint1, VALUES_SEPARATOR, endpoint2)
 			} <span class="kw">else </span>{
@@ -507,98 +668,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			.into(),
 		))
 	}
-
-	<span class="doccomment">/// Create lane identifier from given hash.
-	///
-	/// There's no `From&lt;H256&gt;` implementation for the `LaneId`, because using this conversion
-	/// in a wrong way (i.e. computing hash of endpoints manually) may lead to issues. So we
-	/// want the call to be explicit.
-	</span><span class="kw">pub const fn </span>from_inner(inner: Either&lt;H256, [u8; <span class="number">4</span>]&gt;) -&gt; <span class="self">Self </span>{
-		LaneId(<span class="kw">match </span>inner {
-			Either::Left(hash) =&gt; InnerLaneId::Hash(hash),
-			Either::Right(array) =&gt; InnerLaneId::Array(array),
-		})
-	}
 }
 
-<span class="kw">impl </span>core::fmt::Display <span class="kw">for </span>LaneId {
-	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
-		core::fmt::Display::fmt(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, f)
-	}
-}
+<span class="attr">#[cfg(any(feature = <span class="string">"std"</span>, feature = <span class="string">"runtime-benchmarks"</span>, test))]
+</span><span class="kw">impl </span>TryFrom&lt;Vec&lt;u8&gt;&gt; <span class="kw">for </span>HashedLaneId {
+	<span class="kw">type </span>Error = ();
 
-<span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span>LaneId {
-	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
-		core::fmt::Debug::fmt(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, f)
-	}
-}
-
-<span class="kw">impl </span>AsRef&lt;[u8]&gt; <span class="kw">for </span>LaneId {
-	<span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
-		<span class="self">self</span>.<span class="number">0</span>.as_ref()
-	}
-}
-
-<span class="kw">impl </span>TypeId <span class="kw">for </span>LaneId {
-	<span class="kw">const </span>TYPE_ID: [u8; <span class="number">4</span>] = <span class="kw-2">*</span><span class="string">b"blan"</span>;
-}
-
-<span class="attr">#[derive(
-	Clone, Copy, Eq, Ord, PartialOrd, PartialEq, TypeInfo, MaxEncodedLen, Serialize, Deserialize,
-)]
-</span><span class="kw">enum </span>InnerLaneId {
-	<span class="doccomment">/// Old format (for backwards compatibility).
-	</span>Array([u8; <span class="number">4</span>]),
-	<span class="doccomment">/// New format 32-byte hash generated by `blake2_256`.
-	</span>Hash(H256),
-}
-
-<span class="kw">impl </span>Encode <span class="kw">for </span>InnerLaneId {
-	<span class="kw">fn </span>encode(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; sp_std::vec::Vec&lt;u8&gt; {
-		<span class="kw">match </span><span class="self">self </span>{
-			InnerLaneId::Array(array) =&gt; array.encode(),
-			InnerLaneId::Hash(hash) =&gt; hash.encode(),
+	<span class="kw">fn </span>try_from(value: Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+		<span class="kw">if </span>value.len() == <span class="number">32 </span>{
+			<span class="kw">return </span>&lt;[u8; <span class="number">32</span>]&gt;::try_from(value).map(|v| <span class="self">Self</span>(H256::from(v))).map_err(|<span class="kw">_</span>| ());
 		}
-	}
-}
-
-<span class="kw">impl </span>Decode <span class="kw">for </span>InnerLaneId {
-	<span class="kw">fn </span>decode&lt;I: Input&gt;(input: <span class="kw-2">&amp;mut </span>I) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, CodecError&gt; {
-		<span class="comment">// check backwards compatibly first
-		</span><span class="kw">if </span>input.remaining_len() == <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="number">4</span>)) {
-			<span class="kw">let </span>array: [u8; <span class="number">4</span>] = Decode::decode(input)<span class="question-mark">?</span>;
-			<span class="kw">return </span><span class="prelude-val">Ok</span>(InnerLaneId::Array(array))
-		}
-
-		<span class="comment">// else check new format
-		</span>H256::decode(input).map(InnerLaneId::Hash)
-	}
-}
-
-<span class="kw">impl </span>core::fmt::Display <span class="kw">for </span>InnerLaneId {
-	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
-		<span class="kw">match </span><span class="self">self </span>{
-			InnerLaneId::Array(array) =&gt; <span class="macro">write!</span>(f, <span class="string">"Array({:?})"</span>, array),
-			InnerLaneId::Hash(hash) =&gt; <span class="macro">write!</span>(f, <span class="string">"Hash({:?})"</span>, hash),
-		}
-	}
-}
-
-<span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span>InnerLaneId {
-	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
-		<span class="kw">match </span><span class="self">self </span>{
-			InnerLaneId::Array(array) =&gt; array.fmt(fmt),
-			InnerLaneId::Hash(hash) =&gt; hash.fmt(fmt),
-		}
-	}
-}
-
-<span class="kw">impl </span>AsRef&lt;[u8]&gt; <span class="kw">for </span>InnerLaneId {
-	<span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
-		<span class="kw">match </span><span class="self">self </span>{
-			InnerLaneId::Array(array) =&gt; array.as_ref(),
-			InnerLaneId::Hash(hash) =&gt; hash.as_ref(),
-		}
+		<span class="prelude-val">Err</span>(())
 	}
 }
 
@@ -627,63 +707,89 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
+	<span class="kw">use </span><span class="kw">crate</span>::MessageNonce;
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>lane_id_debug_format_matches_inner_hash_format() {
 		<span class="macro">assert_eq!</span>(
-			<span class="macro">format!</span>(<span class="string">"{:?}"</span>, LaneId(InnerLaneId::Hash(H256::from([<span class="number">1u8</span>; <span class="number">32</span>])))),
+			<span class="macro">format!</span>(<span class="string">"{:?}"</span>, HashedLaneId(H256::from([<span class="number">1u8</span>; <span class="number">32</span>]))),
 			<span class="macro">format!</span>(<span class="string">"{:?}"</span>, H256::from([<span class="number">1u8</span>; <span class="number">32</span>])),
 		);
-		<span class="macro">assert_eq!</span>(
-			<span class="macro">format!</span>(<span class="string">"{:?}"</span>, LaneId(InnerLaneId::Array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]))),
-			<span class="macro">format!</span>(<span class="string">"{:?}"</span>, [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]),
-		);
+		<span class="macro">assert_eq!</span>(<span class="macro">format!</span>(<span class="string">"{:?}"</span>, LegacyLaneId([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>])), <span class="macro">format!</span>(<span class="string">"{:?}"</span>, [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]),);
 	}
 
 	<span class="attr">#[test]
-	</span><span class="kw">fn </span>lane_id_as_ref_works() {
+	</span><span class="kw">fn </span>hashed_encode_decode_works() {
+		<span class="comment">// simple encode/decode - new format
+		</span><span class="kw">let </span>lane_id = HashedLaneId(H256::from([<span class="number">1u8</span>; <span class="number">32</span>]));
+		<span class="kw">let </span>encoded_lane_id = lane_id.encode();
+		<span class="kw">let </span>decoded_lane_id = HashedLaneId::decode(<span class="kw-2">&amp;mut &amp;</span>encoded_lane_id[..]).expect(<span class="string">"decodable"</span>);
+		<span class="macro">assert_eq!</span>(lane_id, decoded_lane_id);
 		<span class="macro">assert_eq!</span>(
 			<span class="string">"0101010101010101010101010101010101010101010101010101010101010101"</span>,
-			hex::encode(LaneId(InnerLaneId::Hash(H256::from([<span class="number">1u8</span>; <span class="number">32</span>]))).as_ref()),
+			hex::encode(encoded_lane_id)
 		);
-		<span class="macro">assert_eq!</span>(<span class="string">"00000001"</span>, hex::encode(LaneId(InnerLaneId::Array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>])).as_ref()),);
 	}
 
 	<span class="attr">#[test]
-	</span><span class="kw">fn </span>lane_id_encode_decode_works() {
-		<span class="kw">let </span>test_encode_decode = |expected_hex, lane_id: LaneId| {
-			<span class="kw">let </span>enc = lane_id.encode();
-			<span class="kw">let </span>decoded_lane_id = LaneId::decode(<span class="kw-2">&amp;mut &amp;</span>enc[..]).expect(<span class="string">"decodable"</span>);
-			<span class="macro">assert_eq!</span>(lane_id, decoded_lane_id);
+	</span><span class="kw">fn </span>legacy_encode_decode_works() {
+		<span class="comment">// simple encode/decode - old format
+		</span><span class="kw">let </span>lane_id = LegacyLaneId([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]);
+		<span class="kw">let </span>encoded_lane_id = lane_id.encode();
+		<span class="kw">let </span>decoded_lane_id = LegacyLaneId::decode(<span class="kw-2">&amp;mut &amp;</span>encoded_lane_id[..]).expect(<span class="string">"decodable"</span>);
+		<span class="macro">assert_eq!</span>(lane_id, decoded_lane_id);
+		<span class="macro">assert_eq!</span>(<span class="string">"00000001"</span>, hex::encode(encoded_lane_id));
 
-			<span class="macro">assert_eq!</span>(expected_hex, hex::encode(lane_id.as_ref()),);
-			<span class="macro">assert_eq!</span>(expected_hex, hex::encode(decoded_lane_id.as_ref()),);
+		<span class="comment">// decode sample
+		</span><span class="kw">let </span>bytes = <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>];
+		<span class="kw">let </span>(lane, nonce_start, nonce_end): (LegacyLaneId, MessageNonce, MessageNonce) =
+			Decode::decode(<span class="kw-2">&amp;mut &amp;</span>bytes[..]).unwrap();
+		<span class="macro">assert_eq!</span>(lane, LegacyLaneId([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>]));
+		<span class="macro">assert_eq!</span>(nonce_start, <span class="number">1</span>);
+		<span class="macro">assert_eq!</span>(nonce_end, <span class="number">1</span>);
 
-			<span class="kw">let </span>hex_bytes = hex::decode(expected_hex).expect(<span class="string">"valid hex"</span>);
-			<span class="kw">let </span>hex_decoded_lane_id = LaneId::decode(<span class="kw-2">&amp;mut &amp;</span>hex_bytes[..]).expect(<span class="string">"decodable"</span>);
-			<span class="macro">assert_eq!</span>(hex_decoded_lane_id, lane_id);
-			<span class="macro">assert_eq!</span>(hex_decoded_lane_id, decoded_lane_id);
-		};
+		<span class="comment">// run encode/decode for `LaneId` with different positions
+		</span><span class="kw">let </span>expected_lane = LegacyLaneId([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]);
+		<span class="kw">let </span>expected_nonce_start = <span class="number">1088_u64</span>;
+		<span class="kw">let </span>expected_nonce_end = <span class="number">9185_u64</span>;
 
-		test_encode_decode(
-			<span class="string">"0101010101010101010101010101010101010101010101010101010101010101"</span>,
-			LaneId(InnerLaneId::Hash(H256::from([<span class="number">1u8</span>; <span class="number">32</span>]))),
-		);
-		test_encode_decode(<span class="string">"00000001"</span>, LaneId(InnerLaneId::Array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>])));
+		<span class="comment">// decode: LaneId,Nonce,Nonce
+		</span><span class="kw">let </span>bytes = (expected_lane, expected_nonce_start, expected_nonce_end).encode();
+		<span class="kw">let </span>(lane, nonce_start, nonce_end): (LegacyLaneId, MessageNonce, MessageNonce) =
+			Decode::decode(<span class="kw-2">&amp;mut &amp;</span>bytes[..]).unwrap();
+		<span class="macro">assert_eq!</span>(lane, expected_lane);
+		<span class="macro">assert_eq!</span>(nonce_start, expected_nonce_start);
+		<span class="macro">assert_eq!</span>(nonce_end, expected_nonce_end);
+
+		<span class="comment">// decode: Nonce,LaneId,Nonce
+		</span><span class="kw">let </span>bytes = (expected_nonce_start, expected_lane, expected_nonce_end).encode();
+		<span class="kw">let </span>(nonce_start, lane, nonce_end): (MessageNonce, LegacyLaneId, MessageNonce) =
+			Decode::decode(<span class="kw-2">&amp;mut &amp;</span>bytes[..]).unwrap();
+		<span class="macro">assert_eq!</span>(lane, expected_lane);
+		<span class="macro">assert_eq!</span>(nonce_start, expected_nonce_start);
+		<span class="macro">assert_eq!</span>(nonce_end, expected_nonce_end);
+
+		<span class="comment">// decode: Nonce,Nonce,LaneId
+		</span><span class="kw">let </span>bytes = (expected_nonce_start, expected_nonce_end, expected_lane).encode();
+		<span class="kw">let </span>(nonce_start, nonce_end, lane): (MessageNonce, MessageNonce, LegacyLaneId) =
+			Decode::decode(<span class="kw-2">&amp;mut &amp;</span>bytes[..]).unwrap();
+		<span class="macro">assert_eq!</span>(lane, expected_lane);
+		<span class="macro">assert_eq!</span>(nonce_start, expected_nonce_start);
+		<span class="macro">assert_eq!</span>(nonce_end, expected_nonce_end);
 	}
 
 	<span class="attr">#[test]
-	</span><span class="kw">fn </span>lane_id_is_generated_using_ordered_endpoints() {
-		<span class="macro">assert_eq!</span>(LaneId::new(<span class="number">1</span>, <span class="number">2</span>), LaneId::new(<span class="number">2</span>, <span class="number">1</span>));
+	</span><span class="kw">fn </span>hashed_lane_id_is_generated_using_ordered_endpoints() {
+		<span class="macro">assert_eq!</span>(HashedLaneId::try_new(<span class="number">1</span>, <span class="number">2</span>).unwrap(), HashedLaneId::try_new(<span class="number">2</span>, <span class="number">1</span>).unwrap());
 	}
 
 	<span class="attr">#[test]
-	</span><span class="kw">fn </span>lane_id_is_different_for_different_endpoints() {
-		<span class="macro">assert_ne!</span>(LaneId::new(<span class="number">1</span>, <span class="number">2</span>), LaneId::new(<span class="number">1</span>, <span class="number">3</span>));
+	</span><span class="kw">fn </span>hashed_lane_id_is_different_for_different_endpoints() {
+		<span class="macro">assert_ne!</span>(HashedLaneId::try_new(<span class="number">1</span>, <span class="number">2</span>).unwrap(), HashedLaneId::try_new(<span class="number">1</span>, <span class="number">3</span>).unwrap());
 	}
 
 	<span class="attr">#[test]
-	</span><span class="kw">fn </span>lane_id_is_different_even_if_arguments_has_partial_matching_encoding() {
+	</span><span class="kw">fn </span>hashed_lane_id_is_different_even_if_arguments_has_partial_matching_encoding() {
 		<span class="doccomment">/// Some artificial type that generates the same encoding for different values
 		/// concatenations. I.e. the encoding for `(Either::Two(1, 2), Either::Two(3, 4))`
 		/// is the same as encoding of `(Either::Three(1, 2, 3), Either::One(4))`.
@@ -707,8 +813,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 
 		<span class="macro">assert_ne!</span>(
-			LaneId::new(Either::Two(<span class="number">1</span>, <span class="number">2</span>), Either::Two(<span class="number">3</span>, <span class="number">4</span>)),
-			LaneId::new(Either::Three(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), Either::One(<span class="number">4</span>)),
+			HashedLaneId::try_new(Either::Two(<span class="number">1</span>, <span class="number">2</span>), Either::Two(<span class="number">3</span>, <span class="number">4</span>)).unwrap(),
+			HashedLaneId::try_new(Either::Three(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), Either::One(<span class="number">4</span>)).unwrap(),
 		);
 	}
 }

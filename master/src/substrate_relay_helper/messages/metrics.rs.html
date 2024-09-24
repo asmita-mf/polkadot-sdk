@@ -340,6 +340,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#188" id="188">188</a>
 <a href="#189" id="189">189</a>
 <a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -360,11 +361,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="kw">use </span><span class="kw">crate</span>::TaggedAccount;
 
-<span class="kw">use </span>bp_messages::LaneId;
 <span class="kw">use </span>bp_relayers::{RewardsAccountOwner, RewardsAccountParams};
 <span class="kw">use </span>bp_runtime::StorageDoubleMapKeyProvider;
-<span class="kw">use </span>codec::Decode;
+<span class="kw">use </span>codec::{Decode, EncodeLike};
 <span class="kw">use </span>frame_system::AccountInfo;
+<span class="kw">use </span>messages_relay::Labeled;
 <span class="kw">use </span>pallet_balances::AccountData;
 <span class="kw">use </span>relay_substrate_client::{
 	metrics::{FloatStorageValue, FloatStorageValueMetric},
@@ -377,7 +378,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>std::{fmt::Debug, marker::PhantomData};
 
 <span class="doccomment">/// Add relay accounts balance metrics.
-</span><span class="kw">pub async fn </span>add_relay_balances_metrics&lt;C: ChainWithBalances, BC: ChainWithMessages&gt;(
+</span><span class="kw">pub async fn </span>add_relay_balances_metrics&lt;C: ChainWithBalances, BC: ChainWithMessages, LaneId&gt;(
 	client: <span class="kw">impl </span>Client&lt;C&gt;,
 	metrics: <span class="kw-2">&amp;</span>MetricsParams,
 	relay_accounts: <span class="kw-2">&amp;</span>Vec&lt;TaggedAccount&lt;AccountIdOf&lt;C&gt;&gt;&gt;,
@@ -385,6 +386,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ) -&gt; anyhow::Result&lt;()&gt;
 <span class="kw">where
 	</span>BalanceOf&lt;C&gt;: Into&lt;u128&gt; + std::fmt::Debug,
+	LaneId: Clone + Copy + Decode + EncodeLike + Send + Sync + Labeled,
 {
 	<span class="kw">if </span>relay_accounts.is_empty() {
 		<span class="kw">return </span><span class="prelude-val">Ok</span>(())
@@ -428,25 +430,25 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				FloatStorageValueMetric::new(
 					AccountBalance::&lt;C&gt; { token_decimals, _phantom: Default::default() },
 					client.clone(),
-					bp_relayers::RelayerRewardsKeyProvider::&lt;AccountIdOf&lt;C&gt;, BalanceOf&lt;C&gt;&gt;::final_key(
+					bp_relayers::RelayerRewardsKeyProvider::&lt;AccountIdOf&lt;C&gt;, BalanceOf&lt;C&gt;, LaneId&gt;::final_key(
 						relayers_pallet_name,
 						account.id(),
 						<span class="kw-2">&amp;</span>RewardsAccountParams::new(<span class="kw-2">*</span>lane, BC::ID, RewardsAccountOwner::ThisChain),
 					),
-					<span class="macro">format!</span>(<span class="string">"at_{}_relay_{}_reward_for_msgs_from_{}_on_lane_{}"</span>, C::NAME, account.tag(), BC::NAME, hex::encode(lane.as_ref())),
-					<span class="macro">format!</span>(<span class="string">"Reward of the {} relay account at {} for delivering messages from {} on lane {:?}"</span>, account.tag(), C::NAME, BC::NAME, lane),
+					<span class="macro">format!</span>(<span class="string">"at_{}_relay_{}_reward_for_msgs_from_{}_on_lane_{}"</span>, C::NAME, account.tag(), BC::NAME, lane.label()),
+					<span class="macro">format!</span>(<span class="string">"Reward of the {} relay account at {} for delivering messages from {} on lane {:?}"</span>, account.tag(), C::NAME, BC::NAME, lane.label()),
 				)<span class="question-mark">?</span>.register_and_spawn(<span class="kw-2">&amp;</span>metrics.registry)<span class="question-mark">?</span>;
 
 				FloatStorageValueMetric::new(
 					AccountBalance::&lt;C&gt; { token_decimals, _phantom: Default::default() },
 					client.clone(),
-					bp_relayers::RelayerRewardsKeyProvider::&lt;AccountIdOf&lt;C&gt;, BalanceOf&lt;C&gt;&gt;::final_key(
+					bp_relayers::RelayerRewardsKeyProvider::&lt;AccountIdOf&lt;C&gt;, BalanceOf&lt;C&gt;, LaneId&gt;::final_key(
 						relayers_pallet_name,
 						account.id(),
 						<span class="kw-2">&amp;</span>RewardsAccountParams::new(<span class="kw-2">*</span>lane, BC::ID, RewardsAccountOwner::BridgedChain),
 					),
-					<span class="macro">format!</span>(<span class="string">"at_{}_relay_{}_reward_for_msgs_to_{}_on_lane_{}"</span>, C::NAME, account.tag(), BC::NAME, hex::encode(lane.as_ref())),
-					<span class="macro">format!</span>(<span class="string">"Reward of the {} relay account at {} for delivering messages confirmations from {} on lane {:?}"</span>, account.tag(), C::NAME, BC::NAME, lane),
+					<span class="macro">format!</span>(<span class="string">"at_{}_relay_{}_reward_for_msgs_to_{}_on_lane_{}"</span>, C::NAME, account.tag(), BC::NAME, lane.label()),
+					<span class="macro">format!</span>(<span class="string">"Reward of the {} relay account at {} for delivering messages confirmations from {} on lane {:?}"</span>, account.tag(), C::NAME, BC::NAME, lane.label()),
 				)<span class="question-mark">?</span>.register_and_spawn(<span class="kw-2">&amp;</span>metrics.registry)<span class="question-mark">?</span>;
 			}
 		}

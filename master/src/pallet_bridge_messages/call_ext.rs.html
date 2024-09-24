@@ -748,8 +748,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>bp_messages::{
 	target_chain::MessageDispatch, BaseMessagesProofInfo, ChainWithMessages, InboundLaneData,
-	LaneId, MessageNonce, MessagesCallInfo, ReceiveMessagesDeliveryProofInfo,
-	ReceiveMessagesProofInfo, UnrewardedRelayerOccupation,
+	MessageNonce, MessagesCallInfo, ReceiveMessagesDeliveryProofInfo, ReceiveMessagesProofInfo,
+	UnrewardedRelayerOccupation,
 };
 <span class="kw">use </span>bp_runtime::{AccountIdOf, OwnedBridgeModule};
 <span class="kw">use </span>frame_support::{dispatch::CallableCallFor, traits::IsSubType};
@@ -767,7 +767,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	///
 	/// - call is `receive_messages_delivery_proof` and all messages confirmations have been
 	///   received.
-	</span><span class="kw">pub fn </span>was_successful(info: <span class="kw-2">&amp;</span>MessagesCallInfo) -&gt; bool {
+	</span><span class="kw">pub fn </span>was_successful(info: <span class="kw-2">&amp;</span>MessagesCallInfo&lt;T::LaneId&gt;) -&gt; bool {
 		<span class="kw">match </span>info {
 			MessagesCallInfo::ReceiveMessagesProof(info) =&gt; {
 				<span class="kw">let </span>inbound_lane_data = <span class="kw">match </span>InboundLanes::&lt;T, I&gt;::get(info.base.lane_id) {
@@ -803,19 +803,21 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	IsSubType&lt;CallableCallFor&lt;Pallet&lt;T, I&gt;, T&gt;&gt;
 {
 	<span class="doccomment">/// Create a new instance of `ReceiveMessagesProofInfo` from a `ReceiveMessagesProof` call.
-	</span><span class="kw">fn </span>receive_messages_proof_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ReceiveMessagesProofInfo&gt;;
+	</span><span class="kw">fn </span>receive_messages_proof_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ReceiveMessagesProofInfo&lt;T::LaneId&gt;&gt;;
 
 	<span class="doccomment">/// Create a new instance of `ReceiveMessagesDeliveryProofInfo` from
 	/// a `ReceiveMessagesDeliveryProof` call.
-	</span><span class="kw">fn </span>receive_messages_delivery_proof_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ReceiveMessagesDeliveryProofInfo&gt;;
+	</span><span class="kw">fn </span>receive_messages_delivery_proof_info(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+	) -&gt; <span class="prelude-ty">Option</span>&lt;ReceiveMessagesDeliveryProofInfo&lt;T::LaneId&gt;&gt;;
 
 	<span class="doccomment">/// Create a new instance of `MessagesCallInfo` from a `ReceiveMessagesProof`
 	/// or a `ReceiveMessagesDeliveryProof` call.
-	</span><span class="kw">fn </span>call_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;MessagesCallInfo&gt;;
+	</span><span class="kw">fn </span>call_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;MessagesCallInfo&lt;T::LaneId&gt;&gt;;
 
 	<span class="doccomment">/// Create a new instance of `MessagesCallInfo` from a `ReceiveMessagesProof`
 	/// or a `ReceiveMessagesDeliveryProof` call, if the call is for the provided lane.
-	</span><span class="kw">fn </span>call_info_for(<span class="kw-2">&amp;</span><span class="self">self</span>, lane_id: LaneId) -&gt; <span class="prelude-ty">Option</span>&lt;MessagesCallInfo&gt;;
+	</span><span class="kw">fn </span>call_info_for(<span class="kw-2">&amp;</span><span class="self">self</span>, lane_id: T::LaneId) -&gt; <span class="prelude-ty">Option</span>&lt;MessagesCallInfo&lt;T::LaneId&gt;&gt;;
 
 	<span class="doccomment">/// Ensures that a `ReceiveMessagesProof` or a `ReceiveMessagesDeliveryProof` call:
 	///
@@ -842,7 +844,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		I: <span class="lifetime">'static</span>,
 	&gt; CallSubType&lt;T, I&gt; <span class="kw">for </span>T::RuntimeCall
 {
-	<span class="kw">fn </span>receive_messages_proof_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ReceiveMessagesProofInfo&gt; {
+	<span class="kw">fn </span>receive_messages_proof_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ReceiveMessagesProofInfo&lt;T::LaneId&gt;&gt; {
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw">crate</span>::Call::&lt;T, I&gt;::receive_messages_proof { <span class="kw-2">ref </span>proof, .. }) =
 			<span class="self">self</span>.is_sub_type()
 		{
@@ -863,7 +865,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="prelude-val">None
 	</span>}
 
-	<span class="kw">fn </span>receive_messages_delivery_proof_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ReceiveMessagesDeliveryProofInfo&gt; {
+	<span class="kw">fn </span>receive_messages_delivery_proof_info(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+	) -&gt; <span class="prelude-ty">Option</span>&lt;ReceiveMessagesDeliveryProofInfo&lt;T::LaneId&gt;&gt; {
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw">crate</span>::Call::&lt;T, I&gt;::receive_messages_delivery_proof {
 			<span class="kw-2">ref </span>proof,
 			<span class="kw-2">ref </span>relayers_state,
@@ -887,7 +891,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="prelude-val">None
 	</span>}
 
-	<span class="kw">fn </span>call_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;MessagesCallInfo&gt; {
+	<span class="kw">fn </span>call_info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;MessagesCallInfo&lt;T::LaneId&gt;&gt; {
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(info) = <span class="self">self</span>.receive_messages_proof_info() {
 			<span class="kw">return </span><span class="prelude-val">Some</span>(MessagesCallInfo::ReceiveMessagesProof(info))
 		}
@@ -899,7 +903,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="prelude-val">None
 	</span>}
 
-	<span class="kw">fn </span>call_info_for(<span class="kw-2">&amp;</span><span class="self">self</span>, lane_id: LaneId) -&gt; <span class="prelude-ty">Option</span>&lt;MessagesCallInfo&gt; {
+	<span class="kw">fn </span>call_info_for(<span class="kw-2">&amp;</span><span class="self">self</span>, lane_id: T::LaneId) -&gt; <span class="prelude-ty">Option</span>&lt;MessagesCallInfo&lt;T::LaneId&gt;&gt; {
 		<span class="self">self</span>.call_info().filter(|info| {
 			<span class="kw">let </span>actual_lane_id = <span class="kw">match </span>info {
 				MessagesCallInfo::ReceiveMessagesProof(info) =&gt; info.base.lane_id,
@@ -978,10 +982,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		OutboundLaneData, UnrewardedRelayer, UnrewardedRelayersState,
 	};
 	<span class="kw">use </span>sp_std::ops::RangeInclusive;
-
-	<span class="kw">fn </span>test_lane_id() -&gt; LaneId {
-		LaneId::new(<span class="number">1</span>, <span class="number">2</span>)
-	}
 
 	<span class="kw">fn </span>fill_unrewarded_relayers() {
 		<span class="kw">let </span><span class="kw-2">mut </span>inbound_lane_state = InboundLanes::&lt;TestRuntime&gt;::get(test_lane_id()).unwrap();

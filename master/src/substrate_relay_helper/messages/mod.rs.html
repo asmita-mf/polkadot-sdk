@@ -1179,6 +1179,25 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1027" id="1027">1027</a>
 <a href="#1028" id="1028">1028</a>
 <a href="#1029" id="1029">1029</a>
+<a href="#1030" id="1030">1030</a>
+<a href="#1031" id="1031">1031</a>
+<a href="#1032" id="1032">1032</a>
+<a href="#1033" id="1033">1033</a>
+<a href="#1034" id="1034">1034</a>
+<a href="#1035" id="1035">1035</a>
+<a href="#1036" id="1036">1036</a>
+<a href="#1037" id="1037">1037</a>
+<a href="#1038" id="1038">1038</a>
+<a href="#1039" id="1039">1039</a>
+<a href="#1040" id="1040">1040</a>
+<a href="#1041" id="1041">1041</a>
+<a href="#1042" id="1042">1042</a>
+<a href="#1043" id="1043">1043</a>
+<a href="#1044" id="1044">1044</a>
+<a href="#1045" id="1045">1045</a>
+<a href="#1046" id="1046">1046</a>
+<a href="#1047" id="1047">1047</a>
+<a href="#1048" id="1048">1048</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -1208,19 +1227,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>async_std::sync::Arc;
 <span class="kw">use </span>bp_messages::{
-	target_chain::FromBridgedChainMessagesProof, ChainWithMessages <span class="kw">as _</span>, LaneId, MessageNonce,
+	target_chain::FromBridgedChainMessagesProof, ChainWithMessages <span class="kw">as _</span>, MessageNonce,
 };
-<span class="kw">use </span>bp_runtime::{
-	AccountIdOf, Chain <span class="kw">as _</span>, EncodedOrDecodedCall, HeaderIdOf, TransactionEra, WeightExtraOps,
-};
-<span class="kw">use </span>codec::Encode;
+<span class="kw">use </span>bp_runtime::{AccountIdOf, EncodedOrDecodedCall, HeaderIdOf, TransactionEra, WeightExtraOps};
+<span class="kw">use </span>codec::{Codec, Encode, EncodeLike};
 <span class="kw">use </span>frame_support::{dispatch::GetDispatchInfo, weights::Weight};
-<span class="kw">use </span>messages_relay::{message_lane::MessageLane, message_lane_loop::BatchTransaction};
+<span class="kw">use </span>messages_relay::{message_lane::MessageLane, message_lane_loop::BatchTransaction, Labeled};
 <span class="kw">use </span>pallet_bridge_messages::{Call <span class="kw">as </span>BridgeMessagesCall, Config <span class="kw">as </span>BridgeMessagesConfig};
 <span class="kw">use </span>relay_substrate_client::{
 	transaction_stall_timeout, AccountKeyPairOf, BalanceOf, BlockNumberOf, CallOf, Chain,
-	ChainWithMessages, ChainWithTransactions, Client, Error <span class="kw">as </span>SubstrateError, HashOf, SignParam,
-	UnsignedTransaction,
+	ChainBase, ChainWithMessages, ChainWithTransactions, Client, Error <span class="kw">as </span>SubstrateError, HashOf,
+	SignParam, UnsignedTransaction,
 };
 <span class="kw">use </span>relay_utils::{
 	metrics::{GlobalMetrics, MetricsParams, StandaloneMetric},
@@ -1240,6 +1257,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">type </span>SourceChain: ChainWithMessages + ChainWithTransactions;
 	<span class="doccomment">/// Messages from the `SourceChain` are dispatched on this chain.
 	</span><span class="kw">type </span>TargetChain: ChainWithMessages + ChainWithTransactions;
+
+	<span class="doccomment">/// Lane identifier type.
+	</span><span class="kw">type </span>LaneId: Clone
+		+ Copy
+		+ Debug
+		+ Codec
+		+ EncodeLike
+		+ Send
+		+ Sync
+		+ Labeled
+		+ TryFrom&lt;Vec&lt;u8&gt;&gt;
+		+ Default;
 
 	<span class="doccomment">/// How receive messages proof call is built?
 	</span><span class="kw">type </span>ReceiveMessagesProofCallBuilder: ReceiveMessagesProofCallBuilder&lt;<span class="self">Self</span>&gt;;
@@ -1262,8 +1291,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">const </span>SOURCE_NAME: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = P::SourceChain::NAME;
 	<span class="kw">const </span>TARGET_NAME: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = P::TargetChain::NAME;
 
-	<span class="kw">type </span>MessagesProof = SubstrateMessagesProof&lt;P::SourceChain&gt;;
-	<span class="kw">type </span>MessagesReceivingProof = SubstrateMessagesDeliveryProof&lt;P::TargetChain&gt;;
+	<span class="kw">type </span>LaneId = P::LaneId;
+
+	<span class="kw">type </span>MessagesProof = SubstrateMessagesProof&lt;P::SourceChain, P::LaneId&gt;;
+	<span class="kw">type </span>MessagesReceivingProof = SubstrateMessagesDeliveryProof&lt;P::TargetChain, P::LaneId&gt;;
 
 	<span class="kw">type </span>SourceChainBalance = BalanceOf&lt;P::SourceChain&gt;;
 	<span class="kw">type </span>SourceHeaderNumber = BlockNumberOf&lt;P::SourceChain&gt;;
@@ -1290,7 +1321,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub </span>target_to_source_headers_relay:
 		<span class="prelude-ty">Option</span>&lt;Arc&lt;<span class="kw">dyn </span>OnDemandRelay&lt;P::TargetChain, P::SourceChain&gt;&gt;&gt;,
 	<span class="doccomment">/// Identifier of lane that needs to be served.
-	</span><span class="kw">pub </span>lane_id: LaneId,
+	</span><span class="kw">pub </span>lane_id: P::LaneId,
 	<span class="doccomment">/// Messages relay limits. If not provided, the relay tries to determine it automatically,
 	/// using `TransactionPayment` pallet runtime API.
 	</span><span class="kw">pub </span>limits: <span class="prelude-ty">Option</span>&lt;MessagesRelayLimits&gt;,
@@ -1474,7 +1505,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	source_transaction_params: TransactionParams&lt;AccountKeyPairOf&lt;P::SourceChain&gt;&gt;,
 	target_transaction_params: TransactionParams&lt;AccountKeyPairOf&lt;P::TargetChain&gt;&gt;,
 	at_source_block: HeaderIdOf&lt;P::SourceChain&gt;,
-	lane_id: LaneId,
+	lane_id: P::LaneId,
 	range: RangeInclusive&lt;MessageNonce&gt;,
 	outbound_state_proof_required: bool,
 ) -&gt; anyhow::Result&lt;()&gt;
@@ -1516,7 +1547,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	target_client: <span class="kw">impl </span>Client&lt;P::TargetChain&gt;,
 	source_transaction_params: TransactionParams&lt;AccountKeyPairOf&lt;P::SourceChain&gt;&gt;,
 	at_target_block: HeaderIdOf&lt;P::TargetChain&gt;,
-	lane_id: LaneId,
+	lane_id: P::LaneId,
 ) -&gt; anyhow::Result&lt;()&gt;
 <span class="kw">where
 	</span>AccountIdOf&lt;P::SourceChain&gt;: From&lt;&lt;AccountKeyPairOf&lt;P::SourceChain&gt; <span class="kw">as </span>Pair&gt;::Public&gt;,
@@ -1553,7 +1584,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	/// messages module at the target chain.
 	</span><span class="kw">fn </span>build_receive_messages_proof_call(
 		relayer_id_at_source: AccountIdOf&lt;P::SourceChain&gt;,
-		proof: SubstrateMessagesProof&lt;P::SourceChain&gt;,
+		proof: SubstrateMessagesProof&lt;P::SourceChain, P::LaneId&gt;,
 		messages_count: u32,
 		dispatch_weight: Weight,
 		trace_call: bool,
@@ -1569,7 +1600,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">impl</span>&lt;P, R, I&gt; ReceiveMessagesProofCallBuilder&lt;P&gt; <span class="kw">for </span>DirectReceiveMessagesProofCallBuilder&lt;P, R, I&gt;
 <span class="kw">where
 	</span>P: SubstrateMessageLane,
-	R: BridgeMessagesConfig&lt;I&gt;,
+	R: BridgeMessagesConfig&lt;I, LaneId = P::LaneId&gt;,
 	I: <span class="lifetime">'static</span>,
 	R::BridgedChain:
 		bp_runtime::Chain&lt;AccountId = AccountIdOf&lt;P::SourceChain&gt;, Hash = HashOf&lt;P::SourceChain&gt;&gt;,
@@ -1577,7 +1608,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 {
 	<span class="kw">fn </span>build_receive_messages_proof_call(
 		relayer_id_at_source: AccountIdOf&lt;P::SourceChain&gt;,
-		proof: SubstrateMessagesProof&lt;P::SourceChain&gt;,
+		proof: SubstrateMessagesProof&lt;P::SourceChain, P::LaneId&gt;,
 		messages_count: u32,
 		dispatch_weight: Weight,
 		trace_call: bool,
@@ -1625,7 +1656,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					&lt;<span class="macro-nonterminal">$pipeline </span><span class="kw">as </span><span class="macro-nonterminal">$crate::messages::SubstrateMessageLane</span>&gt;::SourceChain
 				&gt;,
 				proof: <span class="macro-nonterminal">$crate::messages::source::SubstrateMessagesProof</span>&lt;
-					&lt;<span class="macro-nonterminal">$pipeline </span><span class="kw">as </span><span class="macro-nonterminal">$crate::messages::SubstrateMessageLane</span>&gt;::SourceChain
+					&lt;<span class="macro-nonterminal">$pipeline </span><span class="kw">as </span><span class="macro-nonterminal">$crate::messages::SubstrateMessageLane</span>&gt;::SourceChain,
+					&lt;<span class="macro-nonterminal">$pipeline </span><span class="kw">as </span><span class="macro-nonterminal">$crate::messages::SubstrateMessageLane</span>&gt;::LaneId
 				&gt;,
 				messages_count: u32,
 				dispatch_weight: bp_messages::Weight,
@@ -1651,7 +1683,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Given messages delivery proof, build call of `receive_messages_delivery_proof` function of
 	/// bridge messages module at the source chain.
 	</span><span class="kw">fn </span>build_receive_messages_delivery_proof_call(
-		proof: SubstrateMessagesDeliveryProof&lt;P::TargetChain&gt;,
+		proof: SubstrateMessagesDeliveryProof&lt;P::TargetChain, P::LaneId&gt;,
 		trace_call: bool,
 	) -&gt; CallOf&lt;P::SourceChain&gt;;
 }
@@ -1666,13 +1698,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">for </span>DirectReceiveMessagesDeliveryProofCallBuilder&lt;P, R, I&gt;
 <span class="kw">where
 	</span>P: SubstrateMessageLane,
-	R: BridgeMessagesConfig&lt;I&gt;,
+	R: BridgeMessagesConfig&lt;I, LaneId = P::LaneId&gt;,
 	I: <span class="lifetime">'static</span>,
 	R::BridgedChain: bp_runtime::Chain&lt;Hash = HashOf&lt;P::TargetChain&gt;&gt;,
 	CallOf&lt;P::SourceChain&gt;: From&lt;BridgeMessagesCall&lt;R, I&gt;&gt; + GetDispatchInfo,
 {
 	<span class="kw">fn </span>build_receive_messages_delivery_proof_call(
-		proof: SubstrateMessagesDeliveryProof&lt;P::TargetChain&gt;,
+		proof: SubstrateMessagesDeliveryProof&lt;P::TargetChain, P::LaneId&gt;,
 		trace_call: bool,
 	) -&gt; CallOf&lt;P::SourceChain&gt; {
 		<span class="kw">let </span>call: CallOf&lt;P::SourceChain&gt; =
@@ -1714,7 +1746,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span>{
 			<span class="kw">fn </span>build_receive_messages_delivery_proof_call(
 				proof: <span class="macro-nonterminal">$crate::messages::target::SubstrateMessagesDeliveryProof</span>&lt;
-					&lt;<span class="macro-nonterminal">$pipeline </span><span class="kw">as </span><span class="macro-nonterminal">$crate::messages::SubstrateMessageLane</span>&gt;::TargetChain
+					&lt;<span class="macro-nonterminal">$pipeline </span><span class="kw">as </span><span class="macro-nonterminal">$crate::messages::SubstrateMessageLane</span>&gt;::TargetChain,
+					&lt;<span class="macro-nonterminal">$pipeline </span><span class="kw">as </span><span class="macro-nonterminal">$crate::messages::SubstrateMessageLane</span>&gt;::LaneId
 				&gt;,
 				_trace_call: bool,
 			) -&gt; relay_substrate_client::CallOf&lt;
@@ -1825,7 +1858,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				FromBridgedChainMessagesProof {
 					bridged_header_hash: Default::default(),
 					storage_proof: Default::default(),
-					lane: LaneId::new(<span class="number">1</span>, <span class="number">2</span>),
+					lane: P::LaneId::default(),
 					nonces_start: <span class="number">1</span>,
 					nonces_end: messages <span class="kw">as </span>u64,
 				},
@@ -1855,7 +1888,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">mod </span>tests {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 	<span class="kw">use </span>bp_messages::{
-		source_chain::FromBridgedChainMessagesDeliveryProof, UnrewardedRelayersState,
+		source_chain::FromBridgedChainMessagesDeliveryProof, LaneIdType, UnrewardedRelayersState,
 	};
 	<span class="kw">use </span>relay_substrate_client::calls::{UtilityCall <span class="kw">as </span>MockUtilityCall, UtilityCall};
 
@@ -1868,8 +1901,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 	<span class="kw">pub type </span>CodegenBridgeMessagesCall = bp_messages::BridgeMessagesCall&lt;
 		u64,
-		Box&lt;FromBridgedChainMessagesProof&lt;mock::BridgedHeaderHash&gt;&gt;,
-		FromBridgedChainMessagesDeliveryProof&lt;mock::BridgedHeaderHash&gt;,
+		Box&lt;FromBridgedChainMessagesProof&lt;mock::BridgedHeaderHash, mock::TestLaneIdType&gt;&gt;,
+		FromBridgedChainMessagesDeliveryProof&lt;mock::BridgedHeaderHash, mock::TestLaneIdType&gt;,
 	&gt;;
 
 	<span class="kw">impl </span>From&lt;MockUtilityCall&lt;RuntimeCall&gt;&gt; <span class="kw">for </span>RuntimeCall {
@@ -1887,7 +1920,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">let </span>receive_messages_proof = FromBridgedChainMessagesProof {
 			bridged_header_hash: Default::default(),
 			storage_proof: Default::default(),
-			lane: LaneId::new(<span class="number">1</span>, <span class="number">2</span>),
+			lane: mock::TestLaneIdType::try_new(<span class="number">1</span>, <span class="number">2</span>).unwrap(),
 			nonces_start: <span class="number">0</span>,
 			nonces_end: <span class="number">0</span>,
 		};
@@ -1942,7 +1975,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">let </span>receive_messages_delivery_proof = FromBridgedChainMessagesDeliveryProof {
 			bridged_header_hash: Default::default(),
 			storage_proof: Default::default(),
-			lane: LaneId::new(<span class="number">1</span>, <span class="number">2</span>),
+			lane: mock::TestLaneIdType::try_new(<span class="number">1</span>, <span class="number">2</span>).unwrap(),
 		};
 		<span class="kw">let </span>relayers_state = UnrewardedRelayersState {
 			unrewarded_relayer_entries: <span class="number">0</span>,
@@ -1989,7 +2022,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="comment">// mock runtime with `pallet_bridge_messages`
 	</span><span class="kw">mod </span>mock {
 		<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::<span class="kw-2">*</span>;
-		<span class="kw">use </span>bp_messages::target_chain::ForbidInboundMessages;
+		<span class="kw">use </span>bp_messages::{target_chain::ForbidInboundMessages, HashedLaneId};
 		<span class="kw">use </span>bp_runtime::ChainId;
 		<span class="kw">use </span>frame_support::derive_impl;
 		<span class="kw">use </span>sp_core::H256;
@@ -1999,6 +2032,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">type </span>Block = frame_system::mocking::MockBlock&lt;TestRuntime&gt;;
 		<span class="kw">pub type </span>SignedBlock = generic::SignedBlock&lt;Block&gt;;
+
+		<span class="doccomment">/// Lane identifier type used for tests.
+		</span><span class="kw">pub type </span>TestLaneIdType = HashedLaneId;
 
 		<span class="macro">frame_support::construct_runtime! </span>{
 			<span class="kw">pub enum </span>TestRuntime
@@ -2021,10 +2057,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">type </span>BridgedHeaderChain = BridgedHeaderChain;
 			<span class="kw">type </span>OutboundPayload = Vec&lt;u8&gt;;
 			<span class="kw">type </span>InboundPayload = Vec&lt;u8&gt;;
+			<span class="kw">type </span>LaneId = TestLaneIdType;
 			<span class="kw">type </span>DeliveryPayments = ();
 			<span class="kw">type </span>DeliveryConfirmationPayments = ();
 			<span class="kw">type </span>OnMessagesDelivered = ();
-			<span class="kw">type </span>MessageDispatch = ForbidInboundMessages&lt;Vec&lt;u8&gt;&gt;;
+			<span class="kw">type </span>MessageDispatch = ForbidInboundMessages&lt;Vec&lt;u8&gt;, <span class="self">Self</span>::LaneId&gt;;
 		}
 
 		<span class="kw">pub struct </span>ThisUnderlyingChain;
@@ -2186,6 +2223,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">impl </span>SubstrateMessageLane <span class="kw">for </span>ThisChainToBridgedChainMessageLane {
 			<span class="kw">type </span>SourceChain = ThisChain;
 			<span class="kw">type </span>TargetChain = BridgedChain;
+			<span class="kw">type </span>LaneId = mock::TestLaneIdType;
 			<span class="kw">type </span>ReceiveMessagesProofCallBuilder =
 				ThisChainToBridgedChainMessageLaneReceiveMessagesProofCallBuilder;
 			<span class="kw">type </span>ReceiveMessagesDeliveryProofCallBuilder =

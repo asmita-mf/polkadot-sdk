@@ -718,6 +718,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#566" id="566">566</a>
 <a href="#567" id="567">567</a>
 <a href="#568" id="568">568</a>
+<a href="#569" id="569">569</a>
+<a href="#570" id="570">570</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -740,8 +742,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>bp_messages::{
 	target_chain::{DispatchMessage, DispatchMessageData, MessageDispatch},
-	ChainWithMessages, DeliveredMessages, InboundLaneData, LaneId, LaneState, MessageKey,
-	MessageNonce, OutboundLaneData, ReceptionResult, UnrewardedRelayer,
+	ChainWithMessages, DeliveredMessages, InboundLaneData, LaneState, MessageKey, MessageNonce,
+	OutboundLaneData, ReceptionResult, UnrewardedRelayer,
 };
 <span class="kw">use </span>bp_runtime::AccountIdOf;
 <span class="kw">use </span>codec::{Decode, Encode, EncodeLike, MaxEncodedLen};
@@ -753,9 +755,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub trait </span>InboundLaneStorage {
 	<span class="doccomment">/// Id of relayer on source chain.
 	</span><span class="kw">type </span>Relayer: Clone + PartialEq;
+	<span class="doccomment">/// Lane identifier type.
+	</span><span class="kw">type </span>LaneId: Encode;
 
 	<span class="doccomment">/// Lane id.
-	</span><span class="kw">fn </span>id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; LaneId;
+	</span><span class="kw">fn </span>id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::LaneId;
 	<span class="doccomment">/// Return maximal number of unrewarded relayer entries in inbound lane.
 	</span><span class="kw">fn </span>max_unrewarded_relayer_entries(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; MessageNonce;
 	<span class="doccomment">/// Return maximal number of unconfirmed messages in inbound lane.
@@ -901,7 +905,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="doccomment">/// Receive new message.
-	</span><span class="kw">pub fn </span>receive_message&lt;Dispatch: MessageDispatch&gt;(
+	</span><span class="kw">pub fn </span>receive_message&lt;Dispatch: MessageDispatch&lt;LaneId = S::LaneId&gt;&gt;(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		relayer_at_bridged_chain: <span class="kw-2">&amp;</span>S::Relayer,
 		nonce: MessageNonce,

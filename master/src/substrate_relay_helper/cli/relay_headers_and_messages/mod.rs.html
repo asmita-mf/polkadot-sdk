@@ -661,6 +661,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#509" id="509">509</a>
 <a href="#510" id="510">510</a>
 <a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2022 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -694,25 +707,30 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub mod </span>relay_to_parachain;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>std::{marker::PhantomData, sync::Arc};
+<span class="kw">use </span>codec::{Codec, EncodeLike};
+<span class="kw">use </span>std::{fmt::Debug, marker::PhantomData, sync::Arc};
 <span class="kw">use </span>structopt::StructOpt;
 
 <span class="kw">use </span>futures::{FutureExt, TryFutureExt};
 
 <span class="kw">use crate</span>::{
-	cli::{bridge::MessagesCliBridge, DefaultClient, HexLaneId, PrometheusParams},
+	cli::{
+		bridge::{MessagesCliBridge, MessagesLaneIdOf},
+		DefaultClient, HexLaneId, PrometheusParams,
+	},
 	messages::{MessagesRelayLimits, MessagesRelayParams},
 	on_demand::OnDemandRelay,
 	HeadersToRelay, TaggedAccount, TransactionParams,
 };
-<span class="kw">use </span>bp_messages::LaneId;
 <span class="kw">use </span>bp_runtime::BalanceOf;
+<span class="kw">use </span>messages_relay::Labeled;
 <span class="kw">use </span>relay_substrate_client::{
 	AccountIdOf, AccountKeyPairOf, Chain, ChainWithBalances, ChainWithMessages,
 	ChainWithRuntimeVersion, ChainWithTransactions,
 };
 <span class="kw">use </span>relay_utils::metrics::MetricsParams;
 <span class="kw">use </span>sp_core::Pair;
+<span class="kw">use </span>sp_runtime::traits::TryConvert;
 
 <span class="doccomment">/// Parameters that have the same names across all bridges.
 </span><span class="attr">#[derive(Debug, PartialEq, StructOpt)]
@@ -826,7 +844,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		source_to_target_headers_relay: Arc&lt;<span class="kw">dyn </span>OnDemandRelay&lt;Source, Target&gt;&gt;,
 		target_to_source_headers_relay: Arc&lt;<span class="kw">dyn </span>OnDemandRelay&lt;Target, Source&gt;&gt;,
-		lane_id: LaneId,
+		lane_id: MessagesLaneIdOf&lt;Bridge&gt;,
 		maybe_limits: <span class="prelude-ty">Option</span>&lt;MessagesRelayLimits&gt;,
 	) -&gt; MessagesRelayParams&lt;Bridge::MessagesLane, DefaultClient&lt;Source&gt;, DefaultClient&lt;Target&gt;&gt; {
 		MessagesRelayParams {
@@ -897,9 +915,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		+ ChainWithRuntimeVersion;
 
 	<span class="doccomment">/// Left to Right bridge.
-	</span><span class="kw">type </span>L2R: MessagesCliBridge&lt;Source = <span class="self">Self</span>::Left, Target = <span class="self">Self</span>::Right&gt;;
+	</span><span class="kw">type </span>L2R: MessagesCliBridge&lt;Source = <span class="self">Self</span>::Left, Target = <span class="self">Self</span>::Right, LaneId = <span class="self">Self</span>::LaneId&gt;;
 	<span class="doccomment">/// Right to Left bridge
-	</span><span class="kw">type </span>R2L: MessagesCliBridge&lt;Source = <span class="self">Self</span>::Right, Target = <span class="self">Self</span>::Left&gt;;
+	</span><span class="kw">type </span>R2L: MessagesCliBridge&lt;Source = <span class="self">Self</span>::Right, Target = <span class="self">Self</span>::Left, LaneId = <span class="self">Self</span>::LaneId&gt;;
+	<span class="doccomment">/// Lane identifier type.
+	</span><span class="kw">type </span>LaneId: Clone
+		+ Copy
+		+ Debug
+		+ Codec
+		+ EncodeLike
+		+ Send
+		+ Sync
+		+ Labeled
+		+ TryFrom&lt;Vec&lt;u8&gt;&gt;
+		+ Default;
 
 	<span class="doccomment">/// Construct new bridge.
 	</span><span class="kw">fn </span>new(params: &lt;<span class="self">Self</span>::Base <span class="kw">as </span>Full2WayBridgeBase&gt;::Params) -&gt; anyhow::Result&lt;<span class="self">Self</span>&gt;;
@@ -950,30 +979,29 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="self">self</span>.mut_base().start_on_demand_headers_relayers().<span class="kw">await</span><span class="question-mark">?</span>;
 
 		<span class="comment">// add balance-related metrics
-		</span><span class="kw">let </span>lanes = <span class="self">self
+		</span><span class="kw">let </span>lanes: Vec&lt;<span class="self">Self</span>::LaneId&gt; = <span class="self">self
 			</span>.base()
 			.common()
 			.shared
 			.lane
 			.iter()
 			.cloned()
-			.map(Into::into)
-			.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+			.map(HexLaneId::try_convert)
+			.collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;, HexLaneId&gt;&gt;()
+			.expect(<span class="string">""</span>);
 		{
 			<span class="kw">let </span>common = <span class="self">self</span>.mut_base().mut_common();
-			<span class="kw">crate</span>::messages::metrics::add_relay_balances_metrics::&lt;<span class="kw">_</span>, <span class="self">Self</span>::Right&gt;(
-				common.left.client.clone(),
-				<span class="kw-2">&amp;</span>common.metrics_params,
-				<span class="kw-2">&amp;</span>common.left.accounts,
-				<span class="kw-2">&amp;</span>lanes,
-			)
+			<span class="kw">crate</span>::messages::metrics::add_relay_balances_metrics::&lt;
+				<span class="kw">_</span>,
+				<span class="self">Self</span>::Right,
+				MessagesLaneIdOf&lt;<span class="self">Self</span>::L2R&gt;,
+			&gt;(common.left.client.clone(), <span class="kw-2">&amp;</span>common.metrics_params, <span class="kw-2">&amp;</span>common.left.accounts, <span class="kw-2">&amp;</span>lanes)
 			.<span class="kw">await</span><span class="question-mark">?</span>;
-			<span class="kw">crate</span>::messages::metrics::add_relay_balances_metrics::&lt;<span class="kw">_</span>, <span class="self">Self</span>::Left&gt;(
-				common.right.client.clone(),
-				<span class="kw-2">&amp;</span>common.metrics_params,
-				<span class="kw-2">&amp;</span>common.right.accounts,
-				<span class="kw-2">&amp;</span>lanes,
-			)
+			<span class="kw">crate</span>::messages::metrics::add_relay_balances_metrics::&lt;
+				<span class="kw">_</span>,
+				<span class="self">Self</span>::Left,
+				MessagesLaneIdOf&lt;<span class="self">Self</span>::R2L&gt;,
+			&gt;(common.right.client.clone(), <span class="kw-2">&amp;</span>common.metrics_params, <span class="kw-2">&amp;</span>common.right.accounts, <span class="kw-2">&amp;</span>lanes)
 			.<span class="kw">await</span><span class="question-mark">?</span>;
 		}
 
@@ -1022,8 +1050,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">use crate</span>::{cli::chain_schema::RuntimeVersionType, declare_chain_cli_schema};
 
 	<span class="kw">use </span>relay_substrate_client::{ChainRuntimeVersion, Parachain, SimpleRuntimeVersion};
-	<span class="kw">use </span>sp_core::H256;
-	<span class="kw">use </span>sp_runtime::Either;
 
 	<span class="attr">#[test]
 	</span><span class="comment">// We need `#[allow(dead_code)]` because some of the methods generated by the macros
@@ -1097,7 +1123,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			res,
 			BridgeHubKusamaBridgeHubPolkadotHeadersAndMessages {
 				shared: HeadersAndMessagesSharedParams {
-					lane: <span class="macro">vec!</span>[HexLaneId(Either::Left(H256::from([<span class="number">0x00u8</span>; <span class="number">32</span>])))],
+					lane: <span class="macro">vec!</span>[HexLaneId(<span class="macro">vec!</span>[<span class="number">0x00u8</span>; <span class="number">32</span>])],
 					only_mandatory_headers: <span class="bool-val">false</span>,
 					only_free_headers: <span class="bool-val">false</span>,
 					prometheus_params: PrometheusParams {

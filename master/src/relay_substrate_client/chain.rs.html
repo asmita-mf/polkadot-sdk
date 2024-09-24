@@ -445,9 +445,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#293" id="293">293</a>
 <a href="#294" id="294">294</a>
 <a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a>
-<a href="#297" id="297">297</a>
-<a href="#298" id="298">298</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -563,10 +560,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Substrate-based chain with messaging support from minimal relay-client point of view.
 </span><span class="kw">pub trait </span>ChainWithMessages: Chain + ChainWithMessagesBase {
-	<span class="comment">// TODO (https://github.com/paritytech/parity-bridges-common/issues/1692): check all the names
-	// after the issue is fixed - all names must be changed
-
-	</span><span class="doccomment">/// Name of the bridge relayers pallet (used in `construct_runtime` macro call) that is deployed
+	<span class="doccomment">/// Name of the bridge relayers pallet (used in `construct_runtime` macro call) that is deployed
 	/// at some other chain to bridge with this `ChainWithMessages`.
 	///
 	/// We assume that all chains that are bridging with this `ChainWithMessages` are using

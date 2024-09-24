@@ -1435,6 +1435,35 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1283" id="1283">1283</a>
 <a href="#1284" id="1284">1284</a>
 <a href="#1285" id="1285">1285</a>
+<a href="#1286" id="1286">1286</a>
+<a href="#1287" id="1287">1287</a>
+<a href="#1288" id="1288">1288</a>
+<a href="#1289" id="1289">1289</a>
+<a href="#1290" id="1290">1290</a>
+<a href="#1291" id="1291">1291</a>
+<a href="#1292" id="1292">1292</a>
+<a href="#1293" id="1293">1293</a>
+<a href="#1294" id="1294">1294</a>
+<a href="#1295" id="1295">1295</a>
+<a href="#1296" id="1296">1296</a>
+<a href="#1297" id="1297">1297</a>
+<a href="#1298" id="1298">1298</a>
+<a href="#1299" id="1299">1299</a>
+<a href="#1300" id="1300">1300</a>
+<a href="#1301" id="1301">1301</a>
+<a href="#1302" id="1302">1302</a>
+<a href="#1303" id="1303">1303</a>
+<a href="#1304" id="1304">1304</a>
+<a href="#1305" id="1305">1305</a>
+<a href="#1306" id="1306">1306</a>
+<a href="#1307" id="1307">1307</a>
+<a href="#1308" id="1308">1308</a>
+<a href="#1309" id="1309">1309</a>
+<a href="#1310" id="1310">1310</a>
+<a href="#1311" id="1311">1311</a>
+<a href="#1312" id="1312">1312</a>
+<a href="#1313" id="1313">1313</a>
+<a href="#1314" id="1314">1314</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -1466,7 +1495,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>futures::{channel::mpsc::unbounded, future::FutureExt, stream::StreamExt};
 
-<span class="kw">use </span>bp_messages::{LaneId, MessageNonce, UnrewardedRelayersState, Weight};
+<span class="kw">use </span>bp_messages::{MessageNonce, UnrewardedRelayersState, Weight};
 <span class="kw">use </span>relay_utils::{
 	interval, metrics::MetricsParams, process_future_result, relay_loop::Client <span class="kw">as </span>RelayClient,
 	retry_backoff, FailedClient, TransactionTracker,
@@ -1476,12 +1505,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	message_lane::{MessageLane, SourceHeaderIdOf, TargetHeaderIdOf},
 	message_race_delivery::run <span class="kw">as </span>run_message_delivery_race,
 	message_race_receiving::run <span class="kw">as </span>run_message_receiving_race,
-	metrics::MessageLaneLoopMetrics,
+	metrics::{Labeled, MessageLaneLoopMetrics},
 };
 
 <span class="doccomment">/// Message lane loop configuration params.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>Params {
+</span><span class="kw">pub struct </span>Params&lt;LaneId&gt; {
 	<span class="doccomment">/// Id of lane this loop is servicing.
 	</span><span class="kw">pub </span>lane: LaneId,
 	<span class="doccomment">/// Interval at which we ask target node about its updates.
@@ -1712,13 +1741,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Return prefix that will be used by default to expose Prometheus metrics of the finality proofs
 /// sync loop.
-</span><span class="kw">pub fn </span>metrics_prefix&lt;P: MessageLane&gt;(lane: <span class="kw-2">&amp;</span>LaneId) -&gt; String {
-	<span class="macro">format!</span>(<span class="string">"{}_to_{}_MessageLane_{:?}"</span>, P::SOURCE_NAME, P::TARGET_NAME, lane)
+</span><span class="kw">pub fn </span>metrics_prefix&lt;P: MessageLane&gt;(lane: <span class="kw-2">&amp;</span>P::LaneId) -&gt; String {
+	<span class="macro">format!</span>(<span class="string">"{}_to_{}_MessageLane_{}"</span>, P::SOURCE_NAME, P::TARGET_NAME, lane.label())
 }
 
 <span class="doccomment">/// Run message lane service loop.
 </span><span class="kw">pub async fn </span>run&lt;P: MessageLane&gt;(
-	params: Params,
+	params: Params&lt;P::LaneId&gt;,
 	source_client: <span class="kw">impl </span>SourceClient&lt;P&gt;,
 	target_client: <span class="kw">impl </span>TargetClient&lt;P&gt;,
 	metrics_params: MetricsParams,
@@ -1746,7 +1775,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="doccomment">/// Run one-way message delivery loop until connection with target or source node is lost, or exit
 /// signal is received.
 </span><span class="kw">async fn </span>run_until_connection_lost&lt;P: MessageLane, SC: SourceClient&lt;P&gt;, TC: TargetClient&lt;P&gt;&gt;(
-	params: Params,
+	params: Params&lt;P::LaneId&gt;,
 	source_client: SC,
 	target_client: TC,
 	metrics_msg: <span class="prelude-ty">Option</span>&lt;MessageLaneLoopMetrics&gt;,
@@ -1908,9 +1937,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>tests {
 	<span class="kw">use </span>std::sync::Arc;
 
+	<span class="kw">use </span>bp_messages::{HashedLaneId, LaneIdType, LegacyLaneId};
 	<span class="kw">use </span>futures::stream::StreamExt;
 	<span class="kw">use </span>parking_lot::Mutex;
-
 	<span class="kw">use </span>relay_utils::{HeaderId, MaybeConnectionError, TrackedTransactionStatus};
 
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -1941,6 +1970,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span>}
 	}
 
+	<span class="doccomment">/// Lane identifier type used for tests.
+	</span><span class="kw">pub type </span>TestLaneIdType = HashedLaneId;
+
 	<span class="attr">#[derive(Clone)]
 	</span><span class="kw">pub struct </span>TestMessageLane;
 
@@ -1957,6 +1989,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">type </span>TargetHeaderNumber = TestTargetHeaderNumber;
 		<span class="kw">type </span>TargetHeaderHash = TestTargetHeaderHash;
+
+		<span class="kw">type </span>LaneId = TestLaneIdType;
 	}
 
 	<span class="attr">#[derive(Clone, Debug)]
@@ -2394,7 +2428,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			};
 			<span class="kw">let _ </span>= run(
 				Params {
-					lane: LaneId::new(<span class="number">1</span>, <span class="number">2</span>),
+					lane: TestLaneIdType::try_new(<span class="number">1</span>, <span class="number">2</span>).unwrap(),
 					source_tick: Duration::from_millis(<span class="number">100</span>),
 					target_tick: Duration::from_millis(<span class="number">100</span>),
 					reconnect_delay: Duration::from_millis(<span class="number">0</span>),
@@ -2715,7 +2749,31 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>metrics_prefix_is_valid() {
 		<span class="macro">assert!</span>(MessageLaneLoopMetrics::new(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>metrics_prefix::&lt;TestMessageLane&gt;(
-			<span class="kw-2">&amp;</span>LaneId::new(<span class="number">1</span>, <span class="number">2</span>)
+			<span class="kw-2">&amp;</span>HashedLaneId::try_new(<span class="number">1</span>, <span class="number">2</span>).unwrap()
+		)))
+		.is_ok());
+
+		<span class="comment">// with LegacyLaneId
+		</span><span class="attr">#[derive(Clone)]
+		</span><span class="kw">pub struct </span>LegacyTestMessageLane;
+		<span class="kw">impl </span>MessageLane <span class="kw">for </span>LegacyTestMessageLane {
+			<span class="kw">const </span>SOURCE_NAME: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"LegacyTestSource"</span>;
+			<span class="kw">const </span>TARGET_NAME: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"LegacyTestTarget"</span>;
+
+			<span class="kw">type </span>MessagesProof = TestMessagesProof;
+			<span class="kw">type </span>MessagesReceivingProof = TestMessagesReceivingProof;
+
+			<span class="kw">type </span>SourceChainBalance = TestSourceChainBalance;
+			<span class="kw">type </span>SourceHeaderNumber = TestSourceHeaderNumber;
+			<span class="kw">type </span>SourceHeaderHash = TestSourceHeaderHash;
+
+			<span class="kw">type </span>TargetHeaderNumber = TestTargetHeaderNumber;
+			<span class="kw">type </span>TargetHeaderHash = TestTargetHeaderHash;
+
+			<span class="kw">type </span>LaneId = LegacyLaneId;
+		}
+		<span class="macro">assert!</span>(MessageLaneLoopMetrics::new(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>metrics_prefix::&lt;LegacyTestMessageLane&gt;(
+			<span class="kw-2">&amp;</span>LegacyLaneId([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>])
 		)))
 		.is_ok());
 	}

@@ -295,7 +295,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#143" id="143">143</a>
 <a href="#144" id="144">144</a>
 <a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -315,7 +314,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="doccomment">//! A module that is responsible for migration of storage.
 
 </span><span class="kw">use crate</span>::{Config, Pallet, LOG_TARGET};
-<span class="kw">use </span>bp_messages::LaneId;
 <span class="kw">use </span>frame_support::{
 	traits::{Get, OnRuntimeUpgrade, StorageVersion},
 	weights::Weight,
@@ -350,7 +348,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">impl</span>&lt;
 		T: Config&lt;I&gt;,
 		I: <span class="lifetime">'static</span>,
-		Lane: Get&lt;LaneId&gt;,
+		Lane: Get&lt;T::LaneId&gt;,
 		CreateLane: Get&lt;bool&gt;,
 		SourceRelativeLocation: Get&lt;Location&gt;,
 		BridgedUniversalLocation: Get&lt;InteriorLocation&gt;,

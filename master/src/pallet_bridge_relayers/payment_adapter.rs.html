@@ -309,6 +309,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#157" id="157">157</a>
 <a href="#158" id="158">158</a>
 <a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -331,11 +332,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>bp_messages::{
 	source_chain::{DeliveryConfirmationPayments, RelayersRewards},
-	LaneId, MessageNonce,
+	MessageNonce,
 };
 <span class="kw">use </span>bp_relayers::{RewardsAccountOwner, RewardsAccountParams};
 <span class="kw">use </span>bp_runtime::Chain;
 <span class="kw">use </span>frame_support::{sp_runtime::SaturatedConversion, traits::Get};
+<span class="kw">use </span>pallet_bridge_messages::LaneIdOf;
 <span class="kw">use </span>sp_arithmetic::traits::{Saturating, Zero};
 <span class="kw">use </span>sp_std::{collections::vec_deque::VecDeque, marker::PhantomData, ops::RangeInclusive};
 
@@ -345,17 +347,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	PhantomData&lt;(T, MI, DeliveryReward)&gt;,
 );
 
-<span class="kw">impl</span>&lt;T, MI, DeliveryReward&gt; DeliveryConfirmationPayments&lt;T::AccountId&gt;
+<span class="kw">impl</span>&lt;T, MI, DeliveryReward&gt; DeliveryConfirmationPayments&lt;T::AccountId, LaneIdOf&lt;T, MI&gt;&gt;
 	<span class="kw">for </span>DeliveryConfirmationPaymentsAdapter&lt;T, MI, DeliveryReward&gt;
 <span class="kw">where
-	</span>T: Config + pallet_bridge_messages::Config&lt;MI&gt;,
+	</span>T: Config + pallet_bridge_messages::Config&lt;MI, LaneId = &lt;T <span class="kw">as </span>Config&gt;::LaneId&gt;,
 	MI: <span class="lifetime">'static</span>,
 	DeliveryReward: Get&lt;T::Reward&gt;,
 {
 	<span class="kw">type </span>Error = <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str;
 
 	<span class="kw">fn </span>pay_reward(
-		lane_id: LaneId,
+		lane_id: LaneIdOf&lt;T, MI&gt;,
 		messages_relayers: VecDeque&lt;bp_messages::UnrewardedRelayer&lt;T::AccountId&gt;&gt;,
 		confirmation_relayer: <span class="kw-2">&amp;</span>T::AccountId,
 		received_range: <span class="kw-2">&amp;</span>RangeInclusive&lt;bp_messages::MessageNonce&gt;,
@@ -383,7 +385,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">fn </span>register_relayers_rewards&lt;T: Config&gt;(
 	confirmation_relayer: <span class="kw-2">&amp;</span>T::AccountId,
 	relayers_rewards: RelayersRewards&lt;T::AccountId&gt;,
-	lane_id: RewardsAccountParams,
+	lane_id: RewardsAccountParams&lt;T::LaneId&gt;,
 	delivery_fee: T::Reward,
 ) {
 	<span class="comment">// reward every relayer except `confirmation_relayer`

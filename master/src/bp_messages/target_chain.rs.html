@@ -345,6 +345,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#193" id="193">193</a>
 <a href="#194" id="194">194</a>
 <a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -363,7 +375,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 </span><span class="doccomment">//! Primitives of messages module, that are used on the target chain.
 
-</span><span class="kw">use crate</span>::{LaneId, Message, MessageKey, MessageNonce, MessagePayload, OutboundLaneData};
+</span><span class="kw">use crate</span>::{Message, MessageKey, MessageNonce, MessagePayload, OutboundLaneData};
 
 <span class="kw">use </span>bp_runtime::{messages::MessageDispatchResult, raw_storage_proof_size, RawStorageProof, Size};
 <span class="kw">use </span>codec::{Decode, Encode, Error <span class="kw">as </span>CodecError};
@@ -385,20 +397,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ///
 /// - nonces (inclusive range) of messages which are included in this proof.
 </span><span class="attr">#[derive(Clone, Decode, Encode, Eq, PartialEq, RuntimeDebug, TypeInfo)]
-</span><span class="kw">pub struct </span>FromBridgedChainMessagesProof&lt;BridgedHeaderHash&gt; {
+</span><span class="kw">pub struct </span>FromBridgedChainMessagesProof&lt;BridgedHeaderHash, Lane&gt; {
 	<span class="doccomment">/// Hash of the finalized bridged header the proof is for.
 	</span><span class="kw">pub </span>bridged_header_hash: BridgedHeaderHash,
 	<span class="doccomment">/// A storage trie proof of messages being delivered.
 	</span><span class="kw">pub </span>storage_proof: RawStorageProof,
 	<span class="doccomment">/// Messages in this proof are sent over this lane.
-	</span><span class="kw">pub </span>lane: LaneId,
+	</span><span class="kw">pub </span>lane: Lane,
 	<span class="doccomment">/// Nonce of the first message being delivered.
 	</span><span class="kw">pub </span>nonces_start: MessageNonce,
 	<span class="doccomment">/// Nonce of the last message being delivered.
 	</span><span class="kw">pub </span>nonces_end: MessageNonce,
 }
 
-<span class="kw">impl</span>&lt;BridgedHeaderHash&gt; Size <span class="kw">for </span>FromBridgedChainMessagesProof&lt;BridgedHeaderHash&gt; {
+<span class="kw">impl</span>&lt;BridgedHeaderHash, Lane&gt; Size <span class="kw">for </span>FromBridgedChainMessagesProof&lt;BridgedHeaderHash, Lane&gt; {
 	<span class="kw">fn </span>size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
 		<span class="kw">use </span>frame_support::sp_runtime::SaturatedConversion;
 		raw_storage_proof_size(<span class="kw-2">&amp;</span><span class="self">self</span>.storage_proof).saturated_into()
@@ -406,7 +418,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="doccomment">/// Proved messages from the source chain.
-</span><span class="kw">pub type </span>ProvedMessages&lt;Message&gt; = (LaneId, ProvedLaneMessages&lt;Message&gt;);
+</span><span class="kw">pub type </span>ProvedMessages&lt;LaneId, Message&gt; = (LaneId, ProvedLaneMessages&lt;Message&gt;);
 
 <span class="doccomment">/// Proved messages from single lane of the source chain.
 </span><span class="attr">#[derive(RuntimeDebug, Encode, Decode, Clone, PartialEq, Eq, TypeInfo)]
@@ -426,9 +438,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Message with decoded dispatch payload.
 </span><span class="attr">#[derive(RuntimeDebug)]
-</span><span class="kw">pub struct </span>DispatchMessage&lt;DispatchPayload&gt; {
+</span><span class="kw">pub struct </span>DispatchMessage&lt;DispatchPayload, LaneId: Encode&gt; {
 	<span class="doccomment">/// Message key.
-	</span><span class="kw">pub </span>key: MessageKey,
+	</span><span class="kw">pub </span>key: MessageKey&lt;LaneId&gt;,
 	<span class="doccomment">/// Message data with decoded dispatch payload.
 	</span><span class="kw">pub </span>data: DispatchMessageData&lt;DispatchPayload&gt;,
 }
@@ -443,6 +455,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Fine-grained result of single message dispatch (for better diagnostic purposes)
 	</span><span class="kw">type </span>DispatchLevelResult: Clone + sp_std::fmt::Debug + Eq;
 
+	<span class="doccomment">/// Lane identifier type.
+	</span><span class="kw">type </span>LaneId: Encode;
+
 	<span class="doccomment">/// Returns `true` if dispatcher is ready to accept additional messages. The `false` should
 	/// be treated as a hint by both dispatcher and its consumers - i.e. dispatcher shall not
 	/// simply drop messages if it returns `false`. The consumer may still call the `dispatch`
@@ -450,21 +465,23 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	///
 	/// We check it in the messages delivery transaction prologue. So if it becomes `false`
 	/// after some portion of messages is already dispatched, it doesn't fail the whole transaction.
-	</span><span class="kw">fn </span>is_active(lane: LaneId) -&gt; bool;
+	</span><span class="kw">fn </span>is_active(lane: <span class="self">Self</span>::LaneId) -&gt; bool;
 
 	<span class="doccomment">/// Estimate dispatch weight.
 	///
 	/// This function must return correct upper bound of dispatch weight. The return value
 	/// of this function is expected to match return value of the corresponding
 	/// `From&lt;Chain&gt;InboundLaneApi::message_details().dispatch_weight` call.
-	</span><span class="kw">fn </span>dispatch_weight(message: <span class="kw-2">&amp;mut </span>DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload&gt;) -&gt; Weight;
+	</span><span class="kw">fn </span>dispatch_weight(
+		message: <span class="kw-2">&amp;mut </span>DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload, <span class="self">Self</span>::LaneId&gt;,
+	) -&gt; Weight;
 
 	<span class="doccomment">/// Called when inbound message is received.
 	///
 	/// It is up to the implementers of this trait to determine whether the message
 	/// is invalid (i.e. improperly encoded, has too large weight, ...) or not.
 	</span><span class="kw">fn </span>dispatch(
-		message: DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload&gt;,
+		message: DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload, <span class="self">Self</span>::LaneId&gt;,
 	) -&gt; MessageDispatchResult&lt;<span class="self">Self</span>::DispatchLevelResult&gt;;
 }
 
@@ -493,8 +510,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 }
 
-<span class="kw">impl</span>&lt;DispatchPayload: Decode&gt; From&lt;Message&gt; <span class="kw">for </span>DispatchMessage&lt;DispatchPayload&gt; {
-	<span class="kw">fn </span>from(message: Message) -&gt; <span class="self">Self </span>{
+<span class="kw">impl</span>&lt;DispatchPayload: Decode, LaneId: Encode&gt; From&lt;Message&lt;LaneId&gt;&gt;
+	<span class="kw">for </span>DispatchMessage&lt;DispatchPayload, LaneId&gt;
+{
+	<span class="kw">fn </span>from(message: Message&lt;LaneId&gt;) -&gt; <span class="self">Self </span>{
 		DispatchMessage { key: message.key, data: message.payload.into() }
 	}
 }
@@ -520,22 +539,27 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Structure that may be used in place of  `MessageDispatch` on chains,
 /// where inbound messages are forbidden.
-</span><span class="kw">pub struct </span>ForbidInboundMessages&lt;DispatchPayload&gt;(PhantomData&lt;DispatchPayload&gt;);
+</span><span class="kw">pub struct </span>ForbidInboundMessages&lt;DispatchPayload, LaneId&gt;(PhantomData&lt;(DispatchPayload, LaneId)&gt;);
 
-<span class="kw">impl</span>&lt;DispatchPayload: Decode&gt; MessageDispatch <span class="kw">for </span>ForbidInboundMessages&lt;DispatchPayload&gt; {
+<span class="kw">impl</span>&lt;DispatchPayload: Decode, LaneId: Encode&gt; MessageDispatch
+	<span class="kw">for </span>ForbidInboundMessages&lt;DispatchPayload, LaneId&gt;
+{
 	<span class="kw">type </span>DispatchPayload = DispatchPayload;
 	<span class="kw">type </span>DispatchLevelResult = ();
+	<span class="kw">type </span>LaneId = LaneId;
 
 	<span class="kw">fn </span>is_active(<span class="kw">_</span>: LaneId) -&gt; bool {
 		<span class="bool-val">false
 	</span>}
 
-	<span class="kw">fn </span>dispatch_weight(_message: <span class="kw-2">&amp;mut </span>DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload&gt;) -&gt; Weight {
+	<span class="kw">fn </span>dispatch_weight(
+		_message: <span class="kw-2">&amp;mut </span>DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload, <span class="self">Self</span>::LaneId&gt;,
+	) -&gt; Weight {
 		Weight::MAX
 	}
 
 	<span class="kw">fn </span>dispatch(
-		<span class="kw">_</span>: DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload&gt;,
+		<span class="kw">_</span>: DispatchMessage&lt;<span class="self">Self</span>::DispatchPayload, <span class="self">Self</span>::LaneId&gt;,
 	) -&gt; MessageDispatchResult&lt;<span class="self">Self</span>::DispatchLevelResult&gt; {
 		MessageDispatchResult { unspent_weight: Weight::zero(), dispatch_level_result: () }
 	}
