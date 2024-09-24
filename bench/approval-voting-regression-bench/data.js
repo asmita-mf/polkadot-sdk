@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727136605925,
+  "lastUpdate": 1727186279076,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -19063,6 +19063,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 3.1092204990032077,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "evgeny@parity.io",
+            "name": "Evgeny Snitko",
+            "username": "AndWeHaveAPlan"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "c987da33935898cd5b2f8605d548bc48727c1815",
+          "message": "Preflight workflow update (#5771)\n\n- New and updated vars\n- New runner vars\n- Runners rename (see https://github.com/paritytech/ci_cd/issues/1039)\n\n---------\n\nCo-authored-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>",
+          "timestamp": "2024-09-24T12:18:46Z",
+          "tree_id": "1628ea979224d3f97a24d966b90cdd64b824f324",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/c987da33935898cd5b2f8605d548bc48727c1815"
+        },
+        "date": 1727186251790,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52941.2,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63831.79,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-voting",
+            "value": 2.9167697109299966,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 12.578029495229995,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.6746270917639103,
             "unit": "seconds"
           }
         ]
