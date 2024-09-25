@@ -2146,6 +2146,52 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1994" id="1994">1994</a>
 <a href="#1995" id="1995">1995</a>
 <a href="#1996" id="1996">1996</a>
+<a href="#1997" id="1997">1997</a>
+<a href="#1998" id="1998">1998</a>
+<a href="#1999" id="1999">1999</a>
+<a href="#2000" id="2000">2000</a>
+<a href="#2001" id="2001">2001</a>
+<a href="#2002" id="2002">2002</a>
+<a href="#2003" id="2003">2003</a>
+<a href="#2004" id="2004">2004</a>
+<a href="#2005" id="2005">2005</a>
+<a href="#2006" id="2006">2006</a>
+<a href="#2007" id="2007">2007</a>
+<a href="#2008" id="2008">2008</a>
+<a href="#2009" id="2009">2009</a>
+<a href="#2010" id="2010">2010</a>
+<a href="#2011" id="2011">2011</a>
+<a href="#2012" id="2012">2012</a>
+<a href="#2013" id="2013">2013</a>
+<a href="#2014" id="2014">2014</a>
+<a href="#2015" id="2015">2015</a>
+<a href="#2016" id="2016">2016</a>
+<a href="#2017" id="2017">2017</a>
+<a href="#2018" id="2018">2018</a>
+<a href="#2019" id="2019">2019</a>
+<a href="#2020" id="2020">2020</a>
+<a href="#2021" id="2021">2021</a>
+<a href="#2022" id="2022">2022</a>
+<a href="#2023" id="2023">2023</a>
+<a href="#2024" id="2024">2024</a>
+<a href="#2025" id="2025">2025</a>
+<a href="#2026" id="2026">2026</a>
+<a href="#2027" id="2027">2027</a>
+<a href="#2028" id="2028">2028</a>
+<a href="#2029" id="2029">2029</a>
+<a href="#2030" id="2030">2030</a>
+<a href="#2031" id="2031">2031</a>
+<a href="#2032" id="2032">2032</a>
+<a href="#2033" id="2033">2033</a>
+<a href="#2034" id="2034">2034</a>
+<a href="#2035" id="2035">2035</a>
+<a href="#2036" id="2036">2036</a>
+<a href="#2037" id="2037">2037</a>
+<a href="#2038" id="2038">2038</a>
+<a href="#2039" id="2039">2039</a>
+<a href="#2040" id="2040">2040</a>
+<a href="#2041" id="2041">2041</a>
+<a href="#2042" id="2042">2042</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2176,7 +2222,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 };
 <span class="kw">use </span>alloc::{boxed::Box, vec, vec::Vec};
 <span class="kw">use </span>codec::{Decode, DecodeLimit, Encode, MaxEncodedLen};
-<span class="kw">use </span>core::{fmt, marker::PhantomData};
+<span class="kw">use </span>core::{fmt, marker::PhantomData, mem};
 <span class="kw">use </span>frame_support::{
 	dispatch::DispatchInfo, ensure, pallet_prelude::DispatchResultWithPostInfo, parameter_types,
 	traits::Get, weights::Weight,
@@ -2385,8 +2431,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">const </span>XcmExecutionFailed: ReturnErrorCode = ReturnErrorCode::XcmExecutionFailed;
 }
 
-<span class="kw">impl </span>From&lt;ExecReturnValue&gt; <span class="kw">for </span>ReturnErrorCode {
-	<span class="kw">fn </span>from(from: ExecReturnValue) -&gt; <span class="self">Self </span>{
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>ExecReturnValue&gt; <span class="kw">for </span>ReturnErrorCode {
+	<span class="kw">fn </span>from(from: <span class="kw-2">&amp;</span>ExecReturnValue) -&gt; <span class="self">Self </span>{
 		<span class="kw">if </span>from.flags.contains(ReturnFlags::REVERT) {
 			<span class="self">Self</span>::CalleeReverted
 		} <span class="kw">else </span>{
@@ -2917,20 +2963,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 	}
 
-	<span class="doccomment">/// Fallible conversion of a `ExecResult` to `ReturnErrorCode`.
-	</span><span class="kw">fn </span>exec_into_return_code(from: ExecResult) -&gt; <span class="prelude-ty">Result</span>&lt;ReturnErrorCode, DispatchError&gt; {
+	<span class="doccomment">/// Fallible conversion of a `ExecError` to `ReturnErrorCode`.
+	</span><span class="kw">fn </span>exec_error_into_return_code(from: ExecError) -&gt; <span class="prelude-ty">Result</span>&lt;ReturnErrorCode, DispatchError&gt; {
 		<span class="kw">use </span><span class="kw">crate</span>::exec::ErrorOrigin::Callee;
 
-		<span class="kw">let </span>ExecError { error, origin } = <span class="kw">match </span>from {
-			<span class="prelude-val">Ok</span>(retval) =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(retval.into()),
-			<span class="prelude-val">Err</span>(err) =&gt; err,
-		};
-
-		<span class="kw">match </span>(error, origin) {
+		<span class="kw">match </span>(from.error, from.origin) {
 			(<span class="kw">_</span>, Callee) =&gt; <span class="prelude-val">Ok</span>(ReturnErrorCode::CalleeTrapped),
 			(err, <span class="kw">_</span>) =&gt; <span class="self">Self</span>::err_into_return_code(err),
 		}
 	}
+
 	<span class="kw">fn </span>decode_key(<span class="kw-2">&amp;</span><span class="self">self</span>, memory: <span class="kw-2">&amp;</span>M, key_ptr: u32, key_len: u32) -&gt; <span class="prelude-ty">Result</span>&lt;Key, TrapReason&gt; {
 		<span class="kw">let </span>res = <span class="kw">match </span>key_len {
 			SENTINEL =&gt; {
@@ -3184,28 +3226,32 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			},
 		};
 
-		<span class="comment">// `TAIL_CALL` only matters on an `OK` result. Otherwise the call stack comes to
-		// a halt anyways without anymore code being executed.
-		</span><span class="kw">if </span>flags.contains(CallFlags::TAIL_CALL) {
-			<span class="kw">if let </span><span class="prelude-val">Ok</span>(return_value) = call_outcome {
+		<span class="kw">match </span>call_outcome {
+			<span class="comment">// `TAIL_CALL` only matters on an `OK` result. Otherwise the call stack comes to
+			// a halt anyways without anymore code being executed.
+			</span><span class="prelude-val">Ok</span>(<span class="kw">_</span>) <span class="kw">if </span>flags.contains(CallFlags::TAIL_CALL) =&gt; {
+				<span class="kw">let </span>output = mem::take(<span class="self">self</span>.ext.last_frame_output_mut());
 				<span class="kw">return </span><span class="prelude-val">Err</span>(TrapReason::Return(ReturnData {
-					flags: return_value.flags.bits(),
-					data: return_value.data,
+					flags: output.flags.bits(),
+					data: output.data,
 				}));
-			}
+			},
+			<span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
+				<span class="kw">let </span>output = mem::take(<span class="self">self</span>.ext.last_frame_output_mut());
+				<span class="kw">let </span>write_result = <span class="self">self</span>.write_sandbox_output(
+					memory,
+					output_ptr,
+					output_len_ptr,
+					<span class="kw-2">&amp;</span>output.data,
+					<span class="bool-val">true</span>,
+					|len| <span class="prelude-val">Some</span>(RuntimeCosts::CopyToContract(len)),
+				);
+				<span class="kw-2">*</span><span class="self">self</span>.ext.last_frame_output_mut() = output;
+				write_result<span class="question-mark">?</span>;
+				<span class="prelude-val">Ok</span>(<span class="self">self</span>.ext.last_frame_output().into())
+			},
+			<span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::exec_error_into_return_code(err)<span class="question-mark">?</span>),
 		}
-
-		<span class="kw">if let </span><span class="prelude-val">Ok</span>(output) = <span class="kw-2">&amp;</span>call_outcome {
-			<span class="self">self</span>.write_sandbox_output(
-				memory,
-				output_ptr,
-				output_len_ptr,
-				<span class="kw-2">&amp;</span>output.data,
-				<span class="bool-val">true</span>,
-				|len| <span class="prelude-val">Some</span>(RuntimeCosts::CopyToContract(len)),
-			)<span class="question-mark">?</span>;
-		}
-		<span class="prelude-val">Ok</span>(<span class="self">Self</span>::exec_into_return_code(call_outcome)<span class="question-mark">?</span>)
 	}
 
 	<span class="kw">fn </span>instantiate(
@@ -3234,34 +3280,40 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>salt: [u8; <span class="number">32</span>] = memory.read_array(salt_ptr)<span class="question-mark">?</span>;
 			<span class="prelude-val">Some</span>(salt)
 		};
-		<span class="kw">let </span>instantiate_outcome = <span class="self">self</span>.ext.instantiate(
+
+		<span class="kw">match </span><span class="self">self</span>.ext.instantiate(
 			weight,
 			deposit_limit,
 			code_hash,
 			value,
 			input_data,
 			salt.as_ref(),
-		);
-		<span class="kw">if let </span><span class="prelude-val">Ok</span>((address, output)) = <span class="kw-2">&amp;</span>instantiate_outcome {
-			<span class="kw">if </span>!output.flags.contains(ReturnFlags::REVERT) {
-				<span class="self">self</span>.write_fixed_sandbox_output(
+		) {
+			<span class="prelude-val">Ok</span>(address) =&gt; {
+				<span class="kw">if </span>!<span class="self">self</span>.ext.last_frame_output().flags.contains(ReturnFlags::REVERT) {
+					<span class="self">self</span>.write_fixed_sandbox_output(
+						memory,
+						address_ptr,
+						<span class="kw-2">&amp;</span>address.as_bytes(),
+						<span class="bool-val">true</span>,
+						already_charged,
+					)<span class="question-mark">?</span>;
+				}
+				<span class="kw">let </span>output = mem::take(<span class="self">self</span>.ext.last_frame_output_mut());
+				<span class="kw">let </span>write_result = <span class="self">self</span>.write_sandbox_output(
 					memory,
-					address_ptr,
-					<span class="kw-2">&amp;</span>address.as_bytes(),
+					output_ptr,
+					output_len_ptr,
+					<span class="kw-2">&amp;</span>output.data,
 					<span class="bool-val">true</span>,
-					already_charged,
-				)<span class="question-mark">?</span>;
-			}
-			<span class="self">self</span>.write_sandbox_output(
-				memory,
-				output_ptr,
-				output_len_ptr,
-				<span class="kw-2">&amp;</span>output.data,
-				<span class="bool-val">true</span>,
-				|len| <span class="prelude-val">Some</span>(RuntimeCosts::CopyToContract(len)),
-			)<span class="question-mark">?</span>;
+					|len| <span class="prelude-val">Some</span>(RuntimeCosts::CopyToContract(len)),
+				);
+				<span class="kw-2">*</span><span class="self">self</span>.ext.last_frame_output_mut() = output;
+				write_result<span class="question-mark">?</span>;
+				<span class="prelude-val">Ok</span>(<span class="self">self</span>.ext.last_frame_output().into())
+			},
+			<span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>::exec_error_into_return_code(err)<span class="question-mark">?</span>),
 		}
-		<span class="prelude-val">Ok</span>(<span class="self">Self</span>::exec_into_return_code(instantiate_outcome.map(|(<span class="kw">_</span>, retval)| retval))<span class="question-mark">?</span>)
 	}
 
 	<span class="kw">fn </span>terminate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, memory: <span class="kw-2">&amp;</span>M, beneficiary_ptr: u32) -&gt; <span class="prelude-ty">Result</span>&lt;(), TrapReason&gt; {
@@ -4140,6 +4192,46 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>code_hash = memory.read_h256(code_hash_ptr)<span class="question-mark">?</span>;
 		<span class="self">self</span>.ext.unlock_delegate_dependency(<span class="kw-2">&amp;</span>code_hash)<span class="question-mark">?</span>;
 		<span class="prelude-val">Ok</span>(())
+	}
+
+	<span class="doccomment">/// Stores the length of the data returned by the last call into the supplied buffer.
+	/// See [`pallet_revive_uapi::HostFn::return_data_size`].
+	</span><span class="attr">#[api_version(<span class="number">0</span>)]
+	</span><span class="kw">fn </span>return_data_size(<span class="kw-2">&amp;mut </span><span class="self">self</span>, memory: <span class="kw-2">&amp;mut </span>M, out_ptr: u32) -&gt; <span class="prelude-ty">Result</span>&lt;(), TrapReason&gt; {
+		<span class="prelude-val">Ok</span>(<span class="self">self</span>.write_fixed_sandbox_output(
+			memory,
+			out_ptr,
+			<span class="kw-2">&amp;</span>as_bytes(U256::from(<span class="self">self</span>.ext.last_frame_output().data.len())),
+			<span class="bool-val">false</span>,
+			|len| <span class="prelude-val">Some</span>(RuntimeCosts::CopyToContract(len)),
+		)<span class="question-mark">?</span>)
+	}
+
+	<span class="doccomment">/// Stores data returned by the last call, starting from `offset`, into the supplied buffer.
+	/// See [`pallet_revive_uapi::HostFn::return_data`].
+	</span><span class="attr">#[api_version(<span class="number">0</span>)]
+	</span><span class="kw">fn </span>return_data_copy(
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		memory: <span class="kw-2">&amp;mut </span>M,
+		out_ptr: u32,
+		out_len_ptr: u32,
+		offset: u32,
+	) -&gt; <span class="prelude-ty">Result</span>&lt;(), TrapReason&gt; {
+		<span class="kw">let </span>output = mem::take(<span class="self">self</span>.ext.last_frame_output_mut());
+		<span class="kw">let </span>result = <span class="kw">if </span>offset <span class="kw">as </span>usize &gt; output.data.len() {
+			<span class="prelude-val">Err</span>(Error::&lt;E::T&gt;::OutOfBounds.into())
+		} <span class="kw">else </span>{
+			<span class="self">self</span>.write_sandbox_output(
+				memory,
+				out_ptr,
+				out_len_ptr,
+				<span class="kw-2">&amp;</span>output.data[offset <span class="kw">as </span>usize..],
+				<span class="bool-val">false</span>,
+				|len| <span class="prelude-val">Some</span>(RuntimeCosts::CopyToContract(len)),
+			)
+		};
+		<span class="kw-2">*</span><span class="self">self</span>.ext.last_frame_output_mut() = output;
+		<span class="prelude-val">Ok</span>(result<span class="question-mark">?</span>)
 	}
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>

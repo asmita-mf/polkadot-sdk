@@ -236,6 +236,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#84" id="84">84</a>
 <a href="#85" id="85">85</a>
 <a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -254,7 +255,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>imports {
 	<span class="comment">// Substrate
-	</span><span class="kw">pub use </span>frame_support::{assert_err, assert_ok, pallet_prelude::DispatchResult};
+	</span><span class="kw">pub use </span>codec::Encode;
+	<span class="kw">pub use </span>frame_support::{assert_err, assert_ok, pallet_prelude::DispatchResult};
 	<span class="kw">pub use </span>sp_runtime::DispatchError;
 
 	<span class="comment">// Polkadot

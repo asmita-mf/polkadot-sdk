@@ -411,7 +411,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>sp_runtime::TryRuntimeError;
 
 <span class="doccomment">/// Which state tests to execute.
-</span><span class="attr">#[derive(codec::Encode, codec::Decode, Clone, scale_info::TypeInfo)]
+</span><span class="attr">#[derive(codec::Encode, codec::Decode, Clone, scale_info::TypeInfo, PartialEq)]
 </span><span class="kw">pub enum </span>Select {
 	<span class="doccomment">/// None of them.
 	</span><span class="prelude-val">None</span>,
@@ -478,7 +478,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="doccomment">/// Select which checks should be run when trying a runtime upgrade upgrade.
-</span><span class="attr">#[derive(codec::Encode, codec::Decode, Clone, Debug, Copy, scale_info::TypeInfo)]
+</span><span class="attr">#[derive(codec::Encode, codec::Decode, Clone, Debug, Copy, scale_info::TypeInfo, PartialEq)]
 </span><span class="kw">pub enum </span>UpgradeCheckSelect {
 	<span class="doccomment">/// Run no checks.
 	</span><span class="prelude-val">None</span>,

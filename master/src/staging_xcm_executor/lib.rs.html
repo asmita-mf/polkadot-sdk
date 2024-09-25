@@ -1571,6 +1571,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1419" id="1419">1419</a>
 <a href="#1420" id="1420">1420</a>
 <a href="#1421" id="1421">1421</a>
+<a href="#1422" id="1422">1422</a>
+<a href="#1423" id="1423">1423</a>
+<a href="#1424" id="1424">1424</a>
+<a href="#1425" id="1425">1425</a>
+<a href="#1426" id="1426">1426</a>
+<a href="#1427" id="1427">1427</a>
+<a href="#1428" id="1428">1428</a>
+<a href="#1429" id="1429">1429</a>
+<a href="#1430" id="1430">1430</a>
+<a href="#1431" id="1431">1431</a>
+<a href="#1432" id="1432">1432</a>
+<a href="#1433" id="1433">1433</a>
+<a href="#1434" id="1434">1434</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -2575,13 +2588,18 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			InitiateReserveWithdraw { assets, reserve, xcm } =&gt; {
 				<span class="kw">let </span>old_holding = <span class="self">self</span>.holding.clone();
 				<span class="kw">let </span>result = Config::TransactionalProcessor::process(|| {
+					<span class="kw">let </span>assets = <span class="self">self</span>.holding.saturating_take(assets);
+					<span class="comment">// Must ensure that we recognise the assets as being managed by the destination.
+					</span><span class="attr">#[cfg(not(feature = <span class="string">"runtime-benchmarks"</span>))]
+					</span><span class="kw">for </span>asset <span class="kw">in </span>assets.assets_iter() {
+						<span class="macro">ensure!</span>(
+							Config::IsReserve::contains(<span class="kw-2">&amp;</span>asset, <span class="kw-2">&amp;</span>reserve),
+							XcmError::UntrustedReserveLocation
+						);
+					}
 					<span class="comment">// Note that here we are able to place any assets which could not be reanchored
 					// back into Holding.
-					</span><span class="kw">let </span>assets = <span class="self">Self</span>::reanchored(
-						<span class="self">self</span>.holding.saturating_take(assets),
-						<span class="kw-2">&amp;</span>reserve,
-						<span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>.holding),
-					);
+					</span><span class="kw">let </span>assets = <span class="self">Self</span>::reanchored(assets, <span class="kw-2">&amp;</span>reserve, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>.holding));
 					<span class="kw">let </span><span class="kw-2">mut </span>message = <span class="macro">vec!</span>[WithdrawAsset(assets), ClearOrigin];
 					message.extend(xcm.<span class="number">0</span>.into_iter());
 					<span class="self">self</span>.send(reserve, Xcm(message), FeeReason::InitiateReserveWithdraw)<span class="question-mark">?</span>;
@@ -2597,6 +2615,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="kw">let </span>result = (|| -&gt; <span class="prelude-ty">Result</span>&lt;(), XcmError&gt; {
 					<span class="comment">// We must do this first in order to resolve wildcards.
 					</span><span class="kw">let </span>assets = <span class="self">self</span>.holding.saturating_take(assets);
+					<span class="comment">// Must ensure that we have teleport trust with destination for these assets.
+					</span><span class="attr">#[cfg(not(feature = <span class="string">"runtime-benchmarks"</span>))]
+					</span><span class="kw">for </span>asset <span class="kw">in </span>assets.assets_iter() {
+						<span class="macro">ensure!</span>(
+							Config::IsTeleporter::contains(<span class="kw-2">&amp;</span>asset, <span class="kw-2">&amp;</span>dest),
+							XcmError::UntrustedTeleportLocation
+						);
+					}
 					<span class="kw">for </span>asset <span class="kw">in </span>assets.assets_iter() {
 						<span class="comment">// We should check that the asset can actually be teleported out (for this
 						// to be in error, there would need to be an accounting violation by

@@ -268,6 +268,49 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#116" id="116">116</a>
 <a href="#117" id="117">117</a>
 <a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -291,13 +334,21 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 //! [`v0::MyMap`](`crate::migrations::v1::v0::MyMap`) storage map, transforms them,
 //! and inserts them into the [`MyMap`](`crate::pallet::MyMap`) storage map.
 
-</span><span class="kw">use </span><span class="kw">super</span>::PALLET_MIGRATIONS_ID;
+</span><span class="kw">extern crate </span>alloc;
+
+<span class="kw">use </span><span class="kw">super</span>::PALLET_MIGRATIONS_ID;
 <span class="kw">use </span><span class="kw">crate</span>::pallet::{Config, MyMap};
 <span class="kw">use </span>frame_support::{
 	migrations::{MigrationId, SteppedMigration, SteppedMigrationError},
 	pallet_prelude::PhantomData,
 	weights::WeightMeter,
 };
+
+<span class="attr">#[cfg(feature = <span class="string">"try-runtime"</span>)]
+</span><span class="kw">use </span>alloc::collections::btree_map::BTreeMap;
+
+<span class="attr">#[cfg(feature = <span class="string">"try-runtime"</span>)]
+</span><span class="kw">use </span>alloc::vec::Vec;
 
 <span class="kw">mod </span>benchmarks;
 <span class="kw">mod </span>tests;
@@ -384,6 +435,41 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			</span>}
 		}
 		<span class="prelude-val">Ok</span>(cursor)
+	}
+
+	<span class="attr">#[cfg(feature = <span class="string">"try-runtime"</span>)]
+	</span><span class="kw">fn </span>pre_upgrade() -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;u8&gt;, frame_support::sp_runtime::TryRuntimeError&gt; {
+		<span class="kw">use </span>codec::Encode;
+
+		<span class="comment">// Return the state of the storage before the migration.
+		</span><span class="prelude-val">Ok</span>(v0::MyMap::&lt;T&gt;::iter().collect::&lt;BTreeMap&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;().encode())
+	}
+
+	<span class="attr">#[cfg(feature = <span class="string">"try-runtime"</span>)]
+	</span><span class="kw">fn </span>post_upgrade(prev: Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), frame_support::sp_runtime::TryRuntimeError&gt; {
+		<span class="kw">use </span>codec::Decode;
+
+		<span class="comment">// Check the state of the storage after the migration.
+		</span><span class="kw">let </span>prev_map = BTreeMap::&lt;u32, u32&gt;::decode(<span class="kw-2">&amp;mut &amp;</span>prev[..])
+			.expect(<span class="string">"Failed to decode the previous storage state"</span>);
+
+		<span class="comment">// Check the len of prev and post are the same.
+		</span><span class="macro">assert_eq!</span>(
+			MyMap::&lt;T&gt;::iter().count(),
+			prev_map.len(),
+			<span class="string">"Migration failed: the number of items in the storage after the migration is not the same as before"
+		</span>);
+
+		<span class="kw">for </span>(key, value) <span class="kw">in </span>prev_map {
+			<span class="kw">let </span>new_value =
+				MyMap::&lt;T&gt;::get(key).expect(<span class="string">"Failed to get the value after the migration"</span>);
+			<span class="macro">assert_eq!</span>(
+				value <span class="kw">as </span>u64, new_value,
+				<span class="string">"Migration failed: the value after the migration is not the same as before"
+			</span>);
+		}
+
+		<span class="prelude-val">Ok</span>(())
 	}
 }
 </code></pre></div></section></main><script> mermaid.init({ startOnLoad: true, theme: "dark" }, "pre.language-mermaid > code");</script>

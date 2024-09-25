@@ -3526,6 +3526,26 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#3374" id="3374">3374</a>
 <a href="#3375" id="3375">3375</a>
 <a href="#3376" id="3376">3376</a>
+<a href="#3377" id="3377">3377</a>
+<a href="#3378" id="3378">3378</a>
+<a href="#3379" id="3379">3379</a>
+<a href="#3380" id="3380">3380</a>
+<a href="#3381" id="3381">3381</a>
+<a href="#3382" id="3382">3382</a>
+<a href="#3383" id="3383">3383</a>
+<a href="#3384" id="3384">3384</a>
+<a href="#3385" id="3385">3385</a>
+<a href="#3386" id="3386">3386</a>
+<a href="#3387" id="3387">3387</a>
+<a href="#3388" id="3388">3388</a>
+<a href="#3389" id="3389">3389</a>
+<a href="#3390" id="3390">3390</a>
+<a href="#3391" id="3391">3391</a>
+<a href="#3392" id="3392">3392</a>
+<a href="#3393" id="3393">3393</a>
+<a href="#3394" id="3394">3394</a>
+<a href="#3395" id="3395">3395</a>
+<a href="#3396" id="3396">3396</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -5467,6 +5487,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(Xcm&lt;&lt;T <span class="kw">as </span>Config&gt;::RuntimeCall&gt;, Xcm&lt;()&gt;), Error&lt;T&gt;&gt; {
 		<span class="kw">let </span>value = (origin, <span class="macro">vec!</span>[fees.clone()]);
 		<span class="macro">ensure!</span>(T::XcmReserveTransferFilter::contains(<span class="kw-2">&amp;</span>value), Error::&lt;T&gt;::Filtered);
+		<span class="macro">ensure!</span>(
+			&lt;T::XcmExecutor <span class="kw">as </span>XcmAssetTransfers&gt;::IsReserve::contains(<span class="kw-2">&amp;</span>fees, <span class="kw-2">&amp;</span>dest),
+			Error::&lt;T&gt;::InvalidAssetUnsupportedReserve
+		);
 
 		<span class="kw">let </span>context = T::UniversalLocation::get();
 		<span class="kw">let </span>reanchored_fees = fees
@@ -5501,6 +5525,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>value = (origin, assets);
 		<span class="macro">ensure!</span>(T::XcmReserveTransferFilter::contains(<span class="kw-2">&amp;</span>value), Error::&lt;T&gt;::Filtered);
 		<span class="kw">let </span>(<span class="kw">_</span>, assets) = value;
+		<span class="kw">for </span>asset <span class="kw">in </span>assets.iter() {
+			<span class="macro">ensure!</span>(
+				&lt;T::XcmExecutor <span class="kw">as </span>XcmAssetTransfers&gt;::IsReserve::contains(<span class="kw-2">&amp;</span>asset, <span class="kw-2">&amp;</span>dest),
+				Error::&lt;T&gt;::InvalidAssetUnsupportedReserve
+			);
+		}
 
 		<span class="comment">// max assets is `assets` (+ potentially separately handled fee)
 		</span><span class="kw">let </span>max_assets =
@@ -5607,6 +5637,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(Xcm&lt;&lt;T <span class="kw">as </span>Config&gt;::RuntimeCall&gt;, Xcm&lt;()&gt;), Error&lt;T&gt;&gt; {
 		<span class="kw">let </span>value = (origin, <span class="macro">vec!</span>[fees.clone()]);
 		<span class="macro">ensure!</span>(T::XcmTeleportFilter::contains(<span class="kw-2">&amp;</span>value), Error::&lt;T&gt;::Filtered);
+		<span class="macro">ensure!</span>(
+			&lt;T::XcmExecutor <span class="kw">as </span>XcmAssetTransfers&gt;::IsTeleporter::contains(<span class="kw-2">&amp;</span>fees, <span class="kw-2">&amp;</span>dest),
+			Error::&lt;T&gt;::Filtered
+		);
 
 		<span class="kw">let </span>context = T::UniversalLocation::get();
 		<span class="kw">let </span>reanchored_fees = fees
@@ -5662,6 +5696,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>value = (origin, assets);
 		<span class="macro">ensure!</span>(T::XcmTeleportFilter::contains(<span class="kw-2">&amp;</span>value), Error::&lt;T&gt;::Filtered);
 		<span class="kw">let </span>(<span class="kw">_</span>, assets) = value;
+		<span class="kw">for </span>asset <span class="kw">in </span>assets.iter() {
+			<span class="macro">ensure!</span>(
+				&lt;T::XcmExecutor <span class="kw">as </span>XcmAssetTransfers&gt;::IsTeleporter::contains(<span class="kw-2">&amp;</span>asset, <span class="kw-2">&amp;</span>dest),
+				Error::&lt;T&gt;::Filtered
+			);
+		}
 
 		<span class="comment">// max assets is `assets` (+ potentially separately handled fee)
 		</span><span class="kw">let </span>max_assets =
