@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727218991544,
+  "lastUpdate": 1727286657972,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -26863,6 +26863,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-store",
             "value": 0.17766618989999994,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "cyrill@parity.io",
+            "name": "Cyrill Leutwiler",
+            "username": "xermicus"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "c77095f51119d2eccdc54d2f3518bed0ffbd6d53",
+          "message": "[pallet-revive] last call return data API (#5779)\n\nThis PR introduces 2 new syscalls: `return_data_size` and\n`return_data_copy`, resembling the semantics of the EVM `RETURNDATASIZE`\nand `RETURNDATACOPY` opcodes.\n\nThe ownership of `ExecReturnValue` (the return data) has moved to the\n`Frame`. This allows implementing the new contract API functionality in\next with no additional copies. Returned data is passed via contract\nmemory, memory is (will be) metered, hence the amount of returned data\ncan not be statically known, so we should avoid storing copies of the\nreturned data if we can. By moving the ownership of the exectuables\nreturn value into the `Frame` struct we achieve this.\n\nA zero-copy implementation of those APIs would be technically possible\nwithout that internal change by making the callsite in the runtime\nresponsible for moving the returned data into the frame after any call.\nHowever, resetting the stored output needs to be handled in ext, since\nplain transfers will _not_ affect the stored return data (and we don't\nwant to handle this special call case inside the `runtime` API). This\nhas drawbacks:\n- It can not be tested easily in the mock.\n- It introduces an inconsistency where resetting the stored output is\nhandled in ext, but the runtime API is responsible to store it back\ncorrectly after any calls made. Instead, with ownership of the data in\n`Frame`, both can be handled in a single place. Handling both in `fn\nrun()` is more natural and leaves less room for runtime API bugs.\n\nThe returned output is reset each time _before_ running any executable\nin a nested stack. This change should not incur any overhead to the\noverall memory usage as _only_ the returned data from the last executed\nframe will be kept around at any time.\n\n---------\n\nSigned-off-by: Cyrill Leutwiler <bigcyrill@hotmail.com>\nSigned-off-by: xermicus <cyrill@parity.io>\nCo-authored-by: command-bot <>\nCo-authored-by: PG Herveou <pgherveou@gmail.com>",
+          "timestamp": "2024-09-25T16:28:59Z",
+          "tree_id": "946ec04b3c2237d8ba80f09a479d60f5c357cb21",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/c77095f51119d2eccdc54d2f3518bed0ffbd6d53"
+        },
+        "date": 1727286630873,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18031727439333345,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02361970232666667,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.01306587706,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.010493239680000006,
             "unit": "seconds"
           }
         ]
