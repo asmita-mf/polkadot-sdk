@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727358611107,
+  "lastUpdate": 1727372569706,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -27079,6 +27079,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.01183036246666668,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "17243e039158b78f2b57a4205ef35a2ec223bf1e",
+          "message": "bump zombienet version `v1.3.110` (#5834)\n\nBump `zombienet` version to prevent report fails at teardown phase.",
+          "timestamp": "2024-09-26T16:02:49Z",
+          "tree_id": "c5e5a931bcd5e17448e3b90ab20d7c653eb27823",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/17243e039158b78f2b57a4205ef35a2ec223bf1e"
+        },
+        "date": 1727372541888,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.023379193419999996,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.1799706198800001,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.012875063853333334,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.01022814678000001,
             "unit": "seconds"
           }
         ]
