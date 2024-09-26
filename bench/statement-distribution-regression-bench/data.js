@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727345830377,
+  "lastUpdate": 1727354535687,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -12139,6 +12139,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "statement-distribution",
             "value": 0.040187318112000006,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "1177472+mordamax@users.noreply.github.com",
+            "name": "Maksym H",
+            "username": "mordamax"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "f6d08e637694729df7cddb166954ee90c2da3ce1",
+          "message": "add riscv feature to /cmd bench by default (#5828)\n\nCloses #5714",
+          "timestamp": "2024-09-26T11:06:05Z",
+          "tree_id": "f17a218863ebbf0cdebe3459498a86cef7427bd1",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/f6d08e637694729df7cddb166954ee90c2da3ce1"
+        },
+        "date": 1727354507679,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.90799999999994,
+            "unit": "KiB"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.03847586887799998,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04658459583799999,
             "unit": "seconds"
           }
         ]
