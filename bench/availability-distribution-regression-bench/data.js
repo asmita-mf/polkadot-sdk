@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727345761605,
+  "lastUpdate": 1727354465326,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -26971,6 +26971,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-store",
             "value": 0.18205280654000014,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "1177472+mordamax@users.noreply.github.com",
+            "name": "Maksym H",
+            "username": "mordamax"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "f6d08e637694729df7cddb166954ee90c2da3ce1",
+          "message": "add riscv feature to /cmd bench by default (#5828)\n\nCloses #5714",
+          "timestamp": "2024-09-26T11:06:05Z",
+          "tree_id": "f17a218863ebbf0cdebe3459498a86cef7427bd1",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/f6d08e637694729df7cddb166954ee90c2da3ce1"
+        },
+        "date": 1727354437565,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02349829434,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.17870859605999992,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.010378688380000006,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.013117619999999995,
             "unit": "seconds"
           }
         ]
