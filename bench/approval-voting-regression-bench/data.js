@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727286691723,
+  "lastUpdate": 1727345795966,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -19259,6 +19259,55 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 3.409016777251998,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "54316454+sandreim@users.noreply.github.com",
+            "name": "Andrei Sandu",
+            "username": "sandreim"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "1f3e3978c4afd6f9985854a0f4327f8c8c7c71b9",
+          "message": "chore: bump runtime api version to v11 (#5824)\n\nA change that I missed to add in\nhttps://github.com/paritytech/polkadot-sdk/pull/5525 .\n\n---------\n\nSigned-off-by: Andrei Sandu <andrei-mihail@parity.io>",
+          "timestamp": "2024-09-26T08:37:42Z",
+          "tree_id": "64a05679b256fdc170df175846803605a95f32bd",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/1f3e3978c4afd6f9985854a0f4327f8c8c7c71b9"
+        },
+        "date": 1727345768381,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52935.40000000001,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63831.62000000001,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 3.9595873244008444,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 12.709442592259995,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 3.175336831039996,
             "unit": "seconds"
           }
         ]
