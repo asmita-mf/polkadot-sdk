@@ -1,4 +1,5 @@
 (function() {var implementors = {
+"polkadot_node_core_approval_voting_parallel":[["impl&lt;T, M&gt; Stream for <a class=\"struct\" href=\"polkadot_node_core_approval_voting_parallel/struct.WorkProviderImpl.html\" title=\"struct polkadot_node_core_approval_voting_parallel::WorkProviderImpl\">WorkProviderImpl</a>&lt;T&gt;<div class=\"where\">where\n    T: Stream&lt;Item = FromOrchestra&lt;M&gt;&gt; + <a class=\"trait\" href=\"https://doc.rust-lang.org/1.77.0/core/marker/trait.Unpin.html\" title=\"trait core::marker::Unpin\">Unpin</a> + <a class=\"trait\" href=\"https://doc.rust-lang.org/1.77.0/core/marker/trait.Send.html\" title=\"trait core::marker::Send\">Send</a>,</div>"]],
 "polkadot_node_metrics":[["impl Stream for <a class=\"struct\" href=\"polkadot_node_metrics/metronome/struct.Metronome.html\" title=\"struct polkadot_node_metrics::metronome::Metronome\">Metronome</a>"]],
 "polkadot_node_primitives":[["impl Stream for <a class=\"struct\" href=\"polkadot_node_primitives/approval/time/struct.DelayedApprovalTimer.html\" title=\"struct polkadot_node_primitives::approval::time::DelayedApprovalTimer\">DelayedApprovalTimer</a>"]],
 "polkadot_node_subsystem":[],

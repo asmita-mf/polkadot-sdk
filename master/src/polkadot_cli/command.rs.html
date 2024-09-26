@@ -638,6 +638,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#486" id="486">486</a>
 <a href="#487" id="487">487</a>
 <a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -884,6 +885,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				execute_workers_max_num: cli.run.execute_workers_max_num,
 				prepare_workers_hard_max_num: cli.run.prepare_workers_hard_max_num,
 				prepare_workers_soft_max_num: cli.run.prepare_workers_soft_max_num,
+				enable_approval_voting_parallel: cli.run.enable_approval_voting_parallel,
 			},
 		)
 		.map(|full| full.task_manager)<span class="question-mark">?</span>;

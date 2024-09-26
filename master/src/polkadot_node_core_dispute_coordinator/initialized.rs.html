@@ -1861,6 +1861,27 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1709" id="1709">1709</a>
 <a href="#1710" id="1710">1710</a>
 <a href="#1711" id="1711">1711</a>
+<a href="#1712" id="1712">1712</a>
+<a href="#1713" id="1713">1713</a>
+<a href="#1714" id="1714">1714</a>
+<a href="#1715" id="1715">1715</a>
+<a href="#1716" id="1716">1716</a>
+<a href="#1717" id="1717">1717</a>
+<a href="#1718" id="1718">1718</a>
+<a href="#1719" id="1719">1719</a>
+<a href="#1720" id="1720">1720</a>
+<a href="#1721" id="1721">1721</a>
+<a href="#1722" id="1722">1722</a>
+<a href="#1723" id="1723">1723</a>
+<a href="#1724" id="1724">1724</a>
+<a href="#1725" id="1725">1725</a>
+<a href="#1726" id="1726">1726</a>
+<a href="#1727" id="1727">1727</a>
+<a href="#1728" id="1728">1728</a>
+<a href="#1729" id="1729">1729</a>
+<a href="#1730" id="1730">1730</a>
+<a href="#1731" id="1731">1731</a>
+<a href="#1732" id="1732">1732</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -1897,8 +1918,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 };
 <span class="kw">use </span>polkadot_node_subsystem::{
 	messages::{
-		ApprovalVotingMessage, BlockDescription, ChainSelectionMessage, DisputeCoordinatorMessage,
-		DisputeDistributionMessage, ImportStatementsResult,
+		ApprovalVotingMessage, ApprovalVotingParallelMessage, BlockDescription,
+		ChainSelectionMessage, DisputeCoordinatorMessage, DisputeDistributionMessage,
+		ImportStatementsResult,
 	},
 	overseer, ActivatedLeaf, ActiveLeavesUpdate, FromOrchestra, OverseerSignal, RuntimeApiError,
 };
@@ -1980,6 +2002,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	/// `CHAIN_IMPORT_MAX_BATCH_SIZE` and put the rest here for later processing.
 	</span>chain_import_backlog: VecDeque&lt;ScrapedOnChainVotes&gt;,
 	metrics: Metrics,
+	approval_voting_parallel_enabled: bool,
 }
 
 <span class="attr">#[overseer::contextbounds(DisputeCoordinator, prefix = <span class="self">self</span>::overseer)]
@@ -1993,7 +2016,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		highest_session_seen: SessionIndex,
 		gaps_in_cache: bool,
 	) -&gt; <span class="self">Self </span>{
-		<span class="kw">let </span>DisputeCoordinatorSubsystem { config: <span class="kw">_</span>, store: <span class="kw">_</span>, keystore, metrics } = subsystem;
+		<span class="kw">let </span>DisputeCoordinatorSubsystem {
+			config: <span class="kw">_</span>,
+			store: <span class="kw">_</span>,
+			keystore,
+			metrics,
+			approval_voting_parallel_enabled,
+		} = subsystem;
 
 		<span class="kw">let </span>(participation_sender, participation_receiver) = mpsc::channel(<span class="number">1</span>);
 		<span class="kw">let </span>participation = Participation::new(participation_sender, metrics.clone());
@@ -2011,6 +2040,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			participation_receiver,
 			chain_import_backlog: VecDeque::new(),
 			metrics,
+			approval_voting_parallel_enabled,
 		}
 	}
 
@@ -2922,9 +2952,21 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				// 4. We are waiting (and blocking the whole subsystem) on a response right after -
 				// therefore even with all else failing we will never have more than
 				// one message in flight at any given time.
-				</span>ctx.send_unbounded_message(
-					ApprovalVotingMessage::GetApprovalSignaturesForCandidate(candidate_hash, tx),
-				);
+				</span><span class="kw">if </span><span class="self">self</span>.approval_voting_parallel_enabled {
+					ctx.send_unbounded_message(
+						ApprovalVotingParallelMessage::GetApprovalSignaturesForCandidate(
+							candidate_hash,
+							tx,
+						),
+					);
+				} <span class="kw">else </span>{
+					ctx.send_unbounded_message(
+						ApprovalVotingMessage::GetApprovalSignaturesForCandidate(
+							candidate_hash,
+							tx,
+						),
+					);
+				}
 				<span class="kw">match </span>rx.<span class="kw">await </span>{
 					<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
 						<span class="macro">gum::warn!</span>(

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["MAX_APPROVAL_BATCH_SIZE","MAX_ASSIGNMENT_BATCH_SIZE"],"struct":["ApprovalDistribution","State"]};
+window.SIDEBAR_ITEMS = {"constant":["MAX_APPROVAL_BATCH_SIZE","MAX_ASSIGNMENT_BATCH_SIZE"],"mod":["metrics"],"struct":["ApprovalDistribution","State"]};

@@ -769,6 +769,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#617" id="617">617</a>
 <a href="#618" id="618">618</a>
 <a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -893,6 +895,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	store: Arc&lt;<span class="kw">dyn </span>Database&gt;,
 	keystore: Arc&lt;LocalKeystore&gt;,
 	metrics: Metrics,
+	approval_voting_parallel_enabled: bool,
 }
 
 <span class="doccomment">/// Configuration for the dispute coordinator subsystem.
@@ -935,8 +938,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		config: Config,
 		keystore: Arc&lt;LocalKeystore&gt;,
 		metrics: Metrics,
+		approval_voting_parallel_enabled: bool,
 	) -&gt; <span class="self">Self </span>{
-		<span class="self">Self </span>{ store, config, keystore, metrics }
+		<span class="self">Self </span>{ store, config, keystore, metrics, approval_voting_parallel_enabled }
 	}
 
 	<span class="doccomment">/// Initialize and afterwards run `Initialized::run`.

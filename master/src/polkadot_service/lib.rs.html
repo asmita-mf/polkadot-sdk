@@ -1718,6 +1718,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1566" id="1566">1566</a>
 <a href="#1567" id="1567">1567</a>
 <a href="#1568" id="1568">1568</a>
+<a href="#1569" id="1569">1569</a>
+<a href="#1570" id="1570">1570</a>
+<a href="#1571" id="1571">1571</a>
+<a href="#1572" id="1572">1572</a>
+<a href="#1573" id="1573">1573</a>
+<a href="#1574" id="1574">1574</a>
+<a href="#1575" id="1575">1575</a>
+<a href="#1576" id="1576">1576</a>
+<a href="#1577" id="1577">1577</a>
+<a href="#1578" id="1578">1578</a>
+<a href="#1579" id="1579">1579</a>
+<a href="#1580" id="1580">1580</a>
+<a href="#1581" id="1581">1581</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -2380,6 +2393,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="attr">#[allow(dead_code)]
 	</span><span class="kw">pub </span>malus_finality_delay: <span class="prelude-ty">Option</span>&lt;u32&gt;,
 	<span class="kw">pub </span>hwbench: <span class="prelude-ty">Option</span>&lt;sc_sysinfo::HwBench&gt;,
+	<span class="doccomment">/// Enable approval voting processing in parallel.
+	</span><span class="kw">pub </span>enable_approval_voting_parallel: bool,
 }
 
 <span class="attr">#[cfg(feature = <span class="string">"full-node"</span>)]
@@ -2473,6 +2488,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		execute_workers_max_num,
 		prepare_workers_soft_max_num,
 		prepare_workers_hard_max_num,
+		enable_approval_voting_parallel,
 	}: NewFullParams&lt;OverseerGenerator&gt;,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;NewFull, Error&gt; {
 	<span class="kw">use </span>polkadot_availability_recovery::FETCH_CHUNKS_THRESHOLD;
@@ -2504,6 +2520,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="prelude-val">Some</span>(backoff)
 	};
 
+	<span class="comment">// Running approval voting in parallel is enabled by default on all networks except Polkadot and
+	// Kusama, unless explicitly enabled by the commandline option.
+	// This is meant to be temporary until we have enough confidence in the new system to enable it
+	// by default on all networks.
+	</span><span class="kw">let </span>enable_approval_voting_parallel = (!config.chain_spec.is_kusama() &amp;&amp;
+		!config.chain_spec.is_polkadot()) ||
+		enable_approval_voting_parallel;
+
 	<span class="kw">let </span>disable_grandpa = config.disable_grandpa;
 	<span class="kw">let </span>name = config.network.node_name.clone();
 
@@ -2526,6 +2550,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			overseer_handle.clone(),
 			metrics,
 			<span class="prelude-val">Some</span>(basics.task_manager.spawn_handle()),
+			enable_approval_voting_parallel,
 		)
 	} <span class="kw">else </span>{
 		SelectRelayChain::new_longest_chain(basics.backend.clone())
@@ -2736,6 +2761,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			dispute_coordinator_config,
 			chain_selection_config,
 			fetch_chunks_threshold,
+			enable_approval_voting_parallel,
 		})
 	};
 

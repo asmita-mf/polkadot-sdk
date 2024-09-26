@@ -348,6 +348,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#196" id="196">196</a>
 <a href="#197" id="197">197</a>
 <a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -438,6 +442,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		DummySubsystem,
 		DummySubsystem,
 		DummySubsystem,
+		DummySubsystem,
 	&gt;,
 	SubsystemError,
 &gt;
@@ -458,6 +463,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	InitializedOverseerBuilder&lt;
 		SpawnGlue&lt;Spawner&gt;,
 		SupportsParachains,
+		Sub,
 		Sub,
 		Sub,
 		Sub,
@@ -505,6 +511,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		+ Subsystem&lt;OverseerSubsystemContext&lt;StatementDistributionMessage&gt;, SubsystemError&gt;
 		+ Subsystem&lt;OverseerSubsystemContext&lt;ApprovalDistributionMessage&gt;, SubsystemError&gt;
 		+ Subsystem&lt;OverseerSubsystemContext&lt;ApprovalVotingMessage&gt;, SubsystemError&gt;
+		+ Subsystem&lt;OverseerSubsystemContext&lt;ApprovalVotingParallelMessage&gt;, SubsystemError&gt;
 		+ Subsystem&lt;OverseerSubsystemContext&lt;GossipSupportMessage&gt;, SubsystemError&gt;
 		+ Subsystem&lt;OverseerSubsystemContext&lt;DisputeCoordinatorMessage&gt;, SubsystemError&gt;
 		+ Subsystem&lt;OverseerSubsystemContext&lt;DisputeDistributionMessage&gt;, SubsystemError&gt;
@@ -533,6 +540,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		.statement_distribution(subsystem.clone())
 		.approval_distribution(subsystem.clone())
 		.approval_voting(subsystem.clone())
+		.approval_voting_parallel(subsystem.clone())
 		.gossip_support(subsystem.clone())
 		.dispute_coordinator(subsystem.clone())
 		.dispute_distribution(subsystem.clone())

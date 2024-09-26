@@ -395,6 +395,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#243" id="243">243</a>
 <a href="#244" id="244">244</a>
 <a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -421,13 +430,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>futures::{channel::mpsc::UnboundedSender, FutureExt, StreamExt};
 <span class="kw">use </span>polkadot_node_network_protocol::Versioned;
 <span class="kw">use </span>polkadot_node_subsystem::{
-	messages::NetworkBridgeTxMessage, overseer, SpawnedSubsystem, SubsystemError,
+	messages::{
+		ApprovalDistributionMessage, ApprovalVotingParallelMessage, NetworkBridgeTxMessage,
+	},
+	overseer, SpawnedSubsystem, SubsystemError,
 };
 <span class="kw">use </span>polkadot_node_subsystem_types::{
-	messages::{
-		ApprovalDistributionMessage, BitfieldDistributionMessage, NetworkBridgeEvent,
-		StatementDistributionMessage,
-	},
+	messages::{BitfieldDistributionMessage, NetworkBridgeEvent, StatementDistributionMessage},
 	OverseerSignal,
 };
 <span class="kw">use </span>sc_network::{request_responses::ProtocolConfig, RequestFailure};
@@ -454,6 +463,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span>network_receiver: NetworkInterfaceReceiver,
 	<span class="doccomment">/// Chunk request sender
 	</span>chunk_request_sender: <span class="prelude-ty">Option</span>&lt;ProtocolConfig&gt;,
+	<span class="doccomment">/// Approval voting parallel enabled.
+	</span>approval_voting_parallel_enabled: bool,
 }
 
 <span class="kw">impl </span>MockNetworkBridgeTx {
@@ -470,8 +481,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">pub fn </span>new(
 		network_receiver: NetworkInterfaceReceiver,
 		chunk_request_sender: <span class="prelude-ty">Option</span>&lt;ProtocolConfig&gt;,
+		approval_voting_parallel_enabled: bool,
 	) -&gt; MockNetworkBridgeRx {
-		<span class="self">Self </span>{ network_receiver, chunk_request_sender }
+		<span class="self">Self </span>{ network_receiver, chunk_request_sender, approval_voting_parallel_enabled }
 	}
 }
 
@@ -596,9 +608,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								Versioned::V3(
 									polkadot_node_network_protocol::v3::ValidationProtocol::ApprovalDistribution(msg)
 								) =&gt; {
-									ctx.send_message(
-										ApprovalDistributionMessage::NetworkBridgeUpdate(NetworkBridgeEvent::PeerMessage(peer_id, polkadot_node_network_protocol::Versioned::V3(msg)))
-									).<span class="kw">await</span>;
+									<span class="kw">if </span><span class="self">self</span>.approval_voting_parallel_enabled {
+										ctx.send_message(
+											ApprovalVotingParallelMessage::NetworkBridgeUpdate(NetworkBridgeEvent::PeerMessage(peer_id, polkadot_node_network_protocol::Versioned::V3(msg)))
+										).<span class="kw">await</span>;
+									} <span class="kw">else </span>{
+										ctx.send_message(
+											ApprovalDistributionMessage::NetworkBridgeUpdate(NetworkBridgeEvent::PeerMessage(peer_id, polkadot_node_network_protocol::Versioned::V3(msg)))
+										).<span class="kw">await</span>;
+									}
 								}
 								Versioned::V3(
 									polkadot_node_network_protocol::v3::ValidationProtocol::StatementDistribution(msg)

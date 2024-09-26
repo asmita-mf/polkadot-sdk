@@ -242,6 +242,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#90" id="90">90</a>
 <a href="#91" id="91">91</a>
 <a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -291,6 +292,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		// All subsystem except approval_voting and approval_distribution are mock subsystems.
 		</span>Overseer::builder()
 			.approval_voting(MockApprovalVoting {})
+			.approval_voting_parallel(MockApprovalVotingParallel {})
 			.approval_distribution(MockApprovalDistribution {})
 			.availability_recovery(MockAvailabilityRecovery {})
 			.candidate_validation(MockCandidateValidation {})

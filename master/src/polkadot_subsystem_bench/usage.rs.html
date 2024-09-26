@@ -367,14 +367,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="macro">write!</span>(
 			f,
 			<span class="string">"\n{}\n{}\n\n{}\n{}\n"</span>,
-			<span class="macro">format!</span>(<span class="string">"{:&lt;32}{:&gt;12}{:&gt;12}"</span>, <span class="string">"Network usage, KiB"</span>, <span class="string">"total"</span>, <span class="string">"per block"</span>).blue(),
+			<span class="macro">format!</span>(<span class="string">"{:&lt;64}{:&gt;12}{:&gt;12}"</span>, <span class="string">"Network usage, KiB"</span>, <span class="string">"total"</span>, <span class="string">"per block"</span>).blue(),
 			<span class="self">self</span>.network_usage
 				.iter()
 				.map(|v| v.to_string())
 				.sorted()
 				.collect::&lt;Vec&lt;String&gt;&gt;()
 				.join(<span class="string">"\n"</span>),
-			<span class="macro">format!</span>(<span class="string">"{:&lt;32}{:&gt;12}{:&gt;12}"</span>, <span class="string">"CPU usage, seconds"</span>, <span class="string">"total"</span>, <span class="string">"per block"</span>).blue(),
+			<span class="macro">format!</span>(<span class="string">"{:&lt;64}{:&gt;12}{:&gt;12}"</span>, <span class="string">"CPU usage, seconds"</span>, <span class="string">"total"</span>, <span class="string">"per block"</span>).blue(),
 			<span class="self">self</span>.cpu_usage
 				.iter()
 				.map(|v| v.to_string())
@@ -469,7 +469,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>ResourceUsage {
 	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
-		<span class="macro">write!</span>(f, <span class="string">"{:&lt;32}{:&gt;12.4}{:&gt;12.4}"</span>, <span class="self">self</span>.resource_name.cyan(), <span class="self">self</span>.total, <span class="self">self</span>.per_block)
+		<span class="macro">write!</span>(f, <span class="string">"{:&lt;64}{:&gt;12.4}{:&gt;12.4}"</span>, <span class="self">self</span>.resource_name.cyan(), <span class="self">self</span>.total, <span class="self">self</span>.per_block)
 	}
 }
 

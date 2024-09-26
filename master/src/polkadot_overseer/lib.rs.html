@@ -1103,6 +1103,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#951" id="951">951</a>
 <a href="#952" id="952">952</a>
 <a href="#953" id="953">953</a>
+<a href="#954" id="954">954</a>
+<a href="#955" id="955">955</a>
+<a href="#956" id="956">956</a>
+<a href="#957" id="957">957</a>
+<a href="#958" id="958">958</a>
+<a href="#959" id="959">959</a>
+<a href="#960" id="960">960</a>
+<a href="#961" id="961">961</a>
+<a href="#962" id="962">962</a>
+<a href="#963" id="963">963</a>
+<a href="#964" id="964">964</a>
+<a href="#965" id="965">965</a>
+<a href="#966" id="966">966</a>
+<a href="#967" id="967">967</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -1181,13 +1195,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span><span class="self">self</span>::messages::{BitfieldSigningMessage, PvfCheckerMessage};
 <span class="kw">use </span>polkadot_node_subsystem_types::messages::{
-	ApprovalDistributionMessage, ApprovalVotingMessage, AvailabilityDistributionMessage,
-	AvailabilityRecoveryMessage, AvailabilityStoreMessage, BitfieldDistributionMessage,
-	CandidateBackingMessage, CandidateValidationMessage, ChainApiMessage, ChainSelectionMessage,
-	CollationGenerationMessage, CollatorProtocolMessage, DisputeCoordinatorMessage,
-	DisputeDistributionMessage, GossipSupportMessage, NetworkBridgeRxMessage,
-	NetworkBridgeTxMessage, ProspectiveParachainsMessage, ProvisionerMessage, RuntimeApiMessage,
-	StatementDistributionMessage,
+	ApprovalDistributionMessage, ApprovalVotingMessage, ApprovalVotingParallelMessage,
+	AvailabilityDistributionMessage, AvailabilityRecoveryMessage, AvailabilityStoreMessage,
+	BitfieldDistributionMessage, CandidateBackingMessage, CandidateValidationMessage,
+	ChainApiMessage, ChainSelectionMessage, CollationGenerationMessage, CollatorProtocolMessage,
+	DisputeCoordinatorMessage, DisputeDistributionMessage, GossipSupportMessage,
+	NetworkBridgeRxMessage, NetworkBridgeTxMessage, ProspectiveParachainsMessage,
+	ProvisionerMessage, RuntimeApiMessage, StatementDistributionMessage,
 };
 
 <span class="kw">pub use </span>polkadot_node_subsystem_types::{
@@ -1655,6 +1669,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		BitfieldDistributionMessage,
 		StatementDistributionMessage,
 		ApprovalDistributionMessage,
+		ApprovalVotingParallelMessage,
 		GossipSupportMessage,
 		DisputeDistributionMessage,
 		CollationGenerationMessage,
@@ -1700,7 +1715,19 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		RuntimeApiMessage,
 	]</span>)]
 	approval_voting: ApprovalVoting,
-
+	<span class="attr">#[subsystem(blocking, message_capacity: <span class="number">64000</span>, ApprovalVotingParallelMessage, sends: [
+		AvailabilityRecoveryMessage,
+		CandidateValidationMessage,
+		ChainApiMessage,
+		ChainSelectionMessage,
+		DisputeCoordinatorMessage,
+		RuntimeApiMessage,
+		NetworkBridgeTxMessage,
+		ApprovalVotingMessage,
+		ApprovalDistributionMessage,
+		ApprovalVotingParallelMessage,
+	]</span>)]
+	approval_voting_parallel: ApprovalVotingParallel,
 	<span class="attr">#[subsystem(GossipSupportMessage, sends: [
 		NetworkBridgeTxMessage,
 		NetworkBridgeRxMessage, <span class="comment">// TODO &lt;https://github.com/paritytech/polkadot/issues/5626&gt;
@@ -1718,6 +1745,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		AvailabilityStoreMessage,
 		AvailabilityRecoveryMessage,
 		ChainSelectionMessage,
+		ApprovalVotingParallelMessage,
 	]</span>)]
 	dispute_coordinator: DisputeCoordinator,
 

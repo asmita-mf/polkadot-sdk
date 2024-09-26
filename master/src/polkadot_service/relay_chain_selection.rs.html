@@ -738,6 +738,39 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#586" id="586">586</a>
 <a href="#587" id="587">587</a>
 <a href="#588" id="588">588</a>
+<a href="#589" id="589">589</a>
+<a href="#590" id="590">590</a>
+<a href="#591" id="591">591</a>
+<a href="#592" id="592">592</a>
+<a href="#593" id="593">593</a>
+<a href="#594" id="594">594</a>
+<a href="#595" id="595">595</a>
+<a href="#596" id="596">596</a>
+<a href="#597" id="597">597</a>
+<a href="#598" id="598">598</a>
+<a href="#599" id="599">599</a>
+<a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
+<a href="#602" id="602">602</a>
+<a href="#603" id="603">603</a>
+<a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -779,8 +812,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>futures::channel::oneshot;
 <span class="kw">use </span>polkadot_node_primitives::MAX_FINALITY_LAG <span class="kw">as </span>PRIMITIVES_MAX_FINALITY_LAG;
 <span class="kw">use </span>polkadot_node_subsystem::messages::{
-	ApprovalDistributionMessage, ApprovalVotingMessage, ChainSelectionMessage,
-	DisputeCoordinatorMessage, HighestApprovedAncestorBlock,
+	ApprovalDistributionMessage, ApprovalVotingMessage, ApprovalVotingParallelMessage,
+	ChainSelectionMessage, DisputeCoordinatorMessage, HighestApprovedAncestorBlock,
 };
 <span class="kw">use </span>polkadot_node_subsystem_util::metrics::{<span class="self">self</span>, prometheus};
 <span class="kw">use </span>polkadot_overseer::{AllMessages, Handle};
@@ -909,6 +942,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		overseer: Handle,
 		metrics: Metrics,
 		spawn_handle: <span class="prelude-ty">Option</span>&lt;SpawnTaskHandle&gt;,
+		approval_voting_parallel_enabled: bool,
 	) -&gt; <span class="self">Self </span>{
 		<span class="macro">gum::debug!</span>(target: LOG_TARGET, <span class="string">"Using dispute aware relay-chain selection algorithm"</span>,);
 
@@ -919,6 +953,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				overseer,
 				metrics,
 				spawn_handle,
+				approval_voting_parallel_enabled,
 			)),
 		}
 	}
@@ -970,6 +1005,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	overseer: OH,
 	metrics: Metrics,
 	spawn_handle: <span class="prelude-ty">Option</span>&lt;SpawnTaskHandle&gt;,
+	approval_voting_parallel_enabled: bool,
 }
 
 <span class="kw">impl</span>&lt;B, OH&gt; SelectRelayChainInner&lt;B, OH&gt;
@@ -984,8 +1020,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		overseer: OH,
 		metrics: Metrics,
 		spawn_handle: <span class="prelude-ty">Option</span>&lt;SpawnTaskHandle&gt;,
+		approval_voting_parallel_enabled: bool,
 	) -&gt; <span class="self">Self </span>{
-		SelectRelayChainInner { backend, overseer, metrics, spawn_handle }
+		SelectRelayChainInner {
+			backend,
+			overseer,
+			metrics,
+			spawn_handle,
+			approval_voting_parallel_enabled,
+		}
 	}
 
 	<span class="kw">fn </span>block_header(<span class="kw-2">&amp;</span><span class="self">self</span>, hash: Hash) -&gt; <span class="prelude-ty">Result</span>&lt;PolkadotHeader, ConsensusError&gt; {
@@ -1024,6 +1067,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			overseer: <span class="self">self</span>.overseer.clone(),
 			metrics: <span class="self">self</span>.metrics.clone(),
 			spawn_handle: <span class="self">self</span>.spawn_handle.clone(),
+			approval_voting_parallel_enabled: <span class="self">self</span>.approval_voting_parallel_enabled,
 		}
 	}
 }
@@ -1188,13 +1232,25 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="comment">// 2. Constrain according to `ApprovedAncestor`.
 		</span><span class="kw">let </span>(subchain_head, subchain_number, subchain_block_descriptions) = {
 			<span class="kw">let </span>(tx, rx) = oneshot::channel();
-			overseer
-				.send_msg(
-					ApprovalVotingMessage::ApprovedAncestor(subchain_head, target_number, tx),
-					std::any::type_name::&lt;<span class="self">Self</span>&gt;(),
-				)
-				.<span class="kw">await</span>;
-
+			<span class="kw">if </span><span class="self">self</span>.approval_voting_parallel_enabled {
+				overseer
+					.send_msg(
+						ApprovalVotingParallelMessage::ApprovedAncestor(
+							subchain_head,
+							target_number,
+							tx,
+						),
+						std::any::type_name::&lt;<span class="self">Self</span>&gt;(),
+					)
+					.<span class="kw">await</span>;
+			} <span class="kw">else </span>{
+				overseer
+					.send_msg(
+						ApprovalVotingMessage::ApprovedAncestor(subchain_head, target_number, tx),
+						std::any::type_name::&lt;<span class="self">Self</span>&gt;(),
+					)
+					.<span class="kw">await</span>;
+			}
 			<span class="kw">match </span>rx
 				.<span class="kw">await
 				</span>.map_err(Error::ApprovedAncestorCanceled)
@@ -1216,13 +1272,23 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		// task for sending the message to not block here and delay finality.
 		</span><span class="kw">if let </span><span class="prelude-val">Some</span>(spawn_handle) = <span class="kw-2">&amp;</span><span class="self">self</span>.spawn_handle {
 			<span class="kw">let </span><span class="kw-2">mut </span>overseer_handle = <span class="self">self</span>.overseer.clone();
+			<span class="kw">let </span>approval_voting_parallel_enabled = <span class="self">self</span>.approval_voting_parallel_enabled;
 			<span class="kw">let </span>lag_update_task = <span class="kw">async move </span>{
-				overseer_handle
-					.send_msg(
-						ApprovalDistributionMessage::ApprovalCheckingLagUpdate(lag),
-						std::any::type_name::&lt;<span class="self">Self</span>&gt;(),
-					)
-					.<span class="kw">await</span>;
+				<span class="kw">if </span>approval_voting_parallel_enabled {
+					overseer_handle
+						.send_msg(
+							ApprovalVotingParallelMessage::ApprovalCheckingLagUpdate(lag),
+							std::any::type_name::&lt;<span class="self">Self</span>&gt;(),
+						)
+						.<span class="kw">await</span>;
+				} <span class="kw">else </span>{
+					overseer_handle
+						.send_msg(
+							ApprovalDistributionMessage::ApprovalCheckingLagUpdate(lag),
+							std::any::type_name::&lt;<span class="self">Self</span>&gt;(),
+						)
+						.<span class="kw">await</span>;
+				}
 			};
 
 			spawn_handle.spawn(

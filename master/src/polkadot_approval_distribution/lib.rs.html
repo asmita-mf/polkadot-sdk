@@ -3278,6 +3278,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#3126" id="3126">3126</a>
 <a href="#3127" id="3127">3127</a>
 <a href="#3128" id="3128">3128</a>
+<a href="#3129" id="3129">3129</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -3353,7 +3354,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	time::Duration,
 };
 
-<span class="kw">mod </span>metrics;
+<span class="doccomment">/// Approval distribution metrics.
+</span><span class="kw">pub mod </span>metrics;
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests;
@@ -3379,7 +3381,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub struct </span>ApprovalDistribution {
 	metrics: Metrics,
 	slot_duration_millis: u64,
-	clock: Box&lt;<span class="kw">dyn </span>Clock + Send + Sync&gt;,
+	clock: Arc&lt;<span class="kw">dyn </span>Clock + Send + Sync&gt;,
 	assignment_criteria: Arc&lt;<span class="kw">dyn </span>AssignmentCriteria + Send + Sync&gt;,
 }
 
@@ -5948,7 +5950,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="self">Self</span>::new_with_clock(
 			metrics,
 			slot_duration_millis,
-			Box::new(SystemClock),
+			Arc::new(SystemClock),
 			assignment_criteria,
 		)
 	}
@@ -5957,7 +5959,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">pub fn </span>new_with_clock(
 		metrics: Metrics,
 		slot_duration_millis: u64,
-		clock: Box&lt;<span class="kw">dyn </span>Clock + Send + Sync&gt;,
+		clock: Arc&lt;<span class="kw">dyn </span>Clock + Send + Sync&gt;,
 		assignment_criteria: Arc&lt;<span class="kw">dyn </span>AssignmentCriteria + Send + Sync&gt;,
 	) -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{ metrics, slot_duration_millis, clock, assignment_criteria }
