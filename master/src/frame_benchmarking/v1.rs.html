@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `substrate/frame/benchmarking/src/v1.rs`."><title>v1.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `substrate/frame/benchmarking/src/v1.rs`."><title>v1.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="frame_benchmarking" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="frame_benchmarking" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../frame_benchmarking/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2152,7 +2150,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="doccomment">/// Whitelist the given account.
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>whitelist {
+</span><span class="macro">macro_rules!</span> whitelist {
 	(<span class="macro-nonterminal">$acc</span>:ident) =&gt; {
 		frame_benchmarking::benchmarking::add_to_whitelist(
 			frame_system::Account::&lt;T&gt;::hashed_key_for(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$acc</span>).into(),
@@ -2300,7 +2298,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 /// }
 /// ```
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>benchmarks {
+</span><span class="macro">macro_rules!</span> benchmarks {
 	(
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
@@ -2321,7 +2319,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ///
 /// NOTE: For pallet declared with [`frame_support::pallet`], use [`benchmarks_instance_pallet`].
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>benchmarks_instance {
+</span><span class="macro">macro_rules!</span> benchmarks_instance {
 	(
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
@@ -2342,7 +2340,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ///
 /// NOTE: For pallet declared with `decl_module!`, use [`benchmarks_instance`].
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>benchmarks_instance_pallet {
+</span><span class="macro">macro_rules!</span> benchmarks_instance_pallet {
 	(
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
@@ -2361,7 +2359,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="attr">#[macro_export]
 #[doc(hidden)]
-</span><span class="macro">macro_rules! </span>benchmarks_iter {
+</span><span class="macro">macro_rules!</span> benchmarks_iter {
 	<span class="comment">// detect and extract `impl_benchmark_test_suite` call:
 	// - with a semi-colon
 	</span>(
@@ -2379,7 +2377,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			$(, $( <span class="macro-nonterminal">$args</span>:tt )* )<span class="question-mark">?</span>);
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter!</span> {
 			{ <span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2406,7 +2404,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			$(, $( <span class="macro-nonterminal">$args</span>:tt )* )<span class="question-mark">?</span>)
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter!</span> {
 			{ <span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2429,7 +2427,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		where_clause { <span class="kw">where </span>$( <span class="macro-nonterminal">$where_bound</span>:tt )* }
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter!</span> {
 			{ $(<span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">?</span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound</span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$where_bound </span>)* }
@@ -2454,7 +2452,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="macro-nonterminal">$name</span>:ident
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter!</span> {
 			{ $(<span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">?</span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2481,7 +2479,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="macro-nonterminal">$name</span>:ident
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter!</span> {
 			{ $(<span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">?</span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2508,7 +2506,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="macro-nonterminal">$name</span>:ident
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter!</span> {
 			{ $(<span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">?</span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2534,7 +2532,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		verify <span class="macro-nonterminal">$postcode</span>:block
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter!</span> {
 			{ $(<span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">?</span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2560,8 +2558,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		verify <span class="macro-nonterminal">$postcode</span>:block
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::paste! </span>{
-			<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::paste!</span> {
+			<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter!</span> {
 				{ $(<span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">?</span>)<span class="question-mark">? </span>}
 				{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 				{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2608,7 +2606,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		verify <span class="macro-nonterminal">$postcode</span>:block
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmark_backend! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmark_backend!</span> {
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			<span class="macro-nonterminal">$name
 			</span>{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2705,7 +2703,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="macro-nonterminal">$name</span>:ident { $( <span class="macro-nonterminal">$code</span>:tt )* }: <span class="kw">_ </span>$(&lt;<span class="macro-nonterminal">$origin_type</span>:ty&gt;)<span class="question-mark">? </span>( <span class="macro-nonterminal">$origin</span>:expr $( , <span class="macro-nonterminal">$arg</span>:expr )* )
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter!</span> {
 			{ $(<span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">?</span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2730,7 +2728,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="macro-nonterminal">$name</span>:ident { $( <span class="macro-nonterminal">$code</span>:tt )* }: <span class="macro-nonterminal">$dispatch</span>:ident $(&lt;<span class="macro-nonterminal">$origin_type</span>:ty&gt;)<span class="question-mark">? </span>( <span class="macro-nonterminal">$origin</span>:expr $( , <span class="macro-nonterminal">$arg</span>:expr )* )
 		$( <span class="macro-nonterminal">$rest</span>:tt )*
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmarks_iter!</span> {
 			{ $(<span class="macro-nonterminal">$bench_module</span>, <span class="macro-nonterminal">$new_test_ext</span>, <span class="macro-nonterminal">$test </span>$(, $( <span class="macro-nonterminal">$args </span>)* )<span class="question-mark">?</span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2772,7 +2770,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="attr">#[macro_export]
 #[doc(hidden)]
-</span><span class="macro">macro_rules! </span>to_origin {
+</span><span class="macro">macro_rules!</span> to_origin {
 	(<span class="macro-nonterminal">$origin</span>:expr) =&gt; {
 		<span class="macro-nonterminal">$origin</span>.into()
 	};
@@ -2783,7 +2781,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="attr">#[macro_export]
 #[doc(hidden)]
-</span><span class="macro">macro_rules! </span>benchmark_backend {
+</span><span class="macro">macro_rules!</span> benchmark_backend {
 	<span class="comment">// parsing arms
 	</span>(
 		{ $( <span class="macro-nonterminal">$instance</span>:ident: <span class="macro-nonterminal">$instance_bound</span>:tt )<span class="question-mark">? </span>}
@@ -2797,7 +2795,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 		<span class="macro-nonterminal">$postcode</span>:block
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmark_backend! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmark_backend!</span> {
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			<span class="macro-nonterminal">$name
 			</span>{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2822,7 +2820,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 		<span class="macro-nonterminal">$postcode</span>:block
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmark_backend! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmark_backend!</span> {
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			<span class="macro-nonterminal">$name
 			</span>{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2848,7 +2846,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 		<span class="macro-nonterminal">$postcode</span>:block
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmark_backend! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmark_backend!</span> {
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			<span class="macro-nonterminal">$name
 			</span>{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2874,7 +2872,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 		<span class="macro-nonterminal">$postcode</span>:block
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmark_backend! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::benchmark_backend!</span> {
 			{ $( <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>}
 			<span class="macro-nonterminal">$name
 			</span>{ $( <span class="macro-nonterminal">$where_clause </span>)* }
@@ -2908,7 +2906,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			</span><span class="kw">where </span>$( <span class="macro-nonterminal">$where_clause </span>)*
 		{
 			<span class="kw">fn </span>components(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="macro-nonterminal">$crate::__private::Vec</span>&lt;(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>, u32, u32)&gt; {
-				<span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec! </span>[
+				<span class="macro-nonterminal">$</span><span class="macro">crate::__private::vec!</span> [
 					$(
 						(<span class="macro-nonterminal">$crate::BenchmarkParameter</span>::<span class="macro-nonterminal">$param</span>, <span class="macro-nonterminal">$param_from</span>, <span class="macro-nonterminal">$param_to</span>)
 					),*
@@ -2950,7 +2948,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="comment">// Creates #[test] functions for the given bench cases.
 </span><span class="attr">#[macro_export]
 #[doc(hidden)]
-</span><span class="macro">macro_rules! </span>impl_bench_case_tests {
+</span><span class="macro">macro_rules!</span> impl_bench_case_tests {
 	(
 		{ <span class="macro-nonterminal">$module</span>:ident, <span class="macro-nonterminal">$new_test_exec</span>:expr, <span class="macro-nonterminal">$exec_name</span>:ident, <span class="macro-nonterminal">$test</span>:path, <span class="macro-nonterminal">$extra</span>:expr }
 		{ $( <span class="macro-nonterminal">$names_extra</span>:tt )* }
@@ -2968,14 +2966,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="comment">// Creates a #[test] function for the given bench name.
 </span><span class="attr">#[macro_export]
 #[doc(hidden)]
-</span><span class="macro">macro_rules! </span>impl_bench_name_tests {
+</span><span class="macro">macro_rules!</span> impl_bench_name_tests {
 	<span class="comment">// recursion anchor
 	</span>(
 		<span class="macro-nonterminal">$module</span>:ident, <span class="macro-nonterminal">$new_test_exec</span>:expr, <span class="macro-nonterminal">$exec_name</span>:ident, <span class="macro-nonterminal">$test</span>:path, <span class="macro-nonterminal">$extra</span>:expr,
 		{ $( <span class="macro-nonterminal">$names_extra</span>:tt )* },
 		{ <span class="macro-nonterminal">$name</span>:ident }
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::paste! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::paste!</span> {
 			<span class="attr">#[<span class="macro-nonterminal">test</span>]
 			</span><span class="kw">fn </span>[&lt;bench_ <span class="macro-nonterminal">$name</span>&gt;] () {
 				<span class="macro-nonterminal">$new_test_exec</span>.<span class="macro-nonterminal">$exec_name</span>(|| {
@@ -3064,7 +3062,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 // ```
 </span><span class="attr">#[macro_export]
 #[doc(hidden)]
-</span><span class="macro">macro_rules! </span>selected_benchmark {
+</span><span class="macro">macro_rules!</span> selected_benchmark {
 	(
 		{ $( <span class="macro-nonterminal">$where_clause</span>:tt )* }
 		{ $( <span class="macro-nonterminal">$instance</span>:ident: <span class="macro-nonterminal">$instance_bound</span>:tt )<span class="question-mark">? </span>}
@@ -3111,7 +3109,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="attr">#[macro_export]
 #[doc(hidden)]
-</span><span class="macro">macro_rules! </span>impl_benchmark {
+</span><span class="macro">macro_rules!</span> impl_benchmark {
 	(
 		{ $( <span class="macro-nonterminal">$where_clause</span>:tt )* }
 		{ $( <span class="macro-nonterminal">$instance</span>:ident: <span class="macro-nonterminal">$instance_bound</span>:tt )<span class="question-mark">? </span>}
@@ -3312,7 +3310,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					.map_err(|<span class="kw">_</span>| -&gt; <span class="macro-nonterminal">$crate::BenchmarkError </span>{ <span class="string">"`name` is not a valid utf8 string!"</span>.into() })<span class="question-mark">?</span>;
 				<span class="kw">match </span>name {
 					$( <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>) =&gt; {
-						<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::paste! </span>{ <span class="macro-nonterminal">Self</span>::[&lt; test_benchmark_ <span class="macro-nonterminal">$name </span>&gt;]() }
+						<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::paste!</span> { <span class="macro-nonterminal">Self</span>::[&lt; test_benchmark_ <span class="macro-nonterminal">$name </span>&gt;]() }
 					} )*
 					<span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">"Could not find test for requested benchmark."</span>.into()),
 				}
@@ -3328,13 +3326,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 // env variable `VALUES_PER_COMPONENT`.
 </span><span class="attr">#[macro_export]
 #[doc(hidden)]
-</span><span class="macro">macro_rules! </span>impl_benchmark_test {
+</span><span class="macro">macro_rules!</span> impl_benchmark_test {
 	(
 		{ $( <span class="macro-nonterminal">$where_clause</span>:tt )* }
 		{ $( <span class="macro-nonterminal">$instance</span>:ident: <span class="macro-nonterminal">$instance_bound</span>:tt )<span class="question-mark">? </span>}
 		<span class="macro-nonterminal">$name</span>:ident
 	) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::item! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::__private::paste::item!</span> {
 			<span class="attr">#[<span class="macro-nonterminal">cfg</span>(test)]
 			</span><span class="kw">impl</span>&lt;T: Config $(&lt;<span class="macro-nonterminal">$instance</span>&gt;, <span class="macro-nonterminal">$instance</span>: <span class="macro-nonterminal">$instance_bound </span>)<span class="question-mark">? </span>&gt;
 				Pallet&lt;T $(, <span class="macro-nonterminal">$instance</span>)<span class="question-mark">? </span>&gt;
@@ -3561,7 +3559,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 // benchmark, and dispatches based on that to the appropriate real test implementation. Then, we can
 // just iterate over the `Benchmarking::benchmarks` list to run the actual implementations.
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>impl_benchmark_test_suite {
+</span><span class="macro">macro_rules!</span> impl_benchmark_test_suite {
 	(
 		<span class="macro-nonterminal">$bench_module</span>:ident,
 		<span class="macro-nonterminal">$new_test_ext</span>:expr,
@@ -3586,7 +3584,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 /// - a top-level `ignored` is exclusive
 /// - all modes are valid
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>validate_pov_mode {
+</span><span class="macro">macro_rules!</span> validate_pov_mode {
 	() =&gt; {};
 	( <span class="macro-nonterminal">$_bench</span>:ident: ; ) =&gt; { };
 	( <span class="macro-nonterminal">$_bench</span>:ident: <span class="macro-nonterminal">$_car</span>:path = Ignored ; ) =&gt; { };
@@ -3618,7 +3616,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 // This depends on whether or not the first argument contains a non-empty list of bench names.
 </span><span class="attr">#[macro_export]
 #[doc(hidden)]
-</span><span class="macro">macro_rules! </span>impl_test_function {
+</span><span class="macro">macro_rules!</span> impl_test_function {
 	<span class="comment">// user might or might not have set some keyword arguments; set the defaults
 	//
 	// The weird syntax indicates that `rest` comes only after a comma, which is otherwise optional
@@ -3945,7 +3943,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 /// add_benchmark!(params, batches, pallet_collective, Council2); // pallet_collective_council_2.rs
 /// ```
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>add_benchmark {
+</span><span class="macro">macro_rules!</span> add_benchmark {
 	( <span class="macro-nonterminal">$params</span>:ident, <span class="macro-nonterminal">$batches</span>:ident, <span class="macro-nonterminal">$name</span>:path, <span class="macro-nonterminal">$location</span>:ty ) =&gt; {
 		<span class="kw">let </span>name_string = <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>).as_bytes();
 		<span class="kw">let </span>instance_string = <span class="macro">stringify!</span>(<span class="macro-nonterminal">$location</span>).as_bytes();
@@ -4041,7 +4039,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 ///
 /// This should match what exists with the `add_benchmark!` macro.
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>list_benchmark {
+</span><span class="macro">macro_rules!</span> list_benchmark {
 	( <span class="macro-nonterminal">$list</span>:ident, <span class="macro-nonterminal">$extra</span>:ident, <span class="macro-nonterminal">$name</span>:path, <span class="macro-nonterminal">$location</span>:ty ) =&gt; {
 		<span class="kw">let </span>pallet_string = <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>).as_bytes();
 		<span class="kw">let </span>instance_string = <span class="macro">stringify!</span>(<span class="macro-nonterminal">$location</span>).as_bytes();
@@ -4059,7 +4057,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 /// Should be preferred instead of having a repetitive list of configs
 /// in `add_benchmark` and `list_benchmark`.
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>define_benchmarks {
+</span><span class="macro">macro_rules!</span> define_benchmarks {
 	( $([ <span class="macro-nonterminal">$names</span>:path, <span class="macro-nonterminal">$locations</span>:ty ])* ) =&gt; {
 		<span class="doccomment">/// Calls `list_benchmark` with all configs from `define_benchmarks`
 		/// and passes the first two parameters on.
@@ -4069,7 +4067,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		/// list_benchmarks!(list, extra);
 		/// ```
 		</span><span class="attr">#[macro_export]
-		</span><span class="macro">macro_rules! </span>list_benchmarks {
+		</span><span class="macro">macro_rules!</span> list_benchmarks {
 			( <span class="macro-nonterminal">$list</span>:ident, <span class="macro-nonterminal">$extra</span>:ident ) =&gt; {
 				$( <span class="macro-nonterminal">$</span><span class="macro">crate::list_benchmark!</span>( <span class="macro-nonterminal">$list</span>, <span class="macro-nonterminal">$extra</span>, <span class="macro-nonterminal">$names</span>, <span class="macro-nonterminal">$locations</span>); )*
 			}
@@ -4083,7 +4081,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		/// add_benchmarks!(params, batches);
 		/// ```
 		</span><span class="attr">#[macro_export]
-		</span><span class="macro">macro_rules! </span>add_benchmarks {
+		</span><span class="macro">macro_rules!</span> add_benchmarks {
 			( <span class="macro-nonterminal">$params</span>:ident, <span class="macro-nonterminal">$batches</span>:ident ) =&gt; {
 				$( <span class="macro-nonterminal">$</span><span class="macro">crate::add_benchmark!</span>( <span class="macro-nonterminal">$params</span>, <span class="macro-nonterminal">$batches</span>, <span class="macro-nonterminal">$names</span>, <span class="macro-nonterminal">$locations </span>); )*
 			}

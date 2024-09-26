@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `bridges/relays/messages/src/message_race_limits.rs`."><title>message_race_limits.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `bridges/relays/messages/src/message_race_limits.rs`."><title>message_race_limits.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="messages_relay" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="messages_relay" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../messages_relay/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -319,43 +317,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#167" id="167">167</a>
 <a href="#168" id="168">168</a>
 <a href="#169" id="169">169</a>
-<a href="#170" id="170">170</a>
-<a href="#171" id="171">171</a>
-<a href="#172" id="172">172</a>
-<a href="#173" id="173">173</a>
-<a href="#174" id="174">174</a>
-<a href="#175" id="175">175</a>
-<a href="#176" id="176">176</a>
-<a href="#177" id="177">177</a>
-<a href="#178" id="178">178</a>
-<a href="#179" id="179">179</a>
-<a href="#180" id="180">180</a>
-<a href="#181" id="181">181</a>
-<a href="#182" id="182">182</a>
-<a href="#183" id="183">183</a>
-<a href="#184" id="184">184</a>
-<a href="#185" id="185">185</a>
-<a href="#186" id="186">186</a>
-<a href="#187" id="187">187</a>
-<a href="#188" id="188">188</a>
-<a href="#189" id="189">189</a>
-<a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
-<a href="#193" id="193">193</a>
-<a href="#194" id="194">194</a>
-<a href="#195" id="195">195</a>
-<a href="#196" id="196">196</a>
-<a href="#197" id="197">197</a>
-<a href="#198" id="198">198</a>
-<a href="#199" id="199">199</a>
-<a href="#200" id="200">200</a>
-<a href="#201" id="201">201</a>
-<a href="#202" id="202">202</a>
-<a href="#203" id="203">203</a>
-<a href="#204" id="204">204</a>
-<a href="#205" id="205">205</a>
-<a href="#206" id="206">206</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 // This file is part of Parity Bridges Common.
 
@@ -381,32 +342,15 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use crate</span>::{
 	message_lane::MessageLane,
-	message_lane_loop::{
-		MessageDetails, MessageDetailsMap, SourceClient <span class="kw">as </span>MessageLaneSourceClient,
-		TargetClient <span class="kw">as </span>MessageLaneTargetClient,
-	},
+	message_lane_loop::{MessageDetails, MessageDetailsMap},
 	message_race_loop::NoncesRange,
 	message_race_strategy::SourceRangesQueue,
-	metrics::MessageLaneLoopMetrics,
 };
 
 <span class="doccomment">/// Reference data for participating in relay
-</span><span class="kw">pub struct </span>RelayReference&lt;
-	P: MessageLane,
-	SourceClient: MessageLaneSourceClient&lt;P&gt;,
-	TargetClient: MessageLaneTargetClient&lt;P&gt;,
-&gt; {
-	<span class="doccomment">/// The client that is connected to the message lane source node.
-	</span><span class="kw">pub </span>lane_source_client: SourceClient,
-	<span class="doccomment">/// The client that is connected to the message lane target node.
-	</span><span class="kw">pub </span>lane_target_client: TargetClient,
-	<span class="doccomment">/// Metrics reference.
-	</span><span class="kw">pub </span>metrics: <span class="prelude-ty">Option</span>&lt;MessageLaneLoopMetrics&gt;,
+</span><span class="kw">pub struct </span>RelayReference&lt;P: MessageLane&gt; {
 	<span class="doccomment">/// Messages size summary
 	</span><span class="kw">pub </span>selected_size: u32,
-
-	<span class="doccomment">/// Hard check begin nonce
-	</span><span class="kw">pub </span>hard_selected_begin_nonce: MessageNonce,
 
 	<span class="doccomment">/// Index by all ready nonces
 	</span><span class="kw">pub </span>index: usize,
@@ -417,23 +361,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="doccomment">/// Relay reference data
-</span><span class="kw">pub struct </span>RelayMessagesBatchReference&lt;
-	P: MessageLane,
-	SourceClient: MessageLaneSourceClient&lt;P&gt;,
-	TargetClient: MessageLaneTargetClient&lt;P&gt;,
-&gt; {
+</span><span class="kw">pub struct </span>RelayMessagesBatchReference&lt;P: MessageLane&gt; {
 	<span class="doccomment">/// Maximal number of relayed messages in single delivery transaction.
 	</span><span class="kw">pub </span>max_messages_in_this_batch: MessageNonce,
 	<span class="doccomment">/// Maximal cumulative dispatch weight of relayed messages in single delivery transaction.
 	</span><span class="kw">pub </span>max_messages_weight_in_single_batch: Weight,
 	<span class="doccomment">/// Maximal cumulative size of relayed messages in single delivery transaction.
 	</span><span class="kw">pub </span>max_messages_size_in_single_batch: u32,
-	<span class="doccomment">/// The client that is connected to the message lane source node.
-	</span><span class="kw">pub </span>lane_source_client: SourceClient,
-	<span class="doccomment">/// The client that is connected to the message lane target node.
-	</span><span class="kw">pub </span>lane_target_client: TargetClient,
-	<span class="doccomment">/// Metrics reference.
-	</span><span class="kw">pub </span>metrics: <span class="prelude-ty">Option</span>&lt;MessageLaneLoopMetrics&gt;,
 	<span class="doccomment">/// Best available nonce at the **best** target block. We do not want to deliver nonces
 	/// less than this nonce, even though the block may be retracted.
 	</span><span class="kw">pub </span>best_target_nonce: MessageNonce,
@@ -452,12 +386,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">pub struct </span>MessageRaceLimits;
 
 <span class="kw">impl </span>MessageRaceLimits {
-	<span class="kw">pub async fn </span>decide&lt;
-		P: MessageLane,
-		SourceClient: MessageLaneSourceClient&lt;P&gt;,
-		TargetClient: MessageLaneTargetClient&lt;P&gt;,
-	&gt;(
-		reference: RelayMessagesBatchReference&lt;P, SourceClient, TargetClient&gt;,
+	<span class="kw">pub async fn </span>decide&lt;P: MessageLane&gt;(
+		reference: RelayMessagesBatchReference&lt;P&gt;,
 	) -&gt; <span class="prelude-ty">Option</span>&lt;RangeInclusive&lt;MessageNonce&gt;&gt; {
 		<span class="kw">let </span><span class="kw-2">mut </span>hard_selected_count = <span class="number">0</span>;
 
@@ -470,14 +400,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		);
 
 		<span class="comment">// relay reference
-		</span><span class="kw">let </span><span class="kw-2">mut </span>relay_reference = RelayReference {
-			lane_source_client: reference.lane_source_client.clone(),
-			lane_target_client: reference.lane_target_client.clone(),
-			metrics: reference.metrics.clone(),
-
+		</span><span class="kw">let </span><span class="kw-2">mut </span>relay_reference = RelayReference::&lt;P&gt; {
 			selected_size: <span class="number">0</span>,
-
-			hard_selected_begin_nonce,
 
 			index: <span class="number">0</span>,
 			nonce: <span class="number">0</span>,

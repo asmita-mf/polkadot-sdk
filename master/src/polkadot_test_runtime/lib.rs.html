@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `polkadot/runtime/test-runtime/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `polkadot/runtime/test-runtime/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkadot_test_runtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkadot_test_runtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../polkadot_test_runtime/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1529,14 +1527,14 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	NativeVersion { runtime_version: VERSION, can_author_with: Default::default() }
 }
 
-<span class="macro">sp_api::decl_runtime_apis! </span>{
+<span class="macro">sp_api::decl_runtime_apis!</span> {
 	<span class="kw">pub trait </span>GetLastTimestamp {
 		<span class="doccomment">/// Returns the last timestamp of a runtime.
 		</span><span class="kw">fn </span>get_last_timestamp() -&gt; u64;
 	}
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>Version: RuntimeVersion = VERSION;
 	<span class="kw">pub const </span>SS58Prefix: u8 = <span class="number">42</span>;
 }
@@ -1565,7 +1563,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>Extrinsic = UncheckedExtrinsic;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>storage EpochDuration: u64 = EPOCH_DURATION_IN_SLOTS <span class="kw">as </span>u64;
 	<span class="kw">pub </span>storage ExpectedBlockTime: Moment = MILLISECS_PER_BLOCK;
 	<span class="kw">pub </span>ReportLongevity: u64 =
@@ -1592,7 +1590,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>EquivocationReportSystem = ();
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>storage IndexDeposit: Balance = <span class="number">1 </span>* DOLLARS;
 }
 
@@ -1604,7 +1602,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>WeightInfo = ();
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>ExistentialDeposit: Balance = <span class="number">1 </span>* CENTS;
 	<span class="kw">pub </span>storage MaxLocks: u32 = <span class="number">50</span>;
 	<span class="kw">pub const </span>MaxReserves: u32 = <span class="number">50</span>;
@@ -1626,7 +1624,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>MaxFreezes = ConstU32&lt;<span class="number">0</span>&gt;;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>storage TransactionByteFee: Balance = <span class="number">10 </span>* MILLICENTS;
 	<span class="doccomment">/// This value increases the priority of `Operational` transactions by adding
 	/// a "virtual tip" that's equal to the `OperationalFeeMultiplier * final_fee`.
@@ -1642,7 +1640,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>FeeMultiplierUpdate = SlowAdjustingFeeUpdate&lt;<span class="self">Self</span>&gt;;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>storage SlotDuration: u64 = SLOT_DURATION;
 	<span class="kw">pub </span>storage MinimumPeriod: u64 = SlotDuration::get() / <span class="number">2</span>;
 }
@@ -1658,12 +1656,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>EventHandler = Staking;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>storage Period: BlockNumber = <span class="number">10 </span>* MINUTES;
 	<span class="kw">pub </span>storage Offset: BlockNumber = <span class="number">0</span>;
 }
 
-<span class="macro">impl_opaque_keys! </span>{
+<span class="macro">impl_opaque_keys!</span> {
 	<span class="kw">pub struct </span>SessionKeys {
 		<span class="kw">pub </span>grandpa: Grandpa,
 		<span class="kw">pub </span>babe: Babe,
@@ -1690,7 +1688,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>FullIdentificationOf = pallet_staking::ExposureOf&lt;Runtime&gt;;
 }
 
-<span class="macro">pallet_staking_reward_curve::build! </span>{
+<span class="macro">pallet_staking_reward_curve::build!</span> {
 	<span class="kw">const </span>REWARD_CURVE: PiecewiseLinear&lt;<span class="lifetime">'static</span>&gt; = <span class="macro">curve!</span>(
 		min_inflation: <span class="number">0_025_000</span>,
 		max_inflation: <span class="number">0_100_000</span>,
@@ -1701,7 +1699,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	);
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="comment">// Six sessions in an era (6 hours).
 	</span><span class="kw">pub </span>storage SessionsPerEra: SessionIndex = <span class="number">6</span>;
 	<span class="comment">// 28 eras for unbonding (7 days).
@@ -1764,7 +1762,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>DisablingStrategy = pallet_staking::UpToLimitDisablingStrategy;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>MaxSetIdSessionEntries: u32 = BondingDuration::get() * SessionsPerEra::get();
 }
 
@@ -1835,12 +1833,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>MaxAuthorities = MaxAuthorities;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>storage LeasePeriod: BlockNumber = <span class="number">100_000</span>;
 	<span class="kw">pub </span>storage EndingPeriod: BlockNumber = <span class="number">1000</span>;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>Prefix: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>[u8] = <span class="string">b"Pay KSMs to the Kusama account:"</span>;
 }
 
@@ -1852,7 +1850,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>WeightInfo = claims::TestWeightInfo;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>storage MinVestedTransfer: Balance = <span class="number">100 </span>* DOLLARS;
 	<span class="kw">pub </span>UnvestedFundsAllowedWithdrawReasons: WithdrawReasons =
 		WithdrawReasons::except(WithdrawReasons::TRANSFER | WithdrawReasons::RESERVE);
@@ -1930,7 +1928,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>ValidatorSet = Historical;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>ParasUnsignedPriority: TransactionPriority = TransactionPriority::max_value();
 }
 
@@ -1944,17 +1942,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>AssignCoretime = ();
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>BrokerId: u32 = <span class="number">10u32</span>;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>OnDemandTrafficDefaultValue: FixedU128 = FixedU128::from_u32(<span class="number">1</span>);
 }
 
 <span class="kw">impl </span>parachains_dmp::Config <span class="kw">for </span>Runtime {}
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>HrmpChannelSizeAndCapacityWithSystemRatio: Percent = Percent::from_percent(<span class="number">100</span>);
 }
 
@@ -2072,7 +2070,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 }
 
-<span class="macro">construct_runtime! </span>{
+<span class="macro">construct_runtime!</span> {
 	<span class="kw">pub enum </span>Runtime
 	{
 		<span class="comment">// Basic stuff; balances is uncallable initially.
@@ -2164,7 +2162,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">pub type </span>Hash = &lt;Block <span class="kw">as </span>BlockT&gt;::Hash;
 <span class="kw">pub type </span>Extrinsic = &lt;Block <span class="kw">as </span>BlockT&gt;::Extrinsic;
 
-<span class="macro">sp_api::impl_runtime_apis! </span>{
+<span class="macro">sp_api::impl_runtime_apis!</span> {
 	<span class="kw">impl </span>sp_api::Core&lt;Block&gt; <span class="kw">for </span>Runtime {
 		<span class="kw">fn </span>version() -&gt; RuntimeVersion {
 			VERSION

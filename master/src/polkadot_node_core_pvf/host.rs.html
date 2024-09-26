@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `polkadot/node/core/pvf/src/host.rs`."><title>host.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `polkadot/node/core/pvf/src/host.rs`."><title>host.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkadot_node_core_pvf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkadot_node_core_pvf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../polkadot_node_core_pvf/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1980,23 +1978,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1828" id="1828">1828</a>
 <a href="#1829" id="1829">1829</a>
 <a href="#1830" id="1830">1830</a>
-<a href="#1831" id="1831">1831</a>
-<a href="#1832" id="1832">1832</a>
-<a href="#1833" id="1833">1833</a>
-<a href="#1834" id="1834">1834</a>
-<a href="#1835" id="1835">1835</a>
-<a href="#1836" id="1836">1836</a>
-<a href="#1837" id="1837">1837</a>
-<a href="#1838" id="1838">1838</a>
-<a href="#1839" id="1839">1839</a>
-<a href="#1840" id="1840">1840</a>
-<a href="#1841" id="1841">1841</a>
-<a href="#1842" id="1842">1842</a>
-<a href="#1843" id="1843">1843</a>
-<a href="#1844" id="1844">1844</a>
-<a href="#1845" id="1845">1845</a>
-<a href="#1846" id="1846">1846</a>
-<a href="#1847" id="1847">1847</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -2313,7 +2294,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">let </span>task = <span class="kw">async move </span>{
 		<span class="comment">// Bundle the sub-components' tasks together into a single future.
-		</span><span class="macro">futures::select! </span>{
+		</span><span class="macro">futures::select!</span> {
 			<span class="kw">_ </span>= run_host.fuse() =&gt; {},
 			<span class="kw">_ </span>= run_prepare_queue.fuse() =&gt; {},
 			<span class="kw">_ </span>= run_prepare_pool.fuse() =&gt; {},
@@ -2375,7 +2356,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw-2">mut </span>awaiting_prepare,
 	}: Inner,
 ) {
-	<span class="macro">macro_rules! </span>break_if_fatal {
+	<span class="macro">macro_rules!</span> break_if_fatal {
 		(<span class="macro-nonterminal">$expr</span>:expr) =&gt; {
 			<span class="kw">match </span><span class="macro-nonterminal">$expr </span>{
 				<span class="prelude-val">Err</span>(Fatal) =&gt; {
@@ -2400,7 +2381,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">loop </span>{
 		<span class="comment">// biased to make it behave deterministically for tests.
-		</span><span class="macro">futures::select_biased! </span>{
+		</span><span class="macro">futures::select_biased!</span> {
 			from_execute_queue_rx = from_execute_queue_rx.next() =&gt; {
 				<span class="kw">let </span>from_queue = <span class="macro">break_if_fatal!</span>(from_execute_queue_rx.ok_or(Fatal));
 				<span class="kw">let </span>execute::FromQueue::RemoveArtifact { artifact, reply_to } = from_queue;
@@ -2812,12 +2793,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw-2">*</span>state = <span class="kw">match </span>result {
-		<span class="prelude-val">Ok</span>(PrepareSuccess { path, stats: prepare_stats, size }) =&gt; ArtifactState::Prepared {
-			path,
-			last_time_needed: SystemTime::now(),
-			size,
-			prepare_stats,
-		},
+		<span class="prelude-val">Ok</span>(PrepareSuccess { path, size, .. }) =&gt;
+			ArtifactState::Prepared { path, last_time_needed: SystemTime::now(), size },
 		<span class="prelude-val">Err</span>(error) =&gt; {
 			<span class="kw">let </span>last_time_failed = SystemTime::now();
 			<span class="kw">let </span>num_failures = <span class="kw-2">*</span>num_failures + <span class="number">1</span>;
@@ -2975,7 +2952,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">use crate</span>::{artifacts::generate_artifact_path, testing::artifact_id, PossiblyInvalidError};
 	<span class="kw">use </span>assert_matches::assert_matches;
 	<span class="kw">use </span>futures::future::BoxFuture;
-	<span class="kw">use </span>polkadot_node_core_pvf_common::prepare::PrepareStats;
 	<span class="kw">use </span>polkadot_node_primitives::BlockData;
 	<span class="kw">use </span>sp_core::H256;
 
@@ -3096,7 +3072,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			run_until(
 				<span class="kw-2">&amp;mut </span><span class="self">self</span>.run,
 				<span class="kw">async </span>{
-					<span class="macro">futures::select! </span>{
+					<span class="macro">futures::select!</span> {
 						<span class="kw">_ </span>= Delay::new(Duration::from_millis(<span class="number">500</span>)).fuse() =&gt; (),
 						<span class="kw">_ </span>= to_prepare_queue_rx.next().fuse() =&gt; {
 							<span class="macro">panic!</span>(<span class="string">"the prepare queue is supposed to be empty"</span>)
@@ -3115,7 +3091,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			run_until(
 				<span class="kw-2">&amp;mut </span><span class="self">self</span>.run,
 				<span class="kw">async </span>{
-					<span class="macro">futures::select! </span>{
+					<span class="macro">futures::select!</span> {
 						<span class="kw">_ </span>= Delay::new(Duration::from_millis(<span class="number">500</span>)).fuse() =&gt; (),
 						<span class="kw">_ </span>= to_execute_queue_rx.next().fuse() =&gt; {
 							<span class="macro">panic!</span>(<span class="string">"the execute queue is supposed to be empty"</span>)
@@ -3134,7 +3110,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			run_until(
 				<span class="kw-2">&amp;mut </span><span class="self">self</span>.run,
 				<span class="kw">async </span>{
-					<span class="macro">futures::select! </span>{
+					<span class="macro">futures::select!</span> {
 						<span class="kw">_ </span>= Delay::new(Duration::from_millis(<span class="number">500</span>)).fuse() =&gt; (),
 						msg = to_sweeper_rx.next().fuse() =&gt; {
 							<span class="macro">panic!</span>(<span class="string">"the sweeper is supposed to be empty, but received: {:?}"</span>, msg)
@@ -3195,20 +3171,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		builder.cleanup_config = ArtifactsCleanupConfig::new(<span class="number">1024</span>, Duration::from_secs(<span class="number">0</span>));
 		<span class="kw">let </span>path1 = generate_artifact_path(cache_path);
 		<span class="kw">let </span>path2 = generate_artifact_path(cache_path);
-		builder.artifacts.insert_prepared(
-			artifact_id(<span class="number">1</span>),
-			path1.clone(),
-			mock_now,
-			<span class="number">1024</span>,
-			PrepareStats::default(),
-		);
-		builder.artifacts.insert_prepared(
-			artifact_id(<span class="number">2</span>),
-			path2.clone(),
-			mock_now,
-			<span class="number">1024</span>,
-			PrepareStats::default(),
-		);
+		builder.artifacts.insert_prepared(artifact_id(<span class="number">1</span>), path1.clone(), mock_now, <span class="number">1024</span>);
+		builder.artifacts.insert_prepared(artifact_id(<span class="number">2</span>), path2.clone(), mock_now, <span class="number">1024</span>);
 		<span class="kw">let </span><span class="kw-2">mut </span>test = builder.build();
 		<span class="kw">let </span><span class="kw-2">mut </span>host = test.host_handle();
 

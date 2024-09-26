@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `substrate/client/network/src/protocol/notifications/handler.rs`."><title>handler.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `substrate/client/network/src/protocol/notifications/handler.rs`."><title>handler.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../../../theme.css"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../../../theme.css"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../sc_network/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1813,35 +1811,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1661" id="1661">1661</a>
 <a href="#1662" id="1662">1662</a>
 <a href="#1663" id="1663">1663</a>
-<a href="#1664" id="1664">1664</a>
-<a href="#1665" id="1665">1665</a>
-<a href="#1666" id="1666">1666</a>
-<a href="#1667" id="1667">1667</a>
-<a href="#1668" id="1668">1668</a>
-<a href="#1669" id="1669">1669</a>
-<a href="#1670" id="1670">1670</a>
-<a href="#1671" id="1671">1671</a>
-<a href="#1672" id="1672">1672</a>
-<a href="#1673" id="1673">1673</a>
-<a href="#1674" id="1674">1674</a>
-<a href="#1675" id="1675">1675</a>
-<a href="#1676" id="1676">1676</a>
-<a href="#1677" id="1677">1677</a>
-<a href="#1678" id="1678">1678</a>
-<a href="#1679" id="1679">1679</a>
-<a href="#1680" id="1680">1680</a>
-<a href="#1681" id="1681">1681</a>
-<a href="#1682" id="1682">1682</a>
-<a href="#1683" id="1683">1683</a>
-<a href="#1684" id="1684">1684</a>
-<a href="#1685" id="1685">1685</a>
-<a href="#1686" id="1686">1686</a>
-<a href="#1687" id="1687">1687</a>
-<a href="#1688" id="1688">1688</a>
-<a href="#1689" id="1689">1689</a>
-<a href="#1690" id="1690">1690</a>
-<a href="#1691" id="1691">1691</a>
-<a href="#1692" id="1692">1692</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1917,7 +1886,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	prelude::<span class="kw-2">*</span>,
 };
 <span class="kw">use </span>libp2p::{
-	core::ConnectedPoint,
 	swarm::{
 		handler::ConnectionEvent, ConnectionHandler, ConnectionHandlerEvent, KeepAlive, Stream,
 		SubstreamProtocol,
@@ -1961,9 +1929,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// When the connection with the remote has been successfully established.
 	</span>when_connection_open: Instant,
 
-	<span class="doccomment">/// Whether we are the connection dialer or listener.
-	</span>endpoint: ConnectedPoint,
-
 	<span class="doccomment">/// Remote we are connected to.
 	</span>peer_id: PeerId,
 
@@ -1980,7 +1945,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="doccomment">/// Creates new [`NotifsHandler`].
 	</span><span class="kw">pub fn </span>new(
 		peer_id: PeerId,
-		endpoint: ConnectedPoint,
 		protocols: Vec&lt;ProtocolConfig&gt;,
 		metrics: <span class="prelude-ty">Option</span>&lt;NotificationMetrics&gt;,
 	) -&gt; <span class="self">Self </span>{
@@ -1998,7 +1962,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				})
 				.collect(),
 			peer_id,
-			endpoint,
 			when_connection_open: Instant::now(),
 			events_queue: VecDeque::with_capacity(<span class="number">16</span>),
 			metrics: metrics.map_or(<span class="prelude-val">None</span>, |metrics| <span class="prelude-val">Some</span>(Arc::new(metrics))),
@@ -2125,8 +2088,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span>protocol_index: usize,
 		<span class="doccomment">/// Name of the protocol that was actually negotiated, if the default one wasn't available.
 		</span>negotiated_fallback: <span class="prelude-ty">Option</span>&lt;ProtocolName&gt;,
-		<span class="doccomment">/// The endpoint of the connection that is open for custom protocols.
-		</span>endpoint: ConnectedPoint,
 		<span class="doccomment">/// Handshake that was sent to us.
 		/// This is normally a "Status" message, but this out of the concern of this code.
 		</span>received_handshake: Vec&lt;u8&gt;,
@@ -2434,7 +2395,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 							NotifsHandlerOut::OpenResultOk {
 								protocol_index,
 								negotiated_fallback: new_open.negotiated_fallback,
-								endpoint: <span class="self">self</span>.endpoint.clone(),
 								received_handshake: new_open.handshake,
 								notifications_sink,
 								inbound,
@@ -2733,7 +2693,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">use </span>libp2p::{
 		core::muxing::SubstreamBox,
 		swarm::handler::{<span class="self">self</span>, StreamUpgradeError},
-		Multiaddr, Stream,
 	};
 	<span class="kw">use </span>multistream_select::{dialer_select_proto, listener_select_proto, Negotiated, Version};
 	<span class="kw">use </span>std::{
@@ -2769,7 +2728,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 			peer: PeerId,
 			protocol_index: usize,
-			endpoint: ConnectedPoint,
 			received_handshake: Vec&lt;u8&gt;,
 		) -&gt; NotifsHandlerOut {
 			<span class="kw">let </span>(async_tx, async_rx) =
@@ -2798,7 +2756,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			NotifsHandlerOut::OpenResultOk {
 				protocol_index,
 				negotiated_fallback: <span class="prelude-val">None</span>,
-				endpoint,
 				received_handshake,
 				notifications_sink,
 				inbound: <span class="bool-val">false</span>,
@@ -2954,10 +2911,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		NotifsHandler {
 			protocols: <span class="macro">vec!</span>[proto],
 			when_connection_open: Instant::now(),
-			endpoint: ConnectedPoint::Listener {
-				local_addr: Multiaddr::empty(),
-				send_back_addr: Multiaddr::empty(),
-			},
 			peer_id: PeerId::random(),
 			events_queue: VecDeque::new(),
 			metrics: <span class="prelude-val">None</span>,
@@ -2975,7 +2928,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3002,7 +2954,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3035,7 +2986,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3069,7 +3019,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3109,7 +3058,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3160,7 +3108,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		codec.set_max_len(usize::MAX);
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3199,7 +3146,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3259,7 +3205,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3296,7 +3241,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3342,7 +3286,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3391,7 +3334,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3427,7 +3369,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3502,7 +3443,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::PendingSend(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),

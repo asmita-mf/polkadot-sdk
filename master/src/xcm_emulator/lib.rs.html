@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `cumulus/xcm/xcm-emulator/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `cumulus/xcm/xcm-emulator/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="xcm_emulator" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="xcm_emulator" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../xcm_emulator/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1851,7 +1849,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">pub type </span>AccountIdOf&lt;T&gt; = &lt;T <span class="kw">as </span>frame_system::Config&gt;::AccountId;
 
-<span class="macro">thread_local! </span>{
+<span class="macro">thread_local!</span> {
 	<span class="doccomment">/// Downward messages, each message is: `(to_para_id, [(relay_block_number, msg)])`
 	</span><span class="attr">#[allow(clippy::type_complexity)]
 	</span><span class="kw">pub static </span>DOWNWARD_MESSAGES: RefCell&lt;HashMap&lt;String, VecDeque&lt;(u32, Vec&lt;(RelayBlockNumber, Vec&lt;u8&gt;)&gt;)&gt;&gt;&gt;
@@ -2119,7 +2117,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="comment">// Relay Chain Implementation
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>decl_test_relay_chains {
+</span><span class="macro">macro_rules!</span> decl_test_relay_chains {
 	(
 		$(
 			<span class="attr">#[api_version(<span class="macro-nonterminal">$api_version</span>:tt)]
@@ -2170,13 +2168,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="kw">fn </span>init() {
 					<span class="kw">use </span><span class="macro-nonterminal">$crate::TestExt</span>;
 					<span class="comment">// Initialize the thread local variable
-					</span><span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
+					</span><span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste!</span> {
 						[&lt;<span class="macro-nonterminal">LOCAL_EXT_ $name</span>:upper&gt;].with(|v| <span class="kw-2">*</span>v.borrow_mut() = <span class="self">Self</span>::build_new_ext(<span class="macro-nonterminal">$genesis</span>));
 					}
 				}
 			}
 
-			<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
+			<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste!</span> {
 				<span class="kw">pub trait </span>[&lt;<span class="macro-nonterminal">$name </span>RelayPallet&gt;] {
 					$(
 						<span class="kw">type </span><span class="macro-nonterminal">$pallet_name</span>;
@@ -2197,10 +2195,10 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>__impl_test_ext_for_relay_chain {
+</span><span class="macro">macro_rules!</span> __impl_test_ext_for_relay_chain {
 	<span class="comment">// entry point: generate ext name
 	</span>(<span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$network</span>:ident, <span class="macro-nonterminal">$genesis</span>:expr, <span class="macro-nonterminal">$on_init</span>:expr, <span class="macro-nonterminal">$api_version</span>:tt) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste!</span> {
 			<span class="macro-nonterminal">$</span><span class="macro">crate::__impl_test_ext_for_relay_chain!</span>(
 				@<span class="kw">impl </span><span class="macro-nonterminal">$name</span>,
 				<span class="macro-nonterminal">$network</span>,
@@ -2214,12 +2212,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	};
 	<span class="comment">// impl
 	</span>(@<span class="kw">impl </span><span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$network</span>:ident, <span class="macro-nonterminal">$genesis</span>:expr, <span class="macro-nonterminal">$on_init</span>:expr, <span class="macro-nonterminal">$api_version</span>:ident, <span class="macro-nonterminal">$local_ext</span>:ident, <span class="macro-nonterminal">$global_ext</span>:ident) =&gt; {
-		<span class="macro">thread_local! </span>{
+		<span class="macro">thread_local!</span> {
 			<span class="kw">pub static </span><span class="macro-nonterminal">$local_ext</span>: <span class="macro-nonterminal">$crate::RefCell</span>&lt;<span class="macro-nonterminal">$crate::TestExternalities</span>&gt;
 				= <span class="macro-nonterminal">$crate::RefCell::new</span>(<span class="macro-nonterminal">$crate::TestExternalities::new</span>(<span class="macro-nonterminal">$genesis</span>));
 		}
 
-		<span class="macro-nonterminal">$</span><span class="macro">crate::lazy_static! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::lazy_static!</span> {
 			<span class="kw">pub static </span><span class="kw-2">ref </span><span class="macro-nonterminal">$global_ext</span>: <span class="macro-nonterminal">$crate::Mutex</span>&lt;<span class="macro-nonterminal">$crate::RefCell</span>&lt;<span class="macro-nonterminal">$crate::HashMap</span>&lt;String, <span class="macro-nonterminal">$crate::TestExternalities</span>&gt;&gt;&gt;
 				= <span class="macro-nonterminal">$crate::Mutex::new</span>(<span class="macro-nonterminal">$crate::RefCell::new</span>(<span class="macro-nonterminal">$crate::HashMap::new</span>()));
 		}
@@ -2356,7 +2354,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="comment">// Parachain Implementation
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>decl_test_parachains {
+</span><span class="macro">macro_rules!</span> decl_test_parachains {
 	(
 		$(
 			<span class="kw">pub struct </span><span class="macro-nonterminal">$name</span>:ident {
@@ -2414,7 +2412,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				</span><span class="kw">fn </span>init() {
 					<span class="kw">use </span><span class="macro-nonterminal">$</span><span class="kw">crate</span>::{<span class="macro-nonterminal">Chain</span>, HeadData, Network, Hooks, Encode, Parachain, TestExt};
 					<span class="comment">// Initialize the thread local variable
-					</span><span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
+					</span><span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste!</span> {
 						[&lt;<span class="macro-nonterminal">LOCAL_EXT_ $name</span>:upper&gt;].with(|v| <span class="kw-2">*</span>v.borrow_mut() = <span class="self">Self</span>::build_new_ext(<span class="macro-nonterminal">$genesis</span>));
 					}
 					<span class="comment">// Set the last block head for later use in the next block
@@ -2485,7 +2483,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				}
 			}
 
-			<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
+			<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste!</span> {
 				<span class="kw">pub trait </span>[&lt;<span class="macro-nonterminal">$name </span>ParaPallet&gt;] {
 					$(
 						<span class="kw">type </span><span class="macro-nonterminal">$pallet_name</span>;
@@ -2506,21 +2504,21 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>__impl_test_ext_for_parachain {
+</span><span class="macro">macro_rules!</span> __impl_test_ext_for_parachain {
 	<span class="comment">// entry point: generate ext name
 	</span>(<span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$network</span>:ident, <span class="macro-nonterminal">$genesis</span>:expr, <span class="macro-nonterminal">$on_init</span>:expr) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste!</span> {
 			<span class="macro-nonterminal">$</span><span class="macro">crate::__impl_test_ext_for_parachain!</span>(@<span class="kw">impl </span><span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$network</span>, <span class="macro-nonterminal">$genesis</span>, <span class="macro-nonterminal">$on_init</span>, [&lt;LOCAL_EXT_ <span class="macro-nonterminal">$name</span>:upper&gt;], [&lt;GLOBAL_EXT_ <span class="macro-nonterminal">$name</span>:upper&gt;]);
 		}
 	};
 	<span class="comment">// impl
 	</span>(@<span class="kw">impl </span><span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$network</span>:ident, <span class="macro-nonterminal">$genesis</span>:expr, <span class="macro-nonterminal">$on_init</span>:expr, <span class="macro-nonterminal">$local_ext</span>:ident, <span class="macro-nonterminal">$global_ext</span>:ident) =&gt; {
-		<span class="macro">thread_local! </span>{
+		<span class="macro">thread_local!</span> {
 			<span class="kw">pub static </span><span class="macro-nonterminal">$local_ext</span>: <span class="macro-nonterminal">$crate::RefCell</span>&lt;<span class="macro-nonterminal">$crate::TestExternalities</span>&gt;
 				= <span class="macro-nonterminal">$crate::RefCell::new</span>(<span class="macro-nonterminal">$crate::TestExternalities::new</span>(<span class="macro-nonterminal">$genesis</span>));
 		}
 
-		<span class="macro-nonterminal">$</span><span class="macro">crate::lazy_static! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::lazy_static!</span> {
 			<span class="kw">pub static </span><span class="kw-2">ref </span><span class="macro-nonterminal">$global_ext</span>: <span class="macro-nonterminal">$crate::Mutex</span>&lt;<span class="macro-nonterminal">$crate::RefCell</span>&lt;<span class="macro-nonterminal">$crate::HashMap</span>&lt;String, <span class="macro-nonterminal">$crate::TestExternalities</span>&gt;&gt;&gt;
 				= <span class="macro-nonterminal">$crate::Mutex::new</span>(<span class="macro-nonterminal">$crate::RefCell::new</span>(<span class="macro-nonterminal">$crate::HashMap::new</span>()));
 		}
@@ -2684,7 +2682,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="comment">// Network Implementation
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>decl_test_networks {
+</span><span class="macro">macro_rules!</span> decl_test_networks {
 	(
 		$(
 			<span class="kw">pub struct </span><span class="macro-nonterminal">$name</span>:ident {
@@ -2932,12 +2930,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				}
 			}
 
-			<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
+			<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste!</span> {
 				<span class="kw">pub type </span>[&lt;<span class="macro-nonterminal">$relay_chain </span>Relay&gt;] = <span class="macro-nonterminal">$relay_chain</span>&lt;<span class="macro-nonterminal">$name</span>&gt;;
 			}
 
 			$(
-				<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
+				<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste!</span> {
 					<span class="kw">pub type </span>[&lt;<span class="macro-nonterminal">$parachain </span>Para&gt;] = <span class="macro-nonterminal">$parachain</span>&lt;<span class="macro-nonterminal">$name</span>&gt;;
 				}
 			)*
@@ -2946,7 +2944,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>decl_test_bridges {
+</span><span class="macro">macro_rules!</span> decl_test_bridges {
 	(
 		$(
 			<span class="kw">pub struct </span><span class="macro-nonterminal">$name</span>:ident {
@@ -2979,7 +2977,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>__impl_check_assertion {
+</span><span class="macro">macro_rules!</span> __impl_check_assertion {
 	(<span class="macro-nonterminal">$chain</span>:ident, <span class="macro-nonterminal">$network</span>:ident) =&gt; {
 		<span class="kw">impl</span>&lt;<span class="macro-nonterminal">$network</span>, Origin, Destination, Hops, Args&gt;
 			<span class="macro-nonterminal">$crate::CheckAssertion</span>&lt;Origin, Destination, Hops, Args&gt; <span class="kw">for </span><span class="macro-nonterminal">$chain</span>&lt;<span class="macro-nonterminal">$network</span>&gt;
@@ -3013,7 +3011,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>assert_expected_events {
+</span><span class="macro">macro_rules!</span> assert_expected_events {
 	( <span class="macro-nonterminal">$chain</span>:ident, <span class="macro">vec!</span>[$( <span class="macro-nonterminal">$event_pat</span>:pat =&gt; { $(<span class="macro-nonterminal">$attr</span>:ident : <span class="macro-nonterminal">$condition</span>:expr, )* }, )<span class="kw-2">*</span>] ) =&gt; {
 		<span class="kw">let </span><span class="kw-2">mut </span>message: Vec&lt;String&gt; = Vec::new();
 		<span class="kw">let </span><span class="kw-2">mut </span>events = &lt;<span class="macro-nonterminal">$chain </span><span class="kw">as </span><span class="macro-nonterminal">$crate::Chain</span>&gt;::events();
@@ -3095,17 +3093,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 }
 
 <span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>bx {
+</span><span class="macro">macro_rules!</span> bx {
 	(<span class="macro-nonterminal">$e</span>:expr) =&gt; {
 		Box::new(<span class="macro-nonterminal">$e</span>)
 	};
 }
 
 <span class="attr">#[macro_export]
-</span><span class="macro">macro_rules! </span>decl_test_sender_receiver_accounts_parameter_types {
+</span><span class="macro">macro_rules!</span> decl_test_sender_receiver_accounts_parameter_types {
 	( $( <span class="macro-nonterminal">$chain</span>:ident { sender: <span class="macro-nonterminal">$sender</span>:expr, receiver: <span class="macro-nonterminal">$receiver</span>:expr }),+ ) =&gt; {
-		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste! </span>{
-			<span class="macro-nonterminal">$</span><span class="macro">crate::parameter_types! </span>{
+		<span class="macro-nonterminal">$</span><span class="macro">crate::paste::paste!</span> {
+			<span class="macro-nonterminal">$</span><span class="macro">crate::parameter_types!</span> {
 				$(
 					<span class="kw">pub </span>[&lt;<span class="macro-nonterminal">$chain </span>Sender&gt;]: <span class="macro-nonterminal">$crate::AccountId </span>= &lt;<span class="macro-nonterminal">$chain </span><span class="kw">as </span><span class="macro-nonterminal">$crate::Chain</span>&gt;::account_id_of(<span class="macro-nonterminal">$sender</span>);
 					<span class="kw">pub </span>[&lt;<span class="macro-nonterminal">$chain </span>Receiver&gt;]: <span class="macro-nonterminal">$crate::AccountId </span>= &lt;<span class="macro-nonterminal">$chain </span><span class="kw">as </span><span class="macro-nonterminal">$crate::Chain</span>&gt;::account_id_of(<span class="macro-nonterminal">$receiver</span>);

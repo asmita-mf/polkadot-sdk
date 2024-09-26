@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `substrate/frame/revive/proc-macro/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `substrate/frame/revive/proc-macro/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="pallet_revive_proc_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="pallet_revive_proc_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../pallet_revive_proc_macro/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -766,6 +764,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#614" id="614">614</a>
 <a href="#615" id="615">615</a>
 <a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -901,17 +900,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">impl </span>HostFnReturn {
 	<span class="kw">fn </span>map_output(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TokenStream2 {
 		<span class="kw">match </span><span class="self">self </span>{
-			<span class="self">Self</span>::Unit =&gt; <span class="macro">quote! </span>{ |<span class="kw">_</span>| <span class="prelude-val">None </span>},
-			<span class="self">Self</span>::U32 =&gt; <span class="macro">quote! </span>{ |ret_val| <span class="prelude-val">Some</span>(ret_val) },
-			<span class="self">Self</span>::ReturnCode =&gt; <span class="macro">quote! </span>{ |ret_code| <span class="prelude-val">Some</span>(ret_code.into())  },
+			<span class="self">Self</span>::Unit =&gt; <span class="macro">quote!</span> { |<span class="kw">_</span>| <span class="prelude-val">None </span>},
+			<span class="self">Self</span>::U32 =&gt; <span class="macro">quote!</span> { |ret_val| <span class="prelude-val">Some</span>(ret_val) },
+			<span class="self">Self</span>::ReturnCode =&gt; <span class="macro">quote!</span> { |ret_code| <span class="prelude-val">Some</span>(ret_code.into())  },
 		}
 	}
 
 	<span class="kw">fn </span>success_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; syn::ReturnType {
 		<span class="kw">match </span><span class="self">self </span>{
 			<span class="self">Self</span>::Unit =&gt; syn::ReturnType::Default,
-			<span class="self">Self</span>::U32 =&gt; <span class="macro">parse_quote! </span>{ -&gt; u32 },
-			<span class="self">Self</span>::ReturnCode =&gt; <span class="macro">parse_quote! </span>{ -&gt; ReturnErrorCode },
+			<span class="self">Self</span>::U32 =&gt; <span class="macro">parse_quote!</span> { -&gt; u32 },
+			<span class="self">Self</span>::ReturnCode =&gt; <span class="macro">parse_quote!</span> { -&gt; ReturnErrorCode },
 		}
 	}
 }
@@ -983,7 +982,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 
 		<span class="kw">if </span>mutating {
-			<span class="kw">let </span>stmt = <span class="macro">syn::parse_quote! </span>{
+			<span class="kw">let </span>stmt = <span class="macro">syn::parse_quote!</span> {
 				<span class="kw">if </span><span class="self">self</span>.ext().is_read_only() {
 					<span class="kw">return </span><span class="prelude-val">Err</span>(Error::&lt;E::T&gt;::StateChangeDenied.into());
 				}
@@ -1117,38 +1116,39 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span><span class="prelude-val">Some</span>(ident) = path.path.get_ident() <span class="kw">else </span>{
 			<span class="macro">panic!</span>(<span class="string">"Type needs to be ident"</span>);
 		};
-		<span class="kw">let </span>size =
-			<span class="kw">if </span>ident == <span class="string">"i8" </span>||
-				ident == <span class="string">"i16" </span>|| ident == <span class="string">"i32" </span>||
-				ident == <span class="string">"u8" </span>|| ident == <span class="string">"u16" </span>||
-				ident == <span class="string">"u32"
-			</span>{
-				<span class="number">1
-			</span>} <span class="kw">else if </span>ident == <span class="string">"i64" </span>|| ident == <span class="string">"u64" </span>{
-				<span class="number">2
-			</span>} <span class="kw">else </span>{
-				<span class="macro">panic!</span>(<span class="string">"Pass by value only supports primitives"</span>);
-			};
+		<span class="kw">let </span>size = <span class="kw">if </span>ident == <span class="string">"i8" </span>||
+			ident == <span class="string">"i16" </span>||
+			ident == <span class="string">"i32" </span>||
+			ident == <span class="string">"u8" </span>||
+			ident == <span class="string">"u16" </span>||
+			ident == <span class="string">"u32"
+		</span>{
+			<span class="number">1
+		</span>} <span class="kw">else if </span>ident == <span class="string">"i64" </span>|| ident == <span class="string">"u64" </span>{
+			<span class="number">2
+		</span>} <span class="kw">else </span>{
+			<span class="macro">panic!</span>(<span class="string">"Pass by value only supports primitives"</span>);
+		};
 		registers_used += size;
 		<span class="kw">if </span>registers_used &gt; ALLOWED_REGISTERS {
-			<span class="kw">return </span><span class="macro">quote! </span>{
+			<span class="kw">return </span><span class="macro">quote!</span> {
 				<span class="kw">let </span>(#( #param_names, )<span class="kw-2">*</span>): (#( #param_types, )<span class="kw-2">*</span>) = memory.read_as(__a0__)<span class="question-mark">?</span>;
 			}
 		}
 		<span class="kw">let </span>this_reg = <span class="macro">quote::format_ident!</span>(<span class="string">"__a{}__"</span>, idx);
 		<span class="kw">let </span>next_reg = <span class="macro">quote::format_ident!</span>(<span class="string">"__a{}__"</span>, idx + <span class="number">1</span>);
 		<span class="kw">let </span>binding = <span class="kw">if </span>size == <span class="number">1 </span>{
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				<span class="kw">let </span>#name = #this_reg <span class="kw">as </span>#ty;
 			}
 		} <span class="kw">else </span>{
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				<span class="kw">let </span>#name = (#this_reg <span class="kw">as </span>#ty) | ((#next_reg <span class="kw">as </span>#ty) &lt;&lt; <span class="number">32</span>);
 			}
 		};
 		bindings.push(binding);
 	}
-	<span class="macro">quote! </span>{
+	<span class="macro">quote!</span> {
 		#( #bindings )*
 	}
 }
@@ -1164,7 +1164,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>highest_api_version =
 		def.host_funcs.iter().filter_map(|f| f.api_version).max().unwrap_or_default();
 
-	<span class="macro">quote! </span>{
+	<span class="macro">quote!</span> {
 		<span class="attr">#[cfg(test)]
 		</span><span class="kw">pub const </span>HIGHEST_API_VERSION: u16 = #highest_api_version;
 
@@ -1225,8 +1225,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>map_output = f.returns.map_output();
 		<span class="kw">let </span>output = <span class="kw-2">&amp;</span>f.item.sig.output;
 		<span class="kw">let </span>api_version = <span class="kw">match </span>f.api_version {
-			<span class="prelude-val">Some</span>(version) =&gt; <span class="macro">quote! </span>{ <span class="prelude-val">Some</span>(#version) },
-			<span class="prelude-val">None </span>=&gt; <span class="macro">quote! </span>{ <span class="prelude-val">None </span>},
+			<span class="prelude-val">Some</span>(version) =&gt; <span class="macro">quote!</span> { <span class="prelude-val">Some</span>(#version) },
+			<span class="prelude-val">None </span>=&gt; <span class="macro">quote!</span> { <span class="prelude-val">None </span>},
 		};
 
 		<span class="comment">// wrapped host function body call with host function traces
@@ -1247,7 +1247,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				.join(<span class="string">", "</span>);
 			<span class="kw">let </span>trace_fmt_str = <span class="macro">format!</span>(<span class="string">"{}({}) = {{:?}}\n"</span>, name, params_fmt_str);
 
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				<span class="comment">// wrap body in closure to make sure the tracing is always executed
 				</span><span class="kw">let </span>result = (|| #body)();
 				<span class="kw">if </span><span class="macro">::log::log_enabled!</span>(target: <span class="string">"runtime::revive::strace"</span>, ::log::Level::Trace) {
@@ -1261,7 +1261,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			}
 		};
 
-		<span class="macro">quote! </span>{
+		<span class="macro">quote!</span> {
 			#cfg
 			#syscall_symbol <span class="kw">if </span>__is_available__(#api_version) =&gt; {
 				<span class="comment">// closure is needed so that "?" can infere the correct type
@@ -1273,7 +1273,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 	});
 
-	<span class="macro">quote! </span>{
+	<span class="macro">quote!</span> {
 		<span class="comment">// Write gas from  polkavm into pallet-revive before entering the host function.
 		</span><span class="kw">let </span>__gas_left_before__ = <span class="self">self
 			</span>.ext
@@ -1322,7 +1322,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>output = <span class="kw-2">&amp;</span>f.item.sig.output;
 
 		<span class="kw">let </span>name = Ident::new(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"bench_{name}"</span>), Span::call_site());
-		<span class="macro">quote! </span>{
+		<span class="macro">quote!</span> {
 			#cfg
 			<span class="kw">pub fn </span>#name(<span class="kw-2">&amp;mut </span><span class="self">self</span>, memory: <span class="kw-2">&amp;mut </span>M, #(#params),<span class="kw-2">*</span>) #output {
 				#body
@@ -1330,7 +1330,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 	});
 
-	<span class="macro">quote! </span>{
+	<span class="macro">quote!</span> {
 		#( #impls )*
 	}
 }
@@ -1353,32 +1353,32 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>func_docs = {
 				<span class="kw">let </span>docs = func.item.attrs.iter().filter(|a| a.path().is_ident(<span class="string">"doc"</span>)).map(|d| {
 					<span class="kw">let </span>docs = d.to_token_stream();
-					<span class="macro">quote! </span>{ #docs }
+					<span class="macro">quote!</span> { #docs }
 				});
-				<span class="macro">quote! </span>{ #( #docs )* }
+				<span class="macro">quote!</span> { #( #docs )* }
 			};
 			<span class="kw">let </span>availability = <span class="kw">if let </span><span class="prelude-val">Some</span>(version) = func.api_version {
 				<span class="kw">let </span>info = <span class="macro">format!</span>(
 					<span class="string">"\n# Required API version\nThis API was added in version **{version}**."</span>,
 				);
-				<span class="macro">quote! </span>{ <span class="attr">#[doc = #info] </span>}
+				<span class="macro">quote!</span> { <span class="attr">#[doc = #info] </span>}
 			} <span class="kw">else </span>{
 				<span class="kw">let </span>info =
 				<span class="string">"\n# Unstable API\nThis API is not standardized and only available for testing."</span>;
-				<span class="macro">quote! </span>{ <span class="attr">#[doc = #info] </span>}
+				<span class="macro">quote!</span> { <span class="attr">#[doc = #info] </span>}
 			};
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				#func_docs
 				#availability
 			}
 		};
-		<span class="macro">quote! </span>{
+		<span class="macro">quote!</span> {
 			#func_doc
 			#func_decl;
 		}
 	});
 
-	<span class="macro">quote! </span>{
+	<span class="macro">quote!</span> {
 		#( #docs )*
 	}
 }

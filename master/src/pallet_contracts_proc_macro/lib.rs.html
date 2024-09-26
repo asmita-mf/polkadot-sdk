@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `substrate/frame/contracts/proc-macro/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `substrate/frame/contracts/proc-macro/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="pallet_contracts_proc_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="pallet_contracts_proc_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../pallet_contracts_proc_macro/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1115,7 +1113,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>data = <span class="kw">if let </span>Data::Struct(data) = <span class="kw-2">&amp;</span>input.data {
 		data
 	} <span class="kw">else </span>{
-		<span class="kw">return </span><span class="macro">quote_spanned! </span>{
+		<span class="kw">return </span><span class="macro">quote_spanned!</span> {
 			name.span() =&gt;
 			<span class="macro">compile_error!</span>(<span class="string">"WeightDebug is only supported for structs."</span>);
 		}
@@ -1129,23 +1127,23 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="kw">if </span>name.to_string().starts_with(<span class="string">'_'</span>) {
 					<span class="kw">return </span><span class="prelude-val">None
 				</span>}
-				<span class="kw">let </span>ret = <span class="macro">quote_spanned! </span>{ f.span() =&gt;
+				<span class="kw">let </span>ret = <span class="macro">quote_spanned!</span> { f.span() =&gt;
 					formatter.field(<span class="macro">stringify!</span>(#name), <span class="kw-2">&amp;</span>HumanWeight(<span class="self">self</span>.#name));
 				};
 				<span class="prelude-val">Some</span>(ret)
 			});
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				#( #recurse )*
 			}
 		},
-		Fields::Unnamed(fields) =&gt; <span class="macro">quote_spanned! </span>{
+		Fields::Unnamed(fields) =&gt; <span class="macro">quote_spanned!</span> {
 			fields.span() =&gt;
 			<span class="macro">compile_error!</span>(<span class="string">"Unnamed fields are not supported"</span>)
 		},
 		Fields::Unit =&gt; <span class="macro">quote!</span>(),
 	};
 
-	<span class="kw">let </span>tokens = <span class="macro">quote! </span>{
+	<span class="kw">let </span>tokens = <span class="macro">quote!</span> {
 		<span class="kw">impl </span>#impl_generics ::core::fmt::Debug <span class="kw">for </span>#name #ty_generics #where_clause {
 			<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; core::fmt::Result {
 				<span class="kw">use </span>::sp_runtime::{FixedPointNumber, FixedU128 <span class="kw">as </span>Fixed};
@@ -1220,11 +1218,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">impl </span>HostFnReturn {
 	<span class="kw">fn </span>to_wasm_sig(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TokenStream2 {
 		<span class="kw">let </span>ok = <span class="kw">match </span><span class="self">self </span>{
-			<span class="self">Self</span>::Unit =&gt; <span class="macro">quote! </span>{ () },
-			<span class="self">Self</span>::U32 | <span class="self">Self</span>::ReturnCode =&gt; <span class="macro">quote! </span>{ ::core::primitive::u32 },
-			<span class="self">Self</span>::U64 =&gt; <span class="macro">quote! </span>{ ::core::primitive::u64 },
+			<span class="self">Self</span>::Unit =&gt; <span class="macro">quote!</span> { () },
+			<span class="self">Self</span>::U32 | <span class="self">Self</span>::ReturnCode =&gt; <span class="macro">quote!</span> { ::core::primitive::u32 },
+			<span class="self">Self</span>::U64 =&gt; <span class="macro">quote!</span> { ::core::primitive::u64 },
 		};
-		<span class="macro">quote! </span>{
+		<span class="macro">quote!</span> {
 			::core::result::Result&lt;#ok, ::wasmi::Error&gt;
 		}
 	}
@@ -1301,7 +1299,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 
 		<span class="kw">if </span>mutating {
-			<span class="kw">let </span>stmt = <span class="macro">syn::parse_quote! </span>{
+			<span class="kw">let </span>stmt = <span class="macro">syn::parse_quote!</span> {
 				<span class="kw">if </span>ctx.ext().is_read_only() {
 					<span class="kw">return </span><span class="prelude-val">Err</span>(Error::&lt;E::T&gt;::StateChangeDenied.into());
 				}
@@ -1496,45 +1494,45 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="string">"This is just an alias function to [`{0}()`][`Self::{0}`] with backwards-compatible prefixed identifier."</span>,
 				origin_fn,
 			);
-			<span class="macro">quote! </span>{ <span class="attr">#[doc = #alias_doc] </span>}
+			<span class="macro">quote!</span> { <span class="attr">#[doc = #alias_doc] </span>}
 		} <span class="kw">else </span>{
 			<span class="kw">let </span>docs = func.item.attrs.iter().filter(|a| a.path().is_ident(<span class="string">"doc"</span>)).map(|d| {
 				<span class="kw">let </span>docs = d.to_token_stream();
-				<span class="macro">quote! </span>{ #docs }
+				<span class="macro">quote!</span> { #docs }
 			});
-			<span class="macro">quote! </span>{ #( #docs )* }
+			<span class="macro">quote!</span> { #( #docs )* }
 		};
 		<span class="kw">let </span>deprecation_notice = <span class="kw">if </span>!func.not_deprecated {
 			<span class="kw">let </span>warning = <span class="string">"\n # Deprecated\n\n \
 								This function is deprecated and will be removed in future versions.\n \
 								No new code or contracts with this API can be deployed."</span>;
-			<span class="macro">quote! </span>{ <span class="attr">#[doc = #warning] </span>}
+			<span class="macro">quote!</span> { <span class="attr">#[doc = #warning] </span>}
 		} <span class="kw">else </span>{
-			<span class="macro">quote! </span>{}
+			<span class="macro">quote!</span> {}
 		};
 		<span class="kw">let </span>import_notice = {
 			<span class="kw">let </span>info = <span class="macro">format!</span>(
 				<span class="string">"\n# Wasm Import Statement\n```wat\n(import \"seal{}\" \"{}\" (func ...))\n```"</span>,
 				func.version, func.name,
 			);
-			<span class="macro">quote! </span>{ <span class="attr">#[doc = #info] </span>}
+			<span class="macro">quote!</span> { <span class="attr">#[doc = #info] </span>}
 		};
 		<span class="kw">let </span>unstable_notice = <span class="kw">if </span>!func.is_stable {
 			<span class="kw">let </span>warning = <span class="string">"\n # Unstable\n\n \
 								This function is unstable and it is a subject to change (or removal) in the future.\n \
 								Do not deploy a contract using it to a production chain."</span>;
-			<span class="macro">quote! </span>{ <span class="attr">#[doc = #warning] </span>}
+			<span class="macro">quote!</span> { <span class="attr">#[doc = #warning] </span>}
 		} <span class="kw">else </span>{
-			<span class="macro">quote! </span>{}
+			<span class="macro">quote!</span> {}
 		};
-		<span class="macro">quote! </span>{
+		<span class="macro">quote!</span> {
 			#deprecation_notice
 			#func_docs
 			#import_notice
 			#unstable_notice
 		}
 	};
-	<span class="macro">quote! </span>{
+	<span class="macro">quote!</span> {
 		#func_doc
 		#func_decl;
 	}
@@ -1564,7 +1562,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>legacy_doc = legacy_doc.into_iter().map(|(version, funcs)| {
 		<span class="kw">let </span>doc = <span class="macro">format!</span>(<span class="string">"All functions available in the **seal{}** module"</span>, version);
 		<span class="kw">let </span>version = Ident::new(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"Version{version}"</span>), Span::call_site());
-		<span class="macro">quote! </span>{
+		<span class="macro">quote!</span> {
 			<span class="attr">#[doc = #doc]
 			</span><span class="kw">pub trait </span>#version {
 				#( #funcs )*
@@ -1572,7 +1570,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		}
 	});
 
-	<span class="macro">quote! </span>{
+	<span class="macro">quote!</span> {
 		<span class="doccomment">/// Contains only the latest version of each function.
 		///
 		/// In reality there are more functions available but they are all obsolete: When a function
@@ -1600,7 +1598,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>docs = docs.then_some(expand_docs(def)).unwrap_or(TokenStream2::new());
 	<span class="kw">let </span>stable_api_count = def.host_funcs.iter().filter(|f| f.is_stable).count();
 
-	<span class="macro">quote! </span>{
+	<span class="macro">quote!</span> {
 		<span class="kw">pub struct </span>Env;
 
 		<span class="attr">#[cfg(test)]
@@ -1633,7 +1631,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">let </span>dummy_impls = expand_functions(def, ExpandMode::MockImpl);
 	<span class="kw">let </span>bench_impls = expand_functions(def, ExpandMode::BenchImpl);
 
-	<span class="macro">quote! </span>{
+	<span class="macro">quote!</span> {
 		<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, E: Ext&gt; <span class="kw">crate</span>::wasm::Environment&lt;<span class="kw">crate</span>::wasm::runtime::Runtime&lt;<span class="lifetime">'a</span>, E&gt;&gt; <span class="kw">for </span>Env
 		{
 			<span class="kw">fn </span>define(
@@ -1686,8 +1684,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">fn </span>host_state(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TokenStream2 {
 		<span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
-			ExpandMode::Impl | ExpandMode::BenchImpl =&gt; <span class="macro">quote! </span>{ <span class="kw">crate</span>::wasm::runtime::Runtime&lt;E&gt; },
-			ExpandMode::MockImpl =&gt; <span class="macro">quote! </span>{ () },
+			ExpandMode::Impl | ExpandMode::BenchImpl =&gt; <span class="macro">quote!</span> { <span class="kw">crate</span>::wasm::runtime::Runtime&lt;E&gt; },
+			ExpandMode::MockImpl =&gt; <span class="macro">quote!</span> { () },
 		}
 	}
 }
@@ -1721,7 +1719,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>params_fmt_str = trace_fmt_args.clone().map(|s| <span class="macro">format!</span>(<span class="string">"{s}: {{:?}}"</span>)).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;().join(<span class="string">", "</span>);
 			<span class="kw">let </span>trace_fmt_str = <span class="macro">format!</span>(<span class="string">"{}::{}({}) = {{:?}}\n"</span>, module, name, params_fmt_str);
 
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				<span class="kw">let </span>result = #body;
 				<span class="kw">if </span><span class="macro">::log::log_enabled!</span>(target: <span class="string">"runtime::contracts::strace"</span>, ::log::Level::Trace) {
 						<span class="kw">use </span>core::fmt::Write;
@@ -1741,7 +1739,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">let </span>expand_blocks = expand_mode.expand_blocks();
 		<span class="kw">let </span>inner = <span class="kw">match </span>expand_mode {
 			ExpandMode::Impl =&gt; {
-				<span class="macro">quote! </span>{ || #output {
+				<span class="macro">quote!</span> { || #output {
 					<span class="kw">let </span>(memory, ctx) = __caller__
 						.data()
 						.memory()
@@ -1757,7 +1755,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				}
 			},
 			ExpandMode::MockImpl =&gt; {
-				<span class="macro">quote! </span>{ || -&gt; #wasm_output {
+				<span class="macro">quote!</span> { || -&gt; #wasm_output {
 					<span class="comment">// This is part of the implementation for `Environment&lt;()&gt;` which is not
 					// meant to be actually executed. It is only for validation which will
 					// never call host functions.
@@ -1767,23 +1765,23 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		};
 
 		<span class="kw">let </span>into_host = <span class="kw">if </span>expand_blocks {
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				|reason| {
 					::wasmi::Error::host(reason)
 				}
 			}
 		} <span class="kw">else </span>{
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				|reason| { reason }
 			}
 		};
 		<span class="kw">let </span>allow_unused =  <span class="kw">if </span>expand_blocks {
-			<span class="macro">quote! </span>{ }
+			<span class="macro">quote!</span> { }
 		} <span class="kw">else </span>{
-			<span class="macro">quote! </span>{ <span class="attr">#[allow(unused_variables)] </span>}
+			<span class="macro">quote!</span> { <span class="attr">#[allow(unused_variables)] </span>}
 		};
 		<span class="kw">let </span>sync_gas_before = <span class="kw">if </span>expand_blocks {
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				<span class="comment">// Write gas from wasmi into pallet-contracts before entering the host function.
 				</span><span class="kw">let </span>__gas_left_before__ = {
 					<span class="kw">let </span>fuel =
@@ -1803,11 +1801,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 						.map_err(#into_host)<span class="question-mark">?</span>;
 			}
 		} <span class="kw">else </span>{
-			<span class="macro">quote! </span>{ }
+			<span class="macro">quote!</span> { }
 		};
 		<span class="comment">// Write gas from pallet-contracts into wasmi after leaving the host function.
 		</span><span class="kw">let </span>sync_gas_after = <span class="kw">if </span>expand_blocks {
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				<span class="kw">let </span>fuel = __caller__
 					.data_mut()
 					.ext()
@@ -1822,13 +1820,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					 .expect(<span class="string">"Fuel metering is enabled; qed"</span>);
 			}
 		} <span class="kw">else </span>{
-			<span class="macro">quote! </span>{ }
+			<span class="macro">quote!</span> { }
 		};
 
 		<span class="kw">match </span>expand_mode {
 			ExpandMode::BenchImpl =&gt; {
 				<span class="kw">let </span>name = Ident::new(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"{module}_{name}"</span>), Span::call_site());
-				<span class="macro">quote! </span>{
+				<span class="macro">quote!</span> {
 					<span class="kw">pub fn </span>#name(ctx: <span class="kw-2">&amp;mut </span><span class="kw">crate</span>::wasm::Runtime&lt;E&gt;, memory: <span class="kw-2">&amp;mut </span>[u8], #(#params),<span class="kw-2">*</span>) #output {
 						#inner
 					}
@@ -1836,7 +1834,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			},
 			<span class="kw">_ </span>=&gt; {
 				<span class="kw">let </span>host_state = expand_mode.host_state();
-				<span class="macro">quote! </span>{
+				<span class="macro">quote!</span> {
 					<span class="comment">// We need to allow all interfaces when runtime benchmarks are performed because
 					// we generate the weights even when those interfaces are not enabled. This
 					// is necessary as the decision whether we allow unstable or deprecated functions
@@ -1861,11 +1859,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="kw">match </span>expand_mode {
 		ExpandMode::BenchImpl =&gt; {
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 			 #( #impls )*
 			}
 		},
-		<span class="kw">_ </span>=&gt; <span class="macro">quote! </span>{
+		<span class="kw">_ </span>=&gt; <span class="macro">quote!</span> {
 			<span class="kw">let </span>__allow_unstable__ = <span class="macro">matches!</span>(allow_unstable, AllowUnstableInterface::Yes);
 			<span class="kw">let </span>__allow_deprecated__ = <span class="macro">matches!</span>(allow_deprecated, AllowDeprecatedInterface::Yes);
 			#( #impls )*

@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `polkadot/xcm/procedural/src/v4.rs`."><title>v4.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `polkadot/xcm/procedural/src/v4.rs`."><title>v4.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="xcm_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="xcm_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../xcm_procedural/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -381,7 +379,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 		<span class="kw">let </span>from_tuples = generate_conversion_from_tuples(<span class="number">8</span>, <span class="number">8</span>);
 
-		<span class="prelude-val">Ok</span>(<span class="macro">quote! </span>{
+		<span class="prelude-val">Ok</span>(<span class="macro">quote!</span> {
 			#from_tuples
 		})
 	}
@@ -397,12 +395,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					<span class="macro">quote!</span>(Junctions::Here)
 				} <span class="kw">else </span>{
 					<span class="kw">let </span>variant = <span class="macro">format_ident!</span>(<span class="string">"X{}"</span>, num_junctions);
-					<span class="macro">quote! </span>{
+					<span class="macro">quote!</span> {
 						Junctions::#variant( alloc::sync::Arc::new( [#(#idents .into()),<span class="kw-2">*</span>] ) )
 					}
 				};
 
-				<span class="kw">let </span><span class="kw-2">mut </span>from_tuple = <span class="macro">quote! </span>{
+				<span class="kw">let </span><span class="kw-2">mut </span>from_tuple = <span class="macro">quote!</span> {
 					<span class="kw">impl</span>&lt; #(#types : Into&lt;Junction&gt;,)* &gt; From&lt;( Ancestor, #( #types ),* )&gt; <span class="kw">for </span>Location {
 						<span class="kw">fn </span>from( ( Ancestor(parents), #(#idents),* ): ( Ancestor, #( #types ),* ) ) -&gt; <span class="self">Self </span>{
 							Location { parents, interior: #interior }
@@ -423,7 +421,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					<span class="kw">let </span>underscores =
 						(<span class="number">0</span>..cur_parents).map(|<span class="kw">_</span>| <span class="macro">Token!</span>[<span class="kw">_</span>](Span::call_site())).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-					<span class="macro">quote! </span>{
+					<span class="macro">quote!</span> {
 						<span class="kw">impl</span>&lt; #(#types : Into&lt;Junction&gt;,)* &gt; From&lt;( #( #parents , )* #( #types , )* )&gt; <span class="kw">for </span>Location {
 							<span class="kw">fn </span>from( ( #(#underscores,)* #(#idents,)* ): ( #(#parents,)* #(#types,)* ) ) -&gt; <span class="self">Self </span>{
 								<span class="self">Self </span>{ parents: #cur_parents <span class="kw">as </span>u8, interior: #interior }
@@ -442,7 +440,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">let </span>underscores =
 				(<span class="number">0</span>..cur_parents).map(|<span class="kw">_</span>| <span class="macro">Token!</span>[<span class="kw">_</span>](Span::call_site())).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-			<span class="macro">quote! </span>{
+			<span class="macro">quote!</span> {
 				<span class="kw">impl </span>From&lt;( #(#parents,)* Junctions )&gt; <span class="kw">for </span>Location {
 					<span class="kw">fn </span>from( (#(#underscores,)* junctions): ( #(#parents,)* Junctions ) ) -&gt; <span class="self">Self </span>{
 						Location { parents: #cur_parents <span class="kw">as </span>u8, interior: junctions }
@@ -452,7 +450,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		});
 		from_tuples.extend(from_parent_junctions_tuples);
 
-		<span class="macro">quote! </span>{
+		<span class="macro">quote!</span> {
 			<span class="kw">impl </span>From&lt;(Ancestor, Junctions)&gt; <span class="kw">for </span>Location {
 				<span class="kw">fn </span>from((Ancestor(parents), interior): (Ancestor, Junctions)) -&gt; <span class="self">Self </span>{
 					Location { parents, interior }
@@ -482,7 +480,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span><span class="kw">let </span>from_v3 = generate_conversion_from_v3(MAX_JUNCTIONS);
 		<span class="kw">let </span>from_tuples = generate_conversion_from_tuples(MAX_JUNCTIONS);
 
-		<span class="prelude-val">Ok</span>(<span class="macro">quote! </span>{
+		<span class="prelude-val">Ok</span>(<span class="macro">quote!</span> {
 			#from_v3
 			#from_tuples
 		})
@@ -495,7 +493,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					(<span class="number">0</span>..num_junctions).map(|i| <span class="macro">format_ident!</span>(<span class="string">"j{}"</span>, i)).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 				<span class="kw">let </span>types = (<span class="number">0</span>..num_junctions).map(|i| <span class="macro">format_ident!</span>(<span class="string">"J{}"</span>, i)).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-				<span class="macro">quote! </span>{
+				<span class="macro">quote!</span> {
 					<span class="kw">impl</span>&lt;#(#types : Into&lt;Junction&gt;,)<span class="kw-2">*</span>&gt; From&lt;( #(#types,)* )&gt; <span class="kw">for </span>Junctions {
 						<span class="kw">fn </span>from( ( #(#idents,)* ): ( #(#types,)* ) ) -&gt; <span class="self">Self </span>{
 							[#(#idents .into()),<span class="kw-2">*</span>].into()
@@ -515,11 +513,11 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				<span class="kw">let </span>convert = idents
 					.iter()
 					.map(|ident| {
-						<span class="macro">quote! </span>{ <span class="kw">let </span>#ident = core::convert::TryInto::try_into(#ident.clone())<span class="question-mark">?</span>; }
+						<span class="macro">quote!</span> { <span class="kw">let </span>#ident = core::convert::TryInto::try_into(#ident.clone())<span class="question-mark">?</span>; }
 					})
 					.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-				<span class="macro">quote! </span>{
+				<span class="macro">quote!</span> {
 					<span class="kw">crate</span>::v3::Junctions::#variant( #(#idents),* ) =&gt; {
 						#(#convert);<span class="kw-2">*</span>;
 						<span class="kw">let </span>junctions: Junctions = [#(#idents),<span class="kw-2">*</span>].into();
@@ -529,7 +527,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			})
 			.collect::&lt;TokenStream&gt;();
 
-		<span class="macro">quote! </span>{
+		<span class="macro">quote!</span> {
 			<span class="kw">impl </span>core::convert::TryFrom&lt;<span class="kw">crate</span>::v3::Junctions&gt; <span class="kw">for </span>Junctions {
 				<span class="kw">type </span>Error = ();
 				<span class="kw">fn </span>try_from(<span class="kw-2">mut </span>old: <span class="kw">crate</span>::v3::Junctions) -&gt; core::result::Result&lt;<span class="self">Self</span>, ()&gt; {

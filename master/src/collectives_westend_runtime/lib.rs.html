@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `cumulus/parachains/runtimes/collectives/collectives-westend/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `cumulus/parachains/runtimes/collectives/collectives-westend/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="collectives_westend_runtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="collectives_westend_runtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../theme.css"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../collectives_westend_runtime/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1480,7 +1478,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">use </span>weights::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight};
 
-<span class="macro">impl_opaque_keys! </span>{
+<span class="macro">impl_opaque_keys!</span> {
 	<span class="kw">pub struct </span>SessionKeys {
 		<span class="kw">pub </span>aura: Aura,
 	}
@@ -1510,7 +1508,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	pallet_collective::EnsureProportionMoreThan&lt;AccountId, AllianceCollective, <span class="number">2</span>, <span class="number">3</span>&gt;,
 &gt;;
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>Version: RuntimeVersion = VERSION;
 	<span class="kw">pub </span>RuntimeBlockLength: BlockLength =
 		BlockLength::max_with_normal_ratio(<span class="number">5 </span>* <span class="number">1024 </span>* <span class="number">1024</span>, NORMAL_DISPATCH_RATIO);
@@ -1568,7 +1566,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>EventHandler = (CollatorSelection,);
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>ExistentialDeposit: Balance = EXISTENTIAL_DEPOSIT;
 }
 
@@ -1590,7 +1588,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>MaxFreezes = ConstU32&lt;<span class="number">0</span>&gt;;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="doccomment">/// Relay Chain `TransactionByteFee` / 10
 	</span><span class="kw">pub const </span>TransactionByteFee: Balance = MILLICENTS;
 }
@@ -1605,7 +1603,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>OperationalFeeMultiplier = ConstU8&lt;<span class="number">5</span>&gt;;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="comment">// One storage item; key size is 32; value is size 4+4+16+32 bytes = 56 bytes.
 	</span><span class="kw">pub const </span>DepositBase: Balance = deposit(<span class="number">1</span>, <span class="number">88</span>);
 	<span class="comment">// Additional storage item size of 32 bytes.
@@ -1629,7 +1627,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>WeightInfo = weights::pallet_utility::WeightInfo&lt;Runtime&gt;;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="comment">// One storage item; key size 32, value size 8; .
 	</span><span class="kw">pub const </span>ProxyDepositBase: Balance = deposit(<span class="number">1</span>, <span class="number">40</span>);
 	<span class="comment">// Additional storage item size of 33 bytes.
@@ -1746,7 +1744,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>AnnouncementDepositFactor = AnnouncementDepositFactor;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>ReservedXcmpWeight: Weight = MAXIMUM_BLOCK_WEIGHT.saturating_div(<span class="number">4</span>);
 	<span class="kw">pub const </span>ReservedDmpWeight: Weight = MAXIMUM_BLOCK_WEIGHT.saturating_div(<span class="number">4</span>);
 }
@@ -1775,7 +1773,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">impl </span>parachain_info::Config <span class="kw">for </span>Runtime {}
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>MessageQueueServiceWeight: Weight = Perbill::from_percent(<span class="number">35</span>) * RuntimeBlockWeights::get().max_block;
 }
 
@@ -1804,7 +1802,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">impl </span>cumulus_pallet_aura_ext::Config <span class="kw">for </span>Runtime {}
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="doccomment">/// The asset ID for the asset that we use to pay for message delivery fees.
 	</span><span class="kw">pub </span>FeeAssetId: AssetId = AssetId(xcm_config::WndLocation::get());
 	<span class="doccomment">/// The base fee for the message delivery fees.
@@ -1840,7 +1838,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">type </span>ChannelList = ParachainSystem;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>RelayOrigin: AggregateMessageOrigin = AggregateMessageOrigin::Parent;
 }
 
@@ -1869,7 +1867,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>SlotDuration = ConstU64&lt;SLOT_DURATION&gt;;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>PotId: PalletId = PalletId(<span class="kw-2">*</span><span class="string">b"PotStake"</span>);
 	<span class="kw">pub const </span>SessionLength: BlockNumber = <span class="number">6 </span>* HOURS;
 	<span class="comment">// `StakingAdmin` pluralistic body.
@@ -1900,7 +1898,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 <span class="kw">pub const </span>ALLIANCE_MOTION_DURATION: BlockNumber = <span class="number">5 </span>* DAYS;
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>AllianceMotionDuration: BlockNumber = ALLIANCE_MOTION_DURATION;
 	<span class="kw">pub </span>MaxProposalWeight: Weight = Perbill::from_percent(<span class="number">50</span>) * RuntimeBlockWeights::get().max_block;
 }
@@ -1927,7 +1925,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">pub const </span>MAX_FELLOWS: u32 = ALLIANCE_MAX_MEMBERS;
 <span class="kw">pub const </span>MAX_ALLIES: u32 = <span class="number">100</span>;
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>AllyDeposit: Balance = <span class="number">1_000 </span>* UNITS; <span class="comment">// 1,000 WND bond to join as an Ally
 	</span><span class="kw">pub </span>WestendTreasuryAccount: AccountId = WESTEND_TREASURY_PALLET_ID.into_account_truncating();
 	<span class="comment">// The number of blocks a member must wait between giving a retirement notice and retiring.
@@ -1959,17 +1957,17 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>WeightInfo = weights::pallet_alliance::WeightInfo&lt;Runtime&gt;;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub </span>MaximumSchedulerWeight: Weight = Perbill::from_percent(<span class="number">80</span>) * RuntimeBlockWeights::get().max_block;
 }
 
 <span class="attr">#[cfg(not(feature = <span class="string">"runtime-benchmarks"</span>))]
-</span><span class="macro">parameter_types! </span>{
+</span><span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>MaxScheduledPerBlock: u32 = <span class="number">50</span>;
 }
 
 <span class="attr">#[cfg(feature = <span class="string">"runtime-benchmarks"</span>)]
-</span><span class="macro">parameter_types! </span>{
+</span><span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>MaxScheduledPerBlock: u32 = <span class="number">200</span>;
 }
 
@@ -1986,7 +1984,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>Preimages = Preimage;
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="kw">pub const </span>PreimageBaseDeposit: Balance = deposit(<span class="number">2</span>, <span class="number">64</span>);
 	<span class="kw">pub const </span>PreimageByteDeposit: Balance = deposit(<span class="number">0</span>, <span class="number">1</span>);
 	<span class="kw">pub const </span>PreimageHoldReason: RuntimeHoldReason = RuntimeHoldReason::Preimage(pallet_preimage::HoldReason::Preimage);
@@ -2167,7 +2165,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	);
 }
 
-<span class="macro">impl_runtime_apis! </span>{
+<span class="macro">impl_runtime_apis!</span> {
 	<span class="kw">impl </span>sp_consensus_aura::AuraApi&lt;Block, AuraId&gt; <span class="kw">for </span>Runtime {
 		<span class="kw">fn </span>slot_duration() -&gt; sp_consensus_aura::SlotDuration {
 			sp_consensus_aura::SlotDuration::from_millis(SLOT_DURATION)
@@ -2439,7 +2437,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">use </span>cumulus_pallet_session_benchmarking::Pallet <span class="kw">as </span>SessionBench;
 			<span class="kw">impl </span>cumulus_pallet_session_benchmarking::Config <span class="kw">for </span>Runtime {}
 
-			<span class="macro">parameter_types! </span>{
+			<span class="macro">parameter_types!</span> {
 				<span class="kw">pub </span>ExistentialDepositAsset: <span class="prelude-ty">Option</span>&lt;Asset&gt; = <span class="prelude-val">Some</span>((
 					xcm_config::WndLocation::get(),
 					ExistentialDeposit::get()
@@ -2531,12 +2529,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 }
 
-<span class="macro">cumulus_pallet_parachain_system::register_validate_block! </span>{
+<span class="macro">cumulus_pallet_parachain_system::register_validate_block!</span> {
 	Runtime = Runtime,
 	BlockExecutor = cumulus_pallet_aura_ext::BlockExecutor::&lt;Runtime, Executive&gt;,
 }
 
-<span class="macro">parameter_types! </span>{
+<span class="macro">parameter_types!</span> {
 	<span class="comment">// The deposit configuration for the singed migration. Specially if you want to allow any signed account to do the migration (see `SignedFilter`, these deposits should be high)
 	</span><span class="kw">pub const </span>MigrationSignedDepositPerItem: Balance = CENTS;
 	<span class="kw">pub const </span>MigrationSignedDepositBase: Balance = <span class="number">2_000 </span>* CENTS;
@@ -2560,7 +2558,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	<span class="kw">type </span>MaxKeyLen = MigrationMaxKeyLen;
 }
 
-<span class="macro">frame_support::ord_parameter_types! </span>{
+<span class="macro">frame_support::ord_parameter_types!</span> {
 	<span class="kw">pub const </span>MigController: AccountId = AccountId::from(<span class="macro">hex_literal::hex!</span>(<span class="string">"8458ed39dc4b6f6c7255f7bc42be50c2967db126357c999d44e12ca7ac80dc52"</span>));
 	<span class="kw">pub const </span>RootMigController: AccountId = AccountId::from(<span class="macro">hex_literal::hex!</span>(<span class="string">"8458ed39dc4b6f6c7255f7bc42be50c2967db126357c999d44e12ca7ac80dc52"</span>));
 }

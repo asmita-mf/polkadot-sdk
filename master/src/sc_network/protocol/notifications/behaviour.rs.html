@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `substrate/client/network/src/protocol/notifications/behaviour.rs`."><title>behaviour.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-5bc39a1768837dd0.css"><script id="default-settings" 
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `substrate/client/network/src/protocol/notifications/behaviour.rs`."><title>behaviour.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><script id="default-settings" 
 data-theme="ayu"
-data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="stylesheet" href="../../../../theme.css"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"><script>
+data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="stylesheet" href="../../../../theme.css"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"><script>
 	function createToC() {
 		let sidebar = document.querySelector(".sidebar");
 		let headers = document.querySelectorAll("#main-content h2, #main-content h3, #main-content h4");
@@ -148,9 +148,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 </style>
 
-<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../sc_network/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<script async defer src="https://apisa.parity.io/latest.js"></script><noscript><img src="https://apisa.parity.io/latest.js" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -5214,28 +5212,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#5062" id="5062">5062</a>
 <a href="#5063" id="5063">5063</a>
 <a href="#5064" id="5064">5064</a>
-<a href="#5065" id="5065">5065</a>
-<a href="#5066" id="5066">5066</a>
-<a href="#5067" id="5067">5067</a>
-<a href="#5068" id="5068">5068</a>
-<a href="#5069" id="5069">5069</a>
-<a href="#5070" id="5070">5070</a>
-<a href="#5071" id="5071">5071</a>
-<a href="#5072" id="5072">5072</a>
-<a href="#5073" id="5073">5073</a>
-<a href="#5074" id="5074">5074</a>
-<a href="#5075" id="5075">5075</a>
-<a href="#5076" id="5076">5076</a>
-<a href="#5077" id="5077">5077</a>
-<a href="#5078" id="5078">5078</a>
-<a href="#5079" id="5079">5079</a>
-<a href="#5080" id="5080">5080</a>
-<a href="#5081" id="5081">5081</a>
-<a href="#5082" id="5082">5082</a>
-<a href="#5083" id="5083">5083</a>
-<a href="#5084" id="5084">5084</a>
-<a href="#5085" id="5085">5085</a>
-<a href="#5086" id="5086">5086</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -5271,7 +5247,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>fnv::FnvHashMap;
 <span class="kw">use </span>futures::{future::BoxFuture, prelude::<span class="kw-2">*</span>, stream::FuturesUnordered};
 <span class="kw">use </span>libp2p::{
-	core::{ConnectedPoint, Endpoint, Multiaddr},
+	core::{Endpoint, Multiaddr},
 	swarm::{
 		behaviour::{ConnectionClosed, ConnectionEstablished, DialFailure, FromSwarm},
 		ConnectionDenied, ConnectionId, DialError, NetworkBehaviour, NotifyHandler, PollParameters,
@@ -5600,8 +5576,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span>received_handshake: Vec&lt;u8&gt;,
 		<span class="doccomment">/// Object that permits sending notifications to the peer.
 		</span>notifications_sink: NotificationsSink,
-		<span class="doccomment">/// Is the connection inbound.
-		</span>inbound: bool,
 	},
 
 	<span class="doccomment">/// The [`NotificationsSink`] object used to send notifications with the given peer must be
@@ -6461,33 +6435,20 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		_connection_id: ConnectionId,
 		peer: PeerId,
-		local_addr: <span class="kw-2">&amp;</span>Multiaddr,
-		remote_addr: <span class="kw-2">&amp;</span>Multiaddr,
+		_local_addr: <span class="kw-2">&amp;</span>Multiaddr,
+		_remote_addr: <span class="kw-2">&amp;</span>Multiaddr,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;THandler&lt;<span class="self">Self</span>&gt;, ConnectionDenied&gt; {
-		<span class="prelude-val">Ok</span>(NotifsHandler::new(
-			peer,
-			ConnectedPoint::Listener {
-				local_addr: local_addr.clone(),
-				send_back_addr: remote_addr.clone(),
-			},
-			<span class="self">self</span>.notif_protocols.clone(),
-			<span class="prelude-val">Some</span>(<span class="self">self</span>.metrics.clone()),
-		))
+		<span class="prelude-val">Ok</span>(NotifsHandler::new(peer, <span class="self">self</span>.notif_protocols.clone(), <span class="prelude-val">Some</span>(<span class="self">self</span>.metrics.clone())))
 	}
 
 	<span class="kw">fn </span>handle_established_outbound_connection(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		_connection_id: ConnectionId,
 		peer: PeerId,
-		addr: <span class="kw-2">&amp;</span>Multiaddr,
-		role_override: Endpoint,
+		_addr: <span class="kw-2">&amp;</span>Multiaddr,
+		_role_override: Endpoint,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;THandler&lt;<span class="self">Self</span>&gt;, ConnectionDenied&gt; {
-		<span class="prelude-val">Ok</span>(NotifsHandler::new(
-			peer,
-			ConnectedPoint::Dialer { address: addr.clone(), role_override },
-			<span class="self">self</span>.notif_protocols.clone(),
-			<span class="prelude-val">Some</span>(<span class="self">self</span>.metrics.clone()),
-		))
+		<span class="prelude-val">Ok</span>(NotifsHandler::new(peer, <span class="self">self</span>.notif_protocols.clone(), <span class="prelude-val">Some</span>(<span class="self">self</span>.metrics.clone())))
 	}
 
 	<span class="kw">fn </span>on_swarm_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, event: FromSwarm&lt;<span class="self">Self</span>::ConnectionHandler&gt;) {
@@ -7299,7 +7260,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 								<span class="kw">let </span>event = NotificationsOut::CustomProtocolOpen {
 									peer_id,
 									set_id,
-									inbound,
 									direction: <span class="kw">if </span>inbound {
 										Direction::Inbound
 									} <span class="kw">else </span>{
@@ -7621,6 +7581,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		protocol::notifications::handler::tests::<span class="kw-2">*</span>,
 		protocol_controller::{IncomingIndex, ProtoSetConfig, ProtocolController},
 	};
+	<span class="kw">use </span>libp2p::core::ConnectedPoint;
 	<span class="kw">use </span>sc_utils::mpsc::tracing_unbounded;
 	<span class="kw">use </span>std::{collections::HashSet, iter};
 
@@ -7651,7 +7612,8 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>development_notifs(
-	) -&gt; (Notifications, ProtocolController, Box&lt;<span class="kw">dyn </span><span class="kw">crate</span>::service::traits::NotificationService&gt;) {
+	) -&gt; (Notifications, ProtocolController, Box&lt;<span class="kw">dyn </span><span class="kw">crate</span>::service::traits::NotificationService&gt;)
+	{
 		<span class="kw">let </span>(protocol_handle_pair, notif_service) =
 			<span class="kw">crate</span>::protocol::notifications::service::notification_service(<span class="string">"/proto/1"</span>.into());
 		<span class="kw">let </span>(to_notifications, from_controller) =
@@ -7906,7 +7868,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8106,7 +8068,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8259,7 +8221,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8303,7 +8265,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8373,7 +8335,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8426,7 +8388,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(notif.peers.get(<span class="kw-2">&amp;</span>(peer, set_id)), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>PeerState::Enabled { .. })));
 
 		<span class="comment">// open new substream
-		</span><span class="kw">let </span>event = conn_yielder.open_substream(peer, <span class="number">0</span>, connected, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);
+		</span><span class="kw">let </span>event = conn_yielder.open_substream(peer, <span class="number">0</span>, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);
 
 		notif.on_connection_handler_event(peer, conn, event);
 		<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(notif.peers.get(<span class="kw-2">&amp;</span>(peer, set_id)), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>PeerState::Enabled { .. })));
@@ -8499,7 +8461,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			notif.on_connection_handler_event(
 				peer,
 				<span class="kw-2">*</span>conn,
-				conn_yielder.open_substream(peer, <span class="number">0</span>, connected.clone(), <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
+				conn_yielder.open_substream(peer, <span class="number">0</span>, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
 			);
 		}
 
@@ -8521,7 +8483,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn1,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8592,7 +8554,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		notif.on_connection_handler_event(
 			peer,
 			conn,
-			conn_yielder.open_substream(peer, <span class="number">0</span>, connected, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
+			conn_yielder.open_substream(peer, <span class="number">0</span>, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
 		);
 
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(PeerState::Enabled { <span class="kw-2">ref </span>connections, .. }) = notif.peers.get(<span class="kw-2">&amp;</span>(peer, set_id)) {
@@ -8647,7 +8609,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8721,7 +8683,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8784,7 +8746,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn1,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected.clone(), <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8798,7 +8760,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn2,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8852,7 +8814,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8910,7 +8872,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn2,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -8971,7 +8933,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn1,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -9024,7 +8986,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		notif.on_connection_handler_event(
 			peer,
 			conn1,
-			conn_yielder.open_substream(peer, <span class="number">0</span>, connected.clone(), <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
+			conn_yielder.open_substream(peer, <span class="number">0</span>, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
 		);
 
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(PeerState::Enabled { <span class="kw-2">ref </span>connections, .. }) = notif.peers.get(<span class="kw-2">&amp;</span>(peer, set_id)) {
@@ -9040,7 +9002,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn1,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -9081,7 +9043,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -9204,7 +9166,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -9253,10 +9215,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		<span class="kw">let </span>peer = PeerId::random();
 		<span class="kw">let </span>conn = ConnectionId::new_unchecked(<span class="number">0</span>);
 		<span class="kw">let </span>set_id = SetId::from(<span class="number">0</span>);
-		<span class="kw">let </span>connected = ConnectedPoint::Listener {
-			local_addr: Multiaddr::empty(),
-			send_back_addr: Multiaddr::empty(),
-		};
 		<span class="kw">let </span><span class="kw-2">mut </span>conn_yielder = ConnectionYielder::new();
 
 		<span class="comment">// move the peer to `Enabled` state
@@ -9290,7 +9248,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		</span>notif.protocol_report_accept(IncomingIndex(<span class="number">0</span>));
 		<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(notif.peers.get(<span class="kw-2">&amp;</span>(peer, set_id)), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>PeerState::Enabled { .. })));
 
-		<span class="kw">let </span>event = conn_yielder.open_substream(peer, <span class="number">0</span>, connected, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);
+		<span class="kw">let </span>event = conn_yielder.open_substream(peer, <span class="number">0</span>, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);
 
 		notif.on_connection_handler_event(peer, conn, event);
 		<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(notif.peers.get(<span class="kw-2">&amp;</span>(peer, set_id)), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>PeerState::Enabled { .. })));
@@ -9405,7 +9363,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		notif.peerset_report_connect(peer, set_id);
 		<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(notif.peers.get(<span class="kw-2">&amp;</span>(peer, set_id)), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>PeerState::Enabled { .. })));
 
-		<span class="kw">let </span>event = conn_yielder.open_substream(peer, <span class="number">0</span>, connected, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);
+		<span class="kw">let </span>event = conn_yielder.open_substream(peer, <span class="number">0</span>, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);
 
 		notif.on_connection_handler_event(peer, conn, event);
 		<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(notif.peers.get(<span class="kw-2">&amp;</span>(peer, set_id)), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>PeerState::Enabled { .. })));
@@ -9518,7 +9476,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -9759,7 +9717,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: ConnectionId::new_unchecked(<span class="number">0</span>),
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -9861,7 +9819,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: ConnectionId::new_unchecked(<span class="number">0</span>),
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -9919,7 +9877,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		notif.peerset_report_connect(peer, set_id);
 		<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(notif.peers.get(<span class="kw-2">&amp;</span>(peer, set_id)), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>PeerState::Enabled { .. })));
 
-		<span class="kw">let </span>event = conn_yielder.open_substream(peer, <span class="number">0</span>, connected, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);
+		<span class="kw">let </span>event = conn_yielder.open_substream(peer, <span class="number">0</span>, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);
 		notif.on_connection_handler_event(peer, conn, event);
 
 		<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(notif.peers.get(<span class="kw-2">&amp;</span>(peer, set_id)), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>PeerState::Enabled { .. })));
@@ -9943,7 +9901,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: ConnectionId::new_unchecked(<span class="number">0</span>),
 				endpoint: <span class="kw-2">&amp;</span>endpoint.clone(),
-				handler: NotifsHandler::new(peer, endpoint, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -10060,7 +10018,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: ConnectionId::new_unchecked(<span class="number">1337</span>),
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -10095,7 +10053,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: ConnectionId::new_unchecked(<span class="number">1337</span>),
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -10146,7 +10104,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: ConnectionId::new_unchecked(<span class="number">1337</span>),
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -10193,7 +10151,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -10243,7 +10201,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: ConnectionId::new_unchecked(<span class="number">1337</span>),
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -10286,7 +10244,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected.clone(), <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -10297,7 +10255,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 				peer_id: peer,
 				connection_id: conn,
 				endpoint: <span class="kw-2">&amp;</span>connected.clone(),
-				handler: NotifsHandler::new(peer, connected, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
+				handler: NotifsHandler::new(peer, <span class="macro">vec!</span>[], <span class="prelude-val">None</span>),
 				remaining_established: <span class="number">0usize</span>,
 			},
 		));
@@ -10309,16 +10267,12 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	</span><span class="kw">fn </span>open_result_ok_non_existent_peer() {
 		<span class="kw">let </span>(<span class="kw-2">mut </span>notif, _controller, _notif_service) = development_notifs();
 		<span class="kw">let </span>conn = ConnectionId::new_unchecked(<span class="number">0</span>);
-		<span class="kw">let </span>connected = ConnectedPoint::Listener {
-			local_addr: Multiaddr::empty(),
-			send_back_addr: Multiaddr::empty(),
-		};
 		<span class="kw">let </span><span class="kw-2">mut </span>conn_yielder = ConnectionYielder::new();
 
 		notif.on_connection_handler_event(
 			PeerId::random(),
 			conn,
-			conn_yielder.open_substream(PeerId::random(), <span class="number">0</span>, connected, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
+			conn_yielder.open_substream(PeerId::random(), <span class="number">0</span>, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
 		);
 	}
 }
