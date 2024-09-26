@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727286725207,
+  "lastUpdate": 1727345830377,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -12095,6 +12095,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.04619959349600003,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "54316454+sandreim@users.noreply.github.com",
+            "name": "Andrei Sandu",
+            "username": "sandreim"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "1f3e3978c4afd6f9985854a0f4327f8c8c7c71b9",
+          "message": "chore: bump runtime api version to v11 (#5824)\n\nA change that I missed to add in\nhttps://github.com/paritytech/polkadot-sdk/pull/5525 .\n\n---------\n\nSigned-off-by: Andrei Sandu <andrei-mihail@parity.io>",
+          "timestamp": "2024-09-26T08:37:42Z",
+          "tree_id": "64a05679b256fdc170df175846803605a95f32bd",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/1f3e3978c4afd6f9985854a0f4327f8c8c7c71b9"
+        },
+        "date": 1727345802756,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 127.90999999999993,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.049266738648,
+            "unit": "seconds"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.040187318112000006,
             "unit": "seconds"
           }
         ]
