@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727358577388,
+  "lastUpdate": 1727372534877,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -21595,6 +21595,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 13.761681365033335,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "17243e039158b78f2b57a4205ef35a2ec223bf1e",
+          "message": "bump zombienet version `v1.3.110` (#5834)\n\nBump `zombienet` version to prevent report fails at teardown phase.",
+          "timestamp": "2024-09-26T16:02:49Z",
+          "tree_id": "c5e5a931bcd5e17448e3b90ab20d7c653eb27823",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/17243e039158b78f2b57a4205ef35a2ec223bf1e"
+        },
+        "date": 1727372507273,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.2474257147,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 13.051280657533336,
             "unit": "seconds"
           }
         ]
