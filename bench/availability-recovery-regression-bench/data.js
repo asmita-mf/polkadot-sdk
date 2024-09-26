@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727372534877,
+  "lastUpdate": 1727382753202,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -21639,6 +21639,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 13.051280657533336,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "41779041+alvicsam@users.noreply.github.com",
+            "name": "Alexander Samusev",
+            "username": "alvicsam"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "6c3219ebe9231a0305f53c7b33cb558d46058062",
+          "message": "[ci] Update CI image with rust 1.81.0 and 2024-09-11 (#5676)\n\ncc https://github.com/paritytech/ci_cd/issues/1035\n\ncc https://github.com/paritytech/ci_cd/issues/1023\n\n---------\n\nSigned-off-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>\nCo-authored-by: command-bot <>\nCo-authored-by: Maksym H <1177472+mordamax@users.noreply.github.com>\nCo-authored-by: gui <gui.thiolliere@gmail.com>\nCo-authored-by: Oliver Tale-Yazdi <oliver.tale-yazdi@parity.io>\nCo-authored-by: Bastian Köcher <git@kchr.de>\nCo-authored-by: ggwpez <ggwpez@users.noreply.github.com>",
+          "timestamp": "2024-09-26T18:51:29Z",
+          "tree_id": "8b00d1a1aed6632d37314bd029c9e7ba90499f2a",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/6c3219ebe9231a0305f53c7b33cb558d46058062"
+        },
+        "date": 1727382724928,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 12.74022079603333,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.22380317806666666,
             "unit": "seconds"
           }
         ]
