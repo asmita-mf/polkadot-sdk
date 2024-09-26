@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727286657972,
+  "lastUpdate": 1727345761605,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -26917,6 +26917,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.010493239680000006,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "54316454+sandreim@users.noreply.github.com",
+            "name": "Andrei Sandu",
+            "username": "sandreim"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "1f3e3978c4afd6f9985854a0f4327f8c8c7c71b9",
+          "message": "chore: bump runtime api version to v11 (#5824)\n\nA change that I missed to add in\nhttps://github.com/paritytech/polkadot-sdk/pull/5525 .\n\n---------\n\nSigned-off-by: Andrei Sandu <andrei-mihail@parity.io>",
+          "timestamp": "2024-09-26T08:37:42Z",
+          "tree_id": "64a05679b256fdc170df175846803605a95f32bd",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/1f3e3978c4afd6f9985854a0f4327f8c8c7c71b9"
+        },
+        "date": 1727345733831,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.010677979513333338,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02367327039333333,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.013293269473333334,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.18205280654000014,
             "unit": "seconds"
           }
         ]
