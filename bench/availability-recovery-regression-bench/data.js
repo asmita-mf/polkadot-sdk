@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727345727296,
+  "lastUpdate": 1727354430339,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -21507,6 +21507,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 13.200392002999996,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "1177472+mordamax@users.noreply.github.com",
+            "name": "Maksym H",
+            "username": "mordamax"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "f6d08e637694729df7cddb166954ee90c2da3ce1",
+          "message": "add riscv feature to /cmd bench by default (#5828)\n\nCloses #5714",
+          "timestamp": "2024-09-26T11:06:05Z",
+          "tree_id": "f17a218863ebbf0cdebe3459498a86cef7427bd1",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/f6d08e637694729df7cddb166954ee90c2da3ce1"
+        },
+        "date": 1727354402443,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 13.172818306333335,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.24640099083333333,
             "unit": "seconds"
           }
         ]
