@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727432683386,
+  "lastUpdate": 1727438508799,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -19852,6 +19852,105 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 4.8611580605587665,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "1177472+mordamax@users.noreply.github.com",
+            "name": "Maksym H",
+            "username": "mordamax"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6d1943be7630b693397ed8e5db9d061afe0dd898",
+          "message": "make frame omni bencher to install from path (#5853)\n\n- install frame-omni-bencher from the path\n- fix bench_features config",
+          "timestamp": "2024-09-27T10:33:37Z",
+          "tree_id": "3d02431a2104542630260c87e25e74003832daa2",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/6d1943be7630b693397ed8e5db9d061afe0dd898"
+        },
+        "date": 1727438483885,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52944.3,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63658.18000000001,
+            "unit": "KiB"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-subsystem",
+            "value": 0.38154931199987263,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting/test-environment",
+            "value": 0.000014723839999999997,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-gather-signatures",
+            "value": 0.00521595755,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-3",
+            "value": 3.6039698272199985,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel",
+            "value": 17.970540516229747,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 0.000047813860000000004,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution/test-environment",
+            "value": 0.000047813860000000004,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 0.000014723839999999997,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-0",
+            "value": 3.6004850743700016,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-1",
+            "value": 3.550324787870001,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-2",
+            "value": 3.617602208189999,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-db",
+            "value": 3.2113933490298763,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 4.39460415539921,
             "unit": "seconds"
           }
         ]
