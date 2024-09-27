@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727438476458,
+  "lastUpdate": 1727441951415,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -27349,6 +27349,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-store",
             "value": 0.1753220403466667,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "skunert49@gmail.com",
+            "name": "Sebastian Kunert",
+            "username": "skunert"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "a5e40d0cd0a0d941d6fe58aa278fedfcb9102710",
+          "message": "Remove fixed workaround in `impl_runtime_apis` (#5839)\n\nThis PR removes a workaround which had a reference comment to a rust\ncompiler issue. The issue has been fixed and we should be able to remove\nthat trait bound.",
+          "timestamp": "2024-09-27T11:24:25Z",
+          "tree_id": "f0c01dbd715ecdcf9e53a018053857923e4fea48",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/a5e40d0cd0a0d941d6fe58aa278fedfcb9102710"
+        },
+        "date": 1727441926890,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.023761777066666663,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.010304882086666666,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.012728862213333341,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.1751934482866667,
             "unit": "seconds"
           }
         ]
