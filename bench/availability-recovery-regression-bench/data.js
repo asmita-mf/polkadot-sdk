@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727432621469,
+  "lastUpdate": 1727438444788,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -21771,6 +21771,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.20669691136666665,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "1177472+mordamax@users.noreply.github.com",
+            "name": "Maksym H",
+            "username": "mordamax"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6d1943be7630b693397ed8e5db9d061afe0dd898",
+          "message": "make frame omni bencher to install from path (#5853)\n\n- install frame-omni-bencher from the path\n- fix bench_features config",
+          "timestamp": "2024-09-27T10:33:37Z",
+          "tree_id": "3d02431a2104542630260c87e25e74003832daa2",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/6d1943be7630b693397ed8e5db9d061afe0dd898"
+        },
+        "date": 1727438420232,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.21191122426666667,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 12.641412751566667,
             "unit": "seconds"
           }
         ]
