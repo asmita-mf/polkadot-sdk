@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727438508799,
+  "lastUpdate": 1727441982393,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "approval-voting-regression-bench": [
@@ -19951,6 +19951,105 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 4.39460415539921,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "skunert49@gmail.com",
+            "name": "Sebastian Kunert",
+            "username": "skunert"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "a5e40d0cd0a0d941d6fe58aa278fedfcb9102710",
+          "message": "Remove fixed workaround in `impl_runtime_apis` (#5839)\n\nThis PR removes a workaround which had a reference comment to a rust\ncompiler issue. The issue has been fixed and we should be able to remove\nthat trait bound.",
+          "timestamp": "2024-09-27T11:24:25Z",
+          "tree_id": "f0c01dbd715ecdcf9e53a018053857923e4fea48",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/a5e40d0cd0a0d941d6fe58aa278fedfcb9102710"
+        },
+        "date": 1727441958140,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 52946.09999999999,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 63660.12999999999,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 5.542764922088092,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-gather-signatures",
+            "value": 0.0071591798900000015,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-subsystem",
+            "value": 0.429556191089911,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting",
+            "value": 0.00001664503,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting/test-environment",
+            "value": 0.00001664503,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-1",
+            "value": 3.9289368211499975,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-2",
+            "value": 4.000821298149999,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-db",
+            "value": 3.4407299076498843,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution",
+            "value": 0.00001603908,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-distribution/test-environment",
+            "value": 0.00001603908,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel",
+            "value": 19.613379620669793,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-3",
+            "value": 3.8831225166000016,
+            "unit": "seconds"
+          },
+          {
+            "name": "approval-voting-parallel/approval-voting-parallel-0",
+            "value": 3.92305370614,
             "unit": "seconds"
           }
         ]
