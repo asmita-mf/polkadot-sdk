@@ -1096,22 +1096,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#946" id="946">946</a>
 <a href="#947" id="947">947</a>
 <a href="#948" id="948">948</a>
-<a href="#949" id="949">949</a>
-<a href="#950" id="950">950</a>
-<a href="#951" id="951">951</a>
-<a href="#952" id="952">952</a>
-<a href="#953" id="953">953</a>
-<a href="#954" id="954">954</a>
-<a href="#955" id="955">955</a>
-<a href="#956" id="956">956</a>
-<a href="#957" id="957">957</a>
-<a href="#958" id="958">958</a>
-<a href="#959" id="959">959</a>
-<a href="#960" id="960">960</a>
-<a href="#961" id="961">961</a>
-<a href="#962" id="962">962</a>
-<a href="#963" id="963">963</a>
-<a href="#964" id="964">964</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1132,7 +1116,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 </span><span class="kw">use crate</span>::{
 	common::API_VERSION_ATTRIBUTE,
 	utils::{
-		extract_all_signature_types, extract_block_type_from_trait_path, extract_impl_trait,
+		extract_block_type_from_trait_path, extract_impl_trait,
 		extract_parameter_names_types_and_borrows, generate_crate_access,
 		generate_runtime_mod_name_for_trait, parse_runtime_api_version, prefix_function_with_trait,
 		versioned_trait_name, AllowSelfRefInParameters, RequireQualifiedTraitPath,
@@ -1746,21 +1730,16 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	}
 
 	<span class="kw">fn </span>fold_item_impl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>input: ItemImpl) -&gt; ItemImpl {
-		<span class="comment">// All this `UnwindSafe` magic below here is required for this rust bug:
-		// https://github.com/rust-lang/rust/issues/24159
-		// Before we directly had the final block type and rust could determine that it is unwind
-		// safe, but now we just have a generic parameter `Block`.
-
-		</span><span class="kw">let </span>crate_ = generate_crate_access();
+		<span class="kw">let </span>crate_ = generate_crate_access();
 
 		<span class="comment">// Implement the trait for the `RuntimeApiImpl`
 		</span>input.self_ty =
 			Box::new(<span class="macro">parse_quote!</span>( RuntimeApiImpl&lt;__SrApiBlock__, RuntimeApiImplCall&gt; ));
 
 		input.generics.params.push(<span class="macro">parse_quote!</span>(
-			__SrApiBlock__: #crate_::BlockT + std::panic::UnwindSafe +
-				std::panic::RefUnwindSafe
+			__SrApiBlock__: #crate_::BlockT
 		));
+
 		input
 			.generics
 			.params
@@ -1774,17 +1753,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		});
 
 		where_clause.predicates.push(<span class="macro">parse_quote!</span> { <span class="kw-2">&amp;</span><span class="lifetime">'static </span>RuntimeApiImplCall: Send });
-
-		<span class="comment">// Require that all types used in the function signatures are unwind safe.
-		</span>extract_all_signature_types(<span class="kw-2">&amp;</span>input.items).iter().for_each(|i| {
-			where_clause.predicates.push(<span class="macro">parse_quote!</span> {
-				#i: std::panic::UnwindSafe + std::panic::RefUnwindSafe
-			});
-		});
-
-		where_clause.predicates.push(<span class="macro">parse_quote!</span> {
-			__SrApiBlock__::Header: std::panic::UnwindSafe + std::panic::RefUnwindSafe
-		});
 
 		input.attrs = filter_cfg_attrs(<span class="kw-2">&amp;</span>input.attrs);
 

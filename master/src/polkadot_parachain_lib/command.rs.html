@@ -464,8 +464,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#314" id="314">314</a>
 <a href="#315" id="315">315</a>
 <a href="#316" id="316">316</a>
-<a href="#317" id="317">317</a>
-<a href="#318" id="318">318</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Cumulus.
 
@@ -507,7 +505,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>sp_runtime::traits::AccountIdConversion;
 <span class="attr">#[cfg(feature = <span class="string">"runtime-benchmarks"</span>)]
 </span><span class="kw">use </span>sp_runtime::traits::HashingFor;
-<span class="kw">use </span>std::panic::{RefUnwindSafe, UnwindSafe};
 
 <span class="doccomment">/// Structure that can be used in order to provide customizers for different functionalities of the
 /// node binary that is being built using this library.
@@ -523,8 +520,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	extra_args: <span class="kw-2">&amp;</span>NodeExtraArgs,
 ) -&gt; Box&lt;<span class="kw">dyn </span>DynNodeSpec&gt;
 <span class="kw">where
-	</span>Block: NodeBlock + UnwindSafe + RefUnwindSafe,
-	Block::BoundedHeader: UnwindSafe + RefUnwindSafe,
+	</span>Block: NodeBlock,
 {
 	<span class="kw">match </span>aura_id {
 		AuraConsensusId::Sr25519 =&gt; <span class="kw">crate</span>::service::new_aura_node_spec::&lt;

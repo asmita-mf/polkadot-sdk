@@ -553,7 +553,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	};
 
 	<span class="kw">let </span>res = expander::Expander::new(<span class="string">"construct_runtime"</span>)
-		.dry(std::env::var(<span class="string">"FRAME_EXPAND"</span>).is_err())
+		.dry(std::env::var(<span class="string">"EXPAND_MACROS"</span>).is_err())
 		.verbose(<span class="bool-val">true</span>)
 		.write_to_out_dir(res)
 		.expect(<span class="string">"Does not fail because of IO in OUT_DIR; qed"</span>);
