@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727432652275,
+  "lastUpdate": 1727438476458,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -27295,6 +27295,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "bitfield-distribution",
             "value": 0.023607626373333326,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "1177472+mordamax@users.noreply.github.com",
+            "name": "Maksym H",
+            "username": "mordamax"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6d1943be7630b693397ed8e5db9d061afe0dd898",
+          "message": "make frame omni bencher to install from path (#5853)\n\n- install frame-omni-bencher from the path\n- fix bench_features config",
+          "timestamp": "2024-09-27T10:33:37Z",
+          "tree_id": "3d02431a2104542630260c87e25e74003832daa2",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/6d1943be7630b693397ed8e5db9d061afe0dd898"
+        },
+        "date": 1727438451712,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.012680756440000005,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.02369246218,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.01021856148000001,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.1753220403466667,
             "unit": "seconds"
           }
         ]
