@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727438540553,
+  "lastUpdate": 1727442013463,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -12447,6 +12447,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.046002556797999965,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "skunert49@gmail.com",
+            "name": "Sebastian Kunert",
+            "username": "skunert"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "a5e40d0cd0a0d941d6fe58aa278fedfcb9102710",
+          "message": "Remove fixed workaround in `impl_runtime_apis` (#5839)\n\nThis PR removes a workaround which had a reference comment to a rust\ncompiler issue. The issue has been fixed and we should be able to remove\nthat trait bound.",
+          "timestamp": "2024-09-27T11:24:25Z",
+          "tree_id": "f0c01dbd715ecdcf9e53a018053857923e4fea48",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/a5e40d0cd0a0d941d6fe58aa278fedfcb9102710"
+        },
+        "date": 1727441988941,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 106.39999999999996,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 127.92399999999998,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.04532830661800002,
+            "unit": "seconds"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.03491671972200001,
             "unit": "seconds"
           }
         ]
