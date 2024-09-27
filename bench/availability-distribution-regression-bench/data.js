@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727419453357,
+  "lastUpdate": 1727432652275,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-distribution-regression-bench": [
@@ -27241,6 +27241,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "test-environment",
             "value": 0.01183036246666668,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e85099e23c35a4614640b2c2c576f4385055033a",
+          "message": "Disable flaky tests reported in 5848/5844 (#5851)\n\nReported in:\n#5844\n#5848",
+          "timestamp": "2024-09-27T09:07:40Z",
+          "tree_id": "42c857efd4d7fdb4946fc5939deddd22f01296c2",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/e85099e23c35a4614640b2c2c576f4385055033a"
+        },
+        "date": 1727432628188,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 18481.666666666653,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 433.3333333333332,
+            "unit": "KiB"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.010001349286666667,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-distribution",
+            "value": 0.012883300106666664,
+            "unit": "seconds"
+          },
+          {
+            "name": "availability-store",
+            "value": 0.17489842064000002,
+            "unit": "seconds"
+          },
+          {
+            "name": "bitfield-distribution",
+            "value": 0.023607626373333326,
             "unit": "seconds"
           }
         ]
