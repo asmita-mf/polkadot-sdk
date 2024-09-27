@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727382854312,
+  "lastUpdate": 1727419514655,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "statement-distribution-regression-bench": [
@@ -12315,6 +12315,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "statement-distribution",
             "value": 0.036262663358000005,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49718502+alexggh@users.noreply.github.com",
+            "name": "Alexandru Gheorghe",
+            "username": "alexggh"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "b16237ad6f019667a59b0e3e726f6ac20e2d0a1c",
+          "message": "[5 / 5] Introduce approval-voting-parallel (#4849)\n\nThis is the implementation of the approach described here:\nhttps://github.com/paritytech/polkadot-sdk/issues/1617#issuecomment-2150321612\n&\nhttps://github.com/paritytech/polkadot-sdk/issues/1617#issuecomment-2154357547\n&\nhttps://github.com/paritytech/polkadot-sdk/issues/1617#issuecomment-2154721395.\n\n## Description of changes\n\nThe end goal is to have an architecture where we have single\nsubsystem(`approval-voting-parallel`) and multiple worker types that\nwould full-fill the work that currently is fulfilled by the\n`approval-distribution` and `approval-voting` subsystems. The main loop\nof the new subsystem would do just the distribution of work to the\nworkers.\n\nThe new subsystem will have:\n- N approval-distribution workers: This would do the work that is\ncurrently being done by the approval-distribution subsystem and in\naddition to that will also perform the crypto-checks that an assignment\nis valid and that a vote is correctly signed. Work is assigned via the\nfollowing formula: `worker_index = msg.validator % WORKER_COUNT`, this\nguarantees that all assignments and approvals from the same validator\nreach the same worker.\n- 1 approval-voting worker: This would receive an already valid message\nand do everything the approval-voting currently does, except the\ncrypto-checking that has been moved already to the approval-distribution\nworker.\n\nOn the hot path of processing messages **no** synchronisation and\nwaiting is needed between approval-distribution and approval-voting\nworkers.\n\n<img width=\"1431\" alt=\"Screenshot 2024-06-07 at 11 28 08\"\nsrc=\"https://github.com/paritytech/polkadot-sdk/assets/49718502/a196199b-b705-4140-87d4-c6900ba8595e\">\n\n\n\n## Guidelines for reading\n\nThe full implementation is broken in 5 PRs and all of them are\nself-contained and improve things incrementally even without the\nparallelisation being implemented/enabled, the reason this approach was\ntaken instead of a big-bang PR, is to make things easier to review and\nreduced the risk of breaking this critical subsystems.\n\nAfter reading the full description of this PR, the changes should be\nread in the following order:\n1. https://github.com/paritytech/polkadot-sdk/pull/4848, some other\nmicro-optimizations for networks with a high number of validators. This\nchange gives us a speed up by itself without any other changes.\n2. https://github.com/paritytech/polkadot-sdk/pull/4845 , this contains\nonly interface changes to decouple the subsystem from the `Context` and\nbe able to run multiple instances of the subsystem on different threads.\n**No functional changes**\n3. https://github.com/paritytech/polkadot-sdk/pull/4928, moving of the\ncrypto checks from approval-voting in approval-distribution, so that the\napproval-distribution has no reason to wait after approval-voting\nanymore. This change gives us a speed up by itself without any other\nchanges.\n4. https://github.com/paritytech/polkadot-sdk/pull/4846, interface\nchanges to make approval-voting runnable on a separate thread. **No\nfunctional changes**\n5. This PR, where we instantiate an `approval-voting-parallel` subsystem\nthat runs on different workers the logic currently in\n`approval-distribution` and `approval-voting`.\n6. The next step after this changes get merged and deploy would be to\nbring all the files from approval-distribution, approval-voting,\napproval-voting-parallel into a single rust crate, to make it easier to\nmaintain and understand the structure.\n\n## Results\nRunning subsystem-benchmarks with 1000 validators 100 fully ocuppied\ncores and triggering all assignments and approvals for all tranches\n\n#### Approval does not lags behind. \n Master\n```\nChain selection approved  after 72500 ms hash=0x0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a\n```\nWith this PoC\n```\nChain selection approved  after 3500 ms hash=0x0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a\n```\n\n#### Gathering enough assignments\n \nEnough assignments are gathered in less than 500ms, so that gives un a\nguarantee that un-necessary work does not get triggered, on master on\nthe same benchmark because the subsystems fall behind on work, that\nnumber goes above 32 seconds on master.\n \n<img width=\"2240\" alt=\"Screenshot 2024-06-20 at 15 48 22\"\nsrc=\"https://github.com/paritytech/polkadot-sdk/assets/49718502/d2f2b29c-5ff6-44b4-a245-5b37ab8e58bc\">\n\n\n#### Cpu usage:\nMaster\n```\nCPU usage, seconds                     total   per block\napproval-distribution                96.9436      9.6944\napproval-voting                     117.4676     11.7468\ntest-environment                     44.0092      4.4009\n```\nWith this PoC\n```\nCPU usage, seconds                     total   per block\napproval-distribution                 0.0014      0.0001 --- unused\napproval-voting                       0.0437      0.0044.  --- unused\napproval-voting-parallel              5.9560      0.5956\napproval-voting-parallel-0           22.9073      2.2907\napproval-voting-parallel-1           23.0417      2.3042\napproval-voting-parallel-2           22.0445      2.2045\napproval-voting-parallel-3           22.7234      2.2723\napproval-voting-parallel-4           21.9788      2.1979\napproval-voting-parallel-5           23.0601      2.3060\napproval-voting-parallel-6           22.4805      2.2481\napproval-voting-parallel-7           21.8330      2.1833\napproval-voting-parallel-db          37.1954      3.7195.  --- the approval-voting thread.\n```\n\n# Enablement strategy\n\nBecause just some trivial plumbing is needed in approval-distribution\nand approval-voting to be able to run things in parallel and because\nthis subsystems plays a critical part in the system this PR proposes\nthat we keep both ways of running the approval work, as separated\nsubsystems and just a single subsystem(`approval-voting-parallel`) which\nhas multiple workers for the distribution work and one worker for the\napproval-voting work and switch between them with a comandline flag.\n\nThe benefits for this is twofold.\n1. With the same polkadot binary we can easily switch just a few\nvalidators to use the parallel approach and gradually make this the\ndefault way of running, if now issues arise.\n2. In the worst case scenario were it becomes the default way of running\nthings, but we discover there are critical issues with it we have the\npath to quickly disable it by asking validators to adjust their command\nline flags.\n\n\n# Next steps\n- [x] Make sure through various testing we are not missing anything \n- [x] Polish the implementations to make them production ready\n- [x] Add Unittest Tests for approval-voting-parallel.\n- [x] Define and implement the strategy for rolling this change, so that\nthe blast radius is minimal(single validator) in case there are problems\nwith the implementation.\n- [x]  Versi long running tests.\n- [x] Add relevant metrics.\n\n@ordian @eskimor @sandreim @AndreiEres, let me know what you think.\n\n---------\n\nSigned-off-by: Alexandru Gheorghe <alexandru.gheorghe@parity.io>",
+          "timestamp": "2024-09-26T12:11:00Z",
+          "tree_id": "e84cc32a07c891018a0652304f897f09173ed9e1",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/b16237ad6f019667a59b0e3e726f6ac20e2d0a1c"
+        },
+        "date": 1727419490509,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Sent to peers",
+            "value": 127.94199999999992,
+            "unit": "KiB"
+          },
+          {
+            "name": "Received from peers",
+            "value": 106.40399999999998,
+            "unit": "KiB"
+          },
+          {
+            "name": "statement-distribution",
+            "value": 0.037158329948,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.05006079885000001,
             "unit": "seconds"
           }
         ]
