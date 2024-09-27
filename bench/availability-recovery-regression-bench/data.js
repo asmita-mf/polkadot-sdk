@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1727419422613,
+  "lastUpdate": 1727432621469,
   "repoUrl": "https://github.com/paritytech/polkadot-sdk",
   "entries": {
     "availability-recovery-regression-bench": [
@@ -21727,6 +21727,50 @@ window.BENCHMARK_DATA = {
           {
             "name": "availability-recovery",
             "value": 13.761681365033335,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "363911+pepoviola@users.noreply.github.com",
+            "name": "Javier Viola",
+            "username": "pepoviola"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e85099e23c35a4614640b2c2c576f4385055033a",
+          "message": "Disable flaky tests reported in 5848/5844 (#5851)\n\nReported in:\n#5844\n#5848",
+          "timestamp": "2024-09-27T09:07:40Z",
+          "tree_id": "42c857efd4d7fdb4946fc5939deddd22f01296c2",
+          "url": "https://github.com/paritytech/polkadot-sdk/commit/e85099e23c35a4614640b2c2c576f4385055033a"
+        },
+        "date": 1727432597394,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Received from peers",
+            "value": 307203,
+            "unit": "KiB"
+          },
+          {
+            "name": "Sent to peers",
+            "value": 1.6666666666666665,
+            "unit": "KiB"
+          },
+          {
+            "name": "availability-recovery",
+            "value": 12.585527397933335,
+            "unit": "seconds"
+          },
+          {
+            "name": "test-environment",
+            "value": 0.20669691136666665,
             "unit": "seconds"
           }
         ]
