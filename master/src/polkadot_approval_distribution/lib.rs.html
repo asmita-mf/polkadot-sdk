@@ -3211,72 +3211,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#3061" id="3061">3061</a>
 <a href="#3062" id="3062">3062</a>
 <a href="#3063" id="3063">3063</a>
-<a href="#3064" id="3064">3064</a>
-<a href="#3065" id="3065">3065</a>
-<a href="#3066" id="3066">3066</a>
-<a href="#3067" id="3067">3067</a>
-<a href="#3068" id="3068">3068</a>
-<a href="#3069" id="3069">3069</a>
-<a href="#3070" id="3070">3070</a>
-<a href="#3071" id="3071">3071</a>
-<a href="#3072" id="3072">3072</a>
-<a href="#3073" id="3073">3073</a>
-<a href="#3074" id="3074">3074</a>
-<a href="#3075" id="3075">3075</a>
-<a href="#3076" id="3076">3076</a>
-<a href="#3077" id="3077">3077</a>
-<a href="#3078" id="3078">3078</a>
-<a href="#3079" id="3079">3079</a>
-<a href="#3080" id="3080">3080</a>
-<a href="#3081" id="3081">3081</a>
-<a href="#3082" id="3082">3082</a>
-<a href="#3083" id="3083">3083</a>
-<a href="#3084" id="3084">3084</a>
-<a href="#3085" id="3085">3085</a>
-<a href="#3086" id="3086">3086</a>
-<a href="#3087" id="3087">3087</a>
-<a href="#3088" id="3088">3088</a>
-<a href="#3089" id="3089">3089</a>
-<a href="#3090" id="3090">3090</a>
-<a href="#3091" id="3091">3091</a>
-<a href="#3092" id="3092">3092</a>
-<a href="#3093" id="3093">3093</a>
-<a href="#3094" id="3094">3094</a>
-<a href="#3095" id="3095">3095</a>
-<a href="#3096" id="3096">3096</a>
-<a href="#3097" id="3097">3097</a>
-<a href="#3098" id="3098">3098</a>
-<a href="#3099" id="3099">3099</a>
-<a href="#3100" id="3100">3100</a>
-<a href="#3101" id="3101">3101</a>
-<a href="#3102" id="3102">3102</a>
-<a href="#3103" id="3103">3103</a>
-<a href="#3104" id="3104">3104</a>
-<a href="#3105" id="3105">3105</a>
-<a href="#3106" id="3106">3106</a>
-<a href="#3107" id="3107">3107</a>
-<a href="#3108" id="3108">3108</a>
-<a href="#3109" id="3109">3109</a>
-<a href="#3110" id="3110">3110</a>
-<a href="#3111" id="3111">3111</a>
-<a href="#3112" id="3112">3112</a>
-<a href="#3113" id="3113">3113</a>
-<a href="#3114" id="3114">3114</a>
-<a href="#3115" id="3115">3115</a>
-<a href="#3116" id="3116">3116</a>
-<a href="#3117" id="3117">3117</a>
-<a href="#3118" id="3118">3118</a>
-<a href="#3119" id="3119">3119</a>
-<a href="#3120" id="3120">3120</a>
-<a href="#3121" id="3121">3121</a>
-<a href="#3122" id="3122">3122</a>
-<a href="#3123" id="3123">3123</a>
-<a href="#3124" id="3124">3124</a>
-<a href="#3125" id="3125">3125</a>
-<a href="#3126" id="3126">3126</a>
-<a href="#3127" id="3127">3127</a>
-<a href="#3128" id="3128">3128</a>
-<a href="#3129" id="3129">3129</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -3306,7 +3240,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <span class="kw">use </span>futures::{select, FutureExt <span class="kw">as _</span>};
 <span class="kw">use </span>itertools::Itertools;
 <span class="kw">use </span>net_protocol::peer_set::{ProtocolVersion, ValidationVersion};
-<span class="kw">use </span>polkadot_node_jaeger <span class="kw">as </span>jaeger;
 <span class="kw">use </span>polkadot_node_network_protocol::{
 	<span class="self">self </span><span class="kw">as </span>net_protocol, filter_by_peer_version,
 	grid_topology::{RandomRouting, RequiredRouting, SessionGridTopologies, SessionGridTopology},
@@ -3637,9 +3570,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 
 	<span class="doccomment">/// Tracks recently finalized blocks.
 	</span>recent_outdated_blocks: RecentlyOutdated,
-
-	<span class="doccomment">/// HashMap from active leaves to spans
-	</span>spans: HashMap&lt;Hash, jaeger::PerLeafSpan&gt;,
 
 	<span class="doccomment">/// Aggression configuration.
 	</span>aggression_config: AggressionConfig,
@@ -4151,18 +4081,9 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		);
 
 		<span class="kw">for </span>meta <span class="kw">in </span>metas {
-			<span class="kw">let </span><span class="kw-2">mut </span>span = <span class="self">self
-				</span>.spans
-				.get(<span class="kw-2">&amp;</span>meta.hash)
-				.map(|span| span.child(<span class="kw-2">&amp;</span><span class="string">"handle-new-blocks"</span>))
-				.unwrap_or_else(|| jaeger::Span::new(meta.hash, <span class="kw-2">&amp;</span><span class="string">"handle-new-blocks"</span>))
-				.with_string_tag(<span class="string">"block-hash"</span>, <span class="macro">format!</span>(<span class="string">"{:?}"</span>, meta.hash))
-				.with_stage(jaeger::Stage::ApprovalDistribution);
-
 			<span class="kw">match </span><span class="self">self</span>.blocks.entry(meta.hash) {
 				hash_map::Entry::Vacant(entry) =&gt; {
 					<span class="kw">let </span>candidates_count = meta.candidates.len();
-					span.add_uint_tag(<span class="string">"candidates-count"</span>, candidates_count <span class="kw">as </span>u64);
 					<span class="kw">let </span><span class="kw-2">mut </span>candidates = Vec::with_capacity(candidates_count);
 					candidates.resize_with(candidates_count, Default::default);
 
@@ -4609,7 +4530,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			<span class="kw">if let </span><span class="prelude-val">Some</span>(block_entry) = <span class="self">self</span>.blocks.remove(relay_block) {
 				<span class="self">self</span>.topologies.dec_session_refs(block_entry.session);
 			}
-			<span class="self">self</span>.spans.remove(<span class="kw-2">&amp;</span>relay_block);
 		});
 
 		<span class="comment">// If a block was finalized, this means we may need to move our aggression
@@ -4636,21 +4556,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		RA: overseer::SubsystemSender&lt;RuntimeApiMessage&gt;,
 		R: CryptoRng + Rng,
 	{
-		<span class="kw">let </span>_span = <span class="self">self
-			</span>.spans
-			.get(<span class="kw-2">&amp;</span>assignment.block_hash)
-			.map(|span| {
-				span.child(<span class="kw">if </span>source.peer_id().is_some() {
-					<span class="string">"peer-import-and-distribute-assignment"
-				</span>} <span class="kw">else </span>{
-					<span class="string">"local-import-and-distribute-assignment"
-				</span>})
-			})
-			.unwrap_or_else(|| jaeger::Span::new(<span class="kw-2">&amp;</span>assignment.block_hash, <span class="string">"distribute-assignment"</span>))
-			.with_string_tag(<span class="string">"block-hash"</span>, <span class="macro">format!</span>(<span class="string">"{:?}"</span>, assignment.block_hash))
-			.with_optional_peer_id(source.peer_id().as_ref())
-			.with_stage(jaeger::Stage::ApprovalDistribution);
-
 		<span class="kw">let </span>block_hash = assignment.block_hash;
 		<span class="kw">let </span>validator_index = assignment.validator;
 
@@ -5116,21 +5021,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 		vote: IndirectSignedApprovalVoteV2,
 		session_info_provider: <span class="kw-2">&amp;mut </span>RuntimeInfo,
 	) {
-		<span class="kw">let </span>_span = <span class="self">self
-			</span>.spans
-			.get(<span class="kw-2">&amp;</span>vote.block_hash)
-			.map(|span| {
-				span.child(<span class="kw">if </span>source.peer_id().is_some() {
-					<span class="string">"peer-import-and-distribute-approval"
-				</span>} <span class="kw">else </span>{
-					<span class="string">"local-import-and-distribute-approval"
-				</span>})
-			})
-			.unwrap_or_else(|| jaeger::Span::new(<span class="kw-2">&amp;</span>vote.block_hash, <span class="string">"distribute-approval"</span>))
-			.with_string_tag(<span class="string">"block-hash"</span>, <span class="macro">format!</span>(<span class="string">"{:?}"</span>, vote.block_hash))
-			.with_optional_peer_id(source.peer_id().as_ref())
-			.with_stage(jaeger::Stage::ApprovalDistribution);
-
 		<span class="kw">let </span>block_hash = vote.block_hash;
 		<span class="kw">let </span>validator_index = vote.validator;
 		<span class="kw">let </span>candidate_indices = <span class="kw-2">&amp;</span>vote.candidate_indices;
@@ -5370,14 +5260,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	) -&gt; HashMap&lt;ValidatorIndex, (Hash, Vec&lt;CandidateIndex&gt;, ValidatorSignature)&gt; {
 		<span class="kw">let </span><span class="kw-2">mut </span>all_sigs = HashMap::new();
 		<span class="kw">for </span>(hash, index) <span class="kw">in </span>indices {
-			<span class="kw">let </span>_span = <span class="self">self
-				</span>.spans
-				.get(<span class="kw-2">&amp;</span>hash)
-				.map(|span| span.child(<span class="string">"get-approval-signatures"</span>))
-				.unwrap_or_else(|| jaeger::Span::new(<span class="kw-2">&amp;</span>hash, <span class="string">"get-approval-signatures"</span>))
-				.with_string_tag(<span class="string">"block-hash"</span>, <span class="macro">format!</span>(<span class="string">"{:?}"</span>, hash))
-				.with_stage(jaeger::Stage::ApprovalDistribution);
-
 			<span class="kw">let </span>block_entry = <span class="kw">match </span><span class="self">self</span>.blocks.get(<span class="kw-2">&amp;</span>hash) {
 				<span class="prelude-val">None </span>=&gt; {
 					<span class="macro">gum::debug!</span>(
@@ -6055,19 +5937,13 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					session_info_provider,
 				)
 				.<span class="kw">await</span>,
-			FromOrchestra::Signal(OverseerSignal::ActiveLeaves(update)) =&gt; {
+			FromOrchestra::Signal(OverseerSignal::ActiveLeaves(_update)) =&gt; {
 				<span class="macro">gum::trace!</span>(target: LOG_TARGET, <span class="string">"active leaves signal (ignored)"</span>);
 				<span class="comment">// the relay chain blocks relevant to the approval subsystems
 				// are those that are available, but not finalized yet
 				// activated and deactivated heads hence are irrelevant to this subsystem, other
 				// than for tracing purposes.
-				</span><span class="kw">if let </span><span class="prelude-val">Some</span>(activated) = update.activated {
-					<span class="kw">let </span>head = activated.hash;
-					<span class="kw">let </span>approval_distribution_span =
-						jaeger::PerLeafSpan::new(activated.span, <span class="string">"approval-distribution"</span>);
-					state.spans.insert(head, approval_distribution_span);
-				}
-			},
+			</span>},
 			FromOrchestra::Signal(OverseerSignal::BlockFinalized(_hash, number)) =&gt; {
 				<span class="macro">gum::trace!</span>(target: LOG_TARGET, number = %number, <span class="string">"finalized signal"</span>);
 				state.handle_block_finalized(network_sender, <span class="kw-2">&amp;</span><span class="self">self</span>.metrics, number).<span class="kw">await</span>;
@@ -6125,14 +6001,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 					.<span class="kw">await</span>;
 			},
 			ApprovalDistributionMessage::DistributeAssignment(cert, candidate_indices) =&gt; {
-				<span class="kw">let </span>_span = state
-					.spans
-					.get(<span class="kw-2">&amp;</span>cert.block_hash)
-					.map(|span| span.child(<span class="string">"import-and-distribute-assignment"</span>))
-					.unwrap_or_else(|| jaeger::Span::new(<span class="kw-2">&amp;</span>cert.block_hash, <span class="string">"distribute-assignment"</span>))
-					.with_string_tag(<span class="string">"block-hash"</span>, <span class="macro">format!</span>(<span class="string">"{:?}"</span>, cert.block_hash))
-					.with_stage(jaeger::Stage::ApprovalDistribution);
-
 				<span class="macro">gum::debug!</span>(
 					target: LOG_TARGET,
 					<span class="question-mark">?</span>candidate_indices,

@@ -1669,15 +1669,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 <a href="#1519" id="1519">1519</a>
 <a href="#1520" id="1520">1520</a>
 <a href="#1521" id="1521">1521</a>
-<a href="#1522" id="1522">1522</a>
-<a href="#1523" id="1523">1523</a>
-<a href="#1524" id="1524">1524</a>
-<a href="#1525" id="1525">1525</a>
-<a href="#1526" id="1526">1526</a>
-<a href="#1527" id="1527">1527</a>
-<a href="#1528" id="1528">1528</a>
-<a href="#1529" id="1529">1529</a>
-<a href="#1530" id="1530">1530</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -1708,8 +1699,7 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 //!
 //! We maintain a rolling window of session indices. This starts as empty
 
-</span><span class="kw">use </span>polkadot_node_jaeger <span class="kw">as </span>jaeger;
-<span class="kw">use </span>polkadot_node_primitives::{
+</span><span class="kw">use </span>polkadot_node_primitives::{
 	approval::{
 		<span class="self">self </span><span class="kw">as </span>approval_types,
 		v1::{BlockApprovalMeta, RelayVRFStory},
@@ -2028,13 +2018,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 	finalized_number: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;BlockNumber&gt;,
 ) -&gt; SubsystemResult&lt;Vec&lt;BlockImportedCandidates&gt;&gt; {
 	<span class="kw">const </span>MAX_HEADS_LOOK_BACK: BlockNumber = MAX_FINALITY_LAG;
-	<span class="kw">let </span>_handle_new_head_span = state
-		.spans
-		.get(<span class="kw-2">&amp;</span>head)
-		.map(|span| span.child(<span class="string">"handle-new-head"</span>))
-		.unwrap_or_else(|| jaeger::Span::new(head, <span class="string">"handle-new-head"</span>))
-		.with_string_tag(<span class="string">"head"</span>, <span class="macro">format!</span>(<span class="string">"{:?}"</span>, head))
-		.with_stage(jaeger::Stage::ApprovalChecking);
 
 	<span class="kw">let </span>header = {
 		<span class="kw">let </span>(h_tx, h_rx) = oneshot::channel();
@@ -2346,7 +2329,6 @@ data-use_system_theme="false"></script><meta name="rustdoc-vars" data-root-path=
 			slot_duration_millis: <span class="number">6_000</span>,
 			clock: Arc::new(MockClock::default()),
 			assignment_criteria: Box::new(MockAssignmentCriteria::default()),
-			spans: HashMap::new(),
 			per_block_assignments_gathering_times: LruMap::new(ByLength::new(
 				MAX_BLOCKS_WITH_ASSIGNMENT_TIMESTAMPS,
 			)),
