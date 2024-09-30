@@ -2228,7 +2228,7 @@ impl<T: Config> Pallet<T> {
 		// a check per nominator to ensure their entire stake is correctly distributed. Will only
 		// kick-in if the nomination was submitted before the current era.
 		let era = Self::active_era().unwrap().index;
-
+		log!(info, "era: {:?} -- Self::active_era(): {:?}", era, Self::active_era());
 		// cache era exposures to avoid too many db reads.
 		let era_exposures = T::SessionInterface::validators()
 			.iter()
@@ -2257,7 +2257,10 @@ impl<T: Config> Pallet<T> {
 						let len = individual.len();
 						match len {
 							0 => { /* not supporting this validator at all. */ },
-							1 => sum += individual[0].value,
+							1 => { 
+								log!(info, "individual: {:?}", individual);
+								sum += individual[0].value
+							},
 							_ =>
 								return Err(
 									"nominator cannot back a validator more than once.".into()
