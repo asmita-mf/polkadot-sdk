@@ -2234,7 +2234,7 @@ impl<T: Config> Pallet<T> {
 			.iter()
 			.map(|v| Self::eras_stakers(era, v))
 			.collect::<Vec<_>>();
-
+		log!(info, "era_exposures: {:?}", era_exposures);
 		<Nominators<T>>::iter()
 			.filter_map(
 				|(nominator, nomination)| {
